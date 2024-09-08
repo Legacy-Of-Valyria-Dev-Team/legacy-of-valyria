@@ -1,0 +1,227 @@
+﻿agot_apply_dragon_aging_effect = {
+	$DRAGON$ = {
+		save_scope_as = dragon
+		if = {
+			limit = {
+				age < 11
+				NOT = { has_trait = dragon_destined } # destined get their initial maturing via story cycle in the 1st year
+			}
+			add_prowess_skill = 3
+			change_dragon_size = {
+				VALUE = 3
+			}
+		}
+		else_if = {
+			limit = {
+				age < 15
+				NOT = { has_trait = dragon_destined }
+			}
+			add_prowess_skill = 2
+			change_dragon_size = {
+				VALUE = 2
+			}
+		}
+		else = { # Maturing done
+			if = {
+				limit = { has_character_flag = in_dragonpit }
+				#Natural Pit check
+				if = {
+					limit = {
+						var:pitted_dragon_location ?= title:c_dragonstone
+						var:pitted_dragon_location ?= title:c_ilvonys
+					}
+					# Growth is not as impinged compared to manmade pits, volcano magic
+					random_list = {
+						5 = {}
+						55 = {
+							add_prowess_skill = 1
+							change_dragon_size = {
+								VALUE = 1
+							}
+						}
+						15 = {
+							add_prowess_skill = 2
+							change_dragon_size = {
+								VALUE = 2
+							}
+						}
+					}
+				}
+				else = {
+					random_list = {
+						30 = {} # Older dragons in a dragonpit do not grow as well
+						60 = {
+							add_prowess_skill = 1
+							change_dragon_size = {
+								VALUE = 1
+							}
+						}
+						10 = {
+							add_prowess_skill = 2
+							change_dragon_size = {
+								VALUE = 2
+							}
+						}
+					}
+				}
+			}
+			else = {
+				random_list = {
+					10 = {}
+					70 = {
+						add_prowess_skill = 1
+						change_dragon_size = {
+							VALUE = 1
+						}
+					}
+					20 = {
+						add_prowess_skill = 2
+						change_dragon_size = {
+							VALUE = 2
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_create_generic_dragonpit_scripted_effect = {
+	$DRAGON_PIT_OWNER$ = {
+		trigger_event = agot_dragonkeepers.0001  # Creates the Head Dragonkeeper Character, Provides a Little Bit of Context to Player
+		#  Adds a variable to the county holding the dragonpit so that the decision cannot be taken again
+		if = {
+			limit = {
+				any_held_county = {
+					any_county_province = {
+						has_holding_type = castle_holding
+						has_building_or_higher = generic_dragon_pit_01
+						has_building = valyria_volcano_01
+					}
+					NOT = { has_variable = has_dragonkeeper_order }
+				}
+			}
+			random_held_county = {
+				limit = {
+					any_county_province = {
+						has_holding_type = castle_holding
+						has_building_or_higher = generic_dragon_pit_01
+					}
+					NOT = { has_variable = has_dragonkeeper_order }
+				}
+				set_variable = { name = has_dragonkeeper_order }
+			}
+			add_realm_law = dragonpit_close_family_law
+		}
+		if = {
+			limit = {
+				has_ep1_dlc_trigger = yes
+			}
+			hidden_effect = { set_amenity_level = { type = agot_dragonpit_amenities value = 3 } }
+			custom_tooltip = agot_dragonpit_amenities_level_set_to_three_tt
+		}
+	}
+}
+agot_change_dragonpit_status = {
+	scope:owner = {
+		random_held_county = {
+			limit = {
+				OR = {
+					any_county_province = {
+						has_holding_type = castle_holding
+						has_building_or_higher = generic_dragon_pit_01
+					}
+					any_county_province = {
+						has_building_or_higher = dragonpit_01 # Historical Version
+						has_building = dragonpit_ruins_03 # Fully Restored Ruin Version
+						has_building = agot_dragonmont_01 # Dragonmont Version
+						has_building = valyria_volcano_01
+					}
+				}
+				has_variable = has_dragonkeeper_order
+			}
+			save_scope_as = dragon_pit_location
+		}
+	}
+	if = {
+		limit = {
+			has_character_flag = in_dragonpit
+		}
+		agot_remove_from_dragonpit = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+	}
+	else_if = {
+		limit = {
+			has_character_flag = owned_dragon
+		}
+		agot_send_to_dragonpit = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				has_character_flag = owned_dragon
+			}
+		}
+		agot_force_wild_dragon_into_dragonpit_effect = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+	}
+}
+
+agot_remove_from_dragonpit_skip_county_effects = {
+	$DRAGON$ = {
+		remove_character_flag = in_dragonpit
+		remove_character_modifier = agot_dragon_in_dragonpit
+		var:pitted_dragon_location = {
+			remove_list_variable = {
+				name = dragons_in_pit
+				target = $DRAGON$
+			}
+		}
+		remove_variable = pitted_dragon_location
+	}
+}
+
+agot_change_dragonpit_status_ai = {
+	$OWNER$ = {
+		random_held_county = {
+			limit = {
+				OR = {
+					any_county_province = {
+						has_holding_type = castle_holding
+						has_building_or_higher = generic_dragon_pit_01
+					}
+					any_county_province = {
+						OR = {
+							has_building_or_higher = dragonpit_01 # Historical Version
+							has_building = dragonpit_ruins_03 # Fully Restored Ruin Version
+							has_building = agot_dragonmont_01 # Dragonmont Version
+							has_building = valyria_volcano_01
+						}
+					}
+				}
+				has_variable = has_dragonkeeper_order
+			}
+			save_scope_as = dragon_pit_location
+		}
+	}
+	$DRAGON_REC$ = {
+		if = {
+			limit = {
+				has_character_flag = in_dragonpit
+			}
+			agot_remove_from_dragonpit = { DRAGON = $DRAGON_REC$ DRAGONPIT_HOLDER = $OWNER$ DRAGONPIT_COUNTY = scope:dragon_pit_location }
+		}
+		else_if = {
+			limit = {
+				has_character_flag = owned_dragon
+			}
+			agot_send_to_dragonpit = { DRAGON = $DRAGON_REC$ DRAGONPIT_HOLDER = $OWNER$ DRAGONPIT_COUNTY = scope:dragon_pit_location }
+		}
+		else_if = {
+			limit = {
+				NOT = {
+					has_character_flag = owned_dragon
+				}
+			}
+			agot_force_wild_dragon_into_dragonpit_effect = { DRAGON = $DRAGON_REC$ DRAGONPIT_HOLDER = $OWNER$ DRAGONPIT_COUNTY = scope:dragon_pit_location }
+		}
+	}
+}

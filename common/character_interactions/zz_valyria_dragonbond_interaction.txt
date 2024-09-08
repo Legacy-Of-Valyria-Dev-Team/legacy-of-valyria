@@ -1,0 +1,262 @@
+visit_dragonpit_with_child_interaction = {
+	icon = icon_scheme_dragon
+	desc = visit_dragonpit_with_child_interaction_desc
+	category = interaction_category_friendly
+	common_interaction = yes
+	interface_priority = 75
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+	cooldown = { years = 1 }
+	cooldown_against_recipient = { years = 2 }
+	is_shown = {
+		scope:actor = {
+			is_adult = yes
+			is_ai = no
+			OR = {
+				agot_has_an_active_dragonpit = yes
+				AND = {
+					title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+					title:c_dragonstone.holder = {
+						house ?= scope:actor.house
+					}
+				}
+			}
+		}
+		scope:recipient = {
+			is_human = yes
+			is_ai = yes
+			age >= 10
+			is_adult = no
+			OR = {
+				is_child_of = scope:actor
+				AND = {
+					is_courtier_of = scope:actor
+					exists = house
+					exists = scope:actor.house
+					house = scope:actor.house
+				}
+			}
+			NOT = { has_trait = dragonrider }
+			NOT = { has_trait = dragonwidowed }
+			NOT = { has_character_modifier = agot_dragon_disinterest }
+			NOT = {
+				any_relation = {
+					type = agot_dragon
+				}
+			}
+			NOT = {
+				any_scheme = {
+					scheme_type = bond_with_dragon_scheme
+				}
+			}
+			trigger_if = {
+				limit = {
+					NOT = { has_game_rule = dragons_anyone }
+				}
+				agot_has_dragonblood_heritage = yes
+			}
+		}
+		OR = {
+			scope:actor = {
+				any_courtier = {
+					has_character_flag = in_dragonpit
+					has_trait = dragon
+					NOT = {
+						any_relation = {
+							type = agot_dragon
+						}
+					}
+					save_temporary_scope_as = dragon
+					agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+						DRAGON = scope:dragon ACTOR = scope:recipient
+					}
+				}
+			}
+			AND = {
+				title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+				title:c_dragonstone.holder = {
+					house ?= scope:actor.house
+					any_courtier = {
+						has_character_flag = in_dragonpit
+						has_trait = dragon
+						NOT = {
+							any_relation = {
+								type = agot_dragon
+							}
+						}
+						save_temporary_scope_as = dragon
+						agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+							DRAGON = scope:dragon ACTOR = scope:recipient
+						}
+					}
+				}
+			}
+			AND = {
+				title:c_ilvonys = { has_variable = has_dragonkeeper_order }
+				title:c_ilvonys.holder = {
+					house ?= scope:actor.house
+					any_courtier = {
+						has_character_flag = in_dragonpit
+						has_trait = dragon
+						NOT = {
+							any_relation = {
+								type = agot_dragon
+							}
+						}
+						save_temporary_scope_as = dragon
+						agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+							DRAGON = scope:dragon ACTOR = scope:recipient
+						}
+					}
+				}
+			}
+		}
+	}
+	is_valid_showing_failures_only = {
+	}
+	on_accept = {
+		hidden_effect = {
+			scope:actor = {
+				if = {
+					limit = {
+						NOT = { title:c_dragonstone.holder = scope:actor }
+						scope:actor = {
+							any_courtier = {
+								has_character_flag = in_dragonpit
+								has_trait = dragon
+								NOT = {
+									any_relation = {
+										type = agot_dragon
+									}
+								}
+								save_temporary_scope_as = dragon
+								agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+									DRAGON = scope:dragon ACTOR = scope:recipient
+								}
+							}
+						}
+						AND = {
+							title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+							title:c_dragonstone.holder = {
+								house ?= scope:actor.house
+								any_courtier = {
+									has_character_flag = in_dragonpit
+									has_trait = dragon
+									NOT = {
+										any_relation = {
+											type = agot_dragon
+										}
+									}
+									save_temporary_scope_as = dragon
+									agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+										DRAGON = scope:dragon ACTOR = scope:recipient
+									}
+								}
+							}
+						}
+					}
+					trigger_event = agot_dragon_pits.3000
+				}
+
+				else_if = {
+					limit = {
+						NOT = { title:c_ilvonys.holder = scope:actor }
+						scope:actor = {
+							any_courtier = {
+								has_character_flag = in_dragonpit
+								has_trait = dragon
+								NOT = {
+									any_relation = {
+										type = agot_dragon
+									}
+								}
+								save_temporary_scope_as = dragon
+								agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+									DRAGON = scope:dragon ACTOR = scope:recipient
+								}
+							}
+						}
+						AND = {
+							title:c_ilvonys = { has_variable = has_dragonkeeper_order }
+							title:c_ilvonys.holder = {
+								house ?= scope:actor.house
+								any_courtier = {
+									has_character_flag = in_dragonpit
+									has_trait = dragon
+									NOT = {
+										any_relation = {
+											type = agot_dragon
+										}
+									}
+									save_temporary_scope_as = dragon
+									agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+										DRAGON = scope:dragon ACTOR = scope:recipient
+									}
+								}
+							}
+						}
+					}
+					trigger_event = agot_dragon_pits.3000
+				}
+
+
+				else_if = {
+					limit = {
+						title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+						title:c_dragonstone.holder = {
+							house ?= scope:actor.house
+							any_courtier = {
+								has_character_flag = in_dragonpit
+								has_trait = dragon
+								NOT = {
+									any_relation = {
+										type = agot_dragon
+									}
+								}
+								save_temporary_scope_as = dragon
+								agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+									DRAGON = scope:dragon ACTOR = scope:recipient
+								}
+							}
+						}
+					}
+					title:c_dragonstone = { save_scope_as = dp_county }
+					trigger_event = agot_dragon_pits.3001
+				}
+				else_if = {
+					limit = {
+						title:c_ilvonys = { has_variable = has_dragonkeeper_order }
+						title:c_dragonstone.holder = {
+							house ?= scope:actor.house
+							any_courtier = {
+								has_character_flag = in_dragonpit
+								has_trait = dragon
+								NOT = {
+									any_relation = {
+										type = agot_dragon
+									}
+								}
+								save_temporary_scope_as = dragon
+								agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+									DRAGON = scope:dragon ACTOR = scope:recipient
+								}
+							}
+						}
+					}
+					title:c_dragonstone = { save_scope_as = dp_county }
+					trigger_event = agot_dragon_pits.3001
+				}
+				else = {
+					random_held_county = {
+						limit = { agot_title_is_an_active_dragonpit = yes }
+						save_scope_as = dp_county
+					}
+					trigger_event = agot_dragon_pits.3001
+				}
+			}
+		}
+		scope:recipient = {
+			custom_tooltip = visit_dragonpit_interaction_tt
+		}
+	}
+}
