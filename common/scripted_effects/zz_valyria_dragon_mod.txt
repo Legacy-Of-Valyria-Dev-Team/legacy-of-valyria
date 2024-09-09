@@ -1,3 +1,104 @@
+agot_growing_dragon_cannibal_trait_chance = {
+	# Chance of cannibal dragon if at least 14 dragons
+	save_scope_as = growing_dragon
+	if = {
+		limit = {
+			scope:growing_dragon = {
+				NOR = { 
+					has_trait = dragon_cannibal 
+					has_trait = dragon_restrained 
+					has_trait = dragon_friendly 
+				}
+				OR = {
+					has_trait = dragon_aggressive
+					has_trait = dragon_voracious
+					has_trait = dragon_bloodthirsty
+				}
+				NOR = {
+					has_trait = immortality
+					scope:liege_or_court_owner.capital_province ?= { 
+						geographical_region = world_valyria
+					}
+				}
+			}
+			any_living_dragon = {
+				count >= lower_cannibal_dragon_value
+			}
+			trigger_if = {
+				limit = {
+					any_living_dragon = {
+						count < upper_cannibal_dragon_value
+					}
+				}
+				any_living_dragon = {
+					count < 1
+					has_trait = dragon_cannibal
+				}
+			}
+			trigger_else = {
+				any_living_dragon = {
+					count < global_dragon_cannibal_limit
+					has_trait = dragon_cannibal
+				}
+			}
+			any_living_dragon = { # And there is a valid target
+				NOT = { this = scope:growing_dragon } # Not the would-be cannibal
+				has_character_flag = owned_dragon # Is owned or tamed
+				location = scope:growing_dragon.location # In the same location
+				NOT = { has_trait = dragon_cannibal } # No cascading cannibalism
+				dragon_combat_effectiveness <= scope:growing_dragon.dragon_combat_effectiveness # Not stronger than the dragon
+			}
+		}
+		random_list = {
+			80 = {
+				modifier = {
+					add = -30
+					has_trait = dragon_voracious
+				}
+				modifier = {
+					add = -20
+					has_trait = dragon_bloodthirsty
+				}
+				modifier = {
+					add = -10
+					has_trait = dragon_aggressive
+				}
+			}
+			20 = {
+				modifier = {
+					add = -15
+					has_trait = dragon_supporting
+				}
+				modifier = {
+					add = -15
+					has_trait = dragon_calculating
+				}
+				modifier = {
+					factor = 0.3
+					any_living_dragon = {
+						has_trait = dragon_cannibal
+					}
+				}
+				random_living_dragon = {
+					limit = {
+						has_character_flag = owned_dragon # Is owned or tamed
+						location = scope:growing_dragon.location # In the same location
+						NOT = { has_trait = dragon_cannibal } # No cascading cannibalism
+						dragon_combat_effectiveness <= scope:growing_dragon.dragon_combat_effectiveness # Not stronger than the dragon
+					}
+					save_scope_as = growing_dragon_victim
+				}
+				court_owner = {
+					trigger_event = {
+						id = agot_dragon_personality.0015
+						days = { 20 300 }
+					}
+				}
+			}
+		}
+	}
+}
+
 agot_apply_dragon_aging_effect = {
 	$DRAGON$ = {
 		save_scope_as = dragon
@@ -60,6 +161,27 @@ agot_apply_dragon_aging_effect = {
 							add_prowess_skill = 2
 							change_dragon_size = {
 								VALUE = 2
+							}
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					liege_or_court_owner.capital_province ?= { 
+							geographical_region = world_valyria
+						}
+					}
+					random_list = {
+						80 = {
+							add_prowess_skill = 2
+							change_dragon_size = {
+								VALUE = 2							
+						}
+						20 = {
+							add_prowess_skill = 5
+							change_dragon_size = {
+								VALUE = 5
 							}
 						}
 					}
