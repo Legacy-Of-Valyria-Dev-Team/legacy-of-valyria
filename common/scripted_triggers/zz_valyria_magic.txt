@@ -1,37 +1,66 @@
-﻿zz_valyra_has_mana_to_cast = { 
-
+﻿zz_valyria_has_mana_to_cast = { 
+	OR = {
+		has_character_modifier = zz_valyria_magic_drops_power
+		AND = {
+			has_trait = magister
+			has_trait_xp = {
+				trait = magister
+				track = drops_of_power
+				value > $MANACOST$
+			}
+		}
+	}
 }
 
-zz_valyra_knows_spell = {
+zz_valyria_can_gain_mana = {
+	OR = {
+		AND = {
+			has_trait = magister
+			has_trait_xp = {
+				trait = magister
+				track = drops_of_power
+				value < 100
+			}
+		}
+		NOR = {
+			has_trait = magister
+			has_character_modifier = zz_valyria_magic_drops_power
+		}
+	}
+}
+
+zz_valyria_knows_spell = {
 	OR = { 
 		has_character_flag = $SPELL$
 		has_perk = $SPELL$
 	}
 }
 
-zz_valyra_knows_spell_court = {
+zz_valyria_knows_spell_court = {
 	OR = { 
-		zz_valyra_knows_spell = {
+		zz_valyria_knows_spell = {
 			SPELL = $SPELL$
 		}
 		any_courtier_or_guest = { 
-			zz_valyra_knows_spell = {
+			zz_valyria_knows_spell = {
 				SPELL = $SPELL$
 			}
 		}
 		any_child = { 
-			zz_valyra_knows_spell = {
+			zz_valyria_knows_spell = {
 				SPELL = $SPELL$
 			}
 		}
 	}
 }
 
-zz_valyra_valid_caster = {
-	zz_valyra_knows_spell = {
+zz_valyria_valid_caster = {
+	zz_valyria_knows_spell = {
 		SPELL = $SPELL$
 	}
-	zz_valyra_has_mana_to_cast = yes
+	zz_valyria_has_mana_to_cast = {
+		MANACOST = $MANACOST$
+	}
 	custom_description = {
 		text = is_incapable_custom
 		NOT = { has_trait = incapable }
@@ -69,18 +98,18 @@ zz_valyra_valid_caster = {
 	}	
 }
 
-zz_valyra_valid_caster_court = {
+zz_valyria_valid_caster_court = {
 	OR = { 
-		zz_valyra_valid_caster = {
+		zz_valyria_valid_caster = {
 			SPELL = $SPELL$
 		}
 		any_courtier_or_guest = { 
-			zz_valyra_valid_caster = {
+			zz_valyria_valid_caster = {
 				SPELL = $SPELL$
 			}
 		}
 		any_child = { 
-			zz_valyra_valid_caster = {
+			zz_valyria_valid_caster = {
 				SPELL = $SPELL$
 			}
 		}
