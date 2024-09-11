@@ -1,0 +1,88 @@
+﻿zz_valyra_has_mana_to_cast = { 
+
+}
+
+zz_valyra_knows_spell = {
+	OR = { 
+		has_character_flag = $SPELL$
+		has_perk = $SPELL$
+	}
+}
+
+zz_valyra_knows_spell_court = {
+	OR = { 
+		zz_valyra_knows_spell = {
+			SPELL = $SPELL$
+		}
+		any_courtier_or_guest = { 
+			zz_valyra_knows_spell = {
+				SPELL = $SPELL$
+			}
+		}
+		any_child = { 
+			zz_valyra_knows_spell = {
+				SPELL = $SPELL$
+			}
+		}
+	}
+}
+
+zz_valyra_valid_caster = {
+	zz_valyra_knows_spell = {
+		SPELL = $SPELL$
+	}
+	zz_valyra_has_mana_to_cast = yes
+	custom_description = {
+		text = is_incapable_custom
+		NOT = { has_trait = incapable }
+	}
+	custom_description = {
+		text = not_in_army_0
+		is_in_army = no
+	}
+	custom_description = {
+		text = not_in_travel_0
+		OR = {
+			location = capital_province
+			#is_at_home = yes
+			AND = {
+				exists = involved_activity
+				NOT = {
+					has_activity_state = travel
+				}
+			}
+			AND = {
+				exists = current_travel_plan
+				current_travel_plan = {
+					any_entourage_character = {
+						this = scope:recipient
+					}
+				}
+			}
+			AND = {
+				exists = liege
+				location = liege.location
+				location = scope:recipient.location
+				liege.location = liege.capital_province
+			}
+		}
+	}	
+}
+
+zz_valyra_valid_caster_court = {
+	OR = { 
+		zz_valyra_valid_caster = {
+			SPELL = $SPELL$
+		}
+		any_courtier_or_guest = { 
+			zz_valyra_valid_caster = {
+				SPELL = $SPELL$
+			}
+		}
+		any_child = { 
+			zz_valyra_valid_caster = {
+				SPELL = $SPELL$
+			}
+		}
+	}
+}
