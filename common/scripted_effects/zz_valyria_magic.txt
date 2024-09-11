@@ -1,1 +1,87 @@
-﻿
+﻿zz_valyria_mana_gain = {
+	if = {
+		limit = {
+			has_trait = magister
+			has_trait_xp = {
+				trait = magister
+				track = drops_of_power
+				value < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magister
+			track = drops_of_power
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit = {
+			NOR = {
+				has_character_modifier = zz_valyria_magic_drops_power
+			}
+		}
+		add_character_modifier = zz_valyria_magic_drops_power
+	}
+}
+
+zz_valyria_mana_spend = {
+	if = {
+		limit = {
+			OR = {
+				has_character_modifier = zz_valyria_magic_drops_power
+			}
+		}
+		remove_character_modifier = zz_valyria_magic_drops_power
+	}
+	else_if  = { 
+		limit =  { 
+			has_trait = magister 
+			has_trait_xp = {
+				trait = magister
+				track = drops_of_power
+				value > $MANACIS$
+			}
+		}
+		hidden_effect = {
+			add_trait_xp = {
+				trait = power_store
+				track = power_saturation_1
+				value = $MANASPEND$
+			}
+		}
+	}
+}
+
+zz_valyria_populate_spell_caster_list = {
+	if = { 
+		limit = {
+			zz_valyria_valid_caster = {
+				SPELL = $SPELL$
+				MANACOST = $MANACOST$
+			}
+		}
+		add_to_list = characters
+	}
+	every_courtier = {
+		limit = {
+			zz_valyria_valid_caster = {
+				SPELL = $SPELL$
+				MANACOST = $MANACOST$
+			}
+		}
+		add_to_list = characters
+	}
+	every_child = {
+		limit = {
+			NOT = { is_in_list = characters }
+			OR = {
+				has_character_flag = $SPELL$
+				has_perk =  $SPELL$
+			}
+			zz_valyria_has_mana_to_cast = { 
+				MANACOST = $MANACOST$
+			}
+		}
+		add_to_list = characters
+	}
+}
