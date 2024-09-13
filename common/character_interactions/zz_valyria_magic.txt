@@ -80,11 +80,16 @@
 	on_accept = {
 		scope:actor = {
 			save_scope_as = magic_user
-			zz_valyria_mana_spend = {
-				MANACOST = 1
-				MANASPEND = -1
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+					MANASPEND = -1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
 			}
-
 			send_interface_message = {
 				type = event_generic_neutral
 				title = magic_healing
@@ -137,4 +142,206 @@
 			}
 		}
 	}
+}
+
+
+valyria_magic_development_boost = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						MANACOST = 1
+						SPELL = healing_spell_flag
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = healing_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = healing_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = healing_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+
+	target_type = title
+	target_filter = recipient_domain_titles
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	can_be_picked_title = {
+		scope:target = {
+			is_leased_out = no
+			tier = tier_county
+		}
+	}
+	on_accept = {
+		scope:target = {
+			save_scope_as = ttile
+		}
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+					MANASPEND = -1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+			}
+		}
+		scope:target.title_province = {
+			county = {
+				if = {
+					limit = {
+						scope:secondary_actor  = {
+							any_character_artifact = {
+								has_variable = catalyst
+							}
+						}
+					}
+					add_county_modifier = {
+						modifier = province_buff_spell_development_modifier
+						years = 20
+					}
+				}
+				else = {
+					add_county_modifier = {
+						modifier = province_buff_spell_development_modifier
+						years = 10
+					}
+				}
+				
+			}
+		}
+	}
+	auto_accept = yes
+}
+
+valyria_magic_build_speed_boost = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						MANACOST = 1
+						SPELL = healing_spell_flag
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = healing_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = healing_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = healing_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	target_type = title
+	target_filter = recipient_domain_titles
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	can_be_picked_title = {
+		scope:target = {
+			is_leased_out = no
+			tier = tier_county
+		}
+	}
+	on_accept = {
+		scope:target = {
+			save_scope_as = ttile
+		}
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+					MANASPEND = -1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+			}
+		}
+		scope:target.title_province = {
+			county = {
+				if = {
+					limit = {
+						scope:secondary_actor = {
+							any_character_artifact = {
+								has_variable = catalyst
+							}
+						}
+					}
+					add_county_modifier = {
+						modifier = province_buff_spell_build_speed_modifier
+						years = 20
+					}
+				}
+				else = {
+					add_county_modifier = {
+						modifier = province_buff_spell_build_speed_modifier
+						years = 10
+					}
+				}
+				
+			}
+		}
+	}
+	auto_accept = yes
 }
