@@ -1,15 +1,6 @@
 ﻿on_game_start = {
-	effect = { 
-		every_player = {
-			limit = {
-				has_trait = zz_magister
-			}
-			add_character_flag = healing_spell_flag
-			add_character_flag = development_boost_spell_flag
-			add_character_flag = building_speed_spell_flag
-		}
-	}
 	on_actions = {
+		zz_valyria_magic_grant_spells
 	}
 }
 
@@ -19,6 +10,7 @@
 quarterly_playable_pulse = {
 	on_actions = {
 		zz_valyria_mana_gain_on_action
+		zz_valyria_magic_grant_spells
 	}
 }
 
@@ -39,26 +31,26 @@ zz_valyria_magic_grant_spells = {
 	}
 	effect = {
 		add_character_flag = healing_spell_flag
+		add_character_flag = development_boost_spell_flag
+		add_character_flag = building_speed_spell_flag
 	}
 }
 
 
 
 on_building_completed = {
+	trigger = {
+		OR = { 
+			has_building_with_flag = { flag = travel_point_of_interest_magic }
+			root.capital_barony = {
+				this = title:b_valyria_5
+			}
+		}
+		NOT = { has_travel_point_of_interest = travel_point_of_interest_magic }
+	}
 	effect = { 
 		root = {
-			if = {
-				limit = {
-					OR = { 
-						has_building_with_flag = { flag = travel_point_of_interest_magic }
-						root.capital_barony = {
-							this = title:b_valyria_5.title_province
-						}
-					}
-					NOT = { has_travel_point_of_interest = travel_point_of_interest_magic }
-				}
-				add_travel_point_of_interest = travel_point_of_interest_magic
-			}
+			add_travel_point_of_interest = travel_point_of_interest_magic
 		}
 	}
 }
