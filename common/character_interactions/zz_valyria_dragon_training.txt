@@ -1,0 +1,272 @@
+﻿zz_valyria_dragon_training_action = {
+	is_shown = {
+		scope:actor = {
+			has_character_flag = dragon_training
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+		}
+		scope:recipient = {
+			exists = var:current_dragon
+			OR = {
+				has_trait = lifestyle_blademaster
+				has_trait = lifestyle_reveler
+				has_trait = lifestyle_hunter	
+				has_trait = lifestyle_mystic
+				has_trait = lifestyle_physician
+				has_trait = lifestyle_herbalist
+				has_trait = lifestyle_gardener 
+			}
+		}
+	}
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { years = 2 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			send_interface_message = {
+				type = event_generic_neutral
+				title = magic_healing
+				desc = magic_healing_text
+				left_icon = scope:actor
+				right_icon = scope:recipient
+				custom_tooltip = use_magic_custom_tooltip1
+				if = {
+					limit = {
+						NOT = {
+							scope:actor = scope:recipient
+						}
+					}
+					stress_impact = {
+						compassionate = medium_stress_impact_loss
+						sadistic = minor_stress_gain
+						callous = minor_stress_gain
+					}
+				}
+			}
+		}
+		scope:recipient = {
+			if = { 
+				limit = { 
+					scope:mage_blademaster_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_blademaster
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0052 
+						}
+					}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:mage_hunter_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_hunter
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0054 
+						}
+					}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:mage_mystic_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_mystic
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0056 
+						}
+					}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:mage_physician_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_physician
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0058
+						}
+					}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:mage_herbalist_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_herbalist
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0060
+						}
+					}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:mage_gardener_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_gardener
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0062
+						}
+					}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:mage_reveler_dragon_trainer = yes 
+				}
+				scope:recipient = {
+					limit = {
+						exists = var:current_dragon
+						has_trait = lifestyle_reveler
+					}
+					var:current_dragon = {
+						trigger_event = { 
+							id =  zz_agot_filler_dragon.0050
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+	send_options_exclusive = yes
+
+	send_option = {
+		flag = mage_blademaster_dragon_trainer
+		localization = mage_blademaster_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_blademaster
+			}
+		}	
+	}
+	send_option = {
+		flag = mage_hunter_dragon_trainer
+		localization = mage_hunter_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_hunter
+			}
+		}	
+	}
+	send_option = {
+		flag = mage_mystic_dragon_trainer
+		localization = mage_mystic_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_mystic
+			}
+		}	
+	}
+	send_option = {
+		flag = mage_physician_dragon_trainer
+		localization = mage_physician_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_physician
+			}
+		}	
+	}
+	send_option = {
+		flag = mage_herbalist_dragon_trainer
+		localization = mage_herbalist_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_herbalist
+			}
+		}	
+	}
+	send_option = {
+		flag = mage_gardener_dragon_trainer
+		localization = mage_gardener_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_gardener
+			}
+		}	
+	}
+	send_option = {
+		flag = mage_reveler_dragon_trainer
+		localization = mage_reveler_dragon_trainer
+		is_shown = {
+			scope:recipient = {
+				exists = var:current_dragon
+				has_trait = lifestyle_reveler
+			}
+		}	
+	}
+
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+		modifier = {
+			add = -100
+			scope:actor = {
+				has_trait = demon
+			}
+		}
+	}
+}
