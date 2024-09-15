@@ -1,4 +1,4 @@
-﻿activity_valyria_colonization = {
+activity_valyria_settle_ruins = {
 	is_shown = {
 		has_bp2_dlc_trigger = yes
 		highest_held_title_tier > tier_barony
@@ -92,9 +92,9 @@
 	is_location_valid = {
 		custom_tooltip = {
 			text = colonization_valyria
-			#zz_valyria_has_volcano = yes
 			has_holding_type = ruin_holding
 			geographical_region = world_valyria 
+			county.holder = scope:host
 		}
 
 		# If you are supposed to be the realm's reserve ruler, then you can't take a multi-year foreign trip.
@@ -648,7 +648,7 @@
 	ai_province_filter = holy_sites
 
 	cooldown = {
-		years = 20
+		years = 0
 	}
 
 	max_route_deviation_mult = 3.0
@@ -797,10 +797,10 @@
 				cost = {
 					gold = {
 						value = 0 
-						desc = colonization_program_normal
+						desc = colonization_prcolonization_program_normalogram_bad
 						subtract = {
 							value = medium_gold_value_static_max
-							desc = colonization_program_normal
+							desc = colonization_prcolonization_program_normalogram_bad
 							min = 150
 						}
 						subtract = {
@@ -931,19 +931,46 @@
 			}
 
 			on_end = {
-				scope:host = {
-					get_title = scope:province.county
+				if = {
+					limit = {
+						scope:host = {
+							has_activity_intent = settle_castle 
+						}
+					}
+					scope:province = {
+						set_holding_type = castle_holding
+						add_building = castle_02
+						barony = { set_coa = this.holder.house }
+					}
 				}
-				
-
-				 scope:province.county = { 
-					set_county_faith = scope:host.faith
-					set_county_culture = scope:host.culture
+				else_if = {
+					limit = {
+						scope:host = {
+							has_activity_intent = settle_city
+						}
+					}
+					scope:province  = {
+						set_holding_type = city_holding
+						add_building = city_02
+						barony = { set_coa = this.holder.house }
+					}
+				}
+				else_if = {
+					limit = {
+						scope:host = {
+							has_activity_intent = settle_temple
+						}
+					}
+					scope:province = {
+						set_holding_type = church_holding
+						add_building = temple_02
+						barony = { set_coa = this.holder.house }
+					}
 				}
 				if = {
 					limit = { this = scope:host }
 					create_character_memory = {
-						type = completed_colonization
+						type = completed_settlement
 					}
 					scope:new_memory = {
 						set_variable = {
@@ -971,13 +998,13 @@
 	max_guests = 20
 
 	host_intents = {
-		intents = { build_a_grand_city_intent }
-		default = build_a_grand_city_intent
+		intents = { settle_castle settle_city settle_temple }
+		default = settle_castle
 	}
 
 	guest_intents = {
-		intents = { build_a_grand_city_intent }
-		default = build_a_grand_city_intent
+		intents = { settle_castle settle_city settle_temple }
+		default = settle_castle
 	}
 
 	travel_entourage_selection = {
