@@ -1,0 +1,204 @@
+﻿namespace = zz_valyria_magic_scrying
+
+#scrying 1.
+zz_valyria_magic_scrying.1 = {
+	title = zz_valyria_magic_scrying.1.title
+	desc = zz_valyria_magic_scrying.1.desc
+	theme = witchcraft
+	left_portrait = root
+
+	trigger = {
+		is_alive = yes
+		is_imprisoned = no
+	}
+	immediate = {
+		random_list = {
+			1= {	add_diplomacy_skill = 1	}
+			1= {	add_martial_skill = 1	}
+			1= {	add_stewardship_skill = 1	}
+			1= {	add_intrigue_skill = 1	}
+			1= {	add_learning_skill = 1	}
+		}
+		#tournament_astronomy_modifier
+		#bp1_1000_focus_on_work_modifier
+		#determination_modifier
+		if = {
+			limit = {
+				has_trait = archmage
+			}
+			random = {
+				chance = 50
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_scrying.1.a
+		if = {
+			limit = {
+				NOT = {
+					has_character_modifier = bp1_1000_focus_on_work_modifier
+				}
+			}
+			add_character_modifier = {
+				modifier = bp1_1000_focus_on_work_modifier
+				years = 2
+			}
+		}
+		
+	}
+}
+
+#scrying 2.
+zz_valyria_magic_scrying.2 = {
+	title = zz_valyria_magic_scrying.2.title
+	desc = zz_valyria_magic_scrying.2.desc
+	theme = witchcraft
+	left_portrait = root
+	lower_right_portrait = scope:scrying_target
+
+	trigger = {
+		is_alive = yes
+		is_imprisoned = no
+	}
+	immediate = {
+		random_neighboring_and_across_water_realm_same_rank_owner ={
+			limit = {	
+				has_any_secrets = yes
+				any_secret = {
+					NOT = {	is_known_by = root	}
+				}
+			}
+			add_to_list = scrying_targets
+		}
+		random_neighboring_and_across_water_realm_same_rank_owner ={
+			limit = {	
+				has_any_secrets = yes
+				any_secret = {
+					NOT = {	is_known_by = root	}
+				}
+			}
+			add_to_list = scrying_targets
+		}
+		random_neighboring_and_across_water_top_liege_realm_owner ={
+			limit = {	
+				has_any_secrets = yes
+				any_secret = {
+					NOT = {	is_known_by = root	}
+				}
+			}
+			add_to_list = scrying_targets
+		}
+		random_councillor = {
+			limit = {	
+				has_any_secrets = yes
+				any_secret = {
+					NOT = {	is_known_by = root	}
+				}
+			}
+			add_to_list = scrying_targets
+		}
+		random_vassal = {
+			limit = {	
+				has_any_secrets = yes
+				any_secret = {
+					NOT = {	is_known_by = root	}
+				}
+			}
+			add_to_list = scrying_targets
+		}
+		if = {
+			limit = {
+				exists = root.primary_spouse
+				root.primary_spouse = {
+					has_any_secrets = yes
+					any_secret = {
+						NOT = {	is_known_by = root	}
+					}
+				}
+			}
+			root.primary_spouse = {
+				add_to_list = scrying_targets
+			}
+		}
+		if = {
+			limit = {
+				exists = root.liege
+				root.liege = {
+					has_any_secrets = yes
+					any_secret = {
+						NOT = {	is_known_by = root	}
+					}
+				}
+			}
+			root.liege = {
+				add_to_list = scrying_targets
+			}
+		}
+		random_in_list = {
+			list = scrying_targets
+			save_scope_as = scrying_target
+		}
+		
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {	exists = scope:scrying_target	}
+				}
+				#random_courtier_or_guest = {
+				#	limit = {
+				#		is_adult = yes
+				#	}
+				#	save_scope_as = scrying_target
+				#	add_secret = {
+				#		type = secret_cannibal
+				#		target = THIS
+				#	}
+				#	random_secret = {
+				#		limit = {
+				#			NOT = {	is_known_by = root	}
+				#		}
+				#		save_scope_as = sssecret
+				#	}
+				#}
+				random_living_character = {
+					limit = {
+						has_any_secrets = yes
+						any_secret = {
+							NOT = {	is_known_by = root	}
+						}
+					}
+					save_scope_as = scrying_target
+				}
+				scope:scrying_target = {
+					random_secret = {
+						limit = {
+							NOT = {	is_known_by = root	}
+						}
+						save_scope_as = sssecret
+					}
+				}
+			}
+			else = {
+				scope:scrying_target = {
+					random_secret = {
+						limit = {
+							NOT = {	is_known_by = root	}
+						}
+						if = {
+							limit = {	exists = this	}
+							save_scope_as = sssecret
+						}
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_scrying.2.a
+		scope:sssecret = {
+			reveal_to = root
+		}
+
+	}
+}
+
