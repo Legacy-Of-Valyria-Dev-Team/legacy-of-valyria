@@ -11,41 +11,118 @@
 zz_valyria_magic_potency_secret_knowledge = {
 	scope:secondary_actor = { 
 		value = 500
-		if = {
-			limit = {
-				highest_held_title_tier=2
-			}
-			add = 100
-		}
-		else_if = {
-			limit = {
-				highest_held_title_tier=3
-			}
-			add = 200
-		}
-		else_if = {
-			limit = {
-				highest_held_title_tier=4
-			}
-			add = 400
-		}
-		else_if = {
-			limit = {
-				highest_held_title_tier=5
-			}
-			add = 500
-		}
-		if = {
-			limit = {
-				has_trait = zz_magister
-				has_trait_xp = {
-					trait = zz_magister
-					track = secrets_of_the_higher_mysteries
-					value > 74
-				}
-			}
-			add = 1000
-		}
-		add = zz_valyria_magic_potency_learning_modifier 
+		add = zz_valyria_magic_potency_learning_modifier
+		multiply = zz_valyria_magic_zz_magister_secrets_modifier
 	}
+}
+
+zz_valyria_magic_zz_magister_secrets_modifier = {
+	value = 1
+	if = {
+		limit = {
+			has_trait = zz_magister
+			has_trait_xp = {
+				trait = zz_magister
+				track = secrets_of_the_higher_mysteries
+				value >= 100
+			}
+		}
+		multiply = 16 
+	}
+	else_if = {
+		limit = {
+			has_trait = zz_magister
+			has_trait_xp = {
+				trait = zz_magister
+				track = secrets_of_the_higher_mysteries
+				value >=75
+			}
+		}
+		multiply = 8 
+	}
+	else_if = {
+		limit = {
+			has_trait = zz_magister
+			has_trait_xp = {
+				trait = zz_magister
+				track = secrets_of_the_higher_mysteries
+				value >= 49
+			}
+		}
+		multiply = 4 
+	}
+	else_if = {
+		limit = {
+			has_trait = zz_magister
+			has_trait_xp = {
+				trait = zz_magister
+				track = secrets_of_the_higher_mysteries
+				value >= 24
+			}
+		}
+		multiply = 2 
+	}
+}
+
+
+zz_valyria_mana_gain_modifier = {
+
+	value = var:managain
+	if = {
+		limit = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value >= 100
+			}
+		}
+		multiply = 20
+	}
+	else_if = {
+		limit = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value >= 75
+			}
+		}
+		multiply = 10
+	}
+	else_if = {
+		limit = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value >= 50
+			}
+		}
+		multiply = 7
+	}	
+	else_if = {
+		limit = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value >= 25
+			}
+		}
+		multiply = 5
+	}
+	else = {
+		limit = {
+			has_trait = born_under_a_red_comet
+		}
+		multiply = 2
+	}
+}
+
+
+
+zz_spend_mana  = { 
+	value = var:manacost
+	multiply = -1 
 }

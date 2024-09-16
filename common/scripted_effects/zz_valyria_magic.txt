@@ -8,10 +8,14 @@
 				value < 100
 			}
 		}
+		set_variable = { 
+			name = managain
+			value = $MANAGAIN$
+		}
 		add_trait_xp = {
 			trait = zz_magister
 			track = drops_of_power
-			value = $MANAGAIN$
+			value = zz_valyria_mana_gain_modifier
 		}
 	}
 	else_if = {
@@ -33,20 +37,25 @@ zz_valyria_mana_spend = {
 		}
 		remove_character_modifier = zz_valyria_magic_drops_power
 	}
+	
 	else_if  = { 
 		limit =  { 
 			has_trait = zz_magister 
 			has_trait_xp = {
 				trait = zz_magister
 				track = drops_of_power
-				value > $MANACOST$
+				value >= $MANACOST$
 			}
+		}
+		set_variable = { 
+			name = manacost
+			value = $MANACOST$
 		}
 		hidden_effect = {
 			add_trait_xp = {
 				trait = zz_magister
 				track = drops_of_power
-				value = $MANASPEND$
+				value = zz_spend_mana 
 			}
 		}
 	}
@@ -54,7 +63,7 @@ zz_valyria_mana_spend = {
 
 zz_valyria_gain_spell_experience = { 
 	add_trait_xp = { 
-		trait = archmage 
+		trait = zz_magister 
 		track = $XPTRACK$ 
 		value = $XPGAIN$ 
 	}
@@ -102,4 +111,8 @@ zz_valyria_populate_spell_recipient_list = {
 		}
 		add_to_list = characters
 	}
+}
+
+zz_dragon_dreams = {
+	remove_character_flag = dreamt
 }
