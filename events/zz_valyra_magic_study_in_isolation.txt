@@ -1,0 +1,1053 @@
+﻿
+#########################
+# Meditate in Seclusion	#
+# by Sean Hughes		#
+# 0201-0299				#
+#########################
+
+# If the player exits the travel planning UI, this event fires reseting the decision cooldown and removing variables
+zz_valyra_magic_study_decision.0200 = {
+	hidden = yes
+	trigger = {
+		OR = {
+			exists = var:meditation_location
+			has_character_flag = meditation_character_flag
+		}
+	}
+	immediate = {
+		current_travel_plan ?= { cancel_travel_plan = yes }
+		remove_decision_cooldown = meditate_in_seclusion_decision
+		remove_variable = meditation_location
+		remove_character_flag = meditation_character_flag
+	}
+}
+
+scripted_trigger zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {
+	zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = no
+	any_sub_realm_barony = {
+		NOT = { this = root.capital_barony }
+		title_province = {
+			terrain = $TERRAIN$
+		}
+	}
+}
+
+scripted_trigger zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = {
+	# Stops after we've found 2 good places for meditation (don't want to overload the player).
+	calc_true_if = {
+		amount >= 2
+		has_character_flag = meditation_option_plains
+		has_character_flag = meditation_option_hills
+		has_character_flag = meditation_option_steppe
+		has_character_flag = meditation_option_forest
+		has_character_flag = meditation_option_drylands
+		has_character_flag = meditation_option_mountains
+		has_character_flag = meditation_option_wetlands
+		has_character_flag = meditation_option_jungle
+		has_character_flag = meditation_option_desert
+	}
+}
+
+scripted_effect zz_save_meditation_option_effect = {
+	add_character_flag = meditation_option_$TERRAIN$
+	random_sub_realm_barony = {
+		limit = {
+			NOT = { this = root.capital_barony }
+			title_province = {
+				terrain = $TERRAIN$
+			}
+		}
+		title_province = { save_scope_as = $TERRAIN$_location }
+	}
+}
+
+scripted_effect zz_meditate_at_location_effect = {
+	set_variable = {
+		name = meditation_location
+		value = scope:$TERRAIN$_location
+	}
+	start_travel_plan = {
+		destination = var:meditation_location
+		on_travel_planner_cancel_event = zz_valyra_magic_study_decision.0200
+		on_arrival_event = zz_valyra_magic_study_decision.0210
+		on_arrival_destinations = all_but_last
+	}
+	add_character_modifier = {
+		modifier = meditating_in_seclusion_modifier
+		days = meditation_duration
+	}
+	add_character_flag = meditation_character_flag
+}
+
+zz_valyra_magic_study_decision.0201 = {
+	type = character_event
+	title = religious_decision.0201.t
+	desc = religious_decision.0201.desc
+	theme = faith
+
+	override_background = {
+		reference = throne_room
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	immediate = {
+		# Stop characters from planning multiple activities at once.
+		add_character_flag = {
+			flag = planning_an_activity
+			days = 30
+		}
+
+		# Save the character's capital scope for meditation
+		capital_barony.title_province = {
+			save_scope_as = capital_location
+		}
+
+		# Generate options for meditation based on terrain in character's realm.
+		if = {
+			limit = {
+				zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = no
+				any_sub_realm_barony = {
+					NOT = { this = root.capital_barony }
+					title_province = {
+						OR = {
+							terrain = mountains
+							terrain = desert_mountains
+						}
+					}
+				}
+			}
+			add_character_flag = meditation_option_mountains
+			random_sub_realm_barony = {
+				limit = {
+					NOT = { this = root.capital_barony }
+					title_province = {
+						OR = {
+							terrain = mountains
+							terrain = desert_mountains
+						}
+					}
+				}
+				title_province = { save_scope_as = mountains_location }
+			}
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = steppe}}
+			zz_save_meditation_option_effect = { TERRAIN = steppe }
+		}
+		if = {
+			limit = {
+				zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = no
+				any_sub_realm_barony = {
+					NOT = { this = root.capital_barony }
+					title_province = {
+						OR = {
+							terrain = forest
+							terrain = taiga
+						}
+					}
+				}
+			}
+			add_character_flag = meditation_option_forest
+			random_sub_realm_barony = {
+				limit = {
+					NOT = { this = root.capital_barony }
+					title_province = {
+						OR = {
+							terrain = forest
+							terrain = taiga
+						}
+					}
+				}
+				title_province = { save_scope_as = forest_location }
+			}
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = desert}}
+			zz_save_meditation_option_effect = { TERRAIN = desert }
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = hills}}
+			zz_save_meditation_option_effect = { TERRAIN = hills }
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = drylands}}
+			zz_save_meditation_option_effect = { TERRAIN = drylands }
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = plains}}
+			zz_save_meditation_option_effect = { TERRAIN = plains }
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = jungle}}
+			zz_save_meditation_option_effect = { TERRAIN = jungle }
+		}
+		if = {
+			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = wetlands}}
+			zz_save_meditation_option_effect = { TERRAIN = wetlands }
+		}
+	}
+
+	# Option 1: Meditate at home. Lowest risk, lowest reward.
+	option = {
+		name = religious_decision.0201.home
+		set_variable = {
+			name = meditation_location
+			value = scope:capital_location
+		}
+		add_character_flag = meditation_character_flag
+		add_character_modifier = {
+			modifier = meditating_in_seclusion_modifier
+			days = meditation_duration
+		}
+		custom_tooltip = religious_decision.0201.difficulty.easy
+		trigger_event = {
+			id = zz_valyra_magic_study_decision.0211
+			days = meditation_duration
+		}
+	}
+
+	# Option 2-A: Meditate in the plains. Low risk, low reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_plains }
+		name = zz_valyra_magic_study_decision.0201.plains
+		zz_meditate_at_location_effect = { TERRAIN = plains }
+		custom_tooltip = religious_decision.0201.difficulty.easy
+		custom_tooltip = religious_decision.0201.stress
+	}
+
+	# Option 2-B: Meditate in the hills. Low risk, low reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_hills }
+		name = religious_decision.0201.hills
+		zz_meditate_at_location_effect = { TERRAIN = hills }
+		custom_tooltip = religious_decision.0201.difficulty.easy
+		custom_tooltip = religious_decision.0201.learning
+	}
+
+	# Option 2-C: Meditate in the steppe. Low risk, medium reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_steppe }
+		name = religious_decision.0201.steppe
+		zz_meditate_at_location_effect = { TERRAIN = steppe }
+		custom_tooltip = religious_decision.0201.difficulty.easy
+		custom_tooltip = religious_decision.0201.trait
+	}
+
+	# Option 2-D: Meditate in the forest. Medium risk, medium reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_forest }
+		name = religious_decision.0201.forest
+		zz_meditate_at_location_effect = { TERRAIN = forest }
+		custom_tooltip = religious_decision.0201.difficulty.medium
+		custom_tooltip = religious_decision.0201.stress
+	}
+
+	# Option 2-E: Meditate in the drylands. Medium risk, medium reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_drylands }
+		name = religious_decision.0201.drylands
+		zz_meditate_at_location_effect = { TERRAIN = drylands }
+		custom_tooltip = religious_decision.0201.difficulty.medium
+		custom_tooltip = religious_decision.0201.learning
+	}
+
+	# Option 2-F: Meditate in the mountains. High risk, high reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_mountains }
+		name = religious_decision.0201.mountains
+		zz_meditate_at_location_effect = { TERRAIN = mountains }
+		custom_tooltip = religious_decision.0201.difficulty.hard
+		custom_tooltip = religious_decision.0201.stress
+		custom_tooltip = religious_decision.0201.trait
+	}
+
+	# Option 2-G: Meditate in the desert. High risik, high reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_desert }
+		name = religious_decision.0201.desert
+		zz_meditate_at_location_effect = { TERRAIN = desert }
+		custom_tooltip = religious_decision.0201.difficulty.hard
+		custom_tooltip = religious_decision.0201.learning
+	}
+
+	# Option 2-H: Meditate in the swamp. High risk, low reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_wetlands }
+		name = religious_decision.0201.wetlands
+		zz_meditate_at_location_effect = { TERRAIN = wetlands }
+		custom_tooltip = religious_decision.0201.difficulty.hard
+	}
+
+	# Option 2-I: Meditate in the jugnle. High risk, low reward.
+	option = {
+		trigger = { has_character_flag = meditation_option_jungle }
+		name = religious_decision.0201.jungle
+		zz_meditate_at_location_effect = { TERRAIN = jungle }
+		custom_tooltip = religious_decision.0201.difficulty.hard
+	}
+
+	# Option 3: Opt-out
+	option = {
+		name = religious_decision.0201.optout
+		flavor = religious_decision.0201.optout.flavor
+
+		ai_chance = {
+			base = 0
+		}
+
+		remove_decision_cooldown = meditate_in_seclusion_decision
+	}
+
+	after = {
+		remove_character_flag = meditation_option_plains
+		remove_character_flag = meditation_option_hills
+		remove_character_flag = meditation_option_steppe
+		remove_character_flag = meditation_option_forest
+		remove_character_flag = meditation_option_drylands
+		remove_character_flag = meditation_option_mountains
+		remove_character_flag = meditation_option_wetlands
+		remove_character_flag = meditation_option_jungle
+		remove_character_flag = meditation_option_desert
+		remove_character_flag = planning_an_activity
+	}
+}
+
+scripted_effect zz_improve_meditation_skill = {
+	if = {
+		limit = {
+			has_variable = meditation_experience
+		}
+		change_variable = {
+			name = meditation_experience
+			add = 1
+		}
+	}
+	else = {
+		set_variable = {
+			name = meditation_experience
+			value = 1
+		}
+	}
+	custom_tooltip = religious_decision.0211.experience
+}
+
+scripted_effect meditation_gain_magic_spell = {
+	random_list = {
+		1 = {
+			zz_add_spell  = {
+				SPELL = healing_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = genetic_manipulation_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = empowerment_of_arms_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = genetic_manipulation_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = building_speed_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = development_boost_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = transmutation_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = dreaming_within_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = secrets_of_dreams_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = dreams_of_experience_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = flame_strike_spell_flag
+			}
+		}
+	}
+	custom_tooltip = religious_decision.0211.experience
+}
+
+
+
+
+
+
+zz_valyra_magic_study_decision.0210 = {
+	hidden = yes
+	immediate = {
+		send_interface_toast = {
+			title = religious_decision.0210.toast
+			left_icon = root
+			current_travel_plan = {
+				delay_travel_plan = { days = meditation_duration }
+			}
+		}
+		trigger_event = {
+			id = zz_valyra_magic_study_decision.0211
+			days = meditation_duration
+		}
+	}
+}
+
+zz_valyra_magic_study_decision.0211 = {
+	type = character_event
+	title = religious_decision.0211.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:at_home = yes }
+				desc = religious_decision.0211.desc.beginning.home
+			}
+			triggered_desc = {
+				trigger = {
+					var:meditation_location = {
+						OR = {
+							terrain = mountains
+							terrain = desert_mountains
+						}
+					}
+				}
+				desc = religious_decision.0211.desc.beginning.mountains
+			}
+			triggered_desc = {
+				trigger = {
+					var:meditation_location = {
+						OR = {
+							terrain = forest
+							terrain = taiga
+						}
+				}
+				}
+				desc = religious_decision.0211.desc.beginning.forest
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = plains }}
+				desc = religious_decision.0211.desc.beginning.plains
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = hills }}
+				desc = religious_decision.0211.desc.beginning.hills
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = steppe }}
+				desc = religious_decision.0211.desc.beginning.steppe
+			}if = {
+				limit = {
+					has_trait = born_under_a_red_comet
+				}
+				add_trait_xp = { 
+					trait = born_under_a_red_comet 
+					track = chosen_of_the_heavens
+					value = 15
+				}
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = drylands }}
+				desc = religious_decision.0211.desc.beginning.drylands
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = wetlands }}
+				desc = religious_decision.0211.desc.beginning.wetlands
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = jungle }}
+				desc = religious_decision.0211.desc.beginning.jungle
+			}
+			triggered_desc = {
+				trigger = {var:meditation_location = { terrain = desert }}
+				desc = religious_decision.0211.desc.beginning.desert
+			}
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_minor_stress_loss }
+				desc = religious_decision.0211.desc.result.minor_stress
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_medium_stress_loss }
+				desc = religious_decision.0211.desc.result.medium_stress
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_major_stress_loss }
+				desc = religious_decision.0211.desc.result.major_stress
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_reflection }
+				desc = religious_decision.0211.desc.result.reflection
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_fugue }
+				desc = religious_decision.0211.desc.result.fugue
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_epiphany }
+				desc = religious_decision.0211.desc.result.epiphany
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_impatient }
+				desc = religious_decision.0211.desc.result.impatient
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_secret }
+				desc = religious_decision.0211.desc.result.secret
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_hungry }
+				desc = religious_decision.0211.desc.result.hungry
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_thirsty }
+				desc = religious_decision.0211.desc.result.thirsty
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_headache }
+				desc = religious_decision.0211.desc.result.headache
+			}
+			triggered_desc = {
+				trigger = { has_character_flag = meditation_distraction }
+				desc = religious_decision.0211.desc.result.distraction
+			}
+		}
+	}
+	theme = faith
+	override_background = {
+		trigger = {	scope:at_home = yes }
+		reference = sitting_room
+	}
+	override_background = {
+		trigger = {	scope:at_home = no }
+		reference = wilderness_scope
+	}
+	override_background = {
+		trigger = {	has_character_flag = meditation_thirsty }
+		reference = bp1_crossroads_inn
+	}
+	left_portrait = root
+
+	immediate = {
+		if = {
+			limit = {
+				NOT = {
+					exists = var:meditation_location
+				}
+			}
+			set_variable = {
+				name = meditation_location
+				value = root.location
+			}
+		}
+		var:meditation_location = {
+			save_scope_as = meditation_location
+			save_scope_as = background_wilderness_scope
+		}
+
+		# Check if we are meditating in our capital (will be checked frequently when determining outcomes).
+		if = {
+			limit = {
+				exists = capital_province
+				scope:meditation_location = root.capital_province
+			}
+			save_scope_value_as = {
+				name = at_home
+				value = yes
+			}
+		}
+		else = {
+			save_scope_value_as = {
+				name = at_home
+				value = no
+			}
+		}
+
+		# Determine what the outcome of the meditation journey will be.
+		random_list = {
+			# Positive Outcomes
+			80 = {
+				# Double positive chance for meditating at home (though the benefits will be small).
+				modifier = {
+					add = 80
+					trigger = { scope:at_home = yes }
+				}
+				random_list = {
+					1 = { 
+						if = {
+							limit = {
+								has_trait = born_under_a_red_comet
+							}
+							add_trait_xp = { 
+								trait = born_under_a_red_comet 
+								track = chosen_of_the_heavens
+								value = 15
+							}
+						}				
+					}
+					2 = {
+						meditation_gain_magic_spell = yes 
+					}
+					3 = { 
+						if = {
+							limit = {
+								has_trait = zz_magister
+							}
+							add_trait_xp = { 
+								trait = zz_magister 
+								track = secrets_of_the_higher_mysteries
+								value = 5
+							}
+						}
+					}
+				}
+
+				random_list = {
+					# Stress Reduction
+					60 = {
+						modifier = {
+							add = 40
+							scope:meditation_location = {
+								OR = {
+									terrain = mountains
+									terrain = desert_mountains
+									terrain = forest
+									terrain = taiga
+								}
+							}
+						}
+
+						random_list = {
+							# Lower stress loss when meditating at home.
+							100 = {
+								trigger = { scope:at_home = yes }
+								add_character_flag = meditation_minor_stress_loss
+							}
+
+							# Higher stress loss when meditating in the wilderness
+							66 = {
+								trigger = { scope:at_home = no }
+								add_character_flag = meditation_medium_stress_loss
+							}
+							33 = {
+								trigger = { scope:at_home = no }
+								modifier = {
+									add = 121
+									scope:meditation_location = {
+										OR = {
+											terrain = desert_mountains
+											terrain = mountains
+										}
+									}
+								}
+								add_character_flag = meditation_major_stress_loss
+							}
+						}
+					}
+					# Replace Negative Trait
+					20 = {
+						trigger = {
+							scope:at_home = no
+							# Must have a negative trait to replace.
+							OR = {
+								has_trait = greedy
+								has_trait = lustful
+								has_trait = gluttonous
+								has_trait = deceitful
+								has_trait = ambitious
+								has_trait = impatient
+								has_trait = sadistic
+								has_trait = wrathful
+							}
+						}
+
+						# Greater chance when meditating in one of these terrains.
+						modifier = {
+							add = 75
+							scope:meditation_location = {
+								terrain = steppe
+							}
+						}
+						modifier = {
+							add = 150
+							scope:meditation_location = {
+								OR = {
+									terrain = mountains
+									terrain = desert_mountains
+								}
+							}
+						}
+						add_character_flag = meditation_reflection
+					}
+					# Gain Learning
+					20 = {
+						trigger = {
+							scope:at_home = no
+						}
+						modifier = {
+							add = 50
+							scope:meditation_location = {
+								terrain = hills
+							}
+						}
+						add_character_flag = meditation_epiphany
+					}
+					# Gain extra Learning
+					50 = {
+						trigger = {
+							scope:at_home = no
+							# Only in hot regions.
+							scope:meditation_location = {
+								OR = {
+									terrain = desert
+									terrain = drylands
+								}
+							}
+						}
+						modifier = {
+							add = 100
+							scope:meditation_location = {
+								terrain = desert
+							}
+						}
+						add_character_flag = meditation_fugue
+					}
+				}
+			}
+			# Negative Outcomes
+			20 = {
+				# Location modifiers.
+				modifier = { # Failure increases from 20% to 25%. Still relatively easy.
+					add = 7 # Total 27
+					scope:at_home = no
+				}
+				modifier = { # Failure increases from 25% to 40%. Moderate difficulty.
+					add = 26 # Total 53
+					scope:at_home = no
+					scope:meditation_location = {
+						OR = {
+							terrain = forest
+							terrain = taiga
+							terrain = drylands
+						}
+					}
+				}
+				modifier = { # Failure increases from 25% to 60%. Hard difficulty.
+					add = 93 # Total 120
+					scope:at_home = no
+					scope:meditation_location = {
+						OR = {
+							terrain = desert
+							terrain = desert_mountains
+							terrain = mountains
+							terrain = wetlands
+							terrain = jungle
+						}
+					}
+				}
+
+				# Positive Personality Modifiers.
+				modifier = {
+					factor = 0.86
+					has_trait = patient
+				}
+				modifier = {
+					factor = 0.90
+					has_trait = calm
+				}
+				modifier = {
+					factor = 0.92
+					has_trait = temperate
+				}
+
+				# Negative Personality Modifiers.
+				modifier = {
+					factor = 1.13
+					has_trait = impatient
+				}
+				modifier = {
+					factor = 1.10
+					has_trait = gluttonous
+				}
+				modifier = {
+					factor = 1.08
+					has_trait = wrathful
+				}
+				improve_meditation_skill
+				# Reduces failure chance by 10 points per previous successful meditation.
+				modifier = {
+					add = {
+						subtract = var:meditation_experience
+						multiply = 10
+					}
+					has_variable = meditation_experience
+				}
+
+				random_list = {
+					25 = {
+						trigger = { NOT = { has_trait = patient } }
+						modifier = {
+							add = 50improve_meditation_skill
+							var:meditation_location = {
+								terrain = wetlands
+							}
+						}
+						modifier = {
+							add = 75
+							has_trait = impatient
+						}
+						add_character_flag = meditation_impatient
+					}
+					25 = {
+						trigger = {
+							any_secret = {
+								count > 0
+							}
+						}
+						modifier = {
+							add = 75
+							any_secret = {
+								is_criminal_for = root
+							}
+						}
+						add_character_flag = meditation_secret
+					}
+					75 = {
+						trigger = {
+							scope:meditation_location = {
+								terrain = jungle
+							}
+						}
+						add_character_flag = meditation_distraction
+					}improve_meditation_skill
+					25 = {
+						modifier = {
+							add = -20
+							has_trait = temperate
+						}
+						modifier = {
+							add = 75
+							has_trait = gluttonous
+						}
+						add_character_flag = meditation_hungry
+					}
+					100 = {
+						trigger = {
+							scope:meditation_location = {
+								OR = {
+									terrain = desert
+									terrain = drylands
+								}
+							}
+						}
+						add_character_flag = meditation_thirsty
+					}
+					100 = {
+						trigger = {
+							scope:meditation_location = {
+								OR = {
+									terrain = mountains
+									terrain = desert_mountains
+								}
+							}
+						}
+						add_character_flag = meditation_headache
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = {
+			trigger = {
+				OR = {
+					has_character_flag = meditation_epiphany
+					has_character_flag = meditation_fugue
+					has_character_flag = meditation_major_stress_loss
+				}
+			}
+			text = religious_decision.0211.a.critical_success
+		}
+		name = {
+			trigger = {
+				OR = {
+					has_character_flag = meditation_reflection
+					has_character_flag = meditation_medium_stress_loss
+					has_character_flag = meditation_minor_stress_loss
+				}
+			}
+			text = religious_decision.0211.a.success
+		}
+		name = {
+			trigger = {
+				OR = {
+					has_character_flag = meditation_secret
+					has_character_flag = meditation_impatient
+					has_character_flag = meditation_hungry
+					has_character_flag = meditation_thirsty
+					has_character_flag = meditation_distraction
+					has_character_flag = meditation_headache
+				}
+			}
+			text = religious_decision.0211.a.failure
+		}
+		if = {
+			limit = {has_character_flag = meditation_minor_stress_loss }
+			add_stress = minor_stress_loss
+			zz_improve_meditation_skill = yes
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_medium_stress_loss }
+			add_stress = medium_stress_loss
+			zz_improve_meditation_skill = yes
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_major_stress_loss }
+			add_stress = major_stress_loss
+			zz_improve_meditation_skill = yes
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_reflection }
+			random_list = {
+				1 = {
+					trigger = {	has_trait = gluttonous }
+					remove_trait = gluttonous
+					add_trait_force_tooltip = temperate
+				}
+				1 = {
+					trigger = {	has_trait = greedy }
+					remove_trait = greedy
+					add_trait_force_tooltip = generous
+				}
+				1 = {
+					trigger = {	has_trait = ambitious }
+					remove_trait = ambitious
+					add_trait_force_tooltip = content
+				}
+				1 = {
+					trigger = {	has_trait = lustful }
+					remove_trait = lustful
+					add_trait_force_tooltip = chaste
+				}
+				1 = {
+					trigger = {	has_trait = deceitful }
+					remove_trait = deceitful
+					add_trait_force_tooltip = honest
+				}
+				1 = {
+					trigger = {	has_trait = sadistic }
+					remove_trait = sadistic
+					add_trait_force_tooltip = compassionate
+				}
+				1 = {
+					trigger = {	has_trait = impatient }
+					remove_trait = impatient
+					add_trait_force_tooltip = patient
+				}
+				1 = {
+					trigger = {	has_trait = wrathful }
+					remove_trait = wrathful
+					add_trait_force_tooltip = calm
+				}
+			}
+			zz_improve_meditation_skill = yes
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_fugue }
+			add_learning_skill = 2
+			zz_improve_meditation_skill = yes
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_epiphany }
+			add_learning_skill = 1
+			zz_improve_meditation_skill = yes
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_impatient }
+			add_stress = minor_stress_gain
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_secret }
+			add_stress = minor_stress_gain
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_hungry }
+			add_stress = minor_stress_gain
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_thirsty }
+			add_stress = minor_stress_gain
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_headache }
+			add_stress = minor_stress_gain
+		}
+		else_if = {
+			limit = {has_character_flag = meditation_distraction }
+			add_stress = minor_stress_gain
+		}
+	}
+
+	after = {
+		# Remove character
+		remove_character_flag = meditation_secret
+		remove_character_flag = meditation_impatient
+		remove_character_flag = meditation_epiphany
+		remove_character_flag = meditation_fugue
+		remove_character_flag = meditation_reflection
+		remove_character_flag = meditation_major_stress_loss
+		remove_character_flag = meditation_medium_stress_loss
+		remove_character_flag = meditation_minor_stress_loss
+
+
+		# Run the clean-up event.
+		trigger_event = {
+			id = zz_valyra_magic_study_decision.0291
+			days = 30
+		}
+	}
+}
+
+zz_valyra_magic_study_decision.0291 = {
+	hidden = yes
+	immediate = {
+		send_interface_toast = {
+			title = religious_decision.0291.toast
+			left_icon = root
+			current_travel_plan ?= {
+				if = {
+					limit = { is_paused = yes }
+					resume_travel_plan = yes
+				}
+			}
+		}
+		remove_variable = meditation_location
+		remove_character_flag = meditation_character_flag
+	}
+}
