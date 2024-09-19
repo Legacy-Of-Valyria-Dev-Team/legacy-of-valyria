@@ -1,12 +1,8 @@
 ﻿
-#########################
-# Meditate in Seclusion	#
-# by Sean Hughes		#
-# 0201-0299				#
-#########################
+
 
 # If the player exits the travel planning UI, this event fires reseting the decision cooldown and removing variables
-zz_valyra_magic_study_decision.0200 = {
+zz_valyria_magic_study_decision.0200 = {
 	hidden = yes
 	trigger = {
 		OR = {
@@ -16,14 +12,14 @@ zz_valyra_magic_study_decision.0200 = {
 	}
 	immediate = {
 		current_travel_plan ?= { cancel_travel_plan = yes }
-		remove_decision_cooldown = meditate_in_seclusion_decision
+		remove_decision_cooldown = meditate_on_magic_seclusion_decision
 		remove_variable = meditation_location
 		remove_character_flag = meditation_character_flag
 	}
 }
 
-scripted_trigger zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {
-	zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = no
+scripted_trigger zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {
+	zz_valyria_magic_study_decision_0201_has_two_meditation_options_trigger = no
 	any_sub_realm_barony = {
 		NOT = { this = root.capital_barony }
 		title_province = {
@@ -32,7 +28,7 @@ scripted_trigger zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_tri
 	}
 }
 
-scripted_trigger zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = {
+scripted_trigger zz_valyria_magic_study_decision_0201_has_two_meditation_options_trigger = {
 	# Stops after we've found 2 good places for meditation (don't want to overload the player).
 	calc_true_if = {
 		amount >= 2
@@ -68,8 +64,8 @@ scripted_effect zz_meditate_at_location_effect = {
 	}
 	start_travel_plan = {
 		destination = var:meditation_location
-		on_travel_planner_cancel_event = zz_valyra_magic_study_decision.0200
-		on_arrival_event = zz_valyra_magic_study_decision.0210
+		on_travel_planner_cancel_event = zz_valyria_magic_study_decision.0200
+		on_arrival_event = zz_valyria_magic_study_decision.0210
 		on_arrival_destinations = all_but_last
 	}
 	add_character_modifier = {
@@ -79,7 +75,7 @@ scripted_effect zz_meditate_at_location_effect = {
 	add_character_flag = meditation_character_flag
 }
 
-zz_valyra_magic_study_decision.0201 = {
+zz_valyria_magic_study_decision.0201 = {
 	type = character_event
 	title = religious_decision.0201.t
 	desc = religious_decision.0201.desc
@@ -109,7 +105,7 @@ zz_valyra_magic_study_decision.0201 = {
 		# Generate options for meditation based on terrain in character's realm.
 		if = {
 			limit = {
-				zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = no
+				zz_valyria_magic_study_decision_0201_has_two_meditation_options_trigger = no
 				any_sub_realm_barony = {
 					NOT = { this = root.capital_barony }
 					title_province = {
@@ -135,12 +131,12 @@ zz_valyra_magic_study_decision.0201 = {
 			}
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = steppe}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = steppe}}
 			zz_save_meditation_option_effect = { TERRAIN = steppe }
 		}
 		if = {
 			limit = {
-				zz_valyra_magic_study_decision_0201_has_two_meditation_options_trigger = no
+				zz_valyria_magic_study_decision_0201_has_two_meditation_options_trigger = no
 				any_sub_realm_barony = {
 					NOT = { this = root.capital_barony }
 					title_province = {
@@ -166,27 +162,27 @@ zz_valyra_magic_study_decision.0201 = {
 			}
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = desert}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = desert}}
 			zz_save_meditation_option_effect = { TERRAIN = desert }
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = hills}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = hills}}
 			zz_save_meditation_option_effect = { TERRAIN = hills }
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = drylands}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = drylands}}
 			zz_save_meditation_option_effect = { TERRAIN = drylands }
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = plains}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = plains}}
 			zz_save_meditation_option_effect = { TERRAIN = plains }
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = jungle}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = jungle}}
 			zz_save_meditation_option_effect = { TERRAIN = jungle }
 		}
 		if = {
-			limit = { zz_valyra_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = wetlands}}
+			limit = { zz_valyria_magic_study_decision_0201_can_meditate_in_terrain_trigger = {TERRAIN = wetlands}}
 			zz_save_meditation_option_effect = { TERRAIN = wetlands }
 		}
 	}
@@ -205,7 +201,7 @@ zz_valyra_magic_study_decision.0201 = {
 		}
 		custom_tooltip = religious_decision.0201.difficulty.easy
 		trigger_event = {
-			id = zz_valyra_magic_study_decision.0211
+			id = zz_valyria_magic_study_decision.0211
 			days = meditation_duration
 		}
 	}
@@ -213,7 +209,7 @@ zz_valyra_magic_study_decision.0201 = {
 	# Option 2-A: Meditate in the plains. Low risk, low reward.
 	option = {
 		trigger = { has_character_flag = meditation_option_plains }
-		name = zz_valyra_magic_study_decision.0201.plains
+		name = zz_valyria_magic_study_decision.0201.plains
 		zz_meditate_at_location_effect = { TERRAIN = plains }
 		custom_tooltip = religious_decision.0201.difficulty.easy
 		custom_tooltip = religious_decision.0201.stress
@@ -299,7 +295,7 @@ zz_valyra_magic_study_decision.0201 = {
 			base = 0
 		}
 
-		remove_decision_cooldown = meditate_in_seclusion_decision
+		remove_decision_cooldown = meditate_on_magic_seclusion_decision
 	}
 
 	after = {
@@ -401,7 +397,7 @@ scripted_effect meditation_gain_magic_spell = {
 
 
 
-zz_valyra_magic_study_decision.0210 = {
+zz_valyria_magic_study_decision.0210 = {
 	hidden = yes
 	immediate = {
 		send_interface_toast = {
@@ -412,13 +408,13 @@ zz_valyra_magic_study_decision.0210 = {
 			}
 		}
 		trigger_event = {
-			id = zz_valyra_magic_study_decision.0211
+			id = zz_valyria_magic_study_decision.0211
 			days = meditation_duration
 		}
 	}
 }
 
-zz_valyra_magic_study_decision.0211 = {
+zz_valyria_magic_study_decision.0211 = {
 	type = character_event
 	title = religious_decision.0211.t
 	desc = {
@@ -1028,13 +1024,13 @@ zz_valyra_magic_study_decision.0211 = {
 
 		# Run the clean-up event.
 		trigger_event = {
-			id = zz_valyra_magic_study_decision.0291
+			id = zz_valyria_magic_study_decision.0291
 			days = 30
 		}
 	}
 }
 
-zz_valyra_magic_study_decision.0291 = {
+zz_valyria_magic_study_decision.0291 = {
 	hidden = yes
 	immediate = {
 		send_interface_toast = {
