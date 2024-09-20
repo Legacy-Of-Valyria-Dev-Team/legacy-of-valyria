@@ -127,3 +127,83 @@ zz_add_spell = {
 		add_character_flag =  $SPELL$
 	}
 }
+
+
+zz_spell_cast = { 
+
+	remove_variable = spellcast
+
+	set_variable = {
+		name = spellcast_roll 
+		value = { 
+			value = { 1 100 }
+			add = zz_spell_cast_learning_modifier
+		}
+	}
+	if = { 
+		limit = { 
+			scope:secondary_actor = {
+				has_trait_xp = {
+					trait = zz_magister
+					track = $XPTRACK$
+					value >= 100
+				}
+			}
+		}
+		change_variable = {
+			name = spellcast_roll
+			value = 25
+		}
+	}
+	else_if = { 
+		limit = { 
+			scope:secondary_actor = {
+				has_trait_xp = {
+					trait = zz_magister
+					track = $XPTRACK$
+					value >= 75
+				}
+			}
+		}
+		change_variable = {
+			name = spellcast_roll
+			value = 15
+		}
+	}
+	else_if = { 
+		limit = { 
+			scope:secondary_actor = {
+				has_trait_xp = {
+					trait = zz_magister
+					track = $XPTRACK$
+					value >= 50
+				}
+			}
+		}
+		change_variable = {
+			name = spellcast_roll
+			value = 10
+		}
+	}
+	else_if = { 
+		limit = { 
+			scope:secondary_actor = {
+				has_trait_xp = {
+					trait = zz_magister
+					track = $XPTRACK$
+					value >= 25
+				}
+			}
+		}
+		change_variable = {
+			name = spellcast_roll
+			value = 5
+		}
+	}
+	if = { 
+		limit = { 
+			var:spellcast_roll >= 100
+		}
+		set_variable = spellcast
+	}
+}
