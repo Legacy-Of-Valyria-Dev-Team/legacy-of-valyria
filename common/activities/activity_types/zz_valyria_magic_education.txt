@@ -759,35 +759,6 @@
 				desc = activity_cost_scale_by_era_desc
 			}
 		}
-		piety = {
-			add = {
-				value = 0
-				if = {
-					limit = {
-						scope:province ?= {
-							faith = {
-								faith_hostility_level = {
-									target = root.faith
-									value >= faith_hostile_level
-								}
-							}
-						}
-					}
-					add = {
-						value = 0
-						add = {
-							value = medium_piety_value
-							add = {
-								value = medium_piety_value
-								multiply = university_visit_activity_cost_scale_by_tier
-								subtract = medium_piety_value
-							}
-						}
-						desc = activity_cost_hostile_faith_desc
-					}
-				}
-			}
-		}
 	}
 
 	ui_predicted_cost = {
@@ -841,15 +812,16 @@
 				cost = {
 					gold = {
 						value = 0 
-						desc = adult_education_books_bad
-						subtract = {
-							value = minor_gold_value_static_max
-							desc = adult_education_books_bad
+						desc = adult_education_option_books
+						add = {
+							value = major_gold_value_static_max
+							desc = adult_education_option_books
+							min = 300
 						}
-						subtract = {
-							value = minor_gold_value_static_max
+						add = {
+							value = major_gold_value_static_max
 							multiply = activity_cost_scale_by_era
-							subtract = minor_gold_value_static_max
+							subtract = major_gold_value_static_max
 							desc = activity_cost_scale_by_era_desc 
 						}
 					}
@@ -974,7 +946,7 @@
 
 	phases = {
 		#Study!
-		education_study_phase = {
+		education_study_magic_phase = {
 			is_predefined = yes
 
 			ai_will_do = {
@@ -1057,13 +1029,13 @@
 	max_guests = 20
 
 	host_intents = {
-		intents = { study_hard_intent university_revelry_intent }
-		default = study_hard_intent
+		intents = { study_valyrian_secrets study_blood_magic study_shadow_magic study_charm_magic study_divination_magic study_alchemical_magic study_fire_magic study_water_magic study_air_magic }
+		default = study_valyrian_secrets
 	}
 
 	guest_intents = {
-		intents = { study_hard_intent university_revelry_intent }
-		default = study_hard_intent
+		intents = { study_valyrian_secrets study_blood_magic study_shadow_magic study_charm_magic study_divination_magic study_alchemical_magic study_fire_magic study_water_magic study_air_magic }
+		default = study_valyrian_secrets
 	}
 
 	travel_entourage_selection = {
@@ -1078,22 +1050,30 @@
 
 	pulse_actions = {
 		entries = {
-			apa_leveraging_language_skills 
-			apa_procrastination
-			apa_sight_seeing_group #Traveller trait
-			apa_studying_scripture #Learning Focus
-			apa_visited_markets #Stewardship Focus
-			apa_foreign_custom #Diplomacy Focus
-			apa_university_discussions
-			apa_night_on_books
-			apa_student_disagreement
-			apa_rowdy_student
-			apa_impromptu_poetry
-			apa_impressed_teacher
-			apa_revelry_hangover
-			apa_local_food
-			apa_aced_homework
-			apa_pangur_ban
+			#Gain XP 
+			zz_valyria_find_valyrian_secrets
+			zz_valyria_find_secrets_of_blood_magic
+			zz_valyria_find_secrets_of_shadow_magic
+			zz_valyria_find_secrets_of_charm_magic
+			zz_valyria_find_secrets_of_divination_magic
+			zz_valyria_find_secrets_of_alchemical_magic
+			zz_valyria_find_secrets_of_fire_magic
+			zz_valyria_find_secrets_of_air_magic
+			zz_valyria_find_secrets_of_water_magic
+
+			#Learn Skills 
+			zz_valyria_find_secret_of_dragon_training 
+			zz_valyria_find_healing_spell
+			zz_valyria_find_genetic_manipulation_spell
+			zz_valyria_find_empowerment_of_arms_spell 
+			zz_valyria_find_building_speed_spell
+			zz_valyria_find_development_speed_spell
+			zz_valyria_find_transmutation_spell
+			zz_valyria_find_dreaming_within_spell
+			zz_valyria_find_secrets_of_dreams_spell
+			zz_valyria_find_dreams_of_experience_spell
+			zz_valyria_find_flame_strike_spell
+			zz_valyria_find_mental_domination_spell
 		}
 		chance_of_no_event = 5
 	}

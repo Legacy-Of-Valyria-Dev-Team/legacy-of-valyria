@@ -360,76 +360,81 @@ zz_valyria_genetic_manipulation = {
 	}
 }
 
-zz_valyria_development_boost = {  
+# Charm Magic 
+zz_valyria_mental_domination = { 
 	send_interface_message = {
 		type = event_generic_neutral
-		title = magic_development_boost
-		desc = magic_development_boost_text
+		title = magic_domination
+		desc = magic_domination_text
 		left_icon = scope:actor
-		right_icon = scope:target.title_province 
-		custom_tooltip = magic_development_boost_text
-		scope:target.title_province = {
-			county = {
+		right_icon = scope:recipient
+		custom_tooltip = use_magic_custom_tooltip1
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			every_relation = {
+				type = magic_master
+				remove_relation_magic_minion = scope:recipient
+			}
+		}
+		set_relation_magic_minion = scope:recipient
+		hidden_effect = {
+			if = {
+				limit = {
+					has_hook = scope:recipient
+				}
+				remove_hook = {
+					target = scope:recipient
+				}
+			}
+			scope:recipient = {
 				if = {
 					limit = {
-						scope:secondary_actor  = {
-							any_character_artifact = {
-								has_variable = glass_candle
-							}
-						}
+						has_hook = scope:actor
 					}
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_development_modifier
-						years = 20
+					remove_hook = {
+						target = scope:actor
 					}
 				}
-				else = {
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_development_modifier
-						years = 10
-					}
-				}
+			}
+		}
+		add_hook = {
+				type = magic_domination_hook
+				target = scope:recipient
+		}
+		if = {
+			limit = {
+				scope:magic_domination_faith = yes
+			}
+			scope:recipient = {
+				custom_tooltip = mind_control_custom_tooltip
+				set_culture_same_as = scope:actor
+				set_character_faith = scope:actor.faith
+			}
+		}
+		else = {
+			scope:recipient = {
+				custom_tooltip = mind_control_custom_tooltip
 			}
 		}
 	}
 }
 
-zz_valyria_build_speed_boost = {  
-	send_interface_message = {
-		type = event_generic_neutral
-		title = magic_build_speed_boost
-		desc = magic_build_speed_boost_text
-		left_icon = scope:actor
-		right_icon = scope:target.title_province 
-		custom_tooltip = magic_build_speed_boost_text
-		scope:target.title_province = {
-			county = {
-				if = {
-					limit = {
-						scope:secondary_actor = {
-							any_character_artifact = {
-								has_variable = glass_candle
-							}
-						}
-					}
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
-						years = 20
-					}
-				}
-				else = {
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
-						years = 10
-					}
-				}
-				
-			}
-		}
-	}
+zz_valyria_dreaming_within = {
+	
 }
 
-
+# Divination Magic
 
 zz_valyria_dreams_of_experience = { 
 	send_interface_message = {
@@ -509,6 +514,127 @@ zz_valyria_dreams_of_experience = {
 	}
 }
 
+zz_valyria_secrets_of_dreams = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_secrets_of_dreams
+		desc = magic_secrets_of_dreams_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_secrets_of_dreams_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			if = {
+				limit = {
+					scope:scrying = yes
+				}
+				scope:recipient = { 
+					zz_dragon_dreams = yes
+					random_list = {
+						21 = {
+							trigger_event = zz_valyria_magic_scrying.1
+						}
+						9 = {
+							trigger_event = zz_valyria_magic_scrying.2
+						}
+					}
+				} 
+			}			
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}
+
+
+# Alchemical Magic
+zz_valyria_development_boost = {  
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_development_boost
+		desc = magic_development_boost_text
+		left_icon = scope:actor
+		right_icon = scope:target.title_province 
+		custom_tooltip = magic_development_boost_text
+		scope:target.title_province = {
+			county = {
+				if = {
+					limit = {
+						scope:secondary_actor  = {
+							any_character_artifact = {
+								has_variable = glass_candle
+							}
+						}
+					}
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_development_modifier
+						years = 20
+					}
+				}
+				else = {
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_development_modifier
+						years = 10
+					}
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_build_speed_boost = {  
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_build_speed_boost
+		desc = magic_build_speed_boost_text
+		left_icon = scope:actor
+		right_icon = scope:target.title_province 
+		custom_tooltip = magic_build_speed_boost_text
+		scope:target.title_province = {
+			county = {
+				if = {
+					limit = {
+						scope:secondary_actor = {
+							any_character_artifact = {
+								has_variable = glass_candle
+							}
+						}
+					}
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
+						years = 20
+					}
+				}
+				else = {
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
+						years = 10
+					}
+				}
+				
+			}
+		}
+	}
+}
 
 zz_valyria_transmutation = {
 	send_interface_message = {

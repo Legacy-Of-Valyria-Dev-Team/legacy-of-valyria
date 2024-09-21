@@ -1,4 +1,6 @@
-﻿valyria_magic_healing = {
+﻿## Blood Magic
+
+valyria_magic_healing = {
 	redirect = {
 		scope:actor = {
 			if = {
@@ -207,6 +209,608 @@ valyria_magic_genetic_manipulation = {
 		base = 100
 	}
 }
+
+
+
+## Charm Magic
+
+valyria_magic_mental_domination = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = mental_domination_spell_flag
+						MANACOST = 10
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = mental_domination_spell_flag
+				MANACOST = 10
+			}
+		}
+	}
+	populate_recipient_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_recipient_list = yes
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = mental_domination_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = mental_domination_spell_flag
+				MANACOST = 10
+			}
+		}
+	}
+	icon = charm_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 10
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 10
+					XPTRACK = charm_magic
+				}
+			}
+			zz_valyria_mental_domination = yes
+
+		}
+	}
+	send_options_exclusive = no
+	send_option = {
+		is_shown = {
+			scope:secondary_actor = {
+				has_trait_xp = {
+					trait = zz_magister
+					track = charm_magic 
+					value >= 50
+				}
+			}
+		}
+		flag = magic_domination_faith
+		localization = MAGIC_DOMINATION_O1
+	}
+
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+	}
+}
+
+
+valyria_magic_dreaming_within = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = dreaming_within_spell_flag
+						MANACOST = 20
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = dreaming_within_spell_flag
+				MANACOST = 20
+			}
+		}
+	}
+	populate_recipient_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_recipient_list = yes
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = dreaming_within_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = dreaming_within_spell_flag
+				MANACOST = 20
+			}
+		}
+	}
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 20
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 10
+					XPTRACK = divination_magic
+				}
+			}
+			send_interface_message = {
+				type = event_generic_neutral
+				title = magic_healing
+				desc = magic_healing_text
+				left_icon = scope:actor
+				right_icon = scope:recipient
+				custom_tooltip = use_magic_custom_tooltip1
+				if = {
+					limit = {
+						NOT = {
+							scope:actor = scope:recipient
+						}
+					}
+					stress_impact = {
+						compassionate = medium_stress_impact_loss
+						sadistic = minor_stress_gain
+						callous = minor_stress_gain
+					}
+				}
+			}
+		}
+		scope:recipient = {
+			if  = { 
+				limit = {
+					scope:blademaster_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_blademaster }
+						add_trait_xp = {
+							trait = lifestyle_blademaster
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_blademaster }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:mystic_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_mystic }
+						add_trait_xp = {
+							trait = lifestyle_mystic
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_mystic }
+				}
+			}
+			else_if  = { 
+				limit = {
+					scope:reveler_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_reveler }
+						add_trait_xp = {
+							trait = lifestyle_reveler
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_reveler }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:hunter_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_hunter }
+						add_trait_xp = {
+							trait = lifestyle_hunter
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_hunter }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:physician_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_physician }
+						add_trait_xp = {
+							trait = lifestyle_physician
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_physician }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:herbalist_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_herbalist }
+						add_trait_xp = {
+							trait = lifestyle_herbalist
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_herbalist }
+				}
+			}		
+			else_if  = { 
+				limit = {
+					scope:gardener_magic = yes
+				}
+				scope:secondary_recipient = {
+					if = {
+						limit = { has_trait = lifestyle_gardener }
+						add_trait_xp = {
+							trait = lifestyle_gardener
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_gardener }
+				}
+			}				
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:secondary_recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+	send_options_exclusive = yes
+
+	send_option = {
+		flag = blademaster_magic
+		localization = blademaster_magic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_blademaster 
+			}
+		}	
+	}
+	send_option = {
+		flag = mystic_magic
+		localization = mystic_magic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_mystic 
+			}
+		}	
+	}
+	send_option = {
+		flag = reveler_magic 
+		localization = reveler_magic 
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_reveler
+			}
+		}	
+	}
+	send_option = {
+		flag = hunter_magic
+		localization = hunter_magic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_hunter
+			}
+		}	
+	}
+	send_option = {
+		flag = physician_magic
+		localization = physician_magic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_physician 
+			}
+		}	
+	}
+	send_option = {
+		flag = herbalist_magic
+		localization = herbalist_magic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_herbalist 
+			}
+		}	
+	}
+	send_option = {
+		flag = gardener_magic
+		localization = blagardener_magicdemaster_magic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lifestyle_gardener
+			}
+		}	
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+	}
+}
+
+## Divination Magic
+
+valyria_magic_dreams_of_experience = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = dreams_of_experience_spell_flag
+						MANACOST = 10
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = dreams_of_experience_spell_flag
+				MANACOST = 10
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = dreams_of_experience_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = genetic_manipulation_spell_flag
+				MANACOST = 10
+			}
+		}
+	}
+	icon = divination_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 10
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 5 
+					XPTRACK = divination_magic
+				}
+			}
+			zz_valyria_dreams_of_experience = yes 
+		}
+	}
+	send_options_exclusive = yes
+	send_option = {
+		flag = experience_learning
+		localization = experience_learning
+	}
+    send_option = {
+		flag = experience_diplomacy
+		localization = experience_diplomacy
+	}
+    send_option = {
+		flag = experience_stewardship
+		localization = experience_stewardship
+	}
+    send_option = {
+		flag = experience_intrigue
+		localization = experience_intrigue
+	}
+    send_option = {
+		flag = experience_martial
+		localization = experience_martial
+	}
+	send_option = {
+		flag = experience_prowess
+		localization = experience_prowess
+	}
+	send_option = {
+		flag = experience_leadership
+		localization = experience_leadership
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+	}
+}
+
+valyria_magic_secrets_of_dreams = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = secrets_of_dreams_spell_flag
+						MANACOST = 1
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = secrets_of_dreams_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = secrets_of_dreams_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = secrets_of_dreams_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	icon = divination_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = divination_magic
+				}
+			}
+			zz_valyria_secrets_of_dreams = yes
+
+			
+		}
+		
+
+	}
+	send_options_exclusive = no
+
+	send_option = {
+		flag = scrying
+		localization = scrying
+		is_shown = {
+			scope:secondary_actor =  {
+				has_character_flag = secrets_of_dreams_spell_flag
+			}
+		}			
+	}		
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+	}
+}
+
+
+
+## Alchemical Magic 
 
 valyria_magic_development_boost = {
 	redirect = {
@@ -479,255 +1083,6 @@ valyria_magic_transmutation = {
 		}			
 	}
 
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 100
-	}
-}
-
-valyria_magic_dreams_of_experience = {
-	redirect = {
-		scope:actor = {
-			if = {
-				limit = {
-					zz_valyria_valid_caster = {
-						SPELL = dreams_of_experience_spell_flag
-						MANACOST = 10
-					}
-				}
-				save_scope_as = secondary_actor
-			}
-		}
-	}
-	populate_actor_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_caster_list = {
-				SPELL  = dreams_of_experience_spell_flag
-				MANACOST = 10
-			}
-		}
-	}
-	is_shown = {
-		scope:actor = {
-			zz_valyria_knows_spell_court = { 
-				SPELL = dreams_of_experience_spell_flag
-			}
-			is_imprisoned = no
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_valid_caster_court = {
-				SPELL  = genetic_manipulation_spell_flag
-				MANACOST = 10
-			}
-		}
-	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 90
-	category = interaction_magic_friendly
-
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { days = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	#hidden = yes
-	
-	on_accept = {
-		scope:actor = {
-			save_scope_as = magic_user
-			scope:secondary_actor = {
-				zz_valyria_mana_spend = {
-					MANACOST = 10
-				} 
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 1 
-					XPTRACK = secrets_of_the_higher_mysteries
-				}
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 5 
-					XPTRACK = divination_magic
-				}
-			}
-			zz_valyria_dreams_of_experience = yes 
-		}
-	}
-	send_options_exclusive = yes
-	send_option = {
-		flag = experience_learning
-		localization = experience_learning
-	}
-    send_option = {
-		flag = experience_diplomacy
-		localization = experience_diplomacy
-	}
-    send_option = {
-		flag = experience_stewardship
-		localization = experience_stewardship
-	}
-    send_option = {
-		flag = experience_intrigue
-		localization = experience_intrigue
-	}
-    send_option = {
-		flag = experience_martial
-		localization = experience_martial
-	}
-	send_option = {
-		flag = experience_prowess
-		localization = experience_prowess
-	}
-	send_option = {
-		flag = experience_leadership
-		localization = experience_leadership
-	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 100
-	}
-}
-
-valyria_magic_secrets_of_dreams = {
-	redirect = {
-		scope:actor = {
-			if = {
-				limit = {
-					zz_valyria_valid_caster = {
-						SPELL = secrets_of_dreams_spell_flag
-						MANACOST = 1
-					}
-				}
-				save_scope_as = secondary_actor
-			}
-		}
-	}
-	populate_actor_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_caster_list = {
-				SPELL  = secrets_of_dreams_spell_flag
-				MANACOST = 1
-			}
-		}
-	}
-	is_shown = {
-		scope:actor = {
-			zz_valyria_knows_spell_court = { 
-				SPELL = secrets_of_dreams_spell_flag
-			}
-			is_imprisoned = no
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_valid_caster_court = {
-				SPELL  = secrets_of_dreams_spell_flag
-				MANACOST = 1
-			}
-		}
-	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 90
-	category = interaction_magic_friendly
-
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { days = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	#hidden = yes
-	
-	on_accept = {
-		scope:actor = {
-			save_scope_as = magic_user
-			scope:secondary_actor = {
-				zz_valyria_mana_spend = {
-					MANACOST = 1
-				} 
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 1 
-					XPTRACK = secrets_of_the_higher_mysteries
-				}
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 1 
-					XPTRACK = alchemical_magic
-				}
-			}
-
-			send_interface_message = {
-				type = event_generic_neutral
-				title = magic_healing
-				desc = magic_healing_text
-				left_icon = scope:actor
-				right_icon = scope:recipient
-				custom_tooltip = use_magic_custom_tooltip1
-				if = {
-					limit = {
-						NOT = {
-							scope:actor = scope:recipient
-						}
-					}
-					stress_impact = {
-						compassionate = medium_stress_impact_loss
-						sadistic = minor_stress_gain
-						callous = minor_stress_gain
-					}
-				}
-			}
-		}
-		
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:scrying = yes
-				}
-				scope:recipient = { 
-					zz_dragon_dreams = yes
-					random_list = {
-						21 = {
-							trigger_event = zz_valyria_magic_scrying.1
-						}
-						9 = {
-							trigger_event = zz_valyria_magic_scrying.2
-						}
-					}
-				} 
-			}			
-			if = {
-				limit = {
-					NOT = { scope:actor = scope:recipient }
-				}
-				add_opinion = {
-					modifier = grateful_opinion
-					target = scope:actor
-					opinion = 70
-				}
-			}
-		}
-	}
-	send_options_exclusive = no
-
-	send_option = {
-		flag = scrying
-		localization = scrying
-		is_shown = {
-			scope:secondary_actor =  {
-				has_character_flag = secrets_of_dreams_spell_flag
-			}
-		}			
-	}		
 	auto_accept = yes
 	ai_targets = {
 		ai_recipients = self
@@ -1046,291 +1401,8 @@ valyria_magic_empowerment_of_arms = {
 	}
 }
 
-valyria_magic_dreaming_within = {
-	redirect = {
-		scope:actor = {
-			if = {
-				limit = {
-					zz_valyria_valid_caster = {
-						SPELL = dreaming_within_spell_flag
-						MANACOST = 20
-					}
-				}
-				save_scope_as = secondary_actor
-			}
-		}
-	}
-	populate_actor_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_caster_list = {
-				SPELL  = dreaming_within_spell_flag
-				MANACOST = 20
-			}
-		}
-	}
-	populate_recipient_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_recipient_list = yes
-		}
-	}
-	is_shown = {
-		scope:actor = {
-			zz_valyria_knows_spell_court = { 
-				SPELL = dreaming_within_spell_flag
-			}
-			is_imprisoned = no
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_valid_caster_court = {
-				SPELL  = dreaming_within_spell_flag
-				MANACOST = 20
-			}
-		}
-	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 90
-	category = interaction_magic_friendly
 
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { days = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	#hidden = yes
-	
-	on_accept = {
-		scope:actor = {
-			save_scope_as = magic_user
-			scope:secondary_actor = {
-				zz_valyria_mana_spend = {
-					MANACOST = 20
-				} 
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 1 
-					XPTRACK = secrets_of_the_higher_mysteries
-				}
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 10
-					XPTRACK = divination_magic
-				}
-			}
-			send_interface_message = {
-				type = event_generic_neutral
-				title = magic_healing
-				desc = magic_healing_text
-				left_icon = scope:actor
-				right_icon = scope:recipient
-				custom_tooltip = use_magic_custom_tooltip1
-				if = {
-					limit = {
-						NOT = {
-							scope:actor = scope:recipient
-						}
-					}
-					stress_impact = {
-						compassionate = medium_stress_impact_loss
-						sadistic = minor_stress_gain
-						callous = minor_stress_gain
-					}
-				}
-			}
-		}
-		scope:recipient = {
-			if  = { 
-				limit = {
-					scope:blademaster_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_blademaster }
-						add_trait_xp = {
-							trait = lifestyle_blademaster
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_blademaster }
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:mystic_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_mystic }
-						add_trait_xp = {
-							trait = lifestyle_mystic
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_mystic }
-				}
-			}
-			else_if  = { 
-				limit = {
-					scope:reveler_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_reveler }
-						add_trait_xp = {
-							trait = lifestyle_reveler
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_reveler }
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:hunter_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_hunter }
-						add_trait_xp = {
-							trait = lifestyle_hunter
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_hunter }
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:physician_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_physician }
-						add_trait_xp = {
-							trait = lifestyle_physician
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_physician }
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:herbalist_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_herbalist }
-						add_trait_xp = {
-							trait = lifestyle_herbalist
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_herbalist }
-				}
-			}		
-			else_if  = { 
-				limit = {
-					scope:gardener_magic = yes
-				}
-				scope:secondary_recipient = {
-					if = {
-						limit = { has_trait = lifestyle_gardener }
-						add_trait_xp = {
-							trait = lifestyle_gardener
-							value = 30
-						}
-					}
-					else = { add_trait = lifestyle_gardener }
-				}
-			}				
-			if = {
-				limit = {
-					NOT = { scope:actor = scope:secondary_recipient }
-				}
-				add_opinion = {
-					modifier = grateful_opinion
-					target = scope:actor
-					opinion = 70
-				}
-			}
-		}
-	}
-	send_options_exclusive = yes
-
-	send_option = {
-		flag = blademaster_magic
-		localization = blademaster_magic
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_blademaster 
-			}
-		}	
-	}
-	send_option = {
-		flag = mystic_magic
-		localization = mystic_magic
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_mystic 
-			}
-		}	
-	}
-	send_option = {
-		flag = reveler_magic 
-		localization = reveler_magic 
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_reveler
-			}
-		}	
-	}
-	send_option = {
-		flag = hunter_magic
-		localization = hunter_magic
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_hunter
-			}
-		}	
-	}
-	send_option = {
-		flag = physician_magic
-		localization = physician_magic
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_physician 
-			}
-		}	
-	}
-	send_option = {
-		flag = herbalist_magic
-		localization = herbalist_magic
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_herbalist 
-			}
-		}	
-	}
-	send_option = {
-		flag = gardener_magic
-		localization = blagardener_magicdemaster_magic
-		is_shown = {
-			scope:recipient = {
-				has_trait = lifestyle_gardener
-			}
-		}	
-	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 100
-	}
-}
+## Fire Magic
 
 valyria_magic_flame_strike = {
 	redirect = {
@@ -1789,163 +1861,3 @@ valyria_magic_flame_strike = {
 	}
 }
 
-valyria_magic_mental_domination = {
-	redirect = {
-		scope:actor = {
-			if = {
-				limit = {
-					zz_valyria_valid_caster = {
-						SPELL = mental_domination_spell_flag
-						MANACOST = 10
-					}
-				}
-				save_scope_as = secondary_actor
-			}
-		}
-	}
-	populate_actor_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_caster_list = {
-				SPELL  = mental_domination_spell_flag
-				MANACOST = 10
-			}
-		}
-	}
-	populate_recipient_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_recipient_list = yes
-		}
-	}
-	is_shown = {
-		scope:actor = {
-			zz_valyria_knows_spell_court = { 
-				SPELL = mental_domination_spell_flag
-			}
-			is_imprisoned = no
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_valid_caster_court = {
-				SPELL  = mental_domination_spell_flag
-				MANACOST = 10
-			}
-		}
-	}
-	icon = charm_magic
-	common_interaction = yes
-	interface_priority = 90
-	category = interaction_magic_friendly
-
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { days = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	#hidden = yes
-	
-	on_accept = {
-		scope:actor = {
-			save_scope_as = magic_user
-			scope:secondary_actor = {
-				zz_valyria_mana_spend = {
-					MANACOST = 10
-				} 
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 1 
-					XPTRACK = secrets_of_the_higher_mysteries
-				}
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 10
-					XPTRACK = charm_magic
-				}
-			}
-			scope:recipient = {
-				every_relation = {
-					type = magic_master
-					remove_relation_magic_minion = scope:recipient
-				}
-			}
-			set_relation_magic_minion = scope:recipient
-			hidden_effect = {
-				if = {
-					limit = {
-						has_hook = scope:recipient
-					}
-					remove_hook = {
-						target = scope:recipient
-					}
-				}
-				scope:recipient = {
-					if = {
-						limit = {
-							has_hook = scope:actor
-						}
-						remove_hook = {
-							target = scope:actor
-						}
-					}
-				}
-			}
-			add_hook = {
-					type = magic_domination_hook
-					target = scope:recipient
-			}
-			if = {
-				limit = {
-					scope:magic_domination_faith = yes
-				}
-				scope:recipient = {
-					custom_tooltip = mind_control_custom_tooltip
-					set_culture_same_as = scope:actor
-					set_character_faith = scope:actor.faith
-				}
-			}
-			else = {
-				scope:recipient = {
-					custom_tooltip = mind_control_custom_tooltip
-				}
-			}
-			send_interface_message = {
-				type = event_generic_neutral
-				title = magic_domination
-				desc = magic_domination_text
-				left_icon = scope:actor
-				right_icon = scope:recipient
-				custom_tooltip = use_magic_custom_tooltip1
-				if = {
-					limit = {
-						NOT = {
-							scope:actor = scope:recipient
-						}
-					}
-					stress_impact = {
-						compassionate = medium_stress_impact_loss
-						sadistic = minor_stress_gain
-						callous = minor_stress_gain
-					}
-				}
-			}
-		}
-	}
-	send_options_exclusive = no
-	send_option = {
-		is_shown = {
-			scope:actor = {
-				has_character_flag = better_domination_spell
-			}
-		}
-		flag = magic_domination_faith
-		localization = MAGIC_DOMINATION_O1
-	}
-
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 100
-	}
-}
