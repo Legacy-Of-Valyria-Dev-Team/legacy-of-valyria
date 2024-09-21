@@ -7,7 +7,7 @@ zz_valyria_heal_effect = {
 		desc = magic_healing_text
 		left_icon = scope:actor
 		right_icon = scope:recipient
-		custom_tooltip = use_magic_custom_tooltip1
+		custom_tooltip = magic_healing_text
 		if = {
 			limit = {
 				NOT = {
@@ -220,7 +220,7 @@ zz_valyria_development_boost = {
 		desc = magic_development_boost_text
 		left_icon = scope:actor
 		right_icon = scope:target.title_province 
-		custom_tooltip = use_magic_custom_tooltip1
+		custom_tooltip = magic_development_boost_text
 		scope:target.title_province = {
 			county = {
 				if = {
@@ -254,7 +254,7 @@ zz_valyria_build_speed_boost = {
 		desc = magic_build_speed_boost_text
 		left_icon = scope:actor
 		right_icon = scope:target.title_province 
-		custom_tooltip = use_magic_custom_tooltip1
+		custom_tooltip = magic_build_speed_boost_text
 		scope:target.title_province = {
 			county = {
 				if = {
@@ -289,7 +289,7 @@ zz_valyria_genetic_manipulation = {
 		desc = magic_genetic_manipulation_text
 		left_icon = scope:actor
 		right_icon = scope:recipient
-		custom_tooltip = use_magic_custom_tooltip1
+		custom_tooltip = magic_genetic_manipulation_text
 		if = {
 			limit = {
 				NOT = {
@@ -416,6 +416,84 @@ zz_valyria_genetic_manipulation = {
 					remove_trait = infertile
 				} 		
 			}		
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+					}
+				}
+		}
+	}
+}
+
+zz_valyria_dreams_of_experience = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_dreams_of_experience 
+		desc = magic_dreams_of_experience_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_dreams_of_experience_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			if = {
+				limit = {
+					scope:experience_learning = yes
+				}
+				scope:recipient = { add_learning_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_diplomacy = yes
+				}
+				scope:recipient = { add_diplomacy_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_stewardship = yes
+				}
+				scope:recipient = { add_stewardship_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_intrigue = yes
+				}
+				scope:recipient = { add_intrigue_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_martial = yes
+				}
+				scope:recipient = { add_martial_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_prowess = yes
+				}
+				scope:recipient = { add_nht_prowess_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_leadership = yes
+				}
+				scope:recipient = { add_nht_leadership_lifestyle_xp = 500 } 
+			}
+			
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
