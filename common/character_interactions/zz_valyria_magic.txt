@@ -159,32 +159,14 @@ valyria_magic_development_boost = {
 					XPGAIN = 1 
 					XPTRACK = secrets_of_the_higher_mysteries
 				}
-			}
-		}
-		scope:target.title_province = {
-			county = {
-				if = {
-					limit = {
-						scope:secondary_actor  = {
-							any_character_artifact = {
-								has_variable = glass_candle
-							}
-						}
-					}
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_development_modifier
-						years = 20
-					}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3
+					XPTRACK = alchemical_magic
 				}
-				else = {
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_development_modifier
-						years = 10
-					}
-				}
-				
 			}
+			zz_valyria_development_boost = yes
 		}
+		
 	}
 	auto_accept = yes
 }
@@ -258,31 +240,12 @@ valyria_magic_build_speed_boost = {
 					XPGAIN = 1 
 					XPTRACK = secrets_of_the_higher_mysteries
 				}
-			}
-		}
-		scope:target.title_province = {
-			county = {
-				if = {
-					limit = {
-						scope:secondary_actor = {
-							any_character_artifact = {
-								has_variable = glass_candle
-							}
-						}
-					}
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
-						years = 20
-					}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = alechemical_magic
 				}
-				else = {
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
-						years = 10
-					}
-				}
-				
 			}
+			zz_valyria_build_speed_boost = yes 
 		}
 	}
 	auto_accept = yes
@@ -351,155 +314,12 @@ valyria_magic_genetic_manipulation = {
 				}
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 3 
-					XPTRACK = alchemical_magic
+					XPTRACK = blood_magic
 				}
 			}
-			send_interface_message = {
-				type = event_generic_neutral
-				title = magic_healing
-				desc = magic_healing_text
-				left_icon = scope:actor
-				right_icon = scope:recipient
-				custom_tooltip = use_magic_custom_tooltip1
-				if = {
-					limit = {
-						NOT = {
-							scope:actor = scope:recipient
-						}
-					}
-					stress_impact = {
-						compassionate = medium_stress_impact_loss
-						sadistic = minor_stress_gain
-						callous = minor_stress_gain
-					}
-				}
-			}
+			zz_valyria_genetic_manipulation = yes 
 		}
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:add_trait_intellect_good_3 = yes
-				}
-				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = intellect_bad 
-							NOT = { 
-								has_trait = intellect_bad_1
-							}
-						}
-						change_trait_rank = {
-							trait = intellect_bad
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = intellect_good
-								}
-							}
-							add_trait_force_tooltip = intellect_good_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = intellect_good
-								rank = 1
-							}
-						}
-					}
-				} 
-			}			
-			else_if = {
-				limit = {
-					scope:add_trait_physique_good_3 = yes
-				}
-				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = physique_bad 
-							NOT = { 
-								has_trait = physique_bad_1
-							}
-						}
-						change_trait_rank = {
-							trait = physique_bad
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = physique_good
-								}
-							}
-							add_trait_force_tooltip = physique_good_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = physique_good
-								rank = 1
-							}
-						}
-					}
-				}
-			}			
-			else_if = {
-				limit = {
-					scope:add_trait_beauty_good_3 = yes
-				}
-				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = beauty_bad 
-							NOT = { 
-								has_trait = beauty_bad_1
-							}
-						}
-						change_trait_rank = {
-							trait = beauty_bad
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = beauty_good
-								}
-							}
-							add_trait_force_tooltip = beauty_good_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = beauty_good
-								rank = 1
-							}
-						}
-					}
-				}
-			}			
-			else_if = {
-				limit = {
-					scope:remove_trait_infertile = yes
-				}
-				scope:recipient = { 
-					remove_trait = infertile
-				} 		
-			}		
-			if = {
-				limit = {
-					NOT = { scope:actor = scope:recipient }
-				}
-				add_opinion = {
-					modifier = grateful_opinion
-					target = scope:actor
-					opinion = 70
-					}
-				}
-		}
+
 	}
 	send_options_exclusive = yes
 	send_option = {
