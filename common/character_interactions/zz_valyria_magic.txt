@@ -39,7 +39,7 @@
 			}
 		}
 	}
-	icon = icon_magic
+	icon = blood_magic
 	common_interaction = yes
 	interface_priority = 90
 	category = interaction_magic_friendly
@@ -88,6 +88,125 @@
 
 	}
 }
+valyria_magic_genetic_manipulation = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = genetic_manipulation_spell_flag
+						MANACOST = 3
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = genetic_manipulation_spell_flag
+				MANACOST = 3
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = genetic_manipulation_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = genetic_manipulation_spell_flag
+				MANACOST = 3
+			}
+		}
+	}
+	icon = blood_magic
+	common_interaction = yes
+	interface_priority = 90
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 3
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = blood_magic
+				}
+			}
+			zz_valyria_genetic_manipulation = yes 
+		}
+
+	}
+	send_options_exclusive = yes
+	send_option = {
+		flag = add_trait_intellect_good_3
+		localization = add_trait_intellect_good_3
+		is_shown = {
+			scope:recipient = {
+				NOT = { has_trait = intellect_good_3 }
+			}
+		}	
+	}
+	send_option = {
+		flag = add_trait_physique_good_3
+		localization = add_trait_physique_good_3
+		is_shown = {
+			scope:recipient = {
+				NOT = { has_trait = physique_good_3}
+			}
+		}	
+	}
+	send_option = {
+		flag = add_trait_beauty_good_3
+		localization = add_trait_beauty_good_3
+		is_shown = {
+			scope:recipient = {
+				NOT = { has_trait = beauty_good_3}
+			}
+		}	
+	}
+	send_option = {
+		flag = remove_trait_infertile
+		localization = remove_trait_infertile
+		is_shown = {
+			scope:recipient = {
+				has_trait = infertile
+			}
+		}	
+	}
+	
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+	}
+}
 
 valyria_magic_development_boost = {
 	redirect = {
@@ -130,7 +249,7 @@ valyria_magic_development_boost = {
 
 	target_type = title
 	target_filter = recipient_domain_titles
-	icon = icon_magic
+	icon = alchemical_magic
 	common_interaction = yes
 	interface_priority = 90
 	category = interaction_magic_friendly
@@ -211,7 +330,7 @@ valyria_magic_build_speed_boost = {
 	}
 	target_type = title
 	target_filter = recipient_domain_titles
-	icon = icon_magic
+	icon = alchemical_magic
 	common_interaction = yes
 	interface_priority = 90
 	category = interaction_magic_friendly
@@ -251,14 +370,14 @@ valyria_magic_build_speed_boost = {
 	auto_accept = yes
 }
 
-valyria_magic_genetic_manipulation = {
+valyria_magic_transmutation = {
 	redirect = {
 		scope:actor = {
 			if = {
 				limit = {
 					zz_valyria_valid_caster = {
-						SPELL = genetic_manipulation_spell_flag
-						MANACOST = 3
+						SPELL = transmutation_spell_flag
+						MANACOST = 2
 					}
 				}
 				save_scope_as = secondary_actor
@@ -268,15 +387,15 @@ valyria_magic_genetic_manipulation = {
 	populate_actor_list = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
-				SPELL  = genetic_manipulation_spell_flag
-				MANACOST = 3
+				SPELL  = transmutation_spell_flag
+				MANACOST = 2
 			}
 		}
 	}
 	is_shown = {
 		scope:actor = {
 			zz_valyria_knows_spell_court = { 
-				SPELL = genetic_manipulation_spell_flag
+				SPELL = transmutation_spell_flag
 			}
 			is_imprisoned = no
 		}
@@ -284,12 +403,12 @@ valyria_magic_genetic_manipulation = {
 	is_valid_showing_failures_only = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
-				SPELL  = genetic_manipulation_spell_flag
-				MANACOST = 3
+				SPELL  = transmutation_spell_flag
+				MANACOST = 2
 			}
 		}
 	}
-	icon = icon_magic
+	icon = alchemical_magic
 	common_interaction = yes
 	interface_priority = 90
 	category = interaction_magic_friendly
@@ -303,10 +422,9 @@ valyria_magic_genetic_manipulation = {
 	on_accept = {
 		scope:actor = {
 			save_scope_as = magic_user
-
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
-					MANACOST = 3
+					MANACOST = 2
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
@@ -314,51 +432,53 @@ valyria_magic_genetic_manipulation = {
 				}
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 3 
-					XPTRACK = blood_magic
+					XPTRACK = alchemical_magic
 				}
 			}
-			zz_valyria_genetic_manipulation = yes 
+			zz_valyria_transmutation = yes
 		}
+
 
 	}
 	send_options_exclusive = yes
+
 	send_option = {
-		flag = add_trait_intellect_good_3
-		localization = add_trait_intellect_good_3
+		flag = dynasty_prestige
+		localization = dynasty_prestige
 		is_shown = {
-			scope:recipient = {
-				NOT = { has_trait = intellect_good_3 }
+			scope:secondary_actor =  {
+				has_character_flag = transmutation_spell_flag
 			}
-		}	
+		}
 	}
 	send_option = {
-		flag = add_trait_physique_good_3
-		localization = add_trait_physique_good_3
+		flag = prestige
+		localization = prestige
 		is_shown = {
-			scope:recipient = {
-				NOT = { has_trait = physique_good_3}
+			scope:secondary_actor =  {
+				has_character_flag = transmutation_spell_flag
 			}
-		}	
+		}
 	}
 	send_option = {
-		flag = add_trait_beauty_good_3
-		localization = add_trait_beauty_good_3
+		flag = piety
+		localization = piety
 		is_shown = {
-			scope:recipient = {
-				NOT = { has_trait = beauty_good_3}
+			scope:secondary_actor =  {
+				has_character_flag = transmutation_spell_flag
 			}
-		}	
+		}
 	}
 	send_option = {
-		flag = remove_trait_infertile
-		localization = remove_trait_infertile
+		flag = transmutation
+		localization = transmutation
 		is_shown = {
-			scope:recipient = {
-				has_trait = infertile
+			scope:secondary_actor =  {
+				has_character_flag = transmutation_spell_flag
 			}
-		}	
+		}			
 	}
-	
+
 	auto_accept = yes
 	ai_targets = {
 		ai_recipients = self
@@ -468,185 +588,6 @@ valyria_magic_dreams_of_experience = {
 		flag = experience_leadership
 		localization = experience_leadership
 	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 100
-	}
-}
-
-valyria_magic_transmutation = {
-	redirect = {
-		scope:actor = {
-			if = {
-				limit = {
-					zz_valyria_valid_caster = {
-						SPELL = transmutation_spell_flag
-						MANACOST = 2
-					}
-				}
-				save_scope_as = secondary_actor
-			}
-		}
-	}
-	populate_actor_list = {
-		scope:actor = { 
-			zz_valyria_populate_spell_caster_list = {
-				SPELL  = transmutation_spell_flag
-				MANACOST = 2
-			}
-		}
-	}
-	is_shown = {
-		scope:actor = {
-			zz_valyria_knows_spell_court = { 
-				SPELL = transmutation_spell_flag
-			}
-			is_imprisoned = no
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_valid_caster_court = {
-				SPELL  = transmutation_spell_flag
-				MANACOST = 2
-			}
-		}
-	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 90
-	category = interaction_magic_friendly
-
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { days = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	#hidden = yes
-	
-	on_accept = {
-		scope:actor = {
-			save_scope_as = magic_user
-			scope:secondary_actor = {
-				zz_valyria_mana_spend = {
-					MANACOST = 2
-				} 
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 1 
-					XPTRACK = secrets_of_the_higher_mysteries
-				}
-				zz_valyria_gain_spell_experience = {
-					XPGAIN = 3 
-					XPTRACK = alchemical_magic
-				}
-			}
-
-			send_interface_message = {
-				type = event_generic_neutral
-				title = magic_healing
-				desc = magic_healing_text
-				left_icon = scope:actor
-				right_icon = scope:recipient
-				custom_tooltip = use_magic_custom_tooltip1
-				if = {
-					limit = {
-						NOT = {
-							scope:actor = scope:recipient
-						}
-					}
-					stress_impact = {
-						compassionate = medium_stress_impact_loss
-						sadistic = minor_stress_gain
-						callous = minor_stress_gain
-					}
-				}
-			}
-		}
-
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:dynasty_prestige = yes
-				}
-				scope:recipient = { 
-					dynasty = { add_dynasty_prestige = zz_valyria_magic_potency_secret_knowledge}
-					
-				}
-			}
-			else_if = {
-				limit = {
-					scope:prestige= yes
-				}
-				scope:recipient = { add_prestige = zz_valyria_magic_potency_secret_knowledge } 
-			}
-			else_if = {
-				limit = {
-					scope:piety= yes
-				}
-				scope:recipient = { add_piety = zz_valyria_magic_potency_secret_knowledge } 
-			}
-			else_if = {
-				limit = {
-					scope:transmutation = yes
-				}
-				scope:recipient = { add_gold = zz_valyria_magic_potency_secret_knowledge } 
-			}				
-			if = {
-				limit = {
-					NOT = { scope:actor = scope:recipient }
-				}
-				add_opinion = {
-					modifier  = grateful_opinion
-					target = scope:actor
-					opinion = 70
-				}
-			}
-		}
-	}
-	send_options_exclusive = yes
-
-	send_option = {
-		flag = dynasty_prestige
-		localization = dynasty_prestige
-		is_shown = {
-			scope:secondary_actor =  {
-				has_character_flag = transmutation_spell_flag
-			}
-		}
-	}
-	send_option = {
-		flag = prestige
-		localization = prestige
-		is_shown = {
-			scope:secondary_actor =  {
-				has_character_flag = transmutation_spell_flag
-			}
-		}
-	}
-	send_option = {
-		flag = piety
-		localization = piety
-		is_shown = {
-			scope:secondary_actor =  {
-				has_character_flag = transmutation_spell_flag
-			}
-		}
-	}
-	send_option = {
-		flag = transmutation
-		localization = transmutation
-		is_shown = {
-			scope:secondary_actor =  {
-				has_character_flag = transmutation_spell_flag
-			}
-		}			
-	}
-
 	auto_accept = yes
 	ai_targets = {
 		ai_recipients = self
@@ -1429,7 +1370,7 @@ valyria_magic_flame_strike = {
 			}
 		}
 	}
-	icon = icon_magic
+	icon = fire_magic
 	common_interaction = no
 	interface_priority = 90
 	category = interaction_magic_hostile
@@ -1891,7 +1832,7 @@ valyria_magic_mental_domination = {
 			}
 		}
 	}
-	icon = icon_magic
+	icon = charm_magic
 	common_interaction = yes
 	interface_priority = 90
 	category = interaction_magic_friendly

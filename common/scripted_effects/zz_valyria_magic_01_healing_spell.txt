@@ -212,76 +212,6 @@ zz_valyria_heal_effect = {
 	}	
 }
 
-
-zz_valyria_development_boost = {  
-	send_interface_message = {
-		type = event_generic_neutral
-		title = magic_development_boost
-		desc = magic_development_boost_text
-		left_icon = scope:actor
-		right_icon = scope:target.title_province 
-		custom_tooltip = magic_development_boost_text
-		scope:target.title_province = {
-			county = {
-				if = {
-					limit = {
-						scope:secondary_actor  = {
-							any_character_artifact = {
-								has_variable = glass_candle
-							}
-						}
-					}
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_development_modifier
-						years = 20
-					}
-				}
-				else = {
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_development_modifier
-						years = 10
-					}
-				}
-			}
-		}
-	}
-}
-
-zz_valyria_build_speed_boost = {  
-	send_interface_message = {
-		type = event_generic_neutral
-		title = magic_build_speed_boost
-		desc = magic_build_speed_boost_text
-		left_icon = scope:actor
-		right_icon = scope:target.title_province 
-		custom_tooltip = magic_build_speed_boost_text
-		scope:target.title_province = {
-			county = {
-				if = {
-					limit = {
-						scope:secondary_actor = {
-							any_character_artifact = {
-								has_variable = glass_candle
-							}
-						}
-					}
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
-						years = 20
-					}
-				}
-				else = {
-					add_county_modifier = {
-						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
-						years = 10
-					}
-				}
-				
-			}
-		}
-	}
-}
-
 zz_valyria_genetic_manipulation = {
 	send_interface_message = {
 		type = event_generic_neutral
@@ -430,6 +360,77 @@ zz_valyria_genetic_manipulation = {
 	}
 }
 
+zz_valyria_development_boost = {  
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_development_boost
+		desc = magic_development_boost_text
+		left_icon = scope:actor
+		right_icon = scope:target.title_province 
+		custom_tooltip = magic_development_boost_text
+		scope:target.title_province = {
+			county = {
+				if = {
+					limit = {
+						scope:secondary_actor  = {
+							any_character_artifact = {
+								has_variable = glass_candle
+							}
+						}
+					}
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_development_modifier
+						years = 20
+					}
+				}
+				else = {
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_development_modifier
+						years = 10
+					}
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_build_speed_boost = {  
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_build_speed_boost
+		desc = magic_build_speed_boost_text
+		left_icon = scope:actor
+		right_icon = scope:target.title_province 
+		custom_tooltip = magic_build_speed_boost_text
+		scope:target.title_province = {
+			county = {
+				if = {
+					limit = {
+						scope:secondary_actor = {
+							any_character_artifact = {
+								has_variable = glass_candle
+							}
+						}
+					}
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
+						years = 20
+					}
+				}
+				else = {
+					add_county_modifier = {
+						modifier = zz_valyria_magic_province_buff_spell_build_speed_modifier
+						years = 10
+					}
+				}
+				
+			}
+		}
+	}
+}
+
+
+
 zz_valyria_dreams_of_experience = { 
 	send_interface_message = {
 		type = event_generic_neutral
@@ -504,6 +505,69 @@ zz_valyria_dreams_of_experience = {
 					opinion = 70
 					}
 				}
+		}
+	}
+}
+
+
+zz_valyria_transmutation = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_transmutation
+		desc = magic_transmutation_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_transmutation_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			if = {
+				limit = {
+					scope:dynasty_prestige = yes
+				}
+				scope:recipient = { 
+					dynasty = { add_dynasty_prestige = zz_valyria_magic_potency_secret_knowledge}
+					
+				}
+			}
+			else_if = {
+				limit = {
+					scope:prestige= yes
+				}
+				scope:recipient = { add_prestige = zz_valyria_magic_potency_secret_knowledge } 
+			}
+			else_if = {
+				limit = {
+					scope:piety= yes
+				}
+				scope:recipient = { add_piety = zz_valyria_magic_potency_secret_knowledge } 
+			}
+			else_if = {
+				limit = {
+					scope:transmutation = yes
+				}
+				scope:recipient = { add_gold = zz_valyria_magic_potency_secret_knowledge } 
+			}				
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier  = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
 		}
 	}
 }
