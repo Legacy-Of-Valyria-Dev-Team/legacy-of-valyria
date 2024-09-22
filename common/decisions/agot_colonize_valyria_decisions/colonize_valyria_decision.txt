@@ -47,7 +47,7 @@ agot_restore_ilvonys_dragonkeepers = {
 		is_landed = yes
 		has_title = title:b_ilvonys_1
 		title:c_ilvonys = {
-		NOT = { has_variable = has_dragonkeeper_order }
+			NOT = { has_variable = has_dragonkeeper_order }
 		}
 	}
 	is_valid = {
@@ -125,7 +125,7 @@ agot_restore_valyria_dragonkeepers = {
 		is_landed = yes
 		has_title = title:b_valyria_5
 		title:c_valyria = {
-		NOT = { has_variable = has_dragonkeeper_order }
+			NOT = { has_variable = has_dragonkeeper_order }
 		}
 	}
 	is_valid = {
@@ -134,7 +134,7 @@ agot_restore_valyria_dragonkeepers = {
 
 	effect = {
 		custom_tooltip = agot_restore_dragonmont_dragonkeepers_effect_tooltip
-		trigger_event = colonize_valyria.0007
+		trigger_event = colonize_valyria.00071
 	}
 
 	ai_potential = {
@@ -203,7 +203,7 @@ agot_restore_dragonfields_dragonkeepers = {
 		is_landed = yes
 		has_title = title:b_dragonfields_1
 		title:c_dragonfields = {
-		NOT = { has_variable = has_dragonkeeper_order }
+			NOT = { has_variable = has_dragonkeeper_order }
 		}
 	}
 	is_valid = {
@@ -212,7 +212,85 @@ agot_restore_dragonfields_dragonkeepers = {
 
 	effect = {
 		custom_tooltip = agot_restore_dragonmont_dragonkeepers_effect_tooltip
-		trigger_event = colonize_valyria.0007
+		trigger_event = colonize_valyria.00072
+	}
+
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 0
+		modifier = {
+			add = 500
+			any_living_dragon = {
+				count > 0
+			}
+		}
+		modifier = {
+			add = 500
+			OR = {
+				any_relation = { # You have a tamed dragon
+					type = agot_dragon
+				}
+				AND = { # You have an egg + You are Ambitious + You have Valyrian Cultural Heritage
+					any_character_artifact = {
+						has_variable = dragon_egg
+					}
+					has_trait = ambitious
+					culture = {
+						has_cultural_pillar = heritage_valyrian
+					}
+				}
+			}
+		}
+		modifier = {
+			add = 500
+			any_courtier_or_guest = {
+				has_trait = dragon
+			}
+		}
+		modifier = {
+			add = 500
+			any_close_or_extended_family_member = {
+				any_relation = { # You have a tamed dragon
+					type = agot_dragon
+				}
+				is_courtier_of = root
+			}
+		}
+	}
+}
+
+agot_restore_kastaryia_dragonkeepers = {
+	title = agot_restore_kastaryia_dragonkeepers
+	picture = "gfx/interface/illustrations/decisions/decision_misc.dds"
+	major = yes
+	ai_goal = yes
+
+	selection_tooltip = agot_appoint_dragonkeeper_head_tooltip
+	desc = agot_restore_ilvonys_dragonkeepers_desc
+
+	confirm_text = agot_appoint_dragonkeeper_head_confirm
+
+	cost = {
+		prestige = 250
+	}
+
+	is_shown = {
+		is_landed = yes
+		has_title = title:b_kastaryia_1
+		title:c_kastaryia = {
+			NOT = { has_variable = has_dragonkeeper_order }
+		}
+	}
+	is_valid = {
+		agot_has_dragonpit_requirements_trigger = yes
+	}
+
+	effect = {
+		custom_tooltip = agot_restore_dragonmont_dragonkeepers_effect_tooltip
+		trigger_event = colonize_valyria.00073
 	}
 
 	ai_potential = {
