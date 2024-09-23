@@ -260,3 +260,855 @@
 		}
 	}
 }
+
+execute_prisoner_interaction = {
+	interface_priority = 120
+	common_interaction = yes
+	category = interaction_category_prison
+	special_interaction = execute_prisoner_interaction
+	icon = icon_dead
+
+	desc = execute_prisoner_interaction_desc
+	
+	ai_targets = {
+		ai_recipients = prisoners
+	}
+	
+	ai_frequency = 12
+	
+	ai_potential = {
+		is_at_war = no
+	}
+	
+	ai_will_do = {
+		base = 0
+		
+		opinion_modifier = {
+			trigger = {
+				NOT = { scope:actor = scope:recipient }
+			}
+			opinion_target = scope:recipient
+			multiplier = -1
+		}
+		
+		ai_value_modifier = {
+			ai_compassion = -1
+		}
+		modifier = {
+			add = -20
+			ai_compassion >= low_positive_ai_value
+			scope:recipient = { is_adult = no }
+		}
+		# Try to avoid Kinslaying
+		modifier = {
+			add = -20
+			scope:actor.dynasty = scope:recipient.dynasty
+			NOT = { faith = { has_doctrine = doctrine_kinslaying_any_dynasty_member_crime } }
+		}
+		modifier = {
+			add = -20
+			is_close_or_extended_family_of = scope:recipient
+			NOT = { faith = { has_doctrine = doctrine_kinslaying_extended_family_crime } }
+		}
+		modifier = {
+			add = -20
+			is_close_family_of = scope:recipient
+			NOT = { faith = { has_doctrine = doctrine_kinslaying_close_kin_crime } }
+		}
+		modifier = {
+			add = 50
+			has_execute_reason = scope:recipient
+			OR = {
+				has_trait = sadistic
+				has_trait = lunatic
+			}
+		}
+		modifier = { # Executing your way to new titles is a worthy cause...
+			add = 20
+			scope:actor = {
+				has_execute_reason = scope:recipient
+				ai_greed > 0
+				any_heir_title = { # Execute rulers you can inherit land from
+					exists = holder
+					holder = scope:recipient
+					place_in_line_of_succession = {
+						target = scope:actor
+						value > 2
+					}
+				}
+			}
+		}
+		modifier = { # Vengeful characters enjoy executing their rivals
+			add = 20
+			scope:actor = {
+				has_execute_reason = scope:recipient
+				ai_vengefulness >= medium_positive_ai_value
+				OR = {
+					has_relation_rival = scope:recipient # Execute rivals
+					has_relation_nemesis = scope:recipient # Execute rivals
+					scope:recipient = {
+						is_spouse_of = scope:actor
+						exposed_cheating_on_spouse_trigger = { SPOUSE = scope:actor }
+					}
+				}
+			}
+		}
+		modifier = { # Executing your way to new titles is a worthy cause... and very greedy characters need no execution reason
+			add = 35
+			scope:actor = {
+				ai_greed >= very_high_positive_ai_value
+				any_heir_title = { # Execute rulers you can inherit land from
+					exists = holder
+					holder = scope:recipient
+					place_in_line_of_succession = {
+						target = scope:actor
+						value > 2
+					}
+				}
+			}
+		}
+		modifier = { # Vengeful characters enjoy executing their rivals, and very vengeful characters need no execution reason
+			add = 35
+			scope:actor = {
+				ai_vengefulness >= very_high_positive_ai_value
+				OR = {
+					has_relation_rival = scope:recipient # Execute rivals
+					has_relation_nemesis = scope:recipient # Execute rivals
+					scope:recipient = {
+						is_spouse_of = scope:actor
+						exposed_cheating_on_spouse_trigger = { SPOUSE = scope:actor }
+					}
+				}
+			}
+		}
+		#Scope:target has caused internal strife in the realm
+		character_hates_scope_due_to_strife_modifier = { TARGET = scope:recipient }
+		modifier = {
+			factor = 0
+			scope:actor = {
+				NOR = { # Do not execute unless you have some sort of reason to do it
+					has_execute_reason = scope:recipient
+					has_relation_rival = scope:recipient # Execute rivals
+					has_relation_nemesis = scope:recipient # Execute rivals
+					scope:recipient = {
+						is_spouse_of = scope:actor
+						exposed_cheating_on_spouse_trigger = { SPOUSE = scope:actor }
+					}
+					any_heir_title = { # Execute rulers you can inherit land from
+						exists = holder
+						holder = scope:recipient
+						place_in_line_of_succession = {
+							target = scope:actor
+							value > 2
+						}
+					}
+					has_trait = lunatic # Self explanatory
+				}
+			}
+		}
+
+		# Agenda impact
+		modifier = {
+			scope:recipient = {
+				any_character_struggle = {
+					involvement = involved
+				}
+				is_important_or_vip_struggle_character = yes
+			}
+			add = {
+				value = 0
+				if = {
+					limit = {
+						scope:actor = {
+							any_character_struggle = {
+								phase_has_catalyst = catalyst_execute_important
+							}
+							has_character_flag = agenda_towards_escalation
+						}
+					}
+					add = 200
+				}
+				else_if = {
+					limit = {
+						scope:actor = {
+							any_character_struggle = {
+								phase_has_catalyst = catalyst_execute_important
+							}
+						}
+					}
+					add = -100
+				}
+			}
+		}
+
+		#AGOT Disabled
+		# modifier = {
+		# 	scope:recipient = {
+		# 		any_character_struggle = {
+		# 			involvement = involved
+		# 		}
+		# 		has_trait = fp3_struggle_supporter
+		# 	}
+		# 	add = {
+		# 		value = 0
+		# 		if = {
+		# 			limit = {
+		# 				scope:actor = {
+		# 					any_character_struggle = {
+		# 						phase_has_catalyst = catalyst_execute_supporter
+		# 					}
+		# 					has_trait = fp3_struggle_detractor
+		# 				}
+		# 			}
+		# 			add = 200
+		# 		}
+		# 		else_if = {
+		# 			limit = {
+		# 				scope:actor = {
+		# 					any_character_struggle = {
+		# 						phase_has_catalyst = catalyst_execute_supporter
+		# 					}
+		# 				}
+		# 			}
+		# 			add = -100
+		# 		}
+		# 	}
+		# }
+
+		#AGOT Disabled
+		# modifier = {
+		# 	scope:recipient = {
+		# 		any_character_struggle = {
+		# 			involvement = involved
+		# 		}
+		# 		has_trait = fp3_struggle_detractor
+		# 	}
+		# 	add = {
+		# 		value = 0
+		# 		if = {
+		# 			limit = {
+		# 				scope:actor = {
+		# 					any_character_struggle = {
+		# 						phase_has_catalyst = catalyst_execute_detractor
+		# 					}
+		# 					has_trait = fp3_struggle_supporter
+		# 				}
+		# 			}
+		# 			add = 200
+		# 		}
+		# 		else_if = {
+		# 			limit = {
+		# 				scope:actor = {
+		# 					any_character_struggle = {
+		# 						phase_has_catalyst = catalyst_execute_detractor
+		# 					}
+		# 				}
+		# 			}
+		# 			add = -100
+		# 		}
+		# 	}
+		# }
+	}
+	
+	is_shown = {
+		scope:recipient = {
+			is_imprisoned_by = scope:actor
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = { is_busy_in_events_localised = yes } #Prisoner
+		scope:recipient = { NOT = { has_strong_hook = scope:actor } }
+		scope:recipient = {
+			custom_description = {
+				text = "currently_being_tortured"
+				NOT = { has_character_flag = is_being_tortured }
+			}
+		}
+
+		# Blocked by current struggle phase
+		custom_tooltip = {
+			text = struggle_parameter_struggle_cannot_execute_involved_prisoners
+			NOT = {
+				scope:actor = {
+					any_character_struggle = {
+						involvement = involved
+						has_struggle_phase_parameter = struggle_cannot_execute_involved_prisoners
+						is_secondary_character_involvement_involved_trigger = {
+							CHAR = scope:recipient
+						}
+					}
+				}
+			}
+		}
+	}
+
+	cost = {
+		# Usually, this action is free, but during certain diarchies, we want it to cost.
+		prestige = liege_diarchy_surcharge_interaction_execute_prisoner_interaction_value
+	}
+
+	on_accept = {
+		if = {
+			limit = { scope:recipient = { is_imprisoned_by = scope:actor } }
+			# Are you HumSac'ing the HoF of a faith that doesn't practice HumSac?
+			hidden_effect = {
+				scope:actor = {
+					humsacd_a_hof_effect = {
+						SACRIFICER = scope:actor
+						SACRIFICED_HOF = scope:recipient
+					}
+				}
+			}
+			if = {
+				limit = { always = scope:execution_public }
+				if = {
+					limit = {
+						scope:actor.capital_county = {
+							NOT = { has_county_modifier = held_public_execution_modifier }
+						}
+					}
+					custom_description_no_bullet = {
+						text = public_execution_tooltip
+					}
+
+					scope:actor = {
+						capital_county = {
+							add_county_modifier = {
+								modifier = held_public_execution_modifier
+								days = 1850
+							}
+						}
+						custom_tooltip = public_execution_control_effect
+						hidden_effect = {
+							every_held_title = {
+								limit = {
+									tier = tier_county
+								}
+								change_county_control = executioner_control_value
+							}
+						}
+					}
+				}
+				else = {
+					custom_description_no_bullet = {
+						text = public_execution_too_soon_tooltip
+					}
+				}
+			}
+			# Other Effects
+			if = { # Boil their skull?
+				limit = {
+					NOT = { always = scope:execution_devour }
+					scope:actor = {
+						has_relation_rival = scope:recipient
+						has_personality_malicious_trigger = yes
+						has_royal_court = yes
+					}
+					scope:recipient = {
+						is_adult = yes
+					}
+				}
+				scope:actor = {
+					random = {
+						chance = {
+							value = 25
+							if = {
+								limit = {
+									has_relation_nemesis = scope:recipient
+								}
+								add = 75
+							}
+						}
+						hidden_effect = {
+							scope:recipient = {
+								save_scope_as = skull_to_boil
+							}
+							trigger_event = {
+								id = artifact.7000
+								days = { 3 10 }
+							}
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					NOT = { always = scope:execution_devour }
+					#AGOT Added
+					NOT = { always = scope:execution_dragon_fed }
+					NOT = { always = scope:execution_dragon_burn }
+					NOT = { always = scope:execution_dragon_stomped }
+					NOT = { always = scope:execution_dragon_dropped }
+					scope:actor = {
+						is_adult = no
+						age >= 4
+						is_ai = no
+						NOT = { has_character_flag = witnessed_execution_flag }
+					}
+					scope:recipient = {
+						is_adult = yes
+					}
+				}
+				scope:actor = { trigger_event = bp1_yearly.9045 }
+			}
+			else_if = {
+				limit = {
+					NOT = { always = scope:execution_devour }
+					#AGOT Added
+					NOT = { always = scope:execution_dragon_fed }
+					NOT = { always = scope:execution_dragon_burn }
+					NOT = { always = scope:execution_dragon_stomped }
+					NOT = { always = scope:execution_dragon_dropped }
+					scope:actor = {
+						OR = {
+							has_relation_friend = scope:recipient
+							has_relation_lover = scope:recipient
+						}
+						is_ai = no
+					}
+					scope:recipient = {
+						is_adult = yes
+					}
+				}
+				scope:actor = { trigger_event = bp1_yearly.9044 }
+			}
+
+			# FP3
+			# Struggle Catalysts
+			scope:actor = {
+				if = { # Execute important
+					limit = {
+						scope:recipient = { is_important_or_vip_struggle_character = yes }
+						any_character_struggle = {
+							involvement = involved
+							activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+								CATALYST = catalyst_execute_important
+								CHAR = scope:recipient
+							}
+						}
+					}
+					every_character_struggle = {
+						involvement = involved
+						limit = {
+							activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+								CATALYST = catalyst_execute_important
+								CHAR = scope:recipient
+							}
+						}
+						activate_struggle_catalyst = {
+							catalyst = catalyst_execute_important
+							character = scope:actor
+						}
+					}
+				}
+				#AGOT Disabled
+				# if = { # Execute Supporter/Detractor
+				# 	limit = {
+				# 		fp3_struggle_involves_one_supporter_and_one_detractor = {
+				# 			FIRST = scope:actor
+				# 			SECOND = scope:recipient
+				# 		}
+				# 	}
+				# 	if = {
+				# 		limit = {
+				# 			scope:recipient = { has_trait = fp3_struggle_detractor }
+				# 			any_character_struggle = {
+				# 				involvement = involved
+				# 				activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+				# 					CATALYST = catalyst_execute_detractor
+				# 					CHAR = scope:recipient
+				# 				}
+				# 			}
+				# 		}
+				# 		every_character_struggle = {
+				# 			involvement = involved
+				# 			limit = {
+				# 				activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+				# 					CATALYST = catalyst_execute_detractor
+				# 					CHAR = scope:recipient
+				# 				}
+				# 			}
+				# 			activate_struggle_catalyst = {
+				# 				catalyst = catalyst_execute_detractor
+				# 				character = scope:actor
+				# 			}
+				# 			log_debug_variable_for_persian_struggle_effect = { VAR = stabil_catalyst_execute_detractor }
+				# 		}
+				# 	}
+				# 	else_if = {
+				# 		limit = {
+				# 			scope:recipient = { has_trait = fp3_struggle_supporter }
+				# 			any_character_struggle = {
+				# 				involvement = involved
+				# 				activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+				# 					CATALYST = catalyst_execute_supporter
+				# 					CHAR = scope:recipient
+				# 				}
+				# 			}
+				# 		}
+				# 		every_character_struggle = {
+				# 			involvement = involved
+				# 			limit = {
+				# 				activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+				# 					CATALYST = catalyst_execute_supporter
+				# 					CHAR = scope:recipient
+				# 				}
+				# 			}
+				# 			activate_struggle_catalyst = {
+				# 				catalyst = catalyst_execute_supporter
+				# 				character = scope:actor
+				# 			}
+				# 			log_debug_variable_for_persian_struggle_effect = { VAR = unrest_catalyst_execute_supporter }
+				# 		}
+				# 	}
+				# }
+				# Free House Member CB target executed during war
+				if = {
+					limit = {
+						exists = scope:recipient.house
+						any_character_war = {
+							using_cb = fp3_free_house_member_cb
+							is_defender = scope:actor
+							primary_attacker.house = scope:recipient.house
+						}
+					}
+					random_character_war = {
+						limit = {
+							using_cb = fp3_free_house_member_cb
+							is_defender = scope:actor
+							primary_attacker.house = scope:recipient.house
+						}
+						primary_attacker = {
+							add_opinion = {
+								target = scope:actor
+								modifier = executed_close_relation_opinion
+							}
+						}
+					}
+					add_prestige = {
+						value = medium_piety_loss
+						multiply = {
+							value = ai_honor
+							add = 1
+						}
+					}
+					every_vassal = {
+						limit = {
+							OR = {
+								has_vassal_stance = courtly
+								has_vassal_stance = glory_hound
+								ai_honor > 0.48
+							}
+						}
+						add_opinion = {
+							target = scope:actor
+							modifier = executed_valuable_prisoner_modifier
+						}
+					}
+				}
+			}
+
+			# Kill the target
+			# AGOT Added - dragon execute
+			if = {
+				limit = { 
+					always = scope:execution_dragon_fed
+					scope:recipient = { is_ai = no }
+					scope:actor = { is_ai = yes }
+				}
+				scope:recipient = { trigger_event = agot_dragon.0004 } # Give players a chance to see what's about to happen
+				show_as_tooltip = {
+					execute_dragon_prisoner_effect = {
+						VICTIM = scope:recipient
+						EXECUTIONER = scope:actor
+						REASON = death_fed_to_dragon
+					}
+				}
+			}
+			else_if = {
+				limit = { 
+					always = scope:execution_dragon_fed
+				}
+				scope:recipient = { trigger_event = agot_dragon.0005 }
+				execute_dragon_prisoner_effect = {
+					VICTIM = scope:recipient
+					EXECUTIONER = scope:actor
+					REASON = death_fed_to_dragon
+				}
+			}
+			# Incineration by Dragon
+			else_if = {
+				limit = {
+					always = scope:execution_dragon_burn
+					scope:recipient = { is_ai = no }
+					scope:actor = { is_ai = yes }
+				}
+				scope:recipient = { trigger_event = agot_dragon.0004 } # Give players a chance to see what's about to happen
+				show_as_tooltip = {
+					execute_dragon_prisoner_effect = {
+						VICTIM = scope:recipient
+						EXECUTIONER = scope:actor
+						REASON = death_dragon_fire
+					}
+				}
+			}
+			else_if = {
+				limit = { always = scope:execution_dragon_burn }
+				scope:recipient = { trigger_event = agot_dragon.0005 }
+				execute_dragon_prisoner_effect = {
+					VICTIM = scope:recipient
+					EXECUTIONER = scope:actor
+					REASON = death_dragon_fire
+				}
+			}
+			# Stomped to Death by Dragon
+			else_if = {
+				limit = { 
+					always = scope:execution_dragon_stomped
+					scope:recipient = { is_ai = no }
+					scope:actor = { is_ai = yes }
+				}
+				scope:recipient = { trigger_event = agot_dragon.0004 } # Give players a chance to see what's about to happen
+				show_as_tooltip = {
+					execute_dragon_prisoner_effect = {
+						VICTIM = scope:recipient
+						EXECUTIONER = scope:actor
+						REASON = death_dragon_stomped
+					}
+				}
+			}
+			else_if = {
+				limit = { always = scope:execution_dragon_stomped }
+				scope:recipient = { trigger_event = agot_dragon.0005 }
+				execute_dragon_prisoner_effect = {
+					VICTIM = scope:recipient
+					EXECUTIONER = scope:actor
+					REASON = death_dragon_stomped
+				}
+			}
+			# DROPPED from the sky by Dragon
+			else_if = {
+				limit = { 
+					always = scope:execution_dragon_dropped
+					scope:recipient = { is_ai = no }
+					scope:actor = { is_ai = yes }
+				}
+				scope:recipient = { trigger_event = agot_dragon.0004 } # Give players a chance to see what's about to happen
+				show_as_tooltip = {
+					execute_dragon_prisoner_effect = {
+						VICTIM = scope:recipient
+						EXECUTIONER = scope:actor
+						REASON = death_dropped_from_dragon
+					}
+				}
+			}
+			else_if = {
+				limit = { always = scope:execution_dragon_dropped }
+				scope:recipient = { trigger_event = agot_dragon.0005 }
+				execute_dragon_prisoner_effect = {
+					VICTIM = scope:recipient
+					EXECUTIONER = scope:actor
+					REASON = death_dropped_from_dragon
+				}
+			}
+			# AGOT Modified	
+			else_if = {
+				limit = {
+					scope:recipient = { is_ai = no }
+					scope:actor = { is_ai = yes }
+				}
+				scope:recipient = { trigger_event = char_interaction.0170 } # Give players a chance to see what's about to happen
+				show_as_tooltip = {
+					execute_prisoner_effect = {
+						VICTIM = scope:recipient
+						EXECUTIONER = scope:actor
+					}
+				}
+			}
+			else = {
+				scope:recipient = { trigger_event = char_interaction.0171 }
+				execute_prisoner_effect = {
+					VICTIM = scope:recipient
+					EXECUTIONER = scope:actor
+				}
+			}
+
+			if = {
+				limit = { always = scope:execution_devour }
+				scope:actor = {
+					custom_tooltip = devour_as_execution_tooltip
+					if = {
+						limit = {
+							faith = { has_doctrine_parameter = cannibalism_legal }
+							NOT = { has_trait = cannibal }
+						}
+						add_trait = cannibal
+					}
+					stress_impact = {
+						base = medium_stress_impact_loss
+						compassionate = miniscule_stress_impact_gain
+						forgiving = miniscule_stress_impact_gain
+					}
+					random = {
+						chance = 20
+						show_as_tooltip = { add_trait = ill }
+						hidden_effect = {
+							trigger_event = {
+								id = health.1001
+								days = { 3 10 }
+							}
+						}
+					}
+				}
+			}
+
+			if = {
+				limit = {
+					always = scope:execution_burned
+					scope:actor.faith = {
+						has_doctrine = doctrine_pluralism_fundamentalist
+					}
+				}
+				scope:actor = {
+					add_piety = miniscule_piety_value
+				}
+			}
+
+			scope:actor = {
+				hidden_effect = {
+					send_interface_message = {
+						type = event_generic_neutral
+						title = msg_execute_prisoner
+						right_icon = scope:recipient
+						custom_tooltip = msg_execute_prisoner_desc
+					}
+				}
+			}
+		}
+	}
+
+	options_heading = execution_options_heading
+
+	send_option = {
+		is_shown = {
+			scope:actor.faith = scope:recipient.faith
+			NOT = {
+				scope:actor.faith = { has_doctrine_parameter = human_sacrifice_active }
+			}
+		}
+		flag = execution_beheaded
+		localization = "EXECUTION_BEHEADED"
+	}
+
+	#Cannibal option. Should be treated as a "normal" execution, but that you eat the body afterwards (in secret if faith does not allow it).
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					scope:actor.faith = { has_doctrine_parameter = cannibalism_legal }
+					has_trait = cannibal
+					any_secret = { secret_type = secret_cannibal }
+				}
+			}
+		}
+		flag = execution_devour
+		localization = "EXECUTION_DEVOUR"
+	}
+
+	send_option = {
+		is_shown = {
+			NOT = {
+				scope:actor.faith = scope:recipient.faith
+				scope:actor.faith = { has_doctrine_parameter = human_sacrifice_active }
+			}
+		}
+		flag = execution_burned
+		localization = "EXECUTION_BURNED"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor.faith = { has_doctrine_parameter = human_sacrifice_active }
+		}
+		flag = execution_sacrifice
+		localization = "EXECUTION_SACRIFICE"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				employs_court_position = executioner_court_position
+				any_court_position_holder = {
+			        type = executioner_court_position
+			        is_physically_able = yes
+			    }
+				exists = capital_county
+			}
+		}
+		is_valid = {
+			scope:actor = {
+				NOT = {
+					capital_county = {
+						has_county_modifier = held_public_execution_modifier
+					}
+				}
+			}
+		}
+		flag = execution_public
+		localization = "EXECUTION_PUBLIC"
+	}
+
+	#AGOT Added
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				is_current_dragonrider = yes
+			}
+			scope:recipient = {
+				is_human = yes
+			}
+		}
+		flag = execution_dragon_fed
+		localization = "EXECUTION_DRAGON_FED"
+	}
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				is_current_dragonrider = yes
+			}
+			scope:recipient = {
+				is_human = yes
+			}
+		}
+		flag = execution_dragon_burn
+		localization = "EXECUTION_DRAGON_BURN"
+	}
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				is_current_dragonrider = yes
+			}
+			scope:recipient = {
+				is_human = yes
+			}
+		}
+		flag = execution_dragon_stomped
+		localization = "EXECUTION_DRAGON_STOMPED"
+	}
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				is_current_dragonrider = yes
+			}
+			scope:recipient = {
+				is_human = yes
+			}
+		}
+		flag = execution_dragon_dropped
+		localization = "EXECUTION_DRAGON_DROPPED"
+	}
+
+	send_options_exclusive = yes
+	auto_accept = yes
+}
