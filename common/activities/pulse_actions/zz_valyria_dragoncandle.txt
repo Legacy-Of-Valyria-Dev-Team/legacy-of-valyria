@@ -49,7 +49,46 @@
 }
 
 
+zz_valyria_find_gold = {
+	icon = "zz_valyria_find_gold" # Uses key name as default
 
+	### Scopes for all the script
+	# root = the activity
+	# scope:activity = the activity
+	# scope:host = host of the activity
+	# scope:province = location of the activity's current phase
+
+	# Can this action be picked on the pulse
+	is_valid = {
+		scope:host = {
+			has_trait = zz_magister
+		}
+	}
+
+	# Relative weight of this action being against all others
+	weight = {
+		value = 25
+	}
+
+	# Effect run when this action is picked
+	# If you save a scope as scope:first or scope:second then they can be displayed in the activity
+	# window notification about this pulse action. Currently characters, titles, and artifacts are shown.
+	effect = {
+		scope:host = { 
+			save_scope_as = first
+		}
+		
+
+		add_activity_log_entry = {
+			key = found_gold
+			tags = { pulse_action }
+			character = scope:first
+			scope:first = {
+				add_gold = 150
+			}
+		}
+	}
+}
 
 
 
@@ -71,7 +110,7 @@ zz_valyria_find_dragon_egg = {
 
 	# Relative weight of this action being against all others
 	weight = {
-		value = 3
+		value = 15
 	}
 
 	# Effect run when this action is picked
