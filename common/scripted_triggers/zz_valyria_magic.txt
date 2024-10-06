@@ -29,10 +29,23 @@ zz_valyria_can_gain_mana = {
 	}
 }
 
+zz_valyria_is_mage = {
+	OR = { 
+		has_trait = zz_magister
+		any_courtier_or_guest = { 
+			has_trait = zz_magister
+		}
+		any_child = { 
+			has_trait = zz_magister
+		}
+	}
+}
+
 zz_valyria_knows_spell = {
 	OR = { 
-		has_character_flag = $SPELL$
-		has_perk = $SPELL$
+		has_character_flag ?= $SPELL$
+		has_perk ?= $SPELL$
+		any_artifact = { has_variable ?= $SPELL$ }
 	}
 }
 
@@ -62,34 +75,6 @@ zz_valyria_valid_caster = {
 		MANACOST = $MANACOST$
 	}
 	is_incapable = no 
-	
-	custom_description = {
-		text = not_in_travel_0
-		OR = {
-			location = capital_province
-			#is_at_home = yes
-			AND = {
-				exists = involved_activity
-				NOT = {
-					has_activity_state = travel
-				}
-			}
-			AND = {
-				exists = current_travel_plan
-				current_travel_plan = {
-					any_entourage_character = {
-						this = scope:recipient
-					}
-				}
-			}
-			AND = {
-				exists = liege
-				location = liege.location
-				location = scope:recipient.location
-				liege.location = liege.capital_province
-			}
-		}
-	}	
 }
 
 zz_valyria_valid_caster_court = {

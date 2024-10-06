@@ -2,7 +2,7 @@ activity_valyria_settle_ruins = {
 	is_shown = {
 		#has_bp2_dlc_trigger = yes
 		highest_held_title_tier > tier_barony
-		is_landed = yes
+		agot_has_dragonblood_heritage = yes
 		is_ai = no 
 	}
 
@@ -15,26 +15,15 @@ activity_valyria_settle_ruins = {
 		scope:host = {
 			is_ai = no 
 			is_imprisoned = no
-			is_landed = yes 
+			agot_has_dragonblood_heritage = yes
 			NOT = { is_incapable = yes }
 		}
 	}
 
 	on_invalidated = {
 		# Host becomes unlanded
-		if = {
-			limit = {
-				scope:host = { is_landed = no }
-			}
-			scope:activity = {
-				activity_type = { save_scope_as = activity_type }
-			}
-			every_attending_character = {
-				trigger_event = activity_system.0320
-			}
-		}
 		# Host becomes incapable
-		else_if = {
+		if = {
 			limit = {
 				scope:host = { is_incapable = yes }
 			}

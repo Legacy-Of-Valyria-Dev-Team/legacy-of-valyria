@@ -360,7 +360,36 @@ zz_valyria_genetic_manipulation = {
 	}
 }
 
-# Charm Magic 
+zz_valyria_restore_maa = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_restore_maa
+		desc = magic_restore_maa_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_restore_maa_text
+		scope:target = {
+			change_maa_troops_count = 100 
+		}
+	}
+}
+zz_valyria_renew_armies = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_renew_armies
+		desc = magic_renew_armies_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_renew_armies_text
+		scope:recipient = {
+			commanding_army = { 
+				deplete_army_by_percentage = -0.5
+			}
+		}
+	}
+}
+
+# Dream Magic 
 zz_valyria_mental_domination = { 
 	send_interface_message = {
 		type = event_generic_neutral
@@ -368,7 +397,7 @@ zz_valyria_mental_domination = {
 		desc = magic_domination_text
 		left_icon = scope:actor
 		right_icon = scope:recipient
-		custom_tooltip = use_magic_custom_tooltip1
+		custom_tooltip = magic_domination_text
 		if = {
 			limit = {
 				NOT = {
@@ -455,7 +484,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:blademaster_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_blademaster }
 						add_trait_xp = {
@@ -470,7 +499,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:mystic_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_mystic }
 						add_trait_xp = {
@@ -485,7 +514,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:reveler_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_reveler }
 						add_trait_xp = {
@@ -500,7 +529,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:hunter_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_hunter }
 						add_trait_xp = {
@@ -515,7 +544,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:physician_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_physician }
 						add_trait_xp = {
@@ -530,7 +559,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:herbalist_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_herbalist }
 						add_trait_xp = {
@@ -545,7 +574,7 @@ zz_valyria_dreaming_within = {
 				limit = {
 					scope:gardener_magic = yes
 				}
-				scope:secondary_recipient = {
+				scope:recipient = {
 					if = {
 						limit = { has_trait = lifestyle_gardener }
 						add_trait_xp = {
@@ -558,7 +587,7 @@ zz_valyria_dreaming_within = {
 			}				
 			if = {
 				limit = {
-					NOT = { scope:actor = scope:secondary_recipient }
+					NOT = { scope:actor = scope:recipient }
 				}
 				add_opinion = {
 					modifier = grateful_opinion
@@ -569,8 +598,6 @@ zz_valyria_dreaming_within = {
 		}
 	}
 }
-
-# Divination Magic
 
 zz_valyria_dreams_of_experience = { 
 	send_interface_message = {
@@ -879,7 +906,19 @@ zz_valyria_empowerment_of_arms = {
 				}
 				scope:recipient = { add_character_modifier = { modifier = zz_valyria_magic_character_maa_size_modifier years = -1 } } 
 			}
-
+			else_if = {
+				limit = {
+					scope:title_maa_bonus = yes
+				}
+				scope:recipient = { add_character_modifier = { modifier = zz_valyria_magic_character_title_maa_limit_modifier years = -1 } } 
+			}
+			else_if = {
+				limit = {
+					scope:title_maa_size_bonus = yes
+				}
+				scope:recipient = { add_character_modifier = { modifier = zz_valyria_magic_character_title_maa_size_modifier years = -1 } } 
+			}
+			
 			
 			if = {
 				limit = {
@@ -900,11 +939,11 @@ zz_valyria_empowerment_of_arms = {
 zz_valyria_flame_strike = { 
 	send_interface_message = {
 		type = event_generic_neutral
-		title = power_strike
-		desc = "power_strike_desc"
+		title = magic_flame_strike
+		desc = magic_flame_strike_text
 		left_icon = scope:actor
 		right_icon = scope:recipient					
-
+		custom_tooltip = magic_flame_strike_text
 
 		if = {
 			limit = {
@@ -1189,5 +1228,29 @@ zz_valyria_flame_strike = {
 				}
 			}
 		}		
+	}
+}
+
+valyria_fire_blast = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_flame_blast
+		desc = magic_flame_blast_text
+		left_icon = scope:actor
+		right_icon = scope:recipient					
+		custom_tooltip = magic_flame_blast_text
+		scope:recipient = {
+			location = {
+				every_army_in_location = {
+					limit = { 
+						army_owner = scope:recipient
+					}
+					deplete_army_by_percentage = 0.3
+				}
+			}
+			commanding_army = { 
+				deplete_army_by_percentage = 0.9
+			}
+		}
 	}
 }

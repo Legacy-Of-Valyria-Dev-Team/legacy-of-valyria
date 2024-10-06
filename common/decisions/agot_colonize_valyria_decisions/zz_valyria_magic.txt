@@ -1,1 +1,136 @@
 ﻿
+
+convert_to_freehold_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = major
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 36
+
+	is_shown = {
+		has_trait = zz_magister
+		trigger_if = {
+			limit = { is_independent_ruler = no }
+			liege = { government_allows = administrative }
+		}
+		trigger_else = {
+			is_independent_ruler = yes
+		}
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		has_trait = zz_magister
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+		prestige = {
+			value = 1000
+			if = {
+				limit = {
+					is_ai = no
+					primary_title.tier = tier_kingdom
+				}
+				multiply = 1.5
+			}
+			if = { # Much cheaper for vassals wanting to adopt their admin liege's government
+				limit = {
+					is_independent_ruler = no
+				}
+				multiply = 0.1
+			}
+		}
+		gold = {
+			value = 800
+			if = {
+				limit = { is_ai = no }
+				#Realm size
+				if = {
+					limit = { root.realm_size >= 300 }
+					multiply = 3.5
+				}
+				else_if = {
+					limit = { root.realm_size >= 250 }
+					multiply = 3
+				}
+				else_if = {
+					limit = { root.realm_size >= 200 }
+					multiply = 2.5
+				}
+				else_if = {
+					limit = { root.realm_size >= 150 }
+					multiply = 2
+				}
+				else_if = {
+					limit = { root.realm_size >= 100 }
+					multiply = 1.5
+				}
+			}
+			#Era
+			culture = {
+				if = {
+					limit = { has_cultural_era_or_later = culture_era_late_medieval }
+					multiply = 1.75
+				}
+				else_if = {
+					limit = { has_cultural_era_or_later = culture_era_high_medieval }
+					multiply = 1.25
+				}
+				else_if = {
+					limit = { has_cultural_era_or_later = culture_era_early_medieval }
+					multiply = 1
+				}
+				else = {
+					multiply = 0.75
+				}
+			}
+			#Income
+			if = {
+				limit = { root.monthly_character_income >= 100 }
+				multiply = 3
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 80 }
+				multiply = 2.5
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 60 }
+				multiply = 2
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 40 }
+				multiply = 1.5
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 20 }
+				multiply = 1.1
+			}
+
+			max = 3000
+			
+			if = { # Much cheaper for vassals wanting to adopt their admin liege's government
+				limit = {
+					is_independent_ruler = no
+				}
+				multiply = 0.1
+			}
+		}
+	}
+
+	effect = {
+		save_scope_as = actor
+		convert_to_freehold_from_feudel_effect = yes
+		trigger_event = ep3_decisions_event.4060 #Also sends information event to human vassals
+	}
+
+	ai_potential = {
+		always = no 
+	}
+}

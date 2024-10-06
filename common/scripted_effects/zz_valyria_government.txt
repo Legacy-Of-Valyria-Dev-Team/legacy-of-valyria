@@ -1,0 +1,214 @@
+convert_to_freehold_from_feudel_effect = {
+	save_scope_as = administrative_liege
+
+	change_to_freehold_effect = yes
+
+	save_scope_as = administrative_liege
+
+	#Direct Vassals who fulfill the ep3_vassal_will_become_admin criteria are converted. Vassals above 25 opinion always accept
+	#Vassals are converted as a hierarchy. If a king is converted we convert all who are valid below that king (so his dukes, their counts, and their barons) are all converted.
+	#If a vassal does not convert (because of not accepting or because they are outside of the de jure empire, etc) then the vassals below them are _not_ converted either.
+
+	#Human vassals are given a choice to convert or not in the ping event, even if powerful or having very good relation.
+
+	hidden_effect = { 
+		save_scope_as = actor
+		every_powerful_vassal = { #All valid powerful vassals auto convert - their support was required to take the decision.
+			limit = {
+				ep3_vassal_will_become_admin = yes
+				is_ai = yes
+			}
+			save_scope_as = recipient
+			change_to_freehold_effect = yes	
+			every_vassal = { #Everyone below also converts
+				limit = {
+					ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+					is_ai = yes
+				}
+				save_scope_as = recipient	
+				change_to_freehold_effect = yes
+				every_vassal = { #Everyone below also converts (could be Counts, could be Barons)
+					limit = {
+						ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+						is_ai = yes
+					}
+					save_scope_as = recipient	
+					change_to_freehold_effect = yes
+					every_vassal = { #Everyone below also converts could be Barons)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}
+						save_scope_as = recipient
+						change_to_freehold_effect = yes
+					}
+				}
+			}
+		}
+		every_vassal = {
+			limit = {
+				ep3_vassal_will_become_admin = yes
+				trigger_if = { #Dukes and above can say no
+					limit = {
+						primary_title.tier >= tier_duchy
+						is_ai = yes
+					}
+					opinion = {
+						target = scope:administrative_liege
+						value > 25
+					}
+				}
+			}
+			save_scope_as = recipient
+			change_to_freehold_effect = yes
+			every_vassal = { #Everyone below also converts (could be Counts, could be Dukes)
+				limit = {
+					ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+					is_ai = yes
+				}
+				save_scope_as = recipient	
+				change_to_freehold_effect = yes
+				every_vassal = { #Everyone below also converts (Could be Counts, could be Barons)
+					limit = {
+						ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+						is_ai = yes
+					}
+					save_scope_as = recipient	
+					change_to_freehold_effect = yes
+					every_vassal = { #Everyone below also converts (could be Barons)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}
+						save_scope_as = recipient
+						change_to_freehold_effect = yes
+					}
+				}
+			}
+		}
+		every_vassal = {
+			limit = {
+				ep3_vassal_will_become_admin = yes
+				trigger_if = { #Dukes and above can say no
+					limit = {
+						primary_title.tier >= tier_duchy
+						is_ai = yes
+					}
+					opinion = {
+						target = scope:administrative_liege
+						value > 0
+					}
+				}
+			}
+			random_list = {
+				10 = { } #10% of the vassals that like us less than 25 but more than 0 still convert.
+				90 = {
+					save_scope_as = recipient
+					change_to_freehold_effect = yes
+					every_vassal = { #Everyone below also converts (could be Counts, could be Dukes)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}
+						save_scope_as = recipient	
+						change_to_freehold_effect = yes
+						every_vassal = { #Everyone below also converts (Could be Counts, could be Barons)
+							limit = {
+								ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+								is_ai = yes
+							}
+							save_scope_as = recipient	
+							change_to_freehold_effect = yes
+							every_vassal = { #Everyone below also converts (could be Barons)
+								limit = {
+									ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+									is_ai = yes
+								}
+								save_scope_as = recipient	
+								change_to_freehold_effect = yes
+							}
+						}
+					}
+				}
+			}
+		}
+		every_vassal = {
+			limit = {
+				highest_held_title_tier >= tier_duchy
+				house.house_head ?= this
+				government_has_flag = government_is_administrative
+				NOT = {
+					any_held_title = { is_noble_family_title = yes }
+				}
+			}
+			create_noble_family_effect = yes
+		}
+	}
+
+	if = {
+		limit = {
+			NOT = {
+				has_character_flag = latin_emp_force_admin_flag
+			}
+			is_independent_ruler = yes
+		}
+		add_character_modifier = {
+			modifier = first_admin_emperor
+		}
+	}
+	
+	change_influence = admin_convert_influence_value
+	if = {
+		limit = {
+			is_independent_ruler = yes
+		}
+		add_legitimacy_effect = { LEGITIMACY = admin_convert_legitimacy_value } #One Time Legitimacy Boost
+	}
+
+	custom_description_no_bullet = {
+		text = vassals_can_become_administrative
+	}
+	custom_tooltip = powerful_vassals_become_administrative
+	custom_tooltip = vassals_become_administrative
+	custom_tooltip = vassals_who_may_switch_to_administrative
+
+}
+
+
+change_to_freehold_effect = {
+	save_scope_as = governor
+	if = {
+		limit = {
+			NOT = { government_has_flag = government_is_freehold }
+		}
+		change_government = freehold_government
+		save_scope_as = new_admin
+	}
+	if = {
+		limit = {
+			primary_title.tier >= tier_duchy
+			house.house_head = {
+				NOT = {
+					any_held_title = { is_noble_family_title = yes }
+				}
+			}
+		}
+		create_noble_family_effect = yes
+	}
+
+	hidden_effect = {
+		if = {
+			limit = {
+				is_governor = yes
+				NOT = { has_trait = governor }
+			}
+			add_trait = governor
+		}
+	}
+	if = {
+		limit = { exists = scope:new_admin }
+		domicile ?= {
+			set_up_domicile_estate_effect = yes
+		}
+	}
+}

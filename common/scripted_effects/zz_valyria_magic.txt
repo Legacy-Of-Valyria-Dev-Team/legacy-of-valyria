@@ -69,6 +69,22 @@ zz_valyria_gain_spell_experience = {
 	}
 }
 
+zz_valyria_populate_mage_list = { 
+	if = { 
+		limit = {
+			has_trait = zz_magister
+		}
+		add_to_list = characters
+	}
+	every_living_mage = { 
+		limit = { 
+			liege_or_court_owner ?= scope:actor 
+		}
+		add_to_list = characters
+	}
+}
+
+
 zz_valyria_populate_spell_caster_list = {
 	if = { 
 		limit = {
@@ -90,7 +106,6 @@ zz_valyria_populate_spell_caster_list = {
 	}
 	every_child = {
 		limit = {
-			NOT = { is_in_list = characters }
 			zz_valyria_valid_caster = {
 				SPELL = $SPELL$
 				MANACOST = $MANACOST$
@@ -101,15 +116,17 @@ zz_valyria_populate_spell_caster_list = {
 }
 
 zz_valyria_populate_spell_recipient_list = {
-	add_to_list = characters
-	every_courtier = {
+	scope:recipient = {
 		add_to_list = characters
 	}
-	every_child = {
-		limit = {
-			NOT = { is_in_list = characters }
-		}
+	scope:actor = {
 		add_to_list = characters
+		every_courtier = {
+			add_to_list = characters
+		}
+		every_child = {
+			add_to_list = characters
+		}
 	}
 }
 
@@ -197,5 +214,25 @@ zz_random_gain_magic_spell = {
 				SPELL = mental_domination_spell_flag
 			}
 		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = waters_of_mother_rhoyne_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = tempestuous_winds_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = men_at_arms_restoration_spell_flag
+			}
+		}
+		1 = {
+			zz_add_spell  = {
+				SPELL = rejuvenate_the_armies_spell_flag
+			}
+		}		
 	}
 }
