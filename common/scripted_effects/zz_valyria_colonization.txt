@@ -1,0 +1,583 @@
+# Set up a University Teacher
+valyria_colonization_teacher_setup = {
+	scope:activity.activity_location = { save_scope_as = location }
+	if = {
+		limit = {
+			scope:activity = {
+				NOT = {
+					any_attending_character = {
+						has_character_flag = teacher_1
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+				}
+				save_scope_as = teacher_1
+			}
+		}
+		else_if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_adult_education_teacher = yes
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_adult_education_teacher = yes
+				}
+				save_scope_as = teacher_1
+			}
+		}
+		else = {
+			create_character = {
+				template = adult_education_teacher
+				dynasty = none
+				location = scope:location
+				save_scope_as = teacher_1
+			}
+		}
+		scope:teacher_1 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_2
+				}
+				remove_character_flag = teacher_2
+			}
+			if = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			if = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			add_to_activity = scope:activity
+			add_character_flag = teacher_1
+		}
+	}
+	if = {
+		limit = {
+			scope:activity = {
+				NOT = {
+					any_attending_character = {
+						has_character_flag = teacher_2
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+				save_scope_as = teacher_2
+			}
+		}
+		else_if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_adult_education_teacher = yes
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_adult_education_teacher = yes
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+				save_scope_as = teacher_2						
+			}
+		}
+		else = {	
+			create_character = {
+				template = adult_education_teacher
+				dynasty = none
+				location = scope:location
+				save_scope_as = teacher_2
+			}
+		}
+		scope:teacher_2 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_1
+				}
+				remove_character_flag = teacher_1
+			}
+			if = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			if = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			add_to_activity = scope:activity
+			add_character_flag = teacher_2
+		}
+	}
+}
+
+# Set up a University student
+valyria_colonization_student_setup = {
+	scope:activity.activity_location = { save_scope_as = location }
+	if = {
+		limit = {
+			NOT = {
+				scope:activity = {
+					any_attending_character = {
+						has_character_flag = student_1
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+					exists = this
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+				}
+				save_scope_as = student_1
+			}
+		}
+		else = {
+			create_character = {
+				template = adult_education_student
+				dynasty = none
+				location = scope:location
+				save_scope_as = student_1
+			}
+			scope:student_1 = {
+				add_character_flag = generated_character_uni
+			}
+		}
+		scope:student_1 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_1
+				}
+				remove_character_flag = teacher_1
+			}
+			if = {
+				limit = {
+					has_character_flag = teacher_2
+				}
+				remove_character_flag = teacher_2
+			}
+			if = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			add_to_activity = scope:activity
+			add_character_flag = student_1
+		}
+	}
+
+	if = {
+		limit = {
+			NOT = {
+				scope:activity = {
+					any_attending_character = {
+						has_character_flag = student_2
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+					exists = this
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+				}
+				save_scope_as = student_2
+			}
+		}
+		else = {
+			create_character = {
+				template = adult_education_student
+				dynasty = none
+				location = scope:location
+				save_scope_as = student_2
+			}
+			scope:student_2 = {
+				add_character_flag = generated_character_uni
+			}
+		}
+		scope:student_2 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_1
+				}
+				remove_character_flag = teacher_1
+			}
+			if = {
+				limit = {
+					has_character_flag = teacher_2
+				}
+				remove_character_flag = teacher_2
+			}
+			if = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			add_to_activity = scope:activity
+			add_character_flag = student_2
+		}
+	}
+}
+
+resolve_valyria_colonization_success_reward_effect = {
+	involved_activity ?= {
+		#Perfect Colonization - 75-100
+		if = {
+			limit = { var:activity_special_type_progression >= 75 }
+			scope:host = {
+				add_character_flag = perfect_colonization_reward
+			}
+		}
+		#High-end Colonization - 50-75
+		else_if = {
+			limit = { 
+				var:activity_special_type_progression < 75
+				var:activity_special_type_progression >= 50
+			} 
+			scope:host = {
+				add_character_flag = high_colonization_reward
+			}
+		}
+		#OK Colonization - 25-50
+		else_if = {
+			limit = {
+				var:activity_special_type_progression < 50
+				var:activity_special_type_progression >= 25
+			}
+			scope:host = {
+				add_character_flag = mid_colonization_reward
+			}
+		}
+		#Lousy Colonization - 0-25
+		else = {
+			scope:host = {
+				add_character_flag = low_colonization_reward
+			}
+		}
+	}
+}
+
+
+
+valyria_colonization_completed_log_entry_effect = {
+	involved_activity = {
+		add_activity_log_entry = {
+			key = valyria_colonization_studies_completed_log
+			tags = { completed }
+			score = 100
+			show_in_conclusion = yes
+			character = root
+			#Effects
+			root = {
+				disburse_valyria_colonization_reward_effect = yes
+			}
+		}
+	}
+}
+
+
+
+disburse_valyria_colonization_reward_effect = {
+
+	switch = { # Hand out lifestyle perks/xp
+		trigger = has_character_flag
+		perfect_colonization_reward = { 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			if = { 
+				limit = { 
+					is_landless_adventurer = no
+				}
+				get_title = scope:province.county
+			}
+			else_if = { 
+				limit = { 
+					is_landless_adventurer = yes
+				}
+				var:cid_title_to_give = {
+					scope:province.county = { add_to_list = seized_titles }
+				}
+				ep3_become_landed_save_liege_effect = {
+					TITLE_GIVER = scope:actor
+					ALWAYS_INDEPENDENT = yes
+					TITLE_LIST = seized_titles
+				}
+				# Resolve title, liege, government changes
+				ep3_become_landed_transfer_effect = {
+					TITLE_RECEIVER = scope:host 
+					TITLE_LIST = seized_titles
+					TYPE = conquest
+					REASON = flag:conquest 
+				}
+			}
+			scope:province.county = { 
+				set_county_faith = scope:host.faith
+				set_county_culture = scope:host.culture
+			}
+			if = {
+				limit = { this = scope:host }
+				create_character_memory = {
+					type = completed_colonization
+				}
+				scope:new_memory = {
+					set_variable = {
+						name = education_destination
+						value = scope:activity.activity_location
+					}
+				}
+			}
+		}
+		high_colonization_reward = { 
+			random = { 
+				chance = 50 
+				agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			}
+			if = { 
+				limit = { 
+					is_landless_adventurer = no
+				}
+				get_title = scope:province.county
+			}
+			else_if = { 
+				limit = { 
+					is_landless_adventurer = yes
+				}
+				var:cid_title_to_give = {
+					scope:province.county = { add_to_list = seized_titles }
+				}
+				ep3_become_landed_save_liege_effect = {
+					TITLE_GIVER = scope:actor
+					ALWAYS_INDEPENDENT = yes
+					TITLE_LIST = seized_titles
+				}
+				# Resolve title, liege, government changes
+				ep3_become_landed_transfer_effect = {
+					TITLE_RECEIVER = scope:host 
+					TITLE_LIST = seized_titles
+					TYPE = conquest
+					REASON = flag:conquest 
+				}
+			}
+			scope:province.county = { 
+				set_county_faith = scope:host.faith
+				set_county_culture = scope:host.culture
+			}
+			if = {
+				limit = { this = scope:host }
+				create_character_memory = {
+					type = completed_colonization
+				}
+				scope:new_memory = {
+					set_variable = {
+						name = education_destination
+						value = scope:activity.activity_location
+					}
+				}
+			}
+		}
+		mid_colonization_reward = { 
+			random = {
+				chance = 50 
+				if = { 
+					limit = { 
+						is_landless_adventurer = no
+					}
+					get_title = scope:province.county
+				}
+				else_if = { 
+					limit = { 
+						is_landless_adventurer = yes
+					}
+					var:cid_title_to_give = {
+						scope:province.county = { add_to_list = seized_titles }
+					}
+					ep3_become_landed_save_liege_effect = {
+						TITLE_GIVER = scope:actor
+						ALWAYS_INDEPENDENT = yes
+						TITLE_LIST = seized_titles
+					}
+					# Resolve title, liege, government changes
+					ep3_become_landed_transfer_effect = {
+						TITLE_RECEIVER = scope:host 
+						TITLE_LIST = seized_titles
+						TYPE = conquest
+						REASON = flag:conquest 
+					}
+				}
+				scope:province.county = { 
+					set_county_faith = scope:host.faith
+					set_county_culture = scope:host.culture
+				}
+				if = {
+					limit = { this = scope:host }
+					create_character_memory = {
+						type = completed_colonization
+					}
+					scope:new_memory = {
+						set_variable = {
+							name = education_destination
+							value = scope:activity.activity_location
+						}
+					}
+				}
+			}
+		}
+		low_colonization_reward = { 
+			
+		}
+	}
+	# Options rewards
+	if = {
+		limit = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+			has_dlc_feature = royal_court
+			scope:host = { has_royal_court = yes }
+		}
+		custom_tooltip = adult_education_books_good_reward
+		hidden_effect = {
+			random_dummy_gender_effect = yes
+			create_artifact_book_effect = {
+				OWNER = scope:host
+				CREATOR = scope:dummy_gender
+				SET_SUBJECT = flag:no
+				SET_TOPIC = flag:no
+			}
+			hidden_effect_new_object = {
+				scope:newly_created_artifact = {
+					set_artifact_rarity = illustrious
+				}
+			}
+			scope:activity = {
+				add_to_variable_list = {
+					name = artifact_rewards
+					target = scope:newly_created_artifact
+				}
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+		custom_tooltip = adult_education_books_good_reward
+		hidden_effect = {
+			
+		}
+		
+	}
+	else_if = {
+		limit = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_normal
+				}
+			}
+		}
+	}
+}
