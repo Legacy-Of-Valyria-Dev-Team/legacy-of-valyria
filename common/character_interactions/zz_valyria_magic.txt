@@ -222,9 +222,18 @@ valyria_magic_genetic_manipulation = {
 					XPTRACK = blood_magic
 				}
 			}
-			zz_valyria_genetic_manipulation = yes 
+			if = { 
+				limit = { 
+					scope:secondary_actor = { 
+						zz_spellcast_value >= 100 
+					}
+				}
+				zz_valyria_genetic_manipulation = yes 
+			}
+			else = { 
+				zz_valyria_spell_failure_effect = yes
+			}
 		}
-
 	}
 	send_options_exclusive = yes
 	send_option = {
@@ -350,7 +359,17 @@ valyria_magic_men_at_arms_restoration = {
 					XPTRACK = blood_magic
 				}
 			}
-			zz_valyria_restore_maa = yes
+			if = { 
+				limit = { 
+					scope:secondary_actor = { 
+						zz_spellcast_value >= 100 
+					}
+				}
+				zz_valyria_restore_maa = yes
+			}
+			else = { 
+				zz_valyria_spell_failure_effect = yes
+			}
 		}
 		
 	}
@@ -399,7 +418,7 @@ valyria_magic_rejuvenate_the_armies = {
 		}
 	}
 
-	icon = water_magic
+	icon = blood_magic
 	common_interaction = no
 	interface_priority = 10
 	category = interaction_magic_friendly
@@ -426,7 +445,17 @@ valyria_magic_rejuvenate_the_armies = {
 					XPTRACK = blood_magic
 				}
 			}
-			zz_valyria_renew_armies = yes 
+			if = { 
+				limit = { 
+					scope:secondary_actor = { 
+						zz_spellcast_value >= 100 
+					}
+				}
+				zz_valyria_renew_armies = yes 
+			}
+			else = { 
+				zz_valyria_spell_failure_effect = yes
+			}
 		}
 	}
 	auto_accept = yes
@@ -647,8 +676,6 @@ valyria_magic_dreaming_within = {
 		base = 100
 	}
 }
-
-
 
 valyria_magic_dreams_of_experience = {
 	redirect = {
@@ -1128,6 +1155,7 @@ valyria_magic_transmutation = {
 		base = 100
 	}
 }
+
 valyria_magic_empowerment_of_arms = {
 	redirect = {
 		scope:actor = {
@@ -1381,9 +1409,6 @@ valyria_magic_craft_potion = {
 	}
 }
 
-
-
-
 ## Fire Magic
 
 valyria_magic_flame_strike = {
@@ -1591,6 +1616,81 @@ valyria_magic_fire_blast = {
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
 					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = fire_magic
+				}
+			}
+		}
+		valyria_fire_blast = yes
+	}
+	auto_accept = yes
+}
+
+valyria_magic_fire_storm = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						MANACOST = 15
+						SPELL = fire_storm_spell_flag
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = fire_storm_spell_flag
+				MANACOST = 15
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = fire_storm_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = fire_storm_spell_flag
+				MANACOST = 15
+			}
+		}
+		scope:recipient = { 
+			is_commanding_army = yes 
+		}
+	}
+
+	icon = fire_magic
+	common_interaction = no
+	interface_priority = 10
+	category = interaction_magic_hostile
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+
+	on_accept = {
+		
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 15
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
