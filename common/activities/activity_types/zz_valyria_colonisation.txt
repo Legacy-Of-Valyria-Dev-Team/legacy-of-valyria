@@ -1,4 +1,4 @@
-﻿activity_valyria_colonization = {
+﻿activity_valyria_colonisation = {
 	is_shown = {
 		is_ai = no
 		highest_held_title_tier > tier_barony
@@ -96,7 +96,7 @@
 
 	is_location_valid = {
 		custom_tooltip = {
-			text = colonization_valyria
+			text = colonisation_valyria
 			#zz_valyria_has_volcano = yes
 			has_holding_type = ruin_holding
 			geographical_region = world_valyria 
@@ -416,8 +416,8 @@
 		#########
 		
 		#########
-		colonization_program = { 
-			colonization_program_normal = {
+		colonisation_program = { 
+			colonisation_program_normal = {
 				default = yes
 				is_shown = { has_dlc_feature = advanced_activities }
 
@@ -427,10 +427,10 @@
 				cost = {
 					gold = {
 						value = 0 
-						desc = colonization_program_normal
+						desc = colonisation_program_normal
 						add = {
 							value = major_gold_value_static_max
-							desc = colonization_program_normal
+							desc = colonisation_program_normal
 							min = 300
 						}
 						add = {
@@ -478,7 +478,7 @@
 
 	phases = {
 		#Study!
-		colonization_phase = {
+		colonisation_phase = {
 			is_predefined = yes
 
 			ai_will_do = {
@@ -499,6 +499,8 @@
 						#Loc
 						activity_location = { save_scope_as = location }
 					}
+					#Arrival event
+					trigger_event = { on_action = colonisation_arrival_events }
 				}
 			}
 
@@ -506,17 +508,18 @@
 			on_monthly_pulse = {
 				if = {
 					limit = { this = scope:host }
+					trigger_event = { on_action = colonisation_destination_events }				
 				}
 			}
 
 			on_end = {
 				scope:host = {
-					resolve_valyria_colonization_success_reward_effect = yes 
-					trigger_event = zz_valyria_colonization.0009 	
+					resolve_valyria_colonisation_success_reward_effect = yes 
+					trigger_event = zz_valyria_colonisation.0009 	
 					if = {
 						limit = { this = scope:host }
 						create_character_memory = {
-							type = completed_colonization
+							type = completed_colonisation
 						}
 						scope:new_memory = {
 							set_variable = {
@@ -566,8 +569,8 @@
 
 	pulse_actions = {
 		entries = {
-			zz_valyria_colonization_success_pulse_1
-			zz_valyria_colonization_success_pulse_2
+			zz_valyria_colonisation_success_pulse_1
+			zz_valyria_colonisation_success_pulse_2
 		}
 		chance_of_no_event = 15
 	}
@@ -605,8 +608,8 @@
 			if = {
 				limit = {
 					has_activity_option = {
-						category = colonization_program
-						option = colonization_program_normal
+						category = colonisation_program
+						option = colonisation_program_normal
 					}
 				}
 				activity_special_type_progression_major = yes

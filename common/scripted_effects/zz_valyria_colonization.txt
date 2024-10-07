@@ -1,5 +1,5 @@
 # Set up a University Teacher
-valyria_colonization_teacher_setup = {
+valyria_colonisation_teacher_setup = {
 	scope:activity.activity_location = { save_scope_as = location }
 	if = {
 		limit = {
@@ -178,7 +178,7 @@ valyria_colonization_teacher_setup = {
 }
 
 # Set up a University student
-valyria_colonization_student_setup = {
+valyria_colonisation_student_setup = {
 	scope:activity.activity_location = { save_scope_as = location }
 	if = {
 		limit = {
@@ -315,39 +315,39 @@ valyria_colonization_student_setup = {
 	}
 }
 
-resolve_valyria_colonization_success_reward_effect = {
+resolve_valyria_colonisation_success_reward_effect = {
 	involved_activity ?= {
-		#Perfect Colonization - 75-100
+		#Perfect colonisation - 75-100
 		if = {
 			limit = { var:activity_special_type_progression >= 75 }
 			scope:host = {
-				add_character_flag = perfect_colonization_reward
+				add_character_flag = perfect_colonisation_reward
 			}
 		}
-		#High-end Colonization - 50-75
+		#High-end colonisation - 50-75
 		else_if = {
 			limit = { 
 				var:activity_special_type_progression < 75
 				var:activity_special_type_progression >= 50
 			} 
 			scope:host = {
-				add_character_flag = high_colonization_reward
+				add_character_flag = high_colonisation_reward
 			}
 		}
-		#OK Colonization - 25-50
+		#OK colonisation - 25-50
 		else_if = {
 			limit = {
 				var:activity_special_type_progression < 50
 				var:activity_special_type_progression >= 25
 			}
 			scope:host = {
-				add_character_flag = mid_colonization_reward
+				add_character_flag = mid_colonisation_reward
 			}
 		}
-		#Lousy Colonization - 0-25
+		#Lousy colonisation - 0-25
 		else = {
 			scope:host = {
-				add_character_flag = low_colonization_reward
+				add_character_flag = low_colonisation_reward
 			}
 		}
 	}
@@ -355,17 +355,17 @@ resolve_valyria_colonization_success_reward_effect = {
 
 
 
-valyria_colonization_completed_log_entry_effect = {
+valyria_colonisation_completed_log_entry_effect = {
 	involved_activity = {
 		add_activity_log_entry = {
-			key = valyria_colonization_studies_completed_log
+			key = valyria_colonisation_studies_completed_log
 			tags = { completed }
 			score = 100
 			show_in_conclusion = yes
 			character = root
 			#Effects
 			root = {
-				disburse_valyria_colonization_reward_effect = yes
+				disburse_valyria_colonisation_reward_effect = yes
 			}
 		}
 	}
@@ -373,11 +373,11 @@ valyria_colonization_completed_log_entry_effect = {
 
 
 
-disburse_valyria_colonization_reward_effect = {
+disburse_valyria_colonisation_reward_effect = {
 
 	switch = { # Hand out lifestyle perks/xp
 		trigger = has_character_flag
-		perfect_colonization_reward = { 
+		perfect_colonisation_reward = { 
 			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
 			if = { 
 				limit = { 
@@ -412,7 +412,7 @@ disburse_valyria_colonization_reward_effect = {
 			if = {
 				limit = { this = scope:host }
 				create_character_memory = {
-					type = completed_colonization
+					type = completed_colonisation
 				}
 				scope:new_memory = {
 					set_variable = {
@@ -421,9 +421,9 @@ disburse_valyria_colonization_reward_effect = {
 					}
 				}
 			}
-			remove_character_flag = perfect_colonization_reward
+			remove_character_flag = perfect_colonisation_reward
 		}
-		high_colonization_reward = { 
+		high_colonisation_reward = { 
 			random = { 
 				chance = 50 
 				agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
@@ -461,7 +461,7 @@ disburse_valyria_colonization_reward_effect = {
 			if = {
 				limit = { this = scope:host }
 				create_character_memory = {
-					type = completed_colonization
+					type = completed_colonisation
 				}
 				scope:new_memory = {
 					set_variable = {
@@ -470,9 +470,9 @@ disburse_valyria_colonization_reward_effect = {
 					}
 				}
 			}
-			remove_character_flag = high_colonization_reward
+			remove_character_flag = high_colonisation_reward
 		}
-		mid_colonization_reward = { 
+		mid_colonisation_reward = { 
 			random = {
 				chance = 50 
 				if = { 
@@ -508,7 +508,7 @@ disburse_valyria_colonization_reward_effect = {
 				if = {
 					limit = { this = scope:host }
 					create_character_memory = {
-						type = completed_colonization
+						type = completed_colonisation
 					}
 					scope:new_memory = {
 						set_variable = {
@@ -518,10 +518,10 @@ disburse_valyria_colonization_reward_effect = {
 					}
 				}
 			}
-			remove_character_flag = mid_colonization_reward
+			remove_character_flag = mid_colonisation_reward
 		}
-		low_colonization_reward = { 
-			remove_character_flag = low_colonization_reward
+		low_colonisation_reward = { 
+			remove_character_flag = low_colonisation_reward
 		}
 	}
 	# Options rewards
