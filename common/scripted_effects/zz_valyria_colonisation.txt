@@ -372,6 +372,58 @@ valyria_colonisation_completed_log_entry_effect = {
 }
 
 
+zz_valyria_colonise_claim_titles = { 
+	if = { 
+		limit = { 
+			is_landless_adventurer = no
+		}
+		get_title = scope:province
+		get_title = scope:province.county
+	}
+	else_if = { 
+		limit = { 
+			is_landless_adventurer = yes
+		}
+		var:cid_title_to_give = {
+			scope:province = { add_to_list = seized_titles }
+			scope:province.county = { add_to_list = seized_titles }
+		}
+		ep3_become_landed_save_liege_effect = {
+			TITLE_GIVER = scope:actor
+			ALWAYS_INDEPENDENT = yes
+			TITLE_LIST = seized_titles
+		}
+		# Resolve title, liege, government changes
+		ep3_become_landed_transfer_effect = {
+			TITLE_RECEIVER = scope:host 
+			TITLE_LIST = seized_titles
+			TYPE = conquest
+			REASON = flag:conquest 
+		}
+	}
+	scope:province.county = {
+		every_county_province = {
+			remove_holding = yes 
+		}
+	}
+	scope:province.county = { 
+		set_county_faith = scope:host.faith
+		set_county_culture = scope:host.culture
+	}
+	if = {
+		limit = { this = scope:host }
+		create_character_memory = {
+			type = completed_colonisation
+		}
+		scope:new_memory = {
+			set_variable = {
+				name = education_destination
+				value = scope:activity.activity_location
+			}
+		}
+	}
+}
+
 
 disburse_valyria_colonisation_reward_effect = {
 
@@ -379,50 +431,7 @@ disburse_valyria_colonisation_reward_effect = {
 		trigger = has_character_flag
 		perfect_colonisation_reward = { 
 			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
-			if = { 
-				limit = { 
-					is_landless_adventurer = no
-				}
-				get_title = scope:province
-				get_title = scope:province.county
-			}
-			else_if = { 
-				limit = { 
-					is_landless_adventurer = yes
-				}
-				var:cid_title_to_give = {
-					scope:province = { add_to_list = seized_titles }
-					scope:province.county = { add_to_list = seized_titles }
-				}
-				ep3_become_landed_save_liege_effect = {
-					TITLE_GIVER = scope:actor
-					ALWAYS_INDEPENDENT = yes
-					TITLE_LIST = seized_titles
-				}
-				# Resolve title, liege, government changes
-				ep3_become_landed_transfer_effect = {
-					TITLE_RECEIVER = scope:host 
-					TITLE_LIST = seized_titles
-					TYPE = conquest
-					REASON = flag:conquest 
-				}
-			}
-			scope:province.county = { 
-				set_county_faith = scope:host.faith
-				set_county_culture = scope:host.culture
-			}
-			if = {
-				limit = { this = scope:host }
-				create_character_memory = {
-					type = completed_colonisation
-				}
-				scope:new_memory = {
-					set_variable = {
-						name = education_destination
-						value = scope:activity.activity_location
-					}
-				}
-			}
+			zz_valyria_colonise_claim_titles = yes
 			remove_character_flag = perfect_colonisation_reward
 		}
 		high_colonisation_reward = { 
@@ -430,99 +439,13 @@ disburse_valyria_colonisation_reward_effect = {
 				chance = 50 
 				agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
 			}
-			if = { 
-				limit = { 
-					is_landless_adventurer = no
-				}
-				get_title = scope:province
-				get_title = scope:province.county
-			}
-			else_if = { 
-				limit = { 
-					is_landless_adventurer = yes
-				}
-				var:cid_title_to_give = {
-					scope:province = { add_to_list = seized_titles }
-					scope:province.county = { add_to_list = seized_titles }
-				}
-				ep3_become_landed_save_liege_effect = {
-					TITLE_GIVER = scope:actor
-					ALWAYS_INDEPENDENT = yes
-					TITLE_LIST = seized_titles
-				}
-				# Resolve title, liege, government changes
-				ep3_become_landed_transfer_effect = {
-					TITLE_RECEIVER = scope:host 
-					TITLE_LIST = seized_titles
-					TYPE = conquest
-					REASON = flag:conquest 
-				}
-			}
-			scope:province.county = { 
-				set_county_faith = scope:host.faith
-				set_county_culture = scope:host.culture
-			}
-			if = {
-				limit = { this = scope:host }
-				create_character_memory = {
-					type = completed_colonisation
-				}
-				scope:new_memory = {
-					set_variable = {
-						name = education_destination
-						value = scope:activity.activity_location
-					}
-				}
-			}
+			zz_valyria_colonise_claim_titles = yes
 			remove_character_flag = high_colonisation_reward
 		}
 		mid_colonisation_reward = { 
 			random = {
 				chance = 50 
-				if = { 
-					limit = { 
-						is_landless_adventurer = no
-					}
-					get_title = scope:province
-					get_title = scope:province.county
-				}
-				else_if = { 
-					limit = { 
-						is_landless_adventurer = yes
-					}
-					var:cid_title_to_give = {
-						scope:province = { add_to_list = seized_titles }
-						scope:province.county = { add_to_list = seized_titles }
-					}
-					ep3_become_landed_save_liege_effect = {
-						TITLE_GIVER = scope:actor
-						ALWAYS_INDEPENDENT = yes
-						TITLE_LIST = seized_titles
-					}
-					# Resolve title, liege, government changes
-					ep3_become_landed_transfer_effect = {
-						TITLE_RECEIVER = scope:host 
-						TITLE_LIST = seized_titles
-						TYPE = conquest
-						REASON = flag:conquest 
-					}
-				}
-				scope:province.county = { 
-					set_county_faith = scope:host.faith
-					set_county_culture = scope:host.culture
-				}
-				if = {
-					limit = { this = scope:host }
-					create_character_memory = {
-						type = completed_colonisation
-					}
-					scope:new_memory = {
-						set_variable = {
-							name = education_destination
-							value = scope:activity.activity_location
-						}
-					}
-				}
+				zz_valyria_colonise_claim_titles = yes 
 			}
 			remove_character_flag = mid_colonisation_reward
 		}
