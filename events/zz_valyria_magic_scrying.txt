@@ -2,7 +2,7 @@
 
 #scrying 1.
 zz_valyria_magic_scrying.1 = {
-	title = zz_valyria_magic_scrying.1.title
+	title = zz_valyria_magic_scrying.1.t
 	desc = zz_valyria_magic_scrying.1.desc
 	theme = witchcraft
 	left_portrait = root
@@ -50,7 +50,7 @@ zz_valyria_magic_scrying.1 = {
 
 #scrying 2.
 zz_valyria_magic_scrying.2 = {
-	title = zz_valyria_magic_scrying.2.title
+	title = zz_valyria_magic_scrying.2.t
 	desc = zz_valyria_magic_scrying.2.desc
 	theme = witchcraft
 	left_portrait = root
@@ -202,3 +202,273 @@ zz_valyria_magic_scrying.2 = {
 	}
 }
 
+zz_valyria_magic_scrying.40 = {
+	title = mind_scan
+	#desc = ev6.11.desc
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:recipient = {
+						has_character_flag = blob_flag
+					}
+				}
+				desc = ev6.11.desc6
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:mscheme
+				}
+				desc = ev6.11.desc2
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:mscheme2
+				}
+				desc = ev6.11.desc3
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:rsecret
+					exists = scope:rstarget
+				}
+				desc = ev6.11.desc4M
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:rsecret
+				}
+				desc = ev6.11.desc4
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:rsecret2
+					exists = scope:rsowner
+				}
+				desc = ev6.11.desc5
+			}
+			desc = ev6.11.desc
+		}
+	}
+	theme = witchcraft
+	left_portrait = root
+	right_portrait = scope:recipient
+	lower_left_portrait = {
+		trigger = {
+			exists = scope:mschemeowner2
+		}
+		character = scope:mschemeowner2
+	}
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:mstarget
+		}
+		character = scope:mstarget
+	}
+	
+	trigger = {
+		is_alive = yes
+	}
+	immediate = {
+		if = {
+			limit = {
+				scope:recipient = {
+					NOT = {
+						has_character_flag = blob_flag
+					}
+				}
+			}
+			hidden_effect = {
+			
+				scope:recipient = {
+					random_secret = {
+						limit = {
+							NOT = { is_known_by = root }
+						}
+						save_scope_as = rsecret
+						if = {
+							limit = {
+								scope:rsecret = {
+									exists = scope:rsecret.secret_target
+								}
+							}
+							scope:rsecret.secret_target = {
+								save_scope_as = rstarget
+							}
+						}
+					}
+					
+					random_scheme = {
+						limit = {
+							is_hostile = yes
+						}
+						save_scope_as = mscheme
+						scheme_target_character = {
+							save_scope_as = mstarget
+						}
+					}
+					if = {
+						limit = {
+							any_known_secret = {
+								NOT = { is_known_by = root }
+							}
+						}
+						random_known_secret = {
+							limit = {
+								NOT = { is_known_by = root }
+							}
+							save_scope_as = rsecret2
+							secret_owner = {
+								save_scope_as = rsowner
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							exists = scope:mscheme
+						}
+					}
+					random_living_character = {
+						limit = {
+							any_scheme = {
+								any_scheme_agent_character = {
+									this = scope:recipient
+								}
+							}
+						}
+						save_scope_as = mschemeowner2
+						random_scheme = {
+							limit = {
+								any_scheme_agent_character = {
+									this = scope:recipient
+								}
+							}
+							save_scope_as = mscheme2
+							scheme_target_character = {
+								save_scope_as = mstarget
+							}
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					exists = scope:rsecret
+				}
+				scope:rsecret = {
+					reveal_to = root
+				}
+			}
+			else_if = {
+				limit = {
+					exists = scope:rsecret2
+					exists = scope:rsowner
+				}
+				scope:rsecret2 = {
+					reveal_to = root
+				}
+			}
+		}
+	}
+	option = {
+		name = ev1.1.a	#Strange
+		trigger = {
+			scope:recipient = {
+				has_character_flag = blob_flag
+			}
+		}
+	}
+	option = {
+		#I see...
+		name = ev4.23.0.a
+		trigger = {
+			scope:recipient = {
+				NOT = {
+					has_character_flag = blob_flag
+				}
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					exists = scope:mscheme
+					scope:mscheme.scheme_target_character = root
+				}
+				add_opinion = {
+					target = scope:mscheme.scheme_owner
+					modifier = schemed_against_me
+				}
+			}
+			else_if = {
+				limit = {
+					exists = scope:mscheme2
+					scope:mscheme2.scheme_target_character = root
+				}
+				add_opinion = {
+					target = scope:mscheme2.scheme_owner
+					modifier = schemed_against_me
+				}
+			}
+		}
+	}
+	option = {
+		#I expose it
+		name = ev6.10.0.a
+		trigger = {
+			exists = scope:mscheme
+			scope:mscheme = {
+				is_scheme_exposed = no
+			}
+			scope:recipient = {
+				NOT = {
+					has_character_flag = blob_flag
+				}
+			}
+		}
+		scope:mscheme = {
+			expose_scheme = yes
+		}
+		hidden_effect = {
+			scope:mscheme.scheme_target_character = {
+				send_interface_toast = {
+					title = spymaster_task.1101.exposure_tt
+					add_opinion = {
+						target = scope:mscheme.scheme_owner
+						modifier = schemed_against_me
+					}
+				}
+			}
+		}
+	}
+	option = {
+		#I expose it
+		name = ev6.10.0.a
+		trigger = {
+			exists = scope:mscheme2
+			scope:mscheme2 = {
+				is_scheme_exposed = no
+			}
+			scope:recipient = {
+				NOT = {
+					has_character_flag = blob_flag
+				}
+			}
+		}
+		scope:mscheme2 = {
+			expose_scheme = yes
+		}
+		hidden_effect = {
+			scope:mscheme2.scheme_target_character = {
+				send_interface_toast = {
+					title = spymaster_task.1101.exposure_tt
+					add_opinion = {
+						target = scope:mscheme2.scheme_owner
+						modifier = schemed_against_me
+					}
+				}
+			}
+		}
+	}
+}
