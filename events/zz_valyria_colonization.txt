@@ -40,15 +40,27 @@ zz_valyria_colonisation.0009 = {
 		desc = zz_valyria_colonisation.0009.desc
 		triggered_desc = {
 			trigger = {
-				scope:teacher_1 = { adult_education_teacher_would_leave_trigger = yes }
+				scope:host = { 
+					has_character_flag = perfect_reward 
+				}
 			}
-			desc = zz_valyria_colonisation.0009.desc_teacher_1
+			desc = zz_valyria_colonisation.0009.desc_perfect_reward
 		}
 		triggered_desc = {
 			trigger = {
-				scope:teacher_2 = { adult_education_teacher_would_leave_trigger = yes }
+				scope:host = { 
+					has_character_flag = high_reward 
+				}
 			}
-			desc = zz_valyria_colonisation.0009.desc_teacher_2
+			desc = zz_valyria_colonisation.0009.desc_high_reward
+		}
+		triggered_desc = {
+			trigger = {
+				scope:host = { 
+					has_character_flag = ok_reward 
+				}
+			}
+			desc = zz_valyria_colonisation.0009.desc_ok_reward
 		}
 	}
 	theme = university
@@ -61,15 +73,80 @@ zz_valyria_colonisation.0009 = {
 	immediate = {
 		#Reward effects
 		valyria_colonisation_completed_log_entry_effect = yes
-		scope:activity = {
+		involved_activity ?= {
+			#Perfect colonisation - 75-100
+			if = {
+				limit = { var:activity_special_type_progression >= 75 }
+				scope:host = {
+					add_character_flag = perfect_reward
+				}
+			}
+			#High-end colonisation - 50-75
+			else_if = {
+				limit = { 
+					var:activity_special_type_progression < 75
+					var:activity_special_type_progression >= 50
+				} 
+				scope:host = {
+					add_character_flag = high_reward
+				}
+			}
+			#OK colonisation - 25-50
+			else_if = {
+				limit = {
+					var:activity_special_type_progression < 50
+					var:activity_special_type_progression >= 25
+				}
+				scope:host = {
+					add_character_flag = ok_reward
+				}
+			}
 		}
 	}
-
+	
 	option = {
 		name = zz_valyria_colonisation.0009.a
+		trigger = {
+			has_character_flag = perfect_reward
+		}
+		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+
 		ai_chance = {
 			base = 100
 		}
+	}
+	option = {
+		name = zz_valyria_colonisation.0009.b
+		trigger = {
+			has_character_flag = high_reward
+		}
+		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_colonisation.0009.c
+		trigger = {
+			has_character_flag = ok_reward
+		}
+		add_gold = 300
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_colonisation.0009.d
+		ai_chance = {
+			base = 100
+		}
+	}
+	after = { 
+		remove_character_flag = perfect_reward
+		remove_character_flag = high_reward
+		remove_character_flag = ok_reward
 	}
 }
 
@@ -116,8 +193,8 @@ zz_valyria_colonisation.0010 = {
 ## Get Valyrian Sword
 zz_valyria_colonisation.4000 = {
 	type = activity_event
-	title = zz_valyria_colonisation.1060.t
-	desc = zz_valyria_colonisation.1060.desc
+	title = zz_valyria_colonisation.4000.t
+	desc = zz_valyria_colonisation.4000.desc
 	theme = university
 
 	center_portrait = {
@@ -151,7 +228,7 @@ zz_valyria_colonisation.4000 = {
 
 	# Option A: Purple Glass Candle 
 	option = {
-		name = zz_valyria_colonisation.1060.a
+		name = zz_valyria_colonisation.4000.a
 		trigger = {
 		}
 		duel = {
@@ -163,11 +240,11 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.crit_success
+				desc = zz_valyria_colonisation.4000.a.crit_success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.crit_success.tt
+					title = zz_valyria_colonisation.4000.a.crit_success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					custom_tooltip = zz_valyria_colonisation.4000.a.tt
 					agot_create_artifact_glass_candle_effect = { OWNER = scope:host  COLOR = purple }
 					scope:activity = {
 						add_activity_log_entry = {
@@ -192,9 +269,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.success
+				desc = zz_valyria_colonisation.4000.a.success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.success.tt
+					title = zz_valyria_colonisation.4000.a.success.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
@@ -209,9 +286,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = -3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.failure
+				desc = zz_valyria_colonisation.4000.a.failure
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.failure.tt
+					title = zz_valyria_colonisation.4000.a.failure.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
@@ -228,7 +305,7 @@ zz_valyria_colonisation.4000 = {
 	}
 	# Option B: Valyrian Sword
 	option = {
-		name = zz_valyria_colonisation.1060.b
+		name = zz_valyria_colonisation.4000.b
 		trigger = {
 		}
 		duel = {
@@ -240,11 +317,11 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.crit_success
+				desc = zz_valyria_colonisation.4000.b.crit_success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.crit_success.tt
+					title = zz_valyria_colonisation.4000.b.crit_success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					custom_tooltip = zz_valyria_colonisation.4000.b.tt
 					agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = scope:host } 
 					scope:activity = {
 						add_activity_log_entry = {
@@ -305,7 +382,7 @@ zz_valyria_colonisation.4000 = {
 	}
 	#Option C: Valyrian Sword Gold 
 	option = {
-		name = zz_valyria_colonisation.1060.c
+		name = zz_valyria_colonisation.4000.c
 		trigger = {
 		}
 		duel = {
@@ -317,11 +394,11 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.crit_success
+				desc = zz_valyria_colonisation.4000.c.crit_success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.crit_success.tt
+					title = zz_valyria_colonisation.4000.c.crit_success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					custom_tooltip = zz_valyria_colonisation.4000.c.tt
 					agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = scope:host } 
 					scope:activity = {
 						add_activity_log_entry = {
@@ -346,9 +423,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.success
+				desc = zz_valyria_colonisation.4000.c.success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.success.tt
+					title = zz_valyria_colonisation.4000.c.success.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
@@ -363,9 +440,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = -3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.failure
+				desc = zz_valyria_colonisation.4000.c.failure
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.failure.tt
+					title = zz_valyria_colonisation.4000.c.failure.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
@@ -382,7 +459,7 @@ zz_valyria_colonisation.4000 = {
 	}
 	#Option D: Valyrian Sword Arming 
 	option = {
-		name = zz_valyria_colonisation.1060.d
+		name = zz_valyria_colonisation.4000.d
 		trigger = {
 		}
 		duel = {
@@ -394,11 +471,11 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.crit_success
+				desc = zz_valyria_colonisation.4000.d.crit_success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.crit_success.tt
+					title = zz_valyria_colonisation.4000.d.crit_success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					custom_tooltip = zz_valyria_colonisation.4000.d.tt
 					agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:host } 
 					scope:activity = {
 						add_activity_log_entry = {
@@ -423,9 +500,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.success
+				desc = zz_valyria_colonisation.4000.d.success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.success.tt
+					title = zz_valyria_colonisation.4000.d.success.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
@@ -440,9 +517,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = -3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.failure
+				desc = zz_valyria_colonisation.4000.d.failure
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.failure.tt
+					title = zz_valyria_colonisation.4000.d.failure.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
@@ -459,7 +536,7 @@ zz_valyria_colonisation.4000 = {
 	}
 	#Option E: Valyrian Sword Arming Gold 
 	option = {
-		name = zz_valyria_colonisation.1060.e
+		name = zz_valyria_colonisation.4000.e
 		trigger = {
 		}
 		duel = {
@@ -471,11 +548,11 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.crit_success
+				desc = zz_valyria_colonisation.4000.e.crit_success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.crit_success.tt
+					title = zz_valyria_colonisation.4000.e.crit_success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					custom_tooltip = zz_valyria_colonisation.4000.e.tt
 					agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = scope:host } 
 					scope:activity = {
 						add_activity_log_entry = {
@@ -500,9 +577,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.success
+				desc = zz_valyria_colonisation.4000.e.success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.success.tt
+					title = zz_valyria_colonisation.4000.e.success.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
@@ -517,9 +594,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = -3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.failure
+				desc = zz_valyria_colonisation.4000.e.failure
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.failure.tt
+					title = zz_valyria_colonisation.4000.e.failure.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
@@ -536,7 +613,7 @@ zz_valyria_colonisation.4000 = {
 	}
 	#Option F: Valyrian Armour 
 	option = {
-		name = zz_valyria_colonisation.1060.f
+		name = zz_valyria_colonisation.4000.f
 		trigger = {
 		}
 		duel = {
@@ -548,11 +625,11 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.crit_success
+				desc = zz_valyria_colonisation.4000.f.crit_success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.crit_success.tt
+					title = zz_valyria_colonisation.4000.f.crit_success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					custom_tooltip = zz_valyria_colonisation.4000.f.tt
 					agot_create_artifact_valyrian_steel_armor_effect = { OWNER = scope:host } 
 					scope:activity = {
 						add_activity_log_entry = {
@@ -577,9 +654,9 @@ zz_valyria_colonisation.4000 = {
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.success
+				desc = zz_valyria_colonisation.4000.f.success
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.success.tt
+					title = zz_valyria_colonisation.4000.f.success.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
@@ -594,9 +671,87 @@ zz_valyria_colonisation.4000 = {
 					multiplier = -3.5
 					min = -49
 				}
-				desc = zz_valyria_colonisation.1060.a.failure
+				desc = zz_valyria_colonisation.4000.f.failure
 				send_interface_toast = {
-					title = zz_valyria_colonisation.1060.a.failure.tt
+					title = zz_valyria_colonisation.4000.f.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	#Option G: Dragon Eggs
+	option = {
+		name = zz_valyria_colonisation.4000.g
+		trigger = {
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			15 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.4000.g.crit_success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.4000.g.crit_success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation.4000.g.tt
+					agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			40 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.4000.g.success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.4000.g.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			45 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.4000.g.failure
+				send_interface_toast = {
+					title = zz_valyria_colonisation.4000.g.failure.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
@@ -613,12 +768,14 @@ zz_valyria_colonisation.4000 = {
 	}
 
 
-	# Option C: opt-out
+	# Option D: opt-out
 	option = {
-		name = zz_valyria_colonisation.1060.z
+		name = zz_valyria_colonisation.4000.z
 		stress_impact = {
 			base = medium_stress_impact_loss
 		}
+		scope:activity = { activity_special_type_progression_massive = yes }
+		scope:activity = { activity_special_type_progression_massive = yes }
 		ai_chance = {
 			base = 50
 			modifier = {
