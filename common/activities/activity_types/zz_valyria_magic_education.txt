@@ -951,11 +951,6 @@
 						activity_location = { save_scope_as = location }
 					}
 
-					#Set up recurring characters: teachers
-					bp2_university_teacher_setup = yes
-					#Set up recurring characters: students
-					bp2_university_student_setup = yes
-					
 					#Arrival event
 					trigger_event = { on_action = magic_education_arrival_events }
 				}
@@ -965,11 +960,7 @@
 			on_monthly_pulse = {
 				if = {
 					limit = { this = scope:host }
-					# Let's check that we still have the required teachers and students, and if not let's create them again
-					#Set up recurring characters: teachers
-					bp2_university_teacher_setup = yes
-					#Set up recurring characters: students
-					bp2_university_student_setup = yes
+					
 					trigger_event = { on_action = magic_education_destination_events }				
 				}
 			}
@@ -1036,36 +1027,12 @@
 			#Gain XP 
 			zz_magic_education_pulse_1
 		}
-		chance_of_no_event = 15
+		chance_of_no_event = 5
 	}
 
 	on_start = {
 		
 		scope:host = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
 			zz_random_gain_magic_spell = yes
 		}
 		scope:activity ?= {

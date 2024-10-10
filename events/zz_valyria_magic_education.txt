@@ -30,18 +30,6 @@ zz_valyria_magic_education.0005 = {
 	}
 }
 
-scripted_trigger adult_education_teacher_would_leave_trigger = {
-	NOT = { # Don't poach player courtiers
-		liege ?= { is_ai = no }
-	}
-	OR = {
-		has_relation_friend = root
-		opinion = {
-			target = root
-			value >= 60
-		}
-	}
-}
 
 # CONCLUSION EVENT
 zz_valyria_magic_education.0009 = {
@@ -49,18 +37,7 @@ zz_valyria_magic_education.0009 = {
 	title = zz_valyria_magic_education.0009.t
 	desc = {
 		desc = zz_valyria_magic_education.0009.desc
-		triggered_desc = {
-			trigger = {
-				scope:teacher_1 = { adult_education_teacher_would_leave_trigger = yes }
-			}
-			desc = zz_valyria_magic_education.0009.desc_teacher_1
-		}
-		triggered_desc = {
-			trigger = {
-				scope:teacher_2 = { adult_education_teacher_would_leave_trigger = yes }
-			}
-			desc = zz_valyria_magic_education.0009.desc_teacher_2
-		}
+
 	}
 	theme = university
 
@@ -68,123 +45,18 @@ zz_valyria_magic_education.0009 = {
 		character = root
 		animation = thinking
 	}
-	left_portrait = {
-		character = scope:teacher_1
-		triggered_animation = {
-			trigger = { 
-				scope:teacher_1 = { adult_education_teacher_would_leave_trigger = yes }
-			}
-			animation = admiration
-		}
-		animation = eyeroll
-	}
-	right_portrait = {
-		character = scope:teacher_2
-		triggered_animation = {
-			trigger = { 
-				scope:teacher_2 = { adult_education_teacher_would_leave_trigger = yes }
-			}
-			animation = ecstasy
-		}
-		animation = personality_zealous
-	}
+
 
 	immediate = {
 		#Reward effects
 		magic_education_completed_log_entry_effect = yes
 		scope:activity = {
-			random_attending_character = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				save_scope_as = teacher_1
-			}
-			random_attending_character = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				save_scope_as = teacher_2
-			}
 		}
 	}
-
 	option = {
 		trigger = {
-			is_landless_adventurer = yes
-		}
-		name = zz_valyria_magic_education.0009.e
-		add_contact = scope:teacher_1
-		add_contact = scope:teacher_2
-		ai_chance = {
-			base = 0
-		}
-	}
-
-	option = {
-		trigger = {
-			NOR = {
-				scope:teacher_1 ?= { adult_education_teacher_would_leave_trigger = yes }
-				scope:teacher_2 ?= { adult_education_teacher_would_leave_trigger = yes }
-			}
 		}
 		name = zz_valyria_magic_education.0009.a
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	option = {
-		trigger = {
-			scope:teacher_1 ?= { adult_education_teacher_would_leave_trigger = yes }
-		}
-		name = zz_valyria_magic_education.0009.b
-		hidden_effect = { 
-			current_travel_plan ?= { add_companion = scope:teacher_1 } 
-			if = {
-				limit = {
-					NOT = {
-						scope:teacher_1.liege = root
-					}
-				}
-				add_courtier = scope:teacher_1
-			}
-		}
-		show_as_tooltip = { add_courtier = scope:teacher_1 }
-		ai_chance = {
-			base = 10
-		}
-	}
-
-	option = {
-		trigger = {
-			scope:teacher_2 ?= { adult_education_teacher_would_leave_trigger = yes }
-		}
-		name = zz_valyria_magic_education.0009.c
-		hidden_effect = { 
-			current_travel_plan ?= { add_companion = scope:teacher_2 }
-			if = {
-				limit = {
-					NOT = {
-						scope:teacher_2.liege = root
-					}
-				}
-				add_courtier = scope:teacher_2
-			}
-		}
-		show_as_tooltip = { add_courtier = scope:teacher_2 }
-		ai_chance = {
-			base = 10
-		}
-	}
-
-	option = {
-		trigger = {
-			OR = {
-				scope:teacher_1 ?= { adult_education_teacher_would_leave_trigger = yes }
-				scope:teacher_2 ?= { adult_education_teacher_would_leave_trigger = yes }
-			}
-		}
-		name = zz_valyria_magic_education.0009.d
 		ai_chance = {
 			base = 100
 		}
@@ -205,7 +77,7 @@ zz_valyria_magic_education.0010 = {
 				}
 				desc = zz_valyria_magic_education.0010.desc_uni
 			}
-			desc = zz_valyria_magic_education.0010.desc_religious
+			desc = zz_valyria_magic_education.0010.desc
 		}
 		desc = zz_valyria_magic_education.0010.desc_end
 		triggered_desc = {
@@ -233,1626 +105,12 @@ zz_valyria_magic_education.0010 = {
 
 ### ADULT EDUCATION AT DESTINATION EVENTS ###
 
-# You take part in an intellectual debate. A teacher observes.
+## You find a a book of technical skill
 
-zz_valyria_magic_education.1000 = {
+zz_valyria_magic_education.0100 = {
 	type = activity_event
-	title = zz_valyria_magic_education.1000.t
-	desc = zz_valyria_magic_education.1000.desc
-	theme = university
-
-	left_portrait = {
-		character = root
-		animation = dismissal
-	}
-	center_portrait = {
-		character = scope:student
-		animation = eyeroll
-	}
-	right_portrait = {
-		character = scope:teacher
-		animation = thinking
-		outfit_tags = { spectacles_outfit }
-	}
-
-	trigger = {
-		NOT = { 
-			scope:activity = {
-				has_variable = has_had_event_1000
-			}
-		}
-		scope:activity = {
-			any_attending_character = {
-				OR = {
-					has_character_flag = student_1
-					has_character_flag = student_2
-				}
-			}
-		}
-	}
-
-	immediate = {
-		scope:activity = {
-			set_variable = has_had_event_1000
-			activity_location = { save_scope_as = location }
-			random_attending_character = {
-				limit = {
-					OR = {
-						has_character_flag = student_1
-						has_character_flag = student_2
-					}
-				}
-				save_scope_as = student
-			}
-			random_attending_character = {
-				limit = {
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
-				save_scope_as = teacher
-			}
-		}
-	}
-
-	# Option A: Study hard intent: quote the classics
-	option = {
-		name = zz_valyria_magic_education.1000.a
-		flavor = zz_valyria_magic_education.1000.a.tt
-		trigger = {
-			has_activity_intent = study_hard_intent
-		}
-		duel = {
-			skill = learning
-			target = scope:student
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1000.a.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1000.a.success.tt
-					left_icon = scope:student
-					scope:activity = {
-						add_activity_log_entry = {
-							key = university_debate_won_log
-							score = 25
-							tags = { positive }
-							character = root
-							target = scope:student
-					
-							#Effect
-							custom_tooltip = adult_education_tt_positive_major
-							scope:activity = { activity_special_type_progression_major = yes }
-						}
-					}
-					scope:teacher = {
-						add_opinion = {
-							target = root
-							modifier = impressed_opinion
-							opinion = 20
-						}
-					}
-					root = {
-						stress_impact = {
-							diligent = minor_stress_impact_loss
-							gregarious = minor_stress_impact_loss
-						}
-					}		
-				}
-			}
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1000.a.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1000.a.failure.tt
-					left_icon = scope:student
-					scope:activity = {
-						add_activity_log_entry = {
-							key = university_debate_won_log
-							score = 25
-							tags = { negative }
-							character = scope:student
-							target = root
-					
-							#Effect
-							root = {
-								progress_towards_rival_effect = {
- 									CHARACTER = scope:student
- 									REASON = rival_bested_me_in_debate
- 									OPINION = default_rival_opinion
- 								}
-								stress_impact = {
-									ambitious = medium_stress_impact_gain
-									arrogant = medium_stress_impact_gain
-									diligent = medium_stress_impact_gain
-									scholar = major_stress_impact_gain
-								}
-							}
-						}
-					}
-					scope:teacher = {
-						add_opinion = {
-							target = root
-							modifier = disappointed_opinion
-							opinion = -20
-						}
-					}
-				}
-			}
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option B: Goliardic Life intent: improptu poetry
-	option = {
-		name = zz_valyria_magic_education.1000.b
-		flavor = zz_valyria_magic_education.1000.b.tt
-		trigger = {
-			has_activity_intent = university_revelry_intent
-		}
-		duel = {
-			skill = diplomacy
-			target = scope:student
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1000.b.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1000.b.success.tt
-					left_icon = scope:student
-					scope:activity = {
-						add_activity_log_entry = {
-							key = university_debate_won_log
-							score = 25
-							tags = { positive }
-							character = root
-							target = scope:student
-					
-							#Effect
-							custom_tooltip = adult_education_tt_positive_tiny
-							scope:activity = { activity_special_type_progression_tiny = yes }
-							root = { add_diplomacy_skill = 1 }
-						}
-					}
-					scope:teacher = {
-						add_opinion = {
-							target = root
-							modifier = impressed_opinion
-							opinion = 20
-						}
-					}
-					root = {
-						stress_impact = {
-							gregarious = medium_stress_impact_loss
-						}
-					}			
-				}
-			}
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1000.b.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1000.b.failure.tt
-					left_icon = scope:student
-					scope:activity = {
-						add_activity_log_entry = {
-							key = university_debate_won_log
-							score = 25
-							tags = { negative }
-							character = scope:student
-							target = root
-					
-							#Effect
-							root = {
-								progress_towards_rival_effect = {
- 									CHARACTER = scope:student
- 									REASON = rival_bested_me_in_debate
- 									OPINION = default_rival_opinion
- 								}
-								stress_impact = {
-									ambitious = medium_stress_impact_gain
-									arrogant = medium_stress_impact_gain
-									deceitful = medium_stress_impact_gain
-									poet = major_stress_impact_gain
-									shy = major_stress_impact_gain
-								}
-							}
-						}
-					}
-					scope:teacher = {
-						add_opinion = {
-							target = root
-							modifier = disappointed_opinion
-							opinion = -20
-						}
-					}
-				}
-			}
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option C: I have books to read, bye
-	option = {
-		name = zz_valyria_magic_education.1000.c
-		custom_tooltip = adult_education_tt_positive_tiny
-		scope:activity = { activity_special_type_progression_tiny = yes }
-		stress_impact = {
-			gregarious = minor_stress_impact_gain
-			ambitious = medium_stress_impact_gain
-			arrogant = medium_stress_impact_gain
-			vengeful = medium_stress_impact_gain
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-}
-
-
-# The teachers have opposing schools of thought
-
-zz_valyria_magic_education.1040 = {
-	type = activity_event
-	title = zz_valyria_magic_education.1040.t
-	desc = zz_valyria_magic_education.1040.desc
-	theme = university
-
-	left_portrait = {
-		character = scope:teacher_1
-		animation = anger
-		outfit_tags = { spectacles_outfit }
-	}
-	center_portrait = {
-		character = root
-		animation = worry
-	}
-	right_portrait = {
-		character = scope:teacher_2
-		animation = rage
-		outfit_tags = { spectacles_outfit }
-	}
-
-	cooldown = { years = 5 }
-
-	trigger = {
-		scope:activity = {
-			any_attending_character = {
-				has_character_flag = teacher_1
-				save_temporary_scope_as = teacher_1_temp
-			}
-			any_attending_character = {
-				has_character_flag = teacher_2
-				trigger_if = {
-					limit = {
-						scope:teacher_1_temp = { has_trait = education_diplomacy }
-					}
-					NOT = { has_trait = education_diplomacy }
-				}
-				trigger_else_if = {
-					limit = {
-						scope:teacher_1_temp = { has_trait = education_martial }
-					}
-					NOT = { has_trait = education_martial }
-				}
-				trigger_else_if = {
-					limit = {
-						scope:teacher_1_temp = { has_trait = education_stewardship }
-					}
-					NOT = { has_trait = education_stewardship }
-				}
-				trigger_else_if = {
-					limit = {
-						scope:teacher_1_temp = { has_trait = education_intrigue }
-					}
-					NOT = { has_trait = education_intrigue }
-				}
-				trigger_else = {
-					NOT = { has_trait = education_learning }
-				}
-			}
-		}
-	}
-
-	weight_multiplier = {
-		base = 1
-	}
-
-	immediate = {
-		scope:activity = {
-			activity_location = { save_scope_as = location }
-			random_attending_character = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				save_scope_as = teacher_1
-			}
-			random_attending_character = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				save_scope_as = teacher_2
-			}
-		}
-		hidden_effect = {
-			scope:teacher_1 = {
-				if = {
-					limit = {
-						can_set_relation_rival_trigger = { CHARACTER = scope:teacher_2 }
-					}
-					set_relation_rival = {
-						target = scope:teacher_2
-						reason = rival_grave_insult
-					}
-				}
-			}
-		}
-	}
-
-	# Option A: side with teacher_1
-	option = {
-		name = zz_valyria_magic_education.1040.a
-		scope:activity = {
-			add_activity_log_entry = {
-				key = sided_with_teacher_log
-				score = 25
-				tags = { activity positive }
-				character = root
-				target = scope:teacher_1
-
-				#Effect
-				custom_tooltip = adult_education_tt_positive_medium
-				scope:activity = { activity_special_type_progression_medium = yes }
-				root = {
-					if = {
-						limit = {
-							can_set_relation_friend_trigger = { CHARACTER = scope:teacher_1 }
-						}
-						progress_towards_friend_effect = {
-							REASON = friend_supported_me_in_dispute
-							CHARACTER = scope:teacher_1
-							OPINION = default_friend_opinion
-						}
-					}
-					if = {
-						limit = {
-							can_set_relation_rival_trigger = { CHARACTER = scope:teacher_2 }
-						}
-						progress_towards_rival_effect = {
-							REASON = rival_not_supported_me_in_dispute
-							CHARACTER = scope:teacher_2
-							OPINION = default_rival_opinion
-						}
-					}
-				}
-			}
-		}
-		stress_impact = {
-			honest = minor_stress_impact_loss
-			gregarious = minor_stress_impact_gain
-			craven = medium_stress_impact_gain
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option B: side with teacher_2
-	option = {
-		name = zz_valyria_magic_education.1040.b
-		scope:activity = {
-			add_activity_log_entry = {
-				key = sided_with_teacher_log
-				score = 25
-				tags = { activity positive }
-				character = root
-				target = scope:teacher_2
-
-				#Effect
-				custom_tooltip = adult_education_tt_positive_medium
-				scope:activity = { activity_special_type_progression_medium = yes }
-				root = {
-					if = {
-						limit = {
-							can_set_relation_friend_trigger = { CHARACTER = scope:teacher_2 }
-						}
-						progress_towards_friend_effect = {
-							REASON = friend_supported_me_in_dispute
-							CHARACTER = scope:teacher_2
-							OPINION = default_friend_opinion
-						}
-					}
-					if = {
-						limit = {
-							can_set_relation_rival_trigger = { CHARACTER = scope:teacher_1 }
-						}
-						progress_towards_rival_effect = {
-							REASON = rival_not_supported_me_in_dispute
-							CHARACTER = scope:teacher_1
-							OPINION = default_rival_opinion
-						}
-					}
-				}
-			}
-		}
-		stress_impact = {
-			honest = minor_stress_impact_loss
-			gregarious = minor_stress_impact_gain
-			craven = medium_stress_impact_gain
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option C: Study hard intent: both have merits
-	option = {
-		name = zz_valyria_magic_education.1040.c
-		trigger = {
-			has_activity_intent = study_hard_intent
-		}
-		duel = {
-			skill = learning
-			value = high_skill_rating
-			40 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				modifier = {
-					has_trait = scholar
-					add = 20
-				}
-				modifier = {
-					has_trait = deceitful
-					add = 10
-				}
-				modifier = {
-					has_trait = diligent
-					add = 10
-				}
-				desc = zz_valyria_magic_education.1040.c.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1040.c.success.tt
-					left_icon = scope:teacher_1
-					right_icon = scope:teacher_2
-					scope:activity = {
-						add_activity_log_entry = {
-							key = balanced_teachers_opinions_log
-							score = 25
-							tags = { activity positive learning }
-							character = root
-			
-							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
-							scope:activity = { activity_special_type_progression_massive = yes }
-							root = {
-								if = {
-									limit = {
-										can_set_relation_friend_trigger = { CHARACTER = scope:teacher_1 }
-									}
-									progress_towards_friend_effect = {
-										REASON = friend_supported_me_in_dispute
-										CHARACTER = scope:teacher_1
-										OPINION = default_friend_opinion
-									}
-								}
-								if = {
-									limit = {
-										can_set_relation_friend_trigger = { CHARACTER = scope:teacher_2 }
-									}
-									progress_towards_friend_effect = {
-										REASON = friend_supported_me_in_dispute
-										CHARACTER = scope:teacher_2
-										OPINION = default_friend_opinion
-									}
-								}
-							}
-						}
-					}
-				}
-				stress_impact = {
-					scholar = minor_stress_impact_loss
-					deceitful = minor_stress_impact_loss
-					diligent = minor_stress_impact_loss
-				}
-			}
-			60 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1040.c.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1040.c.failure.tt
-					left_icon = scope:teacher_1
-					right_icon = scope:teacher_2
-					if = {
-						limit = {
-							can_set_relation_rival_trigger = { CHARACTER = scope:teacher_1 }
-						}
-						progress_towards_rival_effect = {
-							REASON = rival_not_supported_me_in_dispute
-							CHARACTER = scope:teacher_1
-							OPINION = default_rival_opinion
-						}
-					}
-					if = {
-						limit = {
-							can_set_relation_rival_trigger = { CHARACTER = scope:teacher_2 }
-						}
-						progress_towards_rival_effect = {
-							REASON = rival_not_supported_me_in_dispute
-							CHARACTER = scope:teacher_2
-							OPINION = default_rival_opinion
-						}
-					}
-					stress_impact = {
-						base = medium_stress_impact_gain
-					}
-				}
-			}
-		}
-		ai_chance = {
-			base = 150
-		}
-	}
-	
-
-	# Option D: Goliardic Life intent: let's discuss it around some wine
-	option = {
-		name = zz_valyria_magic_education.1040.d
-		flavor = zz_valyria_magic_education.1040.d.tt
-		trigger = {
-			has_activity_intent = university_revelry_intent
-		}
-		duel = {
-			skill = intrigue
-			value = average_skill_rating
-			40 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1040.d.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1040.d.success.tt
-					left_icon = scope:teacher_1
-					right_icon = scope:teacher_2
-					scope:activity = {
-						add_activity_log_entry = {
-							key = balanced_teachers_opinions_log
-							score = 25
-							tags = { activity positive intrigue }
-							character = root
-			
-							#Effect
-							custom_tooltip = adult_education_tt_positive_medium
-							scope:activity = { activity_special_type_progression_medium = yes }
-							root = {
-								bp2_lifestyle_xp_gain_per_type_effect = { VALUE = massive }
-								if = {
-									limit = {
-										can_set_relation_friend_trigger = { CHARACTER = scope:teacher_1 }
-									}
-									progress_towards_friend_effect = {
-										REASON = friend_supported_me_in_dispute
-										CHARACTER = scope:teacher_1
-										OPINION = default_friend_opinion
-									}
-								}
-								if = {
-									limit = {
-										can_set_relation_friend_trigger = { CHARACTER = scope:teacher_2 }
-									}
-									progress_towards_friend_effect = {
-										REASON = friend_supported_me_in_dispute
-										CHARACTER = scope:teacher_2
-										OPINION = default_friend_opinion
-									}
-								}
-							}
-						}
-					}
-				}
-				stress_impact = {
-					base = minor_stress_impact_loss
-					gregarious = medium_stress_impact_loss
-					shy = minor_stress_impact_gain
-					callous = minor_stress_impact_gain
-					inappetetic = medium_stress_impact_gain
-					reclusive = medium_stress_impact_gain
-				}
-			}
-			60 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1040.d.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1040.d.failure.tt
-					left_icon = scope:teacher_1
-					right_icon = scope:teacher_2
-					bp2_lifestyle_xp_gain_per_type_effect = { VALUE = medium }
-					if = {
-						limit = {
-							can_set_relation_rival_trigger = { CHARACTER = scope:teacher_1 }
-						}
-						progress_towards_rival_effect = {
-							REASON = rival_not_supported_me_in_dispute
-							CHARACTER = scope:teacher_1
-							OPINION = default_rival_opinion
-						}
-					}
-					if = {
-						limit = {
-							can_set_relation_rival_trigger = { CHARACTER = scope:teacher_2 }
-						}
-						progress_towards_rival_effect = {
-							REASON = rival_not_supported_me_in_dispute
-							CHARACTER = scope:teacher_2
-							OPINION = default_rival_opinion
-						}
-					}
-					stress_impact = {
-						base = medium_stress_impact_gain
-						gregarious = medium_stress_impact_gain
-						shy = medium_stress_impact_gain
-						inappetetic = medium_stress_impact_gain
-						reclusive = medium_stress_impact_gain
-					}
-				}
-			}
-		}
-		ai_chance = {
-			base = 150
-			modifier = {
-				has_trait = gregarious
-				add = 50
-			}
-		}
-	}
-
-	# Option E: opt-out: does it really matter?
-	option = {
-		name = zz_valyria_magic_education.1040.e
-		reverse_add_opinion = {
-			target = scope:teacher_1
-			modifier = ignored_opinion
-			opinion = -15
-		}
-		reverse_add_opinion = {
-			target = scope:teacher_2
-			modifier = ignored_opinion
-			opinion = -15
-		}
-		ai_chance = {
-			base = 100
-			modifier = {
-				has_trait = lazy
-				add = 50
-			}
-			modifier = {
-				has_trait = fickle
-				add = 25
-			}
-		}
-	}
-}
-
-# All students are foreigners
-
-zz_valyria_magic_education.1050 = {
-	type = activity_event
-	title = zz_valyria_magic_education.1050.t
-	desc = zz_valyria_magic_education.1050.desc
-	theme = university
-
-	left_portrait = {
-		character = scope:student_1
-		animation = happiness
-	}
-	center_portrait = {
-		character = root
-		animation = personality_rational
-	}
-	right_portrait = {
-		character = scope:student_2
-		animation = admiration
-	}
-
-	cooldown = { years = 5 }
-
-	trigger = {
-		root.culture = {
-			NOT = { this = scope:activity.activity_location.county.culture }
-		}
-		scope:activity = {
-			any_attending_character = {
-				has_character_flag = student_1
-				culture = {
-					NOR = {
-						this = scope:activity.activity_location.county.culture
-						this = root.culture
-					}
-				}
-				save_temporary_scope_as = student_1_temp
-			}
-			any_attending_character = {
-				has_character_flag = student_2
-				culture = {
-					NOR = {
-						this = scope:activity.activity_location.county.culture
-						this = root.culture
-						this = scope:student_1_temp.culture
-					}
-				}
-			}
-		}
-	}
-
-	weight_multiplier = {
-		base = 1
-	}
-
-	immediate = {
-		scope:activity = {
-			activity_location = { save_scope_as = location }
-			random_attending_character = {
-				limit = {
-					has_character_flag = student_1
-				}
-				save_scope_as = student_1
-			}
-			random_attending_character = {
-				limit = {
-					has_character_flag = student_2
-				}
-				save_scope_as = student_2
-			}
-		}
-	}
-
-	# Option A: Study hard intent: learn from each other
-	option = {
-		name = zz_valyria_magic_education.1050.a
-		trigger = {
-			has_activity_intent = study_hard_intent
-		}
-		custom_tooltip = adult_education_tt_positive_major
-		scope:activity = { activity_special_type_progression_major = yes }
-		scope:student_1.culture = {
-			change_cultural_acceptance = {
-				target = root.culture
-				value = low_positive_culture_acceptance
-				desc = cultural_acceptance_gain_hold_court_event_outcome
-			}
-		}
-		scope:student_2.culture = {
-			change_cultural_acceptance = {
-				target = root.culture
-				value = low_positive_culture_acceptance
-				desc = cultural_acceptance_gain_hold_court_event_outcome
-			}
-		}
-		stress_impact = {
-			arrogant = medium_stress_impact_gain
-			impatient = medium_stress_impact_gain
-			zealous = medium_stress_impact_gain
-			shy = medium_stress_impact_gain
-			reclusive = major_stress_impact_gain
-			irritable = major_stress_impact_gain
-			humble = medium_stress_impact_loss
-		}
-		ai_chance = {
-			base = 100
-			modifier = {
-				has_trait = humble
-				add = 100
-			}
-			modifier = {
-				has_trait = impatient
-				add = -50
-			}
-			modifier = {
-				has_trait = arrogant
-				add = -50
-			}
-		}
-	}
-
-	# Option B: Goliardic Life intent: have fun together
-	option = {
-		name = zz_valyria_magic_education.1050.b
-		trigger = {
-			has_activity_intent = university_revelry_intent
-		}
-		bp2_goliards_potential_shenanigans_effect = { TITLE_VALUE = zz_valyria_magic_education.1020.c.tt }
-		bp2_lifestyle_xp_gain_per_type_effect = { VALUE = major }
-		if = {
-			limit = {
-				can_set_relation_friend_trigger = { CHARACTER = scope:student_1 }
-			}
-			progress_towards_friend_effect = {
-				REASON = friend_in_foreign_land
-				CHARACTER = scope:student_1
-				OPINION = default_friend_opinion
-			}
-		}
-		if = {
-			limit = {
-				can_set_relation_friend_trigger = { CHARACTER = scope:student_2 }
-			}
-			progress_towards_friend_effect = {
-				REASON = friend_in_foreign_land
-				CHARACTER = scope:student_2
-				OPINION = default_friend_opinion
-			}
-		}
-		stress_impact = {
-			diligent = medium_stress_impact_gain
-			shy = medium_stress_impact_gain
-			gregarious = minor_stress_impact_loss
-		}
-		ai_chance = {
-			base = 100
-			modifier = {
-				has_trait = diligent
-				add = -50
-			}
-			modifier = {
-				has_trait = shy
-				add = -50
-			}
-			modifier = {
-				has_trait = gregarious
-				add = 50
-			}
-		}
-	}
-
-	# Option C: opt-out
-	option = {
-		name = zz_valyria_magic_education.1050.c
-		custom_tooltip = adult_education_tt_positive_medium
-		scope:activity = { activity_special_type_progression_medium = yes }
-		stress_impact = {
-			shy = minor_stress_impact_loss
-			diligent = minor_stress_impact_loss
-			humble = medium_stress_impact_gain
-			gregarious = major_stress_impact_gain
-		}
-		ai_chance = {
-			base = 100
-			modifier = {
-				has_trait = gregarious
-				add = -100
-			}
-			modifier = {
-				has_trait = humble
-				add = -50
-			}
-		}
-	}
-}
-
-# Sic et Non inspired reflections
-
-zz_valyria_magic_education.1060 = {
-	type = activity_event
-	title = zz_valyria_magic_education.1060.t
-	desc = zz_valyria_magic_education.1060.desc
-	theme = university
-
-	center_portrait = {
-		character = root
-		animation = personality_rational
-	}
-
-	cooldown = { years = 5 }
-
-	trigger = {
-		always = yes
-	}
-
-	weight_multiplier = {
-		base = 1
-		modifier = {
-			has_trait = theologian
-			add = 2
-		}
-		modifier = {
-			has_trait = scholar
-			add = 1
-		}
-	}
-
-	immediate = {
-		scope:activity = {
-			activity_location = { save_scope_as = location }
-		}
-		root = { save_scope_as = book_creator }
-	}
-
-	# Option A: Study hard intent: think and try to resolve the questions
-	option = {
-		name = zz_valyria_magic_education.1060.a
-		trigger = {
-			has_activity_intent = study_hard_intent
-		}
-		duel = {
-			skill = learning
-			value = high_skill_rating
-			15 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1060.a.crit_success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1060.a.crit_success.tt
-					left_icon = root
-					hidden_effect = {
-						if = {
-							limit = {
-								has_dlc_feature = royal_court
-								root = { has_royal_court = yes }
-							}
-							create_artifact_book_effect = {
-								OWNER = root
-								CREATOR = root
-								SET_SUBJECT = flag:learning
-								SET_TOPIC = flag:learning_theological_treaties
-							}
-						}
-						else = {
-							save_temporary_scope_value_as = {
-								name = should_be_trinket
-								value = yes
-							}
-							create_artifact_book_effect = {
-								OWNER = root
-								CREATOR = root
-								SET_SUBJECT = flag:learning
-								SET_TOPIC = flag:learning_theological_treaties
-							}
-						}
-						hidden_effect_new_object = {
-							scope:newly_created_artifact = {
-								set_artifact_name = sic_et_non_book_name
-								set_artifact_description = sic_et_non_book_desc
-								set_artifact_rarity = famed
-							}
-						}
-					}
-					custom_tooltip = zz_valyria_magic_education.1060.a.tt
-					scope:activity = {
-						add_activity_log_entry = {
-							key = sic_et_non_log
-							score = 25
-							tags = { good learning activity }
-							character = root
-			
-							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
-							scope:activity = { activity_special_type_progression_massive = yes }
-						}
-					}
-				}
-				stress_impact = {
-					base = medium_stress_impact_loss
-				}
-			}
-			40 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1060.a.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1060.a.success.tt
-					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
-					scope:activity = { activity_special_type_progression_major = yes }
-				}
-				stress_impact = {
-					base = minor_stress_impact_loss
-				}
-			}
-			45 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1060.a.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1060.a.failure.tt
-					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
-				}
-				stress_impact = {
-					base = medium_stress_impact_gain
-				}
-			}
-		}
-		
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option B: Goliardic Life intent: the answer is out of these walls!
-	option = {
-		name = zz_valyria_magic_education.1060.b
-		trigger = {
-			has_activity_intent = university_revelry_intent
-		}
-		bp2_goliards_potential_shenanigans_effect = { TITLE_VALUE = zz_valyria_magic_education.1060.b.tt }
-		custom_tooltip = adult_education_tt_positive_tiny
-		scope:activity = { activity_special_type_progression_tiny = yes }
-		stress_impact = {
-			base = minor_stress_impact_loss
-			diligent = minor_stress_impact_gain
-			scholar = major_stress_impact_gain
-			theologian = major_stress_impact_gain
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option C: opt-out
-	option = {
-		name = zz_valyria_magic_education.1060.c
-		stress_impact = {
-			base = medium_stress_impact_loss
-		}
-		ai_chance = {
-			base = 50
-			modifier = {
-				has_trait = lazy
-				add = 100
-			}
-			modifier = {
-				has_trait = intellect_bad
-				add = 100
-			}
-			modifier = {
-				has_trait = dull
-				add = 100
-			}
-		}
-	}
-}
-
-# Class debate vs other student
-
-zz_valyria_magic_education.1070 = {
-	type = activity_event
-	title = zz_valyria_magic_education.1070.t
-	desc = zz_valyria_magic_education.1070.desc
-	theme = university
-
-	left_portrait = {
-		character = scope:teacher
-		animation = thinking
-		outfit_tags = { spectacles_outfit }
-	}
-	center_portrait = {
-		character = root
-		animation = dismissal
-	}
-	right_portrait = {
-		character = scope:student
-		animation = wedding_objection_start
-	}
-	lower_right_portrait = scope:student_2
-
-	cooldown = { years = 5 }
-
-	trigger = {
-		scope:activity = {
-			any_attending_character = {
-				has_character_flag = student_1
-			}
-			any_attending_character = {
-				has_character_flag = student_2
-			}
-			any_attending_character = {
-				OR = {
-					has_character_flag = teacher_1
-					has_character_flag = teacher_2
-				}
-			}
-		}
-	}
-
-	weight_multiplier = {
-		base = 1
-	}
-
-	immediate = {
-		scope:activity = {
-			activity_location = { save_scope_as = location }
-			random_attending_character = {
-				limit = {
-					OR = {
-						has_character_flag = student_1
-						has_character_flag = student_2
-					}
-				}
-				save_scope_as = student
-			}
-			random_attending_character = {
-				limit = {
-					OR = {
-						has_character_flag = student_1
-						has_character_flag = student_2
-					}
-					NOT = { this = scope:student }
-				}
-				save_scope_as = student_2
-			}
-			random_attending_character = {
-				limit = {
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
-				save_scope_as = teacher
-			}
-		}
-		
-	}
-
-	# Option A: Study hard intent: 
-	option = {
-		name = zz_valyria_magic_education.1070.a
-		trigger = {
-			has_activity_intent = study_hard_intent
-		}
-		duel = {
-			skill = learning
-			target = scope:student
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1070.a.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1070.a.success.tt
-					left_icon = root
-					right_icon = scope:student
-
-					scope:activity = {
-						add_activity_log_entry = {
-							key = won_a_debate_log
-							score = 25
-							tags = {  }
-							character = root
-							target = scope:student
-			
-							#Effect
-							root = {
-								reverse_add_opinion = {
-									target = scope:teacher
-									modifier = proud_opinion
-									opinion = 20
-								}
-								stress_impact = {
-									base = minor_stress_impact_loss
-									arrogant = minor_stress_impact_loss
-									shy = minor_stress_impact_gain
-								}
-							}
-						}
-					}
-					custom_tooltip = adult_education_tt_positive_major
-					scope:activity = { activity_special_type_progression_major = yes }
-				}
-			}
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1070.a.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1070.a.failure.tt
-					left_icon = root
-					right_icon = scope:student
-
-					scope:activity = {
-						add_activity_log_entry = {
-							key = won_a_debate_log
-							score = 25
-							tags = {  }
-							character = scope:student
-							target = root
-			
-							#Effect
-							root = {
-								stress_impact = {
-									base = medium_stress_impact_gain
-									shy = medium_stress_impact_gain
-									arrogant = medium_stress_impact_gain
-								}
-							}
-						}
-					}
-					custom_tooltip = adult_education_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
-				}
-			}
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option B: Goliardic Life intent: 
-	option = {
-		name = zz_valyria_magic_education.1070.b
-		trigger = {
-			has_activity_intent = university_revelry_intent
-		}
-		duel = {
-			skill = diplomacy
-			target = scope:student
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = 3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1070.b.success
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1070.a.success.tt
-					left_icon = root
-					right_icon = scope:student
-
-					scope:activity = {
-						add_activity_log_entry = {
-							key = won_a_debate_log
-							score = 25
-							tags = {  }
-							character = root
-							target = scope:student
-			
-							#Effect
-							root = {
-								bp2_lifestyle_xp_gain_per_type_effect = { VALUE = major }
-								reverse_add_opinion = {
-									target = scope:teacher
-									modifier = proud_opinion
-									opinion = 20
-								}
-								stress_impact = {
-									base = minor_stress_impact_loss
-									arrogant = minor_stress_impact_loss
-									shy = minor_stress_impact_gain
-									honest = minor_stress_impact_gain
-								}
-							}
-						}
-					}
-					custom_tooltip = adult_education_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
-				}
-			}
-			50 = {
-				compare_modifier = {
-					value = scope:duel_value
-					multiplier = -3.5
-					min = -49
-				}
-				desc = zz_valyria_magic_education.1070.b.failure
-				send_interface_toast = {
-					title = zz_valyria_magic_education.1070.a.failure.tt
-					left_icon = root
-					right_icon = scope:student
-
-					scope:activity = {
-						add_activity_log_entry = {
-							key = won_a_debate_log
-							score = 25
-							tags = {  }
-							character = scope:student
-							target = root
-			
-							#Effect
-							root = {
-								bp2_lifestyle_xp_gain_per_type_effect = { VALUE = minor }
-								stress_impact = {
-									base = medium_stress_impact_gain
-									shy = medium_stress_impact_gain
-									arrogant = medium_stress_impact_gain
-									deceitful = medium_stress_impact_gain
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		ai_chance = {
-			base = 100
-		}
-	}
-
-	# Option C: opt-out
-	option = {
-		name = zz_valyria_magic_education.1070.c
-		if = {
-			limit = {
-				can_set_relation_rival_trigger = { CHARACTER = scope:student_2 }
-			}
-			progress_towards_rival_effect = {
-				REASON = rival_put_me_in_the_spot
-				CHARACTER = scope:student_2
-				OPINION = default_rival_opinion
-			}
-		}
-		stress_impact = {
-			shy = major_stress_impact_loss
-			reclusive = major_stress_impact_loss
-		}
-		ai_chance = {
-			base = 50
-			modifier = {
-				has_trait = shy
-				add = 100
-			}
-			modifier = {
-				has_trait = reclusive
-				add = 100
-			}
-		}
-	}
-}
-
-# Study a live bird
-
-zz_valyria_magic_education.1090 = {
-	type = activity_event
-	title = zz_valyria_magic_education.1090.t
-	desc = zz_valyria_magic_education.1090.desc
-	theme = university
-
-	left_portrait = {
-		character = root
-		animation = admiration
-	}
-	right_portrait = {
-		character = scope:teacher
-		animation = hunting_falcon
-	}
-
-	cooldown = { years = 5 }
-
-	trigger = {
-		scope:activity = {
-			any_attending_character = {
-				OR = {
-					has_character_flag = teacher_1
-					has_character_flag = teacher_2
-				}				
-			}
-		}
-	}
-
-	weight_multiplier = {
-		base = 1
-		modifier = {
-			scope:activity = {
-				any_attending_character = {
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					has_trait = education_martial
-				}
-			}
-			add = 0.5
-		}
-		modifier = {
-			scope:activity = {
-				any_attending_character = {
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					has_trait = lifestyle_hunter
-				}
-			}
-			add = 1
-		}
-	}
-
-	immediate = {
-		scope:activity = {
-			activity_location = { save_scope_as = location }
-			random_attending_character = {
-				limit = {
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					OR = {
-						has_trait = education_martial
-						has_trait = lifestyle_hunter
-					}
-				}
-				alternative_limit = {
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
-				save_scope_as = teacher
-			}
-		}
-	}
-
-	# Option A: Study hard intent: Kill it and study its innards
-	option = {
-		name = zz_valyria_magic_education.1090.a
-		trigger = {
-			has_activity_intent = study_hard_intent
-		}
-		add_prestige = medium_prestige_loss
-		custom_tooltip = adult_education_tt_positive_major
-		scope:activity = { activity_special_type_progression_major = yes }
-		stress_impact = {
-			humble = minor_stress_impact_gain
-			compassionate = medium_stress_impact_gain
-			zealous = medium_stress_impact_gain
-			lazy = medium_stress_impact_gain
-			craven = major_stress_impact_gain
-		}
-		if = {
-			limit = {
-				OR = {
-					culture = { has_cultural_tradition = tradition_vegetarianism }
-					faith = { has_doctrine = tenet_sanctity_of_nature }
-				}
-			}
-			custom_tooltip = zz_valyria_magic_education.1090.a.tt
-			add_stress = major_stress_gain
-		}
-		ai_chance = {
-			base = 100
-			modifier = {
-				has_trait = sadistic
-				add = 100
-			}
-			modifier = {
-				has_trait = scholar
-				add = 100
-			}
-			modifier = {
-				has_trait = whole_of_body
-				add = 100
-			}
-			modifier = {
-				has_trait = diligent
-				add = 50
-			}
-			modifier = {
-				has_trait = craven
-				add = -50
-			}
-			modifier = {
-				has_trait = compassionate
-				add = -25
-			}
-		}
-	}
-
-	# Option B: Goliardic Life intent: Let it out and study the chaos
-	option = {
-		name = zz_valyria_magic_education.1090.b
-		trigger = {
-			has_activity_intent = university_revelry_intent
-		}
-		flavor = zz_valyria_magic_education.1090.b.tt
-		bp2_lifestyle_xp_gain_per_type_effect = { VALUE = major }
-		scope:teacher = {
-			add_opinion = {
-				target = root
-				modifier = disappointed_opinion
-				opinion = -25
-			}
-		}
-		if = {
-			limit = {
-				can_set_relation_rival_trigger = { CHARACTER = scope:teacher }
-			}
-			progress_towards_rival_effect = {
-				REASON = rival_chaos_in_class
-				CHARACTER = scope:teacher
-				OPINION = 0
-			}
-		}
-
-		stress_impact = {
-			forgiving = minor_stress_impact_gain
-			compassionate = medium_stress_impact_gain
-			diligent = major_stress_impact_gain
-			shy = major_stress_impact_gain
-		}
-		ai_chance = {
-			base = 100
-			modifier = {
-				has_trait = fickle
-				add = 50
-			}
-			modifier = {
-				has_trait = gregarious
-				add = 50
-			}
-			modifier = {
-				has_trait = shy
-				add = -100
-			}
-		}
-	}
-
-	#Option C: opt out - look from afar
-	option = {
-		name =  zz_valyria_magic_education.1090.c
-		custom_tooltip = adult_education_tt_positive_medium
-		scope:activity = { activity_special_type_progression_medium = yes }
-		stress_impact = {
-			brave = minor_stress_impact_gain
-			diligent = minor_stress_impact_gain
-			gregarious = minor_stress_impact_gain
-			ambitious = minor_stress_impact_gain
-		}
-		ai_chance = {
-			base = 75
-		}
-	}
-}
-
-## Learn a Spell 
-
-zz_valyria_magic_education.4000 = {
-	type = activity_event
-	title = zz_valyria_magic_education.4000.t
-	desc = zz_valyria_magic_education.4000.desc
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
 	theme = university
 
 	center_portrait = {
@@ -1887,7 +145,7 @@ zz_valyria_magic_education.4000 = {
 
 	# Option A: Study hard intent: think and try to resolve the questions
 	option = {
-		name = zz_valyria_magic_education.4000.a
+		name = zz_valyria_magic_education.0100.a
 		trigger = {
 			has_activity_option = {
 				category = adult_education_option_books
@@ -1897,15 +155,15 @@ zz_valyria_magic_education.4000 = {
 		duel = {
 			skill = learning
 			value = high_skill_rating
-			15 = {
+			30 = {
 				compare_modifier = {
 					value = scope:duel_value
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_magic_education.1060.a.crit_success
+				desc = zz_valyria_magic_education.0100.a.crit_success
 				send_interface_toast = {
-					title = zz_valyria_magic_education.1060.a.crit_success.tt
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
 					left_icon = root
 					hidden_effect = {
 						zz_random_gain_magic_spell = yes
@@ -1979,15 +237,233 @@ zz_valyria_magic_education.4000 = {
 					base = medium_stress_impact_loss
 				}
 			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## You have progressed your studies by a moderate amount. 
+
+## You have progressed your studies by a major amount. 
+
+### Learn Random Spell/Valyrian Studies 
+
+### Learn Blood Magic Spell 
+
+### Learn Shadow Magic Spell 
+
+### Learn Dream Magic Spell 
+
+### Learn Alchemy Spell 
+
+### Learn Fire Magic Spell 
+
+### Learn Water Magic Spell 
+
+### Learn Air Magic Spell 
+
+## Learn a Spell 
+
+zz_valyria_magic_education.4000 = {
+	type = activity_event
+	title = zz_valyria_magic_education.4000.t
+	desc = zz_valyria_magic_education.4000.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.4000.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			15 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.4000.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.4000.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_random_gain_magic_spell = yes
+						switch = {
+							trigger = has_activity_intent
+							study_valyrian_secrets = { 
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = secrets_of_the_higher_mysteries
+								}
+							}
+							study_blood_magic = { 
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = blood_magic
+								}
+							}
+							study_shadow_magic = {
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = shadow_magic
+								}
+							}
+							study_dream_magic = {
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = dream_magic
+								}
+							}
+							study_alchemical_magic = {
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = alchemical_magic
+								}
+							}
+							study_fire_magic ={
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = fire_magic
+								}
+							}
+							study_air_magic = {
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = air_magic
+								}
+							}
+							study_water_magic = {
+								zz_valyria_gain_spell_experience = {
+									XPGAIN = 1 
+									XPTRACK = water_magic
+								}
+							}
+						}
+					}
+					custom_tooltip = zz_valyria_magic_education.4000.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
 			40 = {
 				compare_modifier = {
 					value = scope:duel_value
 					multiplier = 3.5
 					min = -49
 				}
-				desc = zz_valyria_magic_education.1060.a.success
+				desc = zz_valyria_magic_education.4000.a.success
 				send_interface_toast = {
-					title = zz_valyria_magic_education.1060.a.success.tt
+					title = zz_valyria_magic_education.4000.a.success.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
@@ -2002,9 +478,9 @@ zz_valyria_magic_education.4000 = {
 					multiplier = -3.5
 					min = -49
 				}
-				desc = zz_valyria_magic_education.1060.a.failure
+				desc = zz_valyria_magic_education.4000.a.failure
 				send_interface_toast = {
-					title = zz_valyria_magic_education.1060.a.failure.tt
+					title = zz_valyria_magic_education.4000.a.failure.tt
 					left_icon = root
 					custom_tooltip = adult_education_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
