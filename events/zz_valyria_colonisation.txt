@@ -182,6 +182,148 @@ zz_valyria_colonisation.0010 = {
 	}
 }
 
+## Destination Events 
+## Porgress Event Learning
+zz_valyria_colonisation.0100 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0100.t
+	desc = zz_valyria_colonisation.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_colonisation.0100.a
+		trigger = {
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0100.a.crit_success.tt
+					left_icon = root
+					
+					custom_tooltip = zz_valyria_colonisation.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_colonisation.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+
 ## Get Valyrian Sword
 zz_valyria_colonisation.4000 = {
 	type = activity_event
@@ -246,7 +388,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -265,7 +407,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.a.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
 				stress_impact = {
@@ -282,7 +424,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.a.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
@@ -323,7 +465,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -342,7 +484,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.1060.a.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
 				stress_impact = {
@@ -359,7 +501,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.1060.a.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
@@ -400,7 +542,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -419,7 +561,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.c.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
 				stress_impact = {
@@ -436,7 +578,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.c.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
@@ -477,7 +619,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -496,7 +638,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.d.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
 				stress_impact = {
@@ -513,7 +655,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.d.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
@@ -554,7 +696,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -573,7 +715,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.e.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
 				stress_impact = {
@@ -590,7 +732,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.e.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
@@ -631,7 +773,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -650,7 +792,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.f.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
 				stress_impact = {
@@ -667,7 +809,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.f.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
@@ -708,7 +850,7 @@ zz_valyria_colonisation.4000 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = adult_education_tt_positive_massive
+							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
@@ -727,7 +869,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.g.success.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_major
+					custom_tooltip = zz_valyria_colonisation_tt_positive_major
 					agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
@@ -745,7 +887,7 @@ zz_valyria_colonisation.4000 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.4000.g.failure.tt
 					left_icon = root
-					custom_tooltip = adult_education_tt_positive_tiny
+					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
 					scope:activity = { activity_special_type_progression_tiny = yes }
 				}
 				stress_impact = {
