@@ -134,16 +134,7 @@ zz_dragon_dreams = {
 	remove_character_flag = dreamt
 }
 
-zz_add_spell = {
-	if = {
-		limit = {
-			NOT  = {
-				has_character_flag = $SPELL$
-			}
-		}
-		add_character_flag =  $SPELL$
-	}
-}
+
 
 
 zz_spell_cast = { 
@@ -155,9 +146,27 @@ zz_spell_cast = {
 		set_variable = spellcast
 	}
 }
+zz_add_spell = {
+	if = {
+		limit = {
+			NOT  = {
+				has_character_flag = $SPELL$
+			}
+		}
+		send_interface_message = {
+			type = event_generic_neutral
+			title = learn_$SPELL$
+			desc = learn_$SPELL$_text
+			left_icon = scope:actor
+			right_icon = scope:actor
+			custom_tooltip = learn_$SPELL$_text
+			add_character_flag =  $SPELL$
+		}		
+	}
+}
 
 
-zz_random_gain_magic_spell = {
+zz_gain_blood_magic_spell = { 
 	random_list = {
 		100 = {
 			modifier = {
@@ -168,17 +177,6 @@ zz_random_gain_magic_spell = {
 			}
 			zz_add_spell  = {
 				SPELL = healing_spell_flag
-			}
-		}
-		100 = {
-			modifier = {
-				zz_valyria_knows_spell  = {
-					SPELL = empowerment_of_arms_spell_flag
-				}
-				add = -100
-			}
-			zz_add_spell  = {
-				SPELL = empowerment_of_arms_spell_flag
 			}
 		}
 		100 = {
@@ -195,36 +193,35 @@ zz_random_gain_magic_spell = {
 		100 = {
 			modifier = {
 				zz_valyria_knows_spell  = {
-					SPELL = building_speed_spell_flag
+					SPELL = men_at_arms_restoration_spell_flag
 				}
 				add = -100
 			}
 			zz_add_spell  = {
-				SPELL = building_speed_spell_flag
+				SPELL = men_at_arms_restoration_spell_flag
 			}
 		}
 		100 = {
 			modifier = {
 				zz_valyria_knows_spell  = {
-					SPELL = development_boost_spell_flag
+					SPELL = rejuvenate_the_armies_spell_flag
 				}
 				add = -100
 			}
 			zz_add_spell  = {
-				SPELL = development_boost_spell_flag
+				SPELL = rejuvenate_the_armies_spell_flag
 			}
-		}
-		100 = {
-			modifier = {
-				zz_valyria_knows_spell  = {
-					SPELL = transmutation_spell_flag
-				}
-				add = -100
-			}
-			zz_add_spell  = {
-				SPELL = transmutation_spell_flag
-			}
-		}
+		}	
+	}
+}
+
+zz_gain_shadow_magic_spell = { 
+	random_list = {
+	}
+}
+
+zz_gain_dream_magic_spell = { 
+	random_list = {
 		100 = {
 			modifier = {
 				zz_valyria_knows_spell  = {
@@ -261,17 +258,6 @@ zz_random_gain_magic_spell = {
 		100 = {
 			modifier = {
 				zz_valyria_knows_spell  = {
-					SPELL = flame_strike_spell_flag
-				}
-				add = -100
-			}
-			zz_add_spell  = {
-				SPELL = flame_strike_spell_flag
-			}
-		}
-		100 = {
-			modifier = {
-				zz_valyria_knows_spell  = {
 					SPELL = mental_domination_spell_flag
 				}
 				add = -100
@@ -280,6 +266,76 @@ zz_random_gain_magic_spell = {
 				SPELL = mental_domination_spell_flag
 			}
 		}
+	}
+}
+
+zz_gain_alchemy_spell = { 
+	random_list = { 
+		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = empowerment_of_arms_spell_flag
+				}
+				add = -100
+			}
+			zz_add_spell  = {
+				SPELL = empowerment_of_arms_spell_flag
+			}
+		}
+		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = building_speed_spell_flag
+				}
+				add = -100
+			}
+			zz_add_spell  = {
+				SPELL = building_speed_spell_flag
+			}
+		}
+		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = development_boost_spell_flag
+				}
+				add = -100
+			}
+			zz_add_spell  = {
+				SPELL = development_boost_spell_flag
+			}
+		}
+		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = transmutation_spell_flag
+				}
+				add = -100
+			}
+			zz_add_spell  = {
+				SPELL = transmutation_spell_flag
+			}
+		}
+	}
+}
+zz_gain_fire_magic_spell = { 
+	random_list = {
+		100 = { 
+			100 = {
+				modifier = {
+					zz_valyria_knows_spell  = {
+						SPELL = flame_strike_spell_flag
+					}
+					add = -100
+				}
+				zz_add_spell  = {
+					SPELL = flame_strike_spell_flag
+				}
+			}
+		}
+	}
+}
+zz_gain_water_magic_spell = { 
+	random_list = {
 		100 = {
 			modifier = {
 				zz_valyria_knows_spell  = {
@@ -291,6 +347,11 @@ zz_random_gain_magic_spell = {
 				SPELL = waters_of_mother_rhoyne_spell_flag
 			}
 		}
+	}
+}
+
+zz_gain_air_magic_spell = { 
+	random_list = {
 		100 = {
 			modifier = {
 				zz_valyria_knows_spell  = {
@@ -302,27 +363,31 @@ zz_random_gain_magic_spell = {
 				SPELL = tempestuous_winds_spell_flag
 			}
 		}
+	}
+}
+
+zz_random_gain_magic_spell = {
+	random_list = {
 		100 = {
-			modifier = {
-				zz_valyria_knows_spell  = {
-					SPELL = men_at_arms_restoration_spell_flag
-				}
-				add = -100
-			}
-			zz_add_spell  = {
-				SPELL = men_at_arms_restoration_spell_flag
-			}
+			zz_gain_blood_magic_spell = yes 
+		}
+		100 = { 
+			zz_gain_shadow_magic_spell = yes 
+		}
+		100 = { 
+			zz_gain_dream_magic_spell = yes 
+		}
+		100 = { 
+			zz_gain_alchemy_spell = yes 
+		}
+		100 = { 
+			zz_gain_fire_magic_spell = yes
 		}
 		100 = {
-			modifier = {
-				zz_valyria_knows_spell  = {
-					SPELL = rejuvenate_the_armies_spell_flag
-				}
-				add = -100
-			}
-			zz_add_spell  = {
-				SPELL = rejuvenate_the_armies_spell_flag
-			}
-		}		
+			zz_gain_water_magic_spell  = yes 
+		}
+		100 = { 
+			zz_gain_air_magic_spell = yes
+		}			
 	}
 }
