@@ -1661,7 +1661,7 @@ zz_valyria_colonisation.4101 = {
 			age = 20
 			dynasty_house = house:house_Targeryon
 
-			random_traits = no
+			random_traits = yes
 
 			martial = 10
 			diplomacy = 3
@@ -1681,17 +1681,30 @@ zz_valyria_colonisation.4101 = {
 			scope:cv_fake_targ = {
 				random = {
 					chance = 5
-					agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:faegon }
+					agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:cv_fake_targ }
 				}
 			}
 		}
 	}
 
-	option = { #fight him
-		name = zz_valyria_colonisation.4101.b
-		trigger_event = zz_valyria_colonisation.4102 
-	}
 
+	option = { #throw him in the dungeons
+		name = zz_valyria_colonisation.4101.a
+		random_list = {
+			70 = { #he is caught
+				trigger_event = zz_valyria_colonisation.4102
+			}
+			30 = { #he escapes
+				hidden_effect = {
+					scope:cv_fake_targ = {
+						death = {
+							death_reason = death_vanished
+						}
+					}
+				}
+			}
+		}
+	}
 	option = { #antagonize
 		name = zz_valyria_colonisation.4101.c
 		effect = {
@@ -1700,7 +1713,7 @@ zz_valyria_colonisation.4101 = {
 					trigger_event = zz_valyria_colonisation.4102 
 				}
 				60 = { #he flees
-					effect = {
+					hidden_effect = {
 						scope:cv_fake_targ = {
 							death = {
 								death_reason = death_vanished
@@ -1712,16 +1725,37 @@ zz_valyria_colonisation.4101 = {
 		}
 	}
 
-	option = {
-
-	}
 }
 
-
-zz_valyria_colonisation.4102 = { #he wants a duel
+zz_valyria_colonisation.4102 = { #he gets jailed
 	type = character_event
 	title = zz_valyria_colonisation.4102.t
 	desc = zz_valyria_colonisation.4102.desc
+	theme = martial
+
+	left_portrait = {
+		character = root
+		animation = happiness
+	}
+
+	right_portrait = {
+		character = scope:cv_fake_targ
+		animation = prisondungeon
+	}
+
+	option = {
+		name = zz_valyria_colonisation.4102.a
+		hard_imprison_character_effect = { #imprisons him
+		TARGET = scope:cv_fake_targ
+		IMPRISONER = root
+		}
+	}
+}
+
+zz_valyria_colonisation.4103 = { #he wants to duel
+	type = character_event
+	title = zz_valyria_colonisation.4103.t
+	desc = zz_valyria_colonisation.4103.desc
 	theme = martial
 
 	left_portrait = {
@@ -1735,7 +1769,7 @@ zz_valyria_colonisation.4102 = { #he wants a duel
 	}
 
 	option = { #duel #Zarat could you finish the duel pls pls pls 
-		name = zz_valyria_colonisation.4102.b
+		name = zz_valyria_colonisation.4103.b
 		root = {
 			duel = {
 				skill = prowess
@@ -1744,8 +1778,7 @@ zz_valyria_colonisation.4102 = { #he wants a duel
 		}
 	}
 	option = { #you flee
-		name = zz_valyria_colonisation.4102.c
+		name = zz_valyria_colonisation.4103.c
 
 	}
-
 }
