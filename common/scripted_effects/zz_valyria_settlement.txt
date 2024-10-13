@@ -1,0 +1,437 @@
+﻿# Set up a University Teacher
+valyria_settlement_teacher_setup = {
+	scope:activity.activity_location = { save_scope_as = location }
+	if = {
+		limit = {
+			scope:activity = {
+				NOT = {
+					any_attending_character = {
+						has_character_flag = teacher_1
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+				}
+				save_scope_as = teacher_1
+			}
+		}
+		else_if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_adult_education_teacher = yes
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_adult_education_teacher = yes
+				}
+				save_scope_as = teacher_1
+			}
+		}
+		else = {
+			create_character = {
+				template = adult_education_teacher
+				dynasty = none
+				location = scope:location
+				save_scope_as = teacher_1
+			}
+		}
+		scope:teacher_1 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_2
+				}
+				remove_character_flag = teacher_2
+			}
+			if = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			if = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			add_to_activity = scope:activity
+			add_character_flag = teacher_1
+		}
+	}
+	if = {
+		limit = {
+			scope:activity = {
+				NOT = {
+					any_attending_character = {
+						has_character_flag = teacher_2
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					OR = {
+						has_character_flag = teacher_1
+						has_character_flag = teacher_2
+					}
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+				save_scope_as = teacher_2
+			}
+		}
+		else_if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_adult_education_teacher = yes
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_adult_education_teacher = yes
+					trigger_if = {
+						limit = { exists = scope:teacher_1 }
+						NOT = { this = scope:teacher_1 }
+					}
+				}
+				save_scope_as = teacher_2						
+			}
+		}
+		else = {	
+			create_character = {
+				template = adult_education_teacher
+				dynasty = none
+				location = scope:location
+				save_scope_as = teacher_2
+			}
+		}
+		scope:teacher_2 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_1
+				}
+				remove_character_flag = teacher_1
+			}
+			if = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			if = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			add_to_activity = scope:activity
+			add_character_flag = teacher_2
+		}
+	}
+}
+
+# Set up a University student
+valyria_settlement_student_setup = {
+	scope:activity.activity_location = { save_scope_as = location }
+	if = {
+		limit = {
+			NOT = {
+				scope:activity = {
+					any_attending_character = {
+						has_character_flag = student_1
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+					exists = this
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+				}
+				save_scope_as = student_1
+			}
+		}
+		else = {
+			create_character = {
+				template = adult_education_student
+				dynasty = none
+				location = scope:location
+				save_scope_as = student_1
+			}
+			scope:student_1 = {
+				add_character_flag = generated_character_uni
+			}
+		}
+		scope:student_1 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_1
+				}
+				remove_character_flag = teacher_1
+			}
+			if = {
+				limit = {
+					has_character_flag = teacher_2
+				}
+				remove_character_flag = teacher_2
+			}
+			if = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			add_to_activity = scope:activity
+			add_character_flag = student_1
+		}
+	}
+
+	if = {
+		limit = {
+			NOT = {
+				scope:activity = {
+					any_attending_character = {
+						has_character_flag = student_2
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_pool_character = {
+					province = scope:location
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+					exists = this
+				}
+			}
+			random_pool_character = {
+				province = scope:location
+				limit = {
+					is_available_healthy_ai_adult = yes
+					NOT = {
+						exists = involved_activity
+					}
+				}
+				save_scope_as = student_2
+			}
+		}
+		else = {
+			create_character = {
+				template = adult_education_student
+				dynasty = none
+				location = scope:location
+				save_scope_as = student_2
+			}
+			scope:student_2 = {
+				add_character_flag = generated_character_uni
+			}
+		}
+		scope:student_2 = {
+			if = {
+				limit = {
+					has_character_flag = teacher_1
+				}
+				remove_character_flag = teacher_1
+			}
+			if = {
+				limit = {
+					has_character_flag = teacher_2
+				}
+				remove_character_flag = teacher_2
+			}
+			if = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			add_to_activity = scope:activity
+			add_character_flag = student_2
+		}
+	}
+}
+
+resolve_valyria_settlement_success_reward_effect = {
+	involved_activity ?= {
+		#Perfect settlement - 75-100
+		if = {
+			limit = { var:activity_special_type_progression >= 75 }
+			scope:host = {
+				add_character_flag = perfect_settlement_reward
+			}
+		}
+		#High-end settlement - 50-75
+		else_if = {
+			limit = { 
+				var:activity_special_type_progression < 75
+				var:activity_special_type_progression >= 50
+			} 
+			scope:host = {
+				add_character_flag = high_settlement_reward
+			}
+		}
+		#OK settlement - 25-50
+		else_if = {
+			limit = {
+				var:activity_special_type_progression < 50
+				var:activity_special_type_progression >= 25
+			}
+			scope:host = {
+				add_character_flag = mid_settlement_reward
+			}
+		}
+		#Lousy settlement - 0-25
+		else = {
+			scope:host = {
+				add_character_flag = low_settlement_reward
+			}
+		}
+	}
+}
+
+
+
+valyria_settlement_completed_log_entry_effect = {
+	involved_activity = {
+		add_activity_log_entry = {
+			key = valyria_settlement_studies_completed_log
+			tags = { completed }
+			score = 100
+			show_in_conclusion = yes
+			character = root
+			#Effects
+			root = {
+				disburse_valyria_settlement_reward_effect = yes
+			}
+		}
+	}
+}
+
+
+zz_valyria_settlement_effect = { 
+	if = {
+		limit = {
+			scope:host = {
+				has_activity_intent = settle_castle 
+			}
+		}
+		scope:province = {
+			set_holding_type = castle_holding
+			add_building = castle_02
+			barony = { set_coa = this.holder.house }
+		}
+	}
+	else_if = {
+		limit = {
+			scope:host = {
+				has_activity_intent = settle_city
+			}
+		}
+		scope:province  = {
+			set_holding_type = city_holding
+			add_building = city_02
+			barony = { set_coa = this.holder.house }
+		}
+	}
+	else_if = {
+		limit = {
+			scope:host = {
+				has_activity_intent = settle_temple
+			}
+		}
+		scope:province = {
+			set_holding_type = church_holding
+			add_building = temple_02
+			barony = { set_coa = this.holder.house }
+		}
+	}
+}
+
+
+disburse_valyria_settlement_reward_effect = {
+
+	switch = { # Hand out lifestyle perks/xp
+		trigger = has_character_flag
+		perfect_settlement_reward = { 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			zz_valyria_settlement_effect = yes
+			remove_character_flag = perfect_settlement_reward
+		}
+		high_settlement_reward = { 
+			zz_valyria_settlement_effect = yes
+			remove_character_flag = high_settlement_reward
+		}
+		mid_settlement_reward = { 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			remove_character_flag = mid_settlement_reward
+		}
+		low_settlement_reward = { 
+			remove_character_flag = low_settlement_reward
+		}
+	}
+	# Options rewards
+}
