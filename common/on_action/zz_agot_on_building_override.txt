@@ -1,5 +1,13 @@
 ﻿on_building_completed = {
 	effect = {
+		if = {
+			limit = {
+				NOT = { exists = scope:character }
+			}
+			root.county.holder = {
+				save_scope_as = character
+			}
+		}
 		root = {
 			# Hard working Tradition
 			if = {
@@ -31,7 +39,7 @@
 						agot_is_canyon_terrain = yes
 					}
 				}
-				county.holder = {
+				scope:character = {
 					add_prestige = medium_prestige_value
 				}
 			}
@@ -39,7 +47,7 @@
 			# Sacred Mountains Tradition
 			if = {
 				limit = {
-					county.holder.culture = { has_cultural_parameter = piety_gain_on_building_complete_in_mountains }
+					scope:character.culture = { has_cultural_parameter = piety_gain_on_building_complete_in_mountains }
 					OR = {
 						#AGOT Modified
 						#terrain = mountains
@@ -50,7 +58,7 @@
 						agot_is_canyon_terrain = yes
 					}
 				}
-				county.holder = {
+				scope:character = {
 					add_piety = minor_piety_value
 				}
 			}
@@ -58,7 +66,7 @@
 			# Sacred Groves Tradition
 			if = {
 				limit = {
-					county.holder.culture = { has_cultural_parameter = piety_gain_on_building_complete_in_forest_taiga }
+					scope:character.culture = { has_cultural_parameter = piety_gain_on_building_complete_in_forest_taiga }
 					OR = {
 						#AGOT Modified
 						#terrain = forest
@@ -71,7 +79,7 @@
 						agot_is_taiga_bog_terrain = yes
 					}
 				}
-				county.holder = {
+				scope:character = {
 					add_piety = minor_piety_value
 				}
 			}
@@ -80,15 +88,15 @@
 			if = {
 				limit = {
 					has_holding_type = city_holding
-					exists = county.holder.dynasty
-					county.holder.dynasty = {
+					exists = scope:character.dynasty
+					scope:character.dynasty = {
 						has_dynasty_perk = fp2_urbanism_legacy_4
 					}
 				}
 				county = {
 					holder = {
 						send_interface_toast = {
-							type = event_generic_good
+							type = event_toast_effect_good
 							title = prestige_gained_from_building_completion
 							left_icon = root.barony
 							add_prestige = medium_prestige_gain
@@ -160,7 +168,7 @@
 			if = {
 				limit = {
 					has_holding_type = castle_holding
-					county.holder = {
+					scope:character = {
 						any_character_struggle = {
 							involvement = involved
 							has_struggle_phase_parameter = completing_building_in_castle_gives_development
@@ -174,33 +182,33 @@
 			# if = {
 			# 	limit = {
 			# 		has_holding_type = church_holding
-			# 		county.holder = {
+			# 		scope:character = {
 			# 			any_character_struggle = {
 			# 				involvement = involved
 			# 				has_struggle_phase_parameter = completing_building_in_temple_gives_piety
 			# 			}
 			# 		}
 			# 	}
-			# 	county.holder = { add_piety = medium_piety_gain }
+			# 	scope:character = { add_piety = medium_piety_gain }
 			# }
 
 			# Struggle catalysts
 			if = {
 				limit = {
 					has_holding_type = castle_holding
-					county.holder = {
+					scope:character = {
 						any_character_struggle = {
 							involvement = involved
 							phase_has_catalyst = catalyst_new_building_in_castle
 						}
 					}
 				}
-				county.holder = {
+				scope:character = {
 					every_character_struggle = {
 						involvement = involved
 						activate_struggle_catalyst = {
 							catalyst = catalyst_new_building_in_castle
-							character = root.county.holder
+							character = scope:character
 						}
 					}
 				}
@@ -208,19 +216,19 @@
 			else_if = {
 				limit = {
 					has_holding_type = city_holding
-					county.holder = {
+					scope:character = {
 						any_character_struggle = {
 							involvement = involved
 							phase_has_catalyst = catalyst_new_building_in_city
 						}
 					}
 				}
-				county.holder = {
+				scope:character = {
 					every_character_struggle = {
 						involvement = involved
 						activate_struggle_catalyst = {
 							catalyst = catalyst_new_building_in_city
-							character = root.county.holder
+							character = scope:character
 						}
 					}
 				}
@@ -228,19 +236,19 @@
 			else_if = {
 				limit = {
 					has_holding_type = church_holding
-					county.holder = {
+					scope:character = {
 						any_character_struggle = {
 							involvement = involved
 							phase_has_catalyst = catalyst_new_building_in_temple
 						}
 					}
 				}
-				county.holder = {
+				scope:character = {
 					every_character_struggle = {
 						involvement = involved
 						activate_struggle_catalyst = {
 							catalyst = catalyst_new_building_in_temple
-							character = root.county.holder
+							character = scope:character
 						}
 					}
 				}
@@ -251,19 +259,19 @@
 			# 	limit = {
 			# 		has_holding_type = church_holding
 			# 		county.faith.religion = religion:islam_religion
-			# 		county.holder = {
+			# 		scope:character = {
 			# 			any_character_struggle = {
 			# 				involvement = involved
 			# 				phase_has_catalyst = catalyst_new_islamic_temple_construction
 			# 			}
 			# 		}
 			# 	}
-			# 	county.holder = {
+			# 	scope:character = {
 			# 		every_character_struggle = {
 			# 			involvement = involved
 			# 			activate_struggle_catalyst = {
 			# 				catalyst = catalyst_new_islamic_temple_construction
-			# 				character = root.county.holder
+			# 				character = scope:character
 			# 			}
 			# 		}
 			# 	}
@@ -271,19 +279,19 @@
 
 			if = {
 				limit = {
-					county.holder = {
+					scope:character = {
 						any_character_struggle = {
 							involvement = involved
 							phase_has_catalyst = catalyst_new_building_in_holdings
 						}
 					}
 				}
-				county.holder = {
+				scope:character = {
 					every_character_struggle = {
 						involvement = involved
 						activate_struggle_catalyst = {
 							catalyst = catalyst_new_building_in_holdings
-							character = root.county.holder
+							character = scope:character
 						}
 					}
 				}
@@ -362,7 +370,7 @@
 					if = {
 						limit = {
 							is_alive = yes
-							is_landed = yes
+							is_landed_or_landless_administrative = yes
 							is_available = yes
 						}
 						#Then remove the safeguard event that would clean up the Builder
@@ -379,7 +387,7 @@
 			# Every time the Builder builds in their holding...
 			if = {
 				limit = {
-					county.holder ?= { 
+					scope:character ?= { 
 						OR = {
 							has_character_modifier = the_city_builder_modifier
 							has_character_modifier = the_castle_builder_modifier
@@ -390,23 +398,79 @@
 				county = { change_development_progress = minor_development_progress_gain }
 				if = {
 					limit = {
-						county.holder ?= { has_character_modifier = the_city_builder_modifier }
+						scope:character ?= { has_character_modifier = the_city_builder_modifier }
 					}
-					county.holder = { add_gold = minor_gold_value }
+					scope:character = { add_gold = minor_gold_value }
 				}
 				if = {
 					limit = {
-						county.holder ?= { has_character_modifier = the_castle_builder_modifier }
+						scope:character ?= { has_character_modifier = the_castle_builder_modifier }
 					}
-					county.holder = { add_prestige = minor_prestige_gain }
+					scope:character = { add_prestige = minor_prestige_gain }
 				}
 				if = {
 					limit = {
-						county.holder ?= { has_character_modifier = the_temple_builder_modifier }
+						scope:character ?= { has_character_modifier = the_temple_builder_modifier }
 					}
-					county.holder = { add_piety = minor_piety_gain }
+					scope:character = { add_piety = minor_piety_gain }
 				}
 			}
+			#end any landless adventurer's construction task contract
+			if = {
+				limit = {
+					any_player = {
+						any_character_active_contract = {
+							has_task_contract_type = laamp_construction_contract
+							task_contract_employer = scope:character
+							save_temporary_scope_as = construction_contract
+						}
+					}
+				}
+				scope:construction_contract = {
+					if = {
+						limit = {
+							task_contract_taker.capital_province.county = root.county
+						}
+						complete_task_contract = success_critical
+					}
+					else = {
+						complete_task_contract = failure_standard
+					}
+				}
+			}
+			
+			# Admin - Governors get rewards for constructing buildings in governed counties
+			if = {
+				limit = {
+					scope:character = { is_governor = yes }
+				}
+				scope:character = {
+					send_interface_message = {
+						type = msg_governor_duties
+						title = msg_governor_duties_t
+						desc = admin_construction_completed_desc
+						right_icon = root.barony
+						
+						change_influence = estate_construction_influence_gain_value
+						increase_governance_effect = { VALUE = 4 }
+					}
+				}
+			}
+
+			# Harrying of the North - Pacification Gain
+			#AGOT Disabled
+			#if = {
+			#	limit = {
+			#		scope:character.culture = culture:norman
+			#		has_global_variable = harrying_of_the_north
+			#	}
+			#	global_var:harrying_of_the_north.story_owner = {
+			#		change_variable = {
+			#			name = pacification
+			#			add = 2
+			#		}
+			#	}
+			#}			
 			#AGOT Added, ruins
 			if = {
 				limit = {
@@ -422,7 +486,7 @@
 						factor = 0
 						has_global_variable = summerhall_egg_found
 					}
-					county.holder = {
+					scope:character = {
 						trigger_event = agot_ruins.2000
 					}
 				}
@@ -437,14 +501,14 @@
 						}
 					}
 				}
-				county.holder = {
+				scope:character = {
 					trigger_event = agot_ruins.1000
 				}
 			}
 			#remove slave camps if slavery is illegal
 			if = {
 				limit = {
-					county.holder = { has_realm_law = slavery_disallowed_law }
+					scope:character = { has_realm_law = slavery_disallowed_law }
 					root = { has_building_or_higher = agot_slave_camps_01 }
 				}
 				root = { destroy_slave_camps_effect = yes }
