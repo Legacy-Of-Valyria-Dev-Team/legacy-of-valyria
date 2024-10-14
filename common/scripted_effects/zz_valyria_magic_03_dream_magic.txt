@@ -1,0 +1,338 @@
+﻿# Dream Magic 
+zz_valyria_mental_domination = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_domination
+		desc = magic_domination_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_domination_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			every_relation = {
+				type = magic_master
+				remove_relation_magic_minion = scope:recipient
+			}
+		}
+		set_relation_magic_minion = scope:recipient
+		hidden_effect = {
+			if = {
+				limit = {
+					has_hook = scope:recipient
+				}
+				remove_hook = {
+					target = scope:recipient
+				}
+			}
+			scope:recipient = {
+				if = {
+					limit = {
+						has_hook = scope:actor
+					}
+					remove_hook = {
+						target = scope:actor
+					}
+				}
+			}
+		}
+		add_hook = {
+				type = magic_domination_hook
+				target = scope:recipient
+		}
+		if = {
+			limit = {
+				scope:magic_domination_faith = yes
+			}
+			scope:recipient = {
+				custom_tooltip = mind_control_custom_tooltip
+				set_culture_same_as = scope:actor
+				set_character_faith = scope:actor.faith
+			}
+		}
+		else = {
+			scope:recipient = {
+				custom_tooltip = mind_control_custom_tooltip
+			}
+		}
+	}
+}
+
+zz_valyria_dreaming_within = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_dreaming_within
+		desc = magic_dreaming_within_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_dreaming_within_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			if  = { 
+				limit = {
+					scope:blademaster_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_blademaster }
+						add_trait_xp = {
+							trait = lifestyle_blademaster
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_blademaster }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:mystic_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_mystic }
+						add_trait_xp = {
+							trait = lifestyle_mystic
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_mystic }
+				}
+			}
+			else_if  = { 
+				limit = {
+					scope:reveler_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_reveler }
+						add_trait_xp = {
+							trait = lifestyle_reveler
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_reveler }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:hunter_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_hunter }
+						add_trait_xp = {
+							trait = lifestyle_hunter
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_hunter }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:physician_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_physician }
+						add_trait_xp = {
+							trait = lifestyle_physician
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_physician }
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:herbalist_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_herbalist }
+						add_trait_xp = {
+							trait = lifestyle_herbalist
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_herbalist }
+				}
+			}		
+			else_if  = { 
+				limit = {
+					scope:gardener_magic = yes
+				}
+				scope:recipient = {
+					if = {
+						limit = { has_trait = lifestyle_gardener }
+						add_trait_xp = {
+							trait = lifestyle_gardener
+							value = 30
+						}
+					}
+					else = { add_trait = lifestyle_gardener }
+				}
+			}				
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_dreams_of_experience = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_dreams_of_experience 
+		desc = magic_dreams_of_experience_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_dreams_of_experience_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			if = {
+				limit = {
+					scope:experience_learning = yes
+				}
+				scope:recipient = { add_learning_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_diplomacy = yes
+				}
+				scope:recipient = { add_diplomacy_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_stewardship = yes
+				}
+				scope:recipient = { add_stewardship_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_intrigue = yes
+				}
+				scope:recipient = { add_intrigue_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_martial = yes
+				}
+				scope:recipient = { add_martial_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_prowess = yes
+				}
+				scope:recipient = { add_nht_prowess_lifestyle_xp = 500 } 
+			}
+			else_if = {
+				limit = {
+					scope:experience_leadership = yes
+				}
+				scope:recipient = { add_nht_leadership_lifestyle_xp = 500 } 
+			}
+			
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+					}
+				}
+		}
+	}
+}
+
+zz_valyria_secrets_of_dreams = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_secrets_of_dreams
+		desc = magic_secrets_of_dreams_text
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = magic_secrets_of_dreams_text
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {
+			if = {
+				limit = {
+					scope:scrying = yes
+				}
+				scope:recipient = { 
+					zz_dragon_dreams = yes
+					random_list = {
+						21 = {
+							trigger_event = zz_valyria_magic_scrying.1
+						}
+						9 = {
+							trigger_event = zz_valyria_magic_scrying.2
+						}
+					}
+				} 
+			}			
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}

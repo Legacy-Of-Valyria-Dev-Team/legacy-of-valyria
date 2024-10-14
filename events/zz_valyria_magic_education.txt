@@ -50,16 +50,110 @@ zz_valyria_magic_education.0009 = {
 	immediate = {
 		#Reward effects
 		magic_education_completed_log_entry_effect = yes
+		involved_activity ?= {
+			#Perfect colonisation - 75-100
+			if = {
+				limit = { var:activity_special_type_progression >= 75 }
+				scope:host = {
+					add_character_flag = perfect_reward
+				}
+			}
+			#High-end colonisation - 50-75
+			else_if = {
+				limit = { 
+					var:activity_special_type_progression < 75
+					var:activity_special_type_progression >= 50
+				} 
+				scope:host = {
+					add_character_flag = high_reward
+				}
+			}
+			#OK colonisation - 25-50
+			else_if = {
+				limit = {
+					var:activity_special_type_progression < 50
+					var:activity_special_type_progression >= 25
+				}
+				scope:host = {
+					add_character_flag = ok_reward
+				}
+			}
+		}
 		scope:activity = {
+		}
+	}
+	option = {
+		name = zz_valyria_colonisation.0009.a
+		trigger = {
+			OR = {
+				has_character_flag = perfect_reward
+				remove_character_flag = high_reward
+			}
+		}
+		switch = {
+			trigger = has_activity_intent
+			study_valyrian_secrets = { 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+			}
+			study_blood_magic = { 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = blood_magic
+				}
+			}
+			study_shadow_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = shadow_magic
+				}
+			}
+			study_dream_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = dream_magic
+				}
+			}
+			study_alchemical_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = alchemical_magic
+				}
+			}
+			study_fire_magic ={
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = fire_magic
+				}
+			}
+			study_air_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = air_magic
+				}
+			}
+			study_water_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = water_magic
+				}
+			}
 		}
 	}
 	option = {
 		trigger = {
 		}
-		name = zz_valyria_magic_education.0009.a
+		name = zz_valyria_magic_education.0009.z
 		ai_chance = {
 			base = 100
 		}
+	}
+	after = { 
+		remove_character_flag = perfect_reward
+		remove_character_flag = high_reward
+		remove_character_flag = ok_reward
 	}
 }
 

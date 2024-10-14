@@ -1,0 +1,345 @@
+﻿# Fire Magic 
+
+zz_valyria_flame_strike = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_flame_strike
+		desc = magic_flame_strike_text
+		left_icon = scope:actor
+		right_icon = scope:recipient					
+		custom_tooltip = magic_flame_strike_text
+
+		if = {
+			limit = {
+				has_trait = compassionate
+				has_trait = wrathful
+				has_trait = sadistic
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_gain
+				wrathful = medium_stress_impact_loss
+				sadistic = medium_stress_impact_loss
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_relation_rival = scope:recipient
+					has_relation_nemesis = scope:recipient
+				}
+			}
+			add_stress = major_stress_loss
+			stress_impact = {
+				forgiving = medium_stress_impact_gain
+				wrathful = medium_stress_impact_loss
+				sadistic = medium_stress_impact_loss
+			}
+		}
+		if = {
+			limit = {
+				scope:weaken_spell_flag = yes
+			}
+			add_dread = medium_dread_gain
+			scope:recipient = {
+				if = {
+					limit = {
+						scope:power_strike_imprison_flag = yes
+					}
+					add_trait = wounded_3
+					add_trait = burned
+					add_trait_xp = {
+						trait = burned
+						value = { 5 200 }
+					}
+					add_stress = massive_stress_gain
+					imprison_character_effect = {
+						TARGET = scope:recipient
+						IMPRISONER = scope:actor
+					}
+				}
+				else = {
+					show_as_tooltip = {
+						add_trait = wounded_3
+						add_stress = massive_stress_gain
+					}
+					scope:actor = {
+						if = {
+							limit = {
+								NOR = {
+									has_imprisonment_reason = scope:recipient
+									has_banish_reason = scope:recipient
+									has_execute_reason = scope:recipient
+								}
+							}
+							add_tyranny = minor_tyranny_gain
+						}
+					}
+					custom_tooltip = power_strike_spare_ct
+				}
+			}
+		}
+		else = {
+			add_dread = major_dread_gain
+			if = {
+				limit = {
+					scope:secondary_actor = {
+						is_in_army = yes
+						exists = commanding_army
+						commanding_army = {
+							is_army_in_combat = yes
+						}
+					}
+					scope:recipient = {
+						is_in_army = yes
+						OR = {
+							AND = {
+								exists = commanding_army
+								commanding_army = {
+									is_army_in_combat = yes
+								}
+								NOT = {
+									commanding_army = scope:secondary_actor.commanding_army
+								}
+								commanding_army.location = scope:secondary_actor.commanding_army.location
+							}
+							AND = {
+								exists = liege_or_court_owner
+								liege_or_court_owner = {
+									any_army = {
+										is_army_in_combat = yes
+										NOT = {
+											THIS = scope:secondary_actor.commanding_army
+										}
+										location = scope:secondary_actor.commanding_army.location
+									}
+								}
+							}
+						}
+					}
+				}
+				scope:secondary_actor = {
+					add_character_flag = mage_during_battle_flag
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						has_execute_reason = scope:recipient
+					}
+					custom_tooltip = IS_ALLOWED_TO_EXECUTE_DESC
+				}
+				else = {
+					add_tyranny = execution_tyranny_gain
+					add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:recipient }
+					if = {
+						limit = {
+							NOT = {	has_trait = murderer	}
+						}
+						add_trait = murderer
+					}
+					hidden_effect = {
+						if = {
+							limit = {
+								exists = scope:recipient.primary_heir
+								scope:recipient.primary_heir = {
+									any_close_family_member = {
+										this = scope:recipient
+									}
+									NOR = {
+										has_relation_rival = scope:actor
+										has_relation_nemesis = scope:actor
+										has_relation_magic_minion  = scope:actor
+										has_trait = craven
+										has_trait = forgiving
+									}
+								}
+							}
+							set_relation_rival = scope:recipient.primary_heir
+						}
+						else_if = {
+							limit = {
+								scope:recipient.age<16
+								exists = scope:recipient.father
+								scope:recipient.father = {
+									is_alive = yes
+									is_landed = yes
+									is_ruler = yes
+									NOR = {
+										has_relation_rival = scope:actor
+										has_relation_nemesis = scope:actor
+										has_relation_magic_minion = scope:actor
+										has_trait = craven
+										has_trait = forgiving
+									}
+								}
+							}
+							set_relation_rival = scope:recipient.father
+						}
+					}
+				}
+			}
+		}				
+		hidden_effect = {
+			if = {
+				limit = {
+					trait_is_criminal_in_faith_trigger = { TRAIT = witch FAITH = scope:secondary_actor.faith GENDER_CHARACTER = scope:secondary_actor }
+				}
+				every_ruler = {
+					limit = {
+						faith = scope:secondary_actor.faith
+						NOR = {
+							this = scope:secondary_actor
+							has_trait = witch
+							has_trait = cynical
+							has_trait = forgiving
+							any_secret = { secret_type = secret_witch }
+						}
+					}
+						#use_magic_opinion
+					if = {
+						limit = {
+							NOR = {
+								has_trait = zealous
+								has_trait = theologian
+							}
+						}
+						add_opinion = {
+							modifier = use_magic_opinion
+							target = scope:secondary_actor
+							opinion = -30
+						}
+					}
+					else = {
+						add_opinion = {
+							modifier = use_magic_opinion
+							target = scope:secondary_actor
+							opinion = -50
+						}
+					}
+				}
+				scope:secondary_actor = {
+					every_courtier_or_guest = {
+						limit = {
+							faith = scope:secondary_actor.faith
+							NOR = {
+								this = scope:secondary_actor
+								has_trait = witch
+								has_trait = cynical
+								has_trait = forgiving
+								any_secret = { secret_type = secret_witch }
+							}
+						}
+						add_opinion = {
+							modifier = use_magic_opinion
+							target = scope:secondary_actor
+							opinion = -30
+						}
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:secondary_actor.faith.religious_head
+						NOT = {	scope:secondary_actor.faith.religious_head = scope:secondary_actor	}
+						NOT = {	has_trait = excommunicated	}
+						NOT = {	has_character_modifier = excommunication_recently_lifted	}
+						scope:secondary_actor.faith = {
+							has_doctrine = tenet_communion
+							has_doctrine = doctrine_spiritual_head
+						}
+						scope:secondary_actor.faith.religious_head = {
+							opinion = { target = scope:secondary_actor value < 0 }
+						}
+					}
+					add_trait = excommunicated
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:weaken_spell_flag = no
+			}
+			if = {
+				limit = {
+					scope:secondary_actor = {
+						has_character_flag = mage_during_battle_flag
+					}
+				}
+				scope:recipient = {
+					add_trait_xp = {
+						trait = burned
+						value = { 5 200 }
+					}
+					death = {
+						death_reason = death_battle
+						killer = scope:secondary_actor
+					}
+				}
+				scope:secondary_actor = {
+					remove_character_flag = mage_during_battle_flag
+				}
+			}
+			else = {
+				execute_opinion_effect = { VICTIM = scope:recipient EXECUTIONER = scope:secondary_actor }
+				scope:recipient = {
+					add_trait_xp = {
+						trait = burned
+						value = { 5 200 }
+					}
+					death = {
+						death_reason = death_execution
+						killer = scope:secondary_actor
+					}
+				}
+			}
+		}		
+	}
+}
+
+zz_valyria_fire_blast = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_flame_blast
+		desc = magic_flame_blast_text
+		left_icon = scope:actor
+		right_icon = scope:recipient					
+		custom_tooltip = magic_flame_blast_text
+		scope:recipient = {
+			location = {
+				every_army_in_location = {
+					limit = { 
+						army_owner = scope:recipient
+					}
+					deplete_army_by_percentage = 0.3
+				}
+			}
+			commanding_army = { 
+				deplete_army_by_percentage = 0.9
+			}
+		}
+	}
+}
+
+zz_valyria_fire_storm = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = magic_flame_blast
+		desc = magic_flame_blast_text
+		left_icon = scope:actor
+		right_icon = scope:recipient					
+		custom_tooltip = magic_flame_blast_text
+		scope:recipient = {
+			location = {
+				every_army_in_location = {
+					limit = { 
+						army_owner = scope:recipient
+					}
+					deplete_army_by_percentage = 0.3
+				}
+			}
+			commanding_army = { 
+				deplete_army_by_percentage = 0.9
+			}
+		}
+	}
+}
+
