@@ -316,7 +316,29 @@ valyria_settlement_student_setup = {
 }
 
 resolve_valyria_settlement_success_reward_effect = {
+	scope:host = { 
+		if = { 
+			limit = { 
+				has_activity_intent = settle_castle 
+			}
+			add_character_flag = settle_castle
+		}
+		if = { 
+			limit = { 
+				has_activity_intent = settle_city 
+			}
+			add_character_flag = settle_city
+		}
+		if = { 
+			limit = { 
+				has_activity_intent = settle_temple 
+			}
+			add_character_flag = settle_temple
+		}
+	}
+	
 	involved_activity ?= {
+		
 		#Perfect settlement - 75-100
 		if = {
 			limit = { var:activity_special_type_progression >= 75 }
@@ -393,13 +415,14 @@ disburse_valyria_settlement_reward_effect = {
 zz_valyria_settlement_effect = { 
 	scope:host = { 
 		switch = {
-			trigger = has_activity_intent
+			trigger = has_character_flag 
 			settle_castle = { 
 				scope:province = {
 					set_holding_type = castle_holding
 					add_building = castle_02
 					barony = { set_coa = this.holder.house }
 				}
+				remove_character_flag = settle_castle
 			}
 			settle_city = { 
 				scope:province  = {
@@ -407,6 +430,7 @@ zz_valyria_settlement_effect = {
 					add_building = city_02
 					barony = { set_coa = this.holder.house }
 				}
+				remove_character_flag = settle_city
 			}
 			settle_temple = { 
 				scope:province = {
@@ -414,6 +438,7 @@ zz_valyria_settlement_effect = {
 					add_building = temple_02
 					barony = { set_coa = this.holder.house }
 				}
+				remove_character_flag = settle_city
 			}
 		}
 	}
