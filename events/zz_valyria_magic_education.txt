@@ -654,7 +654,7 @@ zz_valyria_magic_education.1100  = {
 		animation = personality_rational
 	}
 
-	cooldown = { years = 1 }
+	cooldown = { months = 3 }
 
 	trigger = {
 		always = yes
@@ -799,7 +799,7 @@ zz_valyria_magic_education.1200 = {
 		animation = personality_rational
 	}
 
-	cooldown = { years = 1 }
+	cooldown = { months = 3 }
 
 	trigger = {
 		always = yes
@@ -947,7 +947,7 @@ zz_valyria_magic_education.2100 = {
 	cooldown = { years = 1 }
 
 	trigger = {
-		always = yes
+		has_activity_intent = study_valyrian_secrets
 	}
 
 	weight_multiplier = {
@@ -1080,37 +1080,1022 @@ zz_valyria_magic_education.2100 = {
 
 ### Learn Blood Magic Spell 
 zz_valyria_magic_education.2200 = {
-	
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_activity_intent = study_blood_magic
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_gain_blood_magic_spell  = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
 }
 
 ### Learn Shadow Magic Spell 
 zz_valyria_magic_education.2300 = {
-	
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_activity_intent = study_shadow_magic
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_gain_shadow_magic_spell = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}	
 }
 
 ### Learn Dream Magic Spell 
 zz_valyria_magic_education.2400 = {
-	
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_activity_intent = study_dream_magic
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_gain_dream_magic_spell = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}	
 }
 
 ### Learn Alchemy Spell 
 zz_valyria_magic_education.2500 = {
-	
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_activity_intent = study_alchemical_magic
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_gain_alchemy_spell = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}	
 }
 
 ### Learn Fire Magic Spell 
 zz_valyria_magic_education.2600 = {
-	
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_random_gain_magic_spell = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}	
 }
 
 ### Learn Water Magic Spell 
 zz_valyria_magic_education.2700 = {
-	
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_random_gain_magic_spell = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}	
 }
 
 ### Learn Air Magic Spell 
 zz_valyria_magic_education.2800 = {
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
 
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		trigger = {
+			has_activity_option = {
+				category = adult_education_option_books
+				option = adult_education_books_good
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.crit_success.tt
+					left_icon = root
+					hidden_effect = {
+						zz_random_gain_magic_spell = yes
+					}
+					custom_tooltip = zz_valyria_magic_education.1060.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = adult_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.0100.a.failure.tt
+					left_icon = root
+					custom_tooltip = adult_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
 }
 
 
