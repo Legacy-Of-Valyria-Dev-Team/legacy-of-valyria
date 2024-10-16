@@ -421,7 +421,7 @@ valyria_magic_men_at_arms_restoration = {
 
 	target_type = men_at_arms
 	target_filter = recipient_maa
-	icon = alchemical_magic
+	icon = blood_magic
 	common_interaction = no
 	interface_priority = 10
 	category = interaction_magic_friendly
@@ -598,7 +598,7 @@ valyria_magic_shadow_speed = {
 		}
 	}
 
-	icon = blood_magic
+	icon = shadow_magic
 	common_interaction = no
 	interface_priority = 10
 	category = interaction_magic_friendly
@@ -648,6 +648,100 @@ valyria_magic_shadow_speed = {
 	send_option = {
 		flag = shadow_speed_curse
 		localization = shadow_speed_curse
+	}
+}
+valyria_magic_shadow_dagger = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						MANACOST = 1
+						SPELL = shadow_dagger_spell_flag
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = shadow_dagger_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = shadow_dagger_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = shadow_dagger_spell_flag
+				MANACOST = 1
+			}
+		}
+		scope:recipient = { 
+			is_commanding_army = yes 
+		}
+	}
+
+	icon = shadow_magic
+	common_interaction = no
+	interface_priority = 10
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+
+	on_accept = {
+		
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = shadow_magic
+				}
+			}
+			random_list = { 
+				20 = { 
+					modifier = {
+						add = zz_spellcast_value
+					}
+					zz_valyria_shadow_dagger = yes
+				}
+				80 = { 
+					zz_valyria_spell_failure_effect = yes
+				}
+			}
+		}
+	}
+	auto_accept = yes
+	send_options_exclusive = yes
+
+	send_option = {
+		flag = shadow_dagger_blessing
+		localization = shadow_dagger_blessing
+	}
+	send_option = {
+		flag = shadow_dagger_curse
+		localization = shadow_dagger_curse
 	}
 }
 
