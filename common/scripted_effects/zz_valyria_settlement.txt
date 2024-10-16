@@ -404,6 +404,7 @@ disburse_valyria_settlement_reward_effect = {
 			remove_character_flag = high_settlement_reward
 		}
 		mid_settlement_reward = { 
+			zz_valyria_settlement_effect = yes
 			remove_character_flag = mid_settlement_reward
 		}
 		low_settlement_reward = { 
@@ -418,8 +419,20 @@ zz_valyria_settlement_effect = {
 			trigger = has_character_flag 
 			settle_castle = { 
 				scope:province = {
-					set_holding_type = castle_holding
-					add_building = castle_02
+					set_holding_type = castle_holding	
+					switch = {
+						trigger = has_character_flag
+						perfect_settlement_reward = {
+							add_building = castle_03
+						}
+						high_settlement_reward = {
+							add_building = castle_02
+						}
+						mid_settlement_reward ={
+							add_building = castle_01
+						}
+					}
+					
 					barony = { set_coa = this.holder.house }
 				}
 				remove_character_flag = settle_castle
@@ -427,7 +440,18 @@ zz_valyria_settlement_effect = {
 			settle_city = { 
 				scope:province  = {
 					set_holding_type = city_holding
-					add_building = city_02
+					switch = {
+						trigger = has_character_flag
+						perfect_settlement_reward = {
+							add_building = city_03
+						}
+						high_settlement_reward = {
+							add_building = city_02
+						}
+						mid_settlement_reward ={
+							add_building = city_01
+						}
+					}
 					barony = { set_coa = this.holder.house }
 				}
 				remove_character_flag = settle_city
@@ -435,10 +459,21 @@ zz_valyria_settlement_effect = {
 			settle_temple = { 
 				scope:province = {
 					set_holding_type = church_holding
-					add_building = temple_02
+					switch = {
+						trigger = has_character_flag
+						perfect_settlement_reward = {
+							add_building = temple_03
+						}
+						high_settlement_reward = {
+							add_building = temple_02
+						}
+						mid_settlement_reward ={
+							add_building = temple_01
+						}
+					}
 					barony = { set_coa = this.holder.house }
 				}
-				remove_character_flag = settle_city
+				remove_character_flag = settle_temple
 			}
 		}
 	}
