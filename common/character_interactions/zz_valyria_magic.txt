@@ -555,6 +555,102 @@ valyria_magic_rejuvenate_the_armies = {
 	auto_accept = yes
 }
 
+## Shadow Magic 
+valyria_magic_shadow_speed = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						MANACOST = 1
+						SPELL = shadow_speed_spell_flag
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = shadow_speed_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = shadow_speed_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = shadow_speed_spell_flag
+				MANACOST = 1
+			}
+		}
+		scope:recipient = { 
+			is_commanding_army = yes 
+		}
+	}
+
+	icon = blood_magic
+	common_interaction = no
+	interface_priority = 10
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+
+	on_accept = {
+		
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = shadow_magic
+				}
+			}
+			random_list = { 
+				20 = { 
+					modifier = {
+						add = zz_spellcast_value
+					}
+					zz_valyria_shadow_speed = yes
+				}
+				80 = { 
+					zz_valyria_spell_failure_effect = yes
+				}
+			}
+		}
+	}
+	auto_accept = yes
+	send_options_exclusive = yes
+
+	send_option = {
+		flag = shadow_speed_blessing
+		localization = shadow_speed_blessing
+	}
+	send_option = {
+		flag = shadow_speed_curse
+		localization = shadow_speed_curse
+	}
+}
+
 ## Dream Magic
 
 valyria_magic_mental_domination = {
@@ -1273,7 +1369,19 @@ valyria_magic_transmutation = {
 		}
 	}
 	send_options_exclusive = yes
-
+	
+	send_option = {
+		flag = transmutation
+		localization = transmutation
+		is_shown = {
+		}		
+	}
+	send_option = {
+		flag = piety
+		localization = piety
+		is_shown = {
+		}
+	}
 	send_option = {
 		flag = dynasty_prestige
 		localization = dynasty_prestige
@@ -1286,18 +1394,8 @@ valyria_magic_transmutation = {
 		is_shown = {
 		}
 	}
-	send_option = {
-		flag = piety
-		localization = piety
-		is_shown = {
-		}
-	}
-	send_option = {
-		flag = transmutation
-		localization = transmutation
-		is_shown = {
-		}		
-	}
+
+
 
 	auto_accept = yes
 	ai_targets = {
@@ -1669,7 +1767,7 @@ valyria_magic_flame_strike = {
 
 		}
 		flag = weaken_spell_flag
-		localization = POWER_STRIKE_O1
+		localization = flame_strike_01
 	}
 	send_option = {
 		is_shown = {
@@ -1686,7 +1784,7 @@ valyria_magic_flame_strike = {
 			}
 		}
 		flag = power_strike_imprison_flag
-		localization = POWER_STRIKE_O2
+		localization = flame_strike_02
 	}
 
 	ai_potential = {
