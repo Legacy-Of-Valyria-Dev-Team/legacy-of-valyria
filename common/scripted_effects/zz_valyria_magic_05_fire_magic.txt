@@ -43,9 +43,9 @@ zz_valyria_flame_strike = {
 			scope:recipient = {
 				if = {
 					limit = {
-						scope:power_strike_imprison_flag = yes
+						scope:flame_strike_imprison_flag = yes
 					}
-					add_trait = wounded_3
+					increase_wounds_effect = { REASON = fire_magic }
 					add_trait = burned
 					add_trait_xp = {
 						trait = burned
@@ -179,81 +179,6 @@ zz_valyria_flame_strike = {
 				}
 			}
 		}				
-		hidden_effect = {
-			if = {
-				limit = {
-					trait_is_criminal_in_faith_trigger = { TRAIT = witch FAITH = scope:secondary_actor.faith GENDER_CHARACTER = scope:secondary_actor }
-				}
-				every_ruler = {
-					limit = {
-						faith = scope:secondary_actor.faith
-						NOR = {
-							this = scope:secondary_actor
-							has_trait = witch
-							has_trait = cynical
-							has_trait = forgiving
-							any_secret = { secret_type = secret_witch }
-						}
-					}
-						#use_magic_opinion
-					if = {
-						limit = {
-							NOR = {
-								has_trait = zealous
-								has_trait = theologian
-							}
-						}
-						add_opinion = {
-							modifier = use_magic_opinion
-							target = scope:secondary_actor
-							opinion = -30
-						}
-					}
-					else = {
-						add_opinion = {
-							modifier = use_magic_opinion
-							target = scope:secondary_actor
-							opinion = -50
-						}
-					}
-				}
-				scope:secondary_actor = {
-					every_courtier_or_guest = {
-						limit = {
-							faith = scope:secondary_actor.faith
-							NOR = {
-								this = scope:secondary_actor
-								has_trait = witch
-								has_trait = cynical
-								has_trait = forgiving
-								any_secret = { secret_type = secret_witch }
-							}
-						}
-						add_opinion = {
-							modifier = use_magic_opinion
-							target = scope:secondary_actor
-							opinion = -30
-						}
-					}
-				}
-				if = {
-					limit = {
-						exists = scope:secondary_actor.faith.religious_head
-						NOT = {	scope:secondary_actor.faith.religious_head = scope:secondary_actor	}
-						NOT = {	has_trait = excommunicated	}
-						NOT = {	has_character_modifier = excommunication_recently_lifted	}
-						scope:secondary_actor.faith = {
-							has_doctrine = tenet_communion
-							has_doctrine = doctrine_spiritual_head
-						}
-						scope:secondary_actor.faith.religious_head = {
-							opinion = { target = scope:secondary_actor value < 0 }
-						}
-					}
-					add_trait = excommunicated
-				}
-			}
-		}
 		if = {
 			limit = {
 				scope:weaken_spell_flag = no
