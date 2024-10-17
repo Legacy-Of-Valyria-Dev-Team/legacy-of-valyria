@@ -155,14 +155,24 @@ zz_valyria_settlement.0010 = {
 	title = zz_valyria_settlement.0010.t
 	desc = {
 		first_valid = {
-			desc = zz_valyria_settlement.0010.desc_religious
-		}
-		desc = zz_valyria_settlement.0010.desc_end
-		triggered_desc = {
-			trigger = {
-				"scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive
+			triggered_desc = {
+				trigger = {
+					"scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive
+				}
+				desc = zz_valyria_settlement.0010.arrival.desc_very_very_far
 			}
-			desc = zz_valyria_settlement.0010.desc_very_very_far
+			triggered_desc = {
+				trigger = {
+					"scope:host.capital_province.squared_distance(scope:location)" >= 0
+				}
+				desc = zz_valyria_settlement.0010.arrival.desc_same_province
+			}
+			triggered_desc = {
+				trigger = {
+					NOT = { "scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive }
+				}
+				desc = zz_valyria_settlement.0010.arrival.desc
+			}
 		}
 	}
 	theme = university
@@ -361,7 +371,7 @@ zz_valyria_settlement.0200 = {
 
 	# Option A: Study hard intent: think and try to resolve the questions
 	option = {
-		name = zz_valyria_settlement.0100.a
+		name = zz_valyria_settlement.0200.a
 		trigger = {
 		}
 		duel = {
@@ -518,7 +528,7 @@ zz_valyria_settlement.0300 = {
 					title = zz_valyria_settlement.0300.a.crit_success.tt
 					left_icon = root
 					
-					custom_tooltip = zz_valyria_settlement.0300.a.tt
+					#custom_tooltip = zz_valyria_settlement.0300.a.tt
 					scope:activity = {
 						add_activity_log_entry = {
 							key = sic_et_non_log
@@ -563,8 +573,10 @@ zz_valyria_settlement.0300 = {
 				send_interface_toast = {
 					title = zz_valyria_settlement.0300.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_settlement_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -665,7 +677,31 @@ zz_valyria_settlement.0400 = {
 							score = 25
 							tags = { good learning activity }
 							character = root
-			
+							hidden_effect = {
+								random_list = {
+									70 = {
+										agot_create_artifact_glass_candle_effect = { OWNER = scope:host  COLOR = purple }
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_valyrian_steel_armor_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_random_dragon_egg_artifact = { OWNER = scope:host }
+									}
+								}
+							}
 							#Effect
 							custom_tooltip = zz_valyria_settlement_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
@@ -703,8 +739,10 @@ zz_valyria_settlement.0400 = {
 				send_interface_toast = {
 					title = zz_valyria_settlement.0400.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_settlement_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -882,7 +920,7 @@ zz_valyria_settlement.0500 = {
 	}
 }
 
-## Progress Event Prowess
+## Progress Event - Firewrym Attack
 zz_valyria_settlement.0600 = {
 	type = activity_event
 	title = zz_valyria_settlement.0600.t
@@ -919,7 +957,7 @@ zz_valyria_settlement.0600 = {
 		root = { save_scope_as = book_creator }
 	}
 
-	# Option A: Study hard intent: think and try to resolve the questions
+	# Option A: Confront Firewrym
 	option = {
 		name = zz_valyria_settlement.0600.a
 		trigger = {
@@ -938,7 +976,9 @@ zz_valyria_settlement.0600 = {
 					title = zz_valyria_settlement.0600.a.crit_success.tt
 					left_icon = root
 					
-					custom_tooltip = zz_valyria_settlement.0600.a.tt
+					#custom_tooltip = zz_valyria_settlement.0600.a.tt
+					add_prestige = monumental_prestige_gain
+					give_nickname = nick_the_wrymslayer
 					scope:activity = {
 						add_activity_log_entry = {
 							key = sic_et_non_log
@@ -951,9 +991,6 @@ zz_valyria_settlement.0600 = {
 							scope:activity = { activity_special_type_progression_massive = yes }
 						}
 					}
-				}
-				stress_impact = {
-					base = medium_stress_impact_loss
 				}
 			}
 			35 = {
@@ -969,9 +1006,6 @@ zz_valyria_settlement.0600 = {
 					custom_tooltip = zz_valyria_settlement_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
 				}
-				stress_impact = {
-					base = minor_stress_impact_loss
-				}
 			}
 			35 = {
 				compare_modifier = {
@@ -983,11 +1017,23 @@ zz_valyria_settlement.0600 = {
 				send_interface_toast = {
 					title = zz_valyria_settlement.0600.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_settlement_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
-				stress_impact = {
-					base = medium_stress_impact_gain
+				random_list = {
+					25 = { # Death
+						death = {
+							death_reason = death_dragon_ate
+						}
+					}
+					30 = { # Maimed
+						add_trait = maimed
+					}
+					50 = { # Wounding
+						add_trait = wounded_1
+					}
 				}
 			}
 		}
