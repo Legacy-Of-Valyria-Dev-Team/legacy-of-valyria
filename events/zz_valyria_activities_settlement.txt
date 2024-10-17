@@ -101,6 +101,23 @@ zz_valyria_settlement.0009 = {
 					add_character_flag = ok_reward
 				}
 			}
+			
+			if = {
+			   limit = { has_character_flag = large_settlement_development_gain }
+			   scope:activity.activity_location = {
+					county = {
+						change_development_level = 10
+					}
+				}
+			}
+			else_if = {
+				limit = { has_character_flag = med_settlement_development_gain }
+				scope:activity.activity_location = {
+					county = {
+						change_development_level = 6
+					}
+				}
+			}
 		}
 	}
 	option = {
@@ -108,10 +125,12 @@ zz_valyria_settlement.0009 = {
 		trigger = {
 			has_character_flag = perfect_reward
 		}
-		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
-		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
-		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
-		
+		custom_tooltip = zz_valyria_colonisation.0009.perfect_reward
+		hidden_effect = {
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+		}
 		ai_chance = {
 			base = 100
 		}
@@ -121,7 +140,10 @@ zz_valyria_settlement.0009 = {
 		trigger = {
 			has_character_flag = high_reward
 		}
-		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+		custom_tooltip = zz_valyria_colonisation.0009.high_reward
+		hidden_effect = {
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+		}
 		ai_chance = {
 			base = 100
 		}
@@ -136,16 +158,13 @@ zz_valyria_settlement.0009 = {
 			base = 100
 		}
 	}
-	option = {
-		name = zz_valyria_settlement.0009.d
-		ai_chance = {
-			base = 100
-		}
-	}
 	after = { 
 		remove_character_flag = perfect_reward
 		remove_character_flag = high_reward
 		remove_character_flag = ok_reward
+		
+		remove_character_flag = large_settlement_development_gain
+		remove_character_flag = med_settlement_development_gain
 	}
 }
 
@@ -391,14 +410,18 @@ zz_valyria_settlement.0200 = {
 					title = zz_valyria_settlement.0200.a.crit_success.tt
 					left_icon = root
 					
-					custom_tooltip = zz_valyria_settlement.0200.a.tt
+					custom_tooltip = zz_valyria_settlement.0200.a.crit_success_dev_tt
 					scope:activity = {
 						add_activity_log_entry = {
 							key = sic_et_non_log
 							score = 25
 							tags = { good learning activity }
 							character = root
-			
+							
+							scope:host = {
+								add_character_flag = large_settlement_development_gain
+							}
+							
 							#Effect
 							custom_tooltip = zz_valyria_settlement_tt_positive_massive
 							scope:activity = { activity_special_type_progression_massive = yes }
@@ -420,11 +443,14 @@ zz_valyria_settlement.0200 = {
 				send_interface_toast = {
 					title = zz_valyria_settlement.0200.a.success.tt
 					left_icon = root
+					
+					custom_tooltip = zz_valyria_settlement.0200.a.success_dev_tt
+					scope:host = {
+						add_character_flag = med_settlement_development_gain
+					}
+					
 					custom_tooltip = zz_valyria_settlement_tt_positive_major
 					scope:activity = { activity_special_type_progression_major = yes }
-				}
-				stress_impact = {
-					base = minor_stress_impact_loss
 				}
 			}
 			35 = {
@@ -437,11 +463,10 @@ zz_valyria_settlement.0200 = {
 				send_interface_toast = {
 					title = zz_valyria_settlement.0200.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_settlement_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
-				}
-				stress_impact = {
-					base = medium_stress_impact_gain
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 			}
 		}
@@ -981,7 +1006,15 @@ zz_valyria_settlement.0600 = {
 					
 					#custom_tooltip = zz_valyria_settlement.0600.a.tt
 					add_prestige = monumental_prestige_gain
-					give_nickname = nick_the_wrymslayer
+					if = {
+						limit = {
+							OR = {
+								has_any_nickname = no
+								has_bad_nickname = yes
+							}
+						}
+						give_nickname = nick_the_wrymslayer
+					}
 					scope:activity = {
 						add_activity_log_entry = {
 							key = sic_et_non_log
