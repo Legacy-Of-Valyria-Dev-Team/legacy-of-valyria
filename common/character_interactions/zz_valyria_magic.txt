@@ -839,6 +839,100 @@ valyria_magic_shadow_shield = {
 		localization = shadow_dagger_curse
 	}
 }
+valyria_magic_shadow_cloak = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						MANACOST = 1
+						SPELL = shadow_dagger_spell_flag
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = shadow_dagger_spell_flag
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = shadow_dagger_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = shadow_dagger_spell_flag
+				MANACOST = 1
+			}
+		}
+		scope:recipient = { 
+			is_commanding_army = yes 
+		}
+	}
+
+	icon = shadow_magic
+	common_interaction = no
+	interface_priority = 10
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+
+	on_accept = {
+		
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = shadow_magic
+				}
+			}
+			random_list = { 
+				20 = { 
+					modifier = {
+						add = zz_spellcast_value
+					}
+					zz_valyria_shadow_dagger = yes
+				}
+				80 = { 
+					zz_valyria_spell_failure_effect = yes
+				}
+			}
+		}
+	}
+	auto_accept = yes
+	send_options_exclusive = yes
+
+	send_option = {
+		flag = shadow_dagger_blessing
+		localization = shadow_dagger_blessing
+	}
+	send_option = {
+		flag = shadow_dagger_curse
+		localization = shadow_dagger_curse
+	}
+}
 
 ## Dream Magic
 
@@ -1869,7 +1963,7 @@ valyria_magic_flame_strike = {
 			if = {
 				limit = {
 					zz_valyria_valid_caster = {
-						SPELL = transmutation_spell_flag
+						SPELL = flame_strike_spell_flag
 						MANACOST = 2
 					}
 				}
@@ -2025,7 +2119,7 @@ valyria_magic_fire_blast = {
 			if = {
 				limit = {
 					zz_valyria_valid_caster = {
-						MANACOST = 1
+						MANACOST = 3
 						SPELL = fire_blast_spell_flag
 					}
 				}
@@ -2037,7 +2131,7 @@ valyria_magic_fire_blast = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
 				SPELL  = fire_blast_spell_flag
-				MANACOST = 1
+				MANACOST = 3
 			}
 		}
 	}
@@ -2053,7 +2147,7 @@ valyria_magic_fire_blast = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
 				SPELL  = fire_blast_spell_flag
-				MANACOST = 1
+				MANACOST = 3
 			}
 		}
 		scope:recipient = { 
@@ -2077,7 +2171,7 @@ valyria_magic_fire_blast = {
 		scope:actor = {
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
-					MANACOST = 1
+					MANACOST = 3
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
@@ -2191,13 +2285,168 @@ valyria_magic_fire_storm = {
 
 
 ## Wind Magic 
+valyria_magic_slicing_winds = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = slicing_winds_spell_flag
+						MANACOST = 2
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = slicing_winds_spell_flag
+				MANACOST = 2
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = slicing_winds_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = slicing_winds_spell_flag
+				MANACOST = 2
+			}
+		}
+	}
+	icon = fire_magic
+	common_interaction = yes
+	interface_priority = 10
+	category = interaction_magic_hostile
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 2
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = fire_magic
+				}
+			}
+			random_list = { 
+				20 = { 
+					modifier = {
+						add = zz_spellcast_value
+					}
+					zz_valyria_flame_strike = yes
+				}
+				80 = { 
+					zz_valyria_spell_failure_effect = yes
+				}
+			}
+		}	
+	}
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				is_ai = yes
+				NOR = {
+				}
+			}
+			scope:secondary_actor = {
+				is_in_army = no
+			}
+		}
+		is_valid = {
+
+		}
+		flag = weaken_spell_flag
+		localization = flame_strike_01
+	}
+	send_option = {
+		is_shown = {
+			scope:weaken_spell_flag = yes
+			OR = {
+				scope:secondary_actor = scope:actor.location.county_controller
+			}
+			scope:secondary_actor.location = scope:recipient.location
+			scope:recipient = {
+				is_ai = yes
+				NOR = {
+					is_imprisoned = yes
+				}
+			}
+		}
+		flag = power_strike_imprison_flag
+		localization = flame_strike_02
+	}
+
+	ai_potential = {
+		NOT = {
+			has_trait = compassionate
+		}
+	}
+	ai_targets = {
+		ai_recipients = war_enemies
+		ai_recipients = scripted_relations
+	}
+	ai_frequency = 24
+	send_options_exclusive = no
+	auto_accept = yes
+	ai_will_do = {
+		base = 0
+		modifier = {
+			add = 50
+			scope:recipient = {
+				OR = {
+					has_relation_rival = scope:actor
+					has_relation_nemesis = scope:actor
+					#has_relation_potential_rival = scope:actor
+					is_at_war_with = scope:actor
+				}
+			}
+		}
+		modifier = {
+			add = -50
+			scope:actor = {
+				has_trait = craven
+			}
+		}
+		modifier = {
+			add = -100
+			scope:actor = {
+				trait_is_criminal_in_faith_trigger = { TRAIT = witch FAITH = this.faith GENDER_CHARACTER = this }
+				NOR = {
+					has_trait = excommunicated
+				}
+			}
+		}
+	}
+}
 valyria_magic_tempestuous_winds = {
 	redirect = {
 		scope:actor = {
 			if = {
 				limit = {
 					zz_valyria_valid_caster = {
-						MANACOST = 1
+						MANACOST = 3
 						SPELL = tempestuous_winds_spell_flag
 					}
 				}
@@ -2209,7 +2458,7 @@ valyria_magic_tempestuous_winds = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
 				SPELL  = tempestuous_winds_spell_flag
-				MANACOST = 1
+				MANACOST = 3
 			}
 		}
 	}
@@ -2225,7 +2474,7 @@ valyria_magic_tempestuous_winds = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
 				SPELL  = tempestuous_winds_spell_flag
-				MANACOST = 1
+				MANACOST = 3
 			}
 		}
 	}
@@ -2252,7 +2501,7 @@ valyria_magic_tempestuous_winds = {
 		scope:actor = {
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
-					MANACOST = 1
+					MANACOST = 3
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
@@ -2280,14 +2529,168 @@ valyria_magic_tempestuous_winds = {
 }
 
 ### Water Magic 
+valyria_magic_crushing_waters = {
+	redirect = {
+		scope:actor = {
+			if = {
+				limit = {
+					zz_valyria_valid_caster = {
+						SPELL = crushing_waters_spell_flag
+						MANACOST = 2
+					}
+				}
+				save_scope_as = secondary_actor
+			}
+		}
+	}
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = crushing_waters_spell_flag
+				MANACOST = 2
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = crushing_waters_spell_flag
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = crushing_waters_spell_flag
+				MANACOST = 2
+			}
+		}
+	}
+	icon = fire_magic
+	common_interaction = yes
+	interface_priority = 10
+	category = interaction_magic_hostile
 
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 2
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = fire_magic
+				}
+			}
+			random_list = { 
+				20 = { 
+					modifier = {
+						add = zz_spellcast_value
+					}
+					zz_valyria_flame_strike = yes
+				}
+				80 = { 
+					zz_valyria_spell_failure_effect = yes
+				}
+			}
+		}	
+	}
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				is_ai = yes
+				NOR = {
+				}
+			}
+			scope:secondary_actor = {
+				is_in_army = no
+			}
+		}
+		is_valid = {
+
+		}
+		flag = weaken_spell_flag
+		localization = flame_strike_01
+	}
+	send_option = {
+		is_shown = {
+			scope:weaken_spell_flag = yes
+			OR = {
+				scope:secondary_actor = scope:actor.location.county_controller
+			}
+			scope:secondary_actor.location = scope:recipient.location
+			scope:recipient = {
+				is_ai = yes
+				NOR = {
+					is_imprisoned = yes
+				}
+			}
+		}
+		flag = power_strike_imprison_flag
+		localization = flame_strike_02
+	}
+
+	ai_potential = {
+		NOT = {
+			has_trait = compassionate
+		}
+	}
+	ai_targets = {
+		ai_recipients = war_enemies
+		ai_recipients = scripted_relations
+	}
+	ai_frequency = 24
+	send_options_exclusive = no
+	auto_accept = yes
+	ai_will_do = {
+		base = 0
+		modifier = {
+			add = 50
+			scope:recipient = {
+				OR = {
+					has_relation_rival = scope:actor
+					has_relation_nemesis = scope:actor
+					#has_relation_potential_rival = scope:actor
+					is_at_war_with = scope:actor
+				}
+			}
+		}
+		modifier = {
+			add = -50
+			scope:actor = {
+				has_trait = craven
+			}
+		}
+		modifier = {
+			add = -100
+			scope:actor = {
+				trait_is_criminal_in_faith_trigger = { TRAIT = witch FAITH = this.faith GENDER_CHARACTER = this }
+				NOR = {
+					has_trait = excommunicated
+				}
+			}
+		}
+	}
+}
 valyria_magic_waters_of_mother_rhoyne = {
 	redirect = {
 		scope:actor = {
 			if = {
 				limit = {
 					zz_valyria_valid_caster = {
-						MANACOST = 1
+						MANACOST = 4
 						SPELL = waters_of_mother_rhoyne_spell_flag
 					}
 				}
@@ -2299,7 +2702,7 @@ valyria_magic_waters_of_mother_rhoyne = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
 				SPELL  = waters_of_mother_rhoyne_spell_flag
-				MANACOST = 1
+				MANACOST = 4
 			}
 		}
 	}
@@ -2315,7 +2718,7 @@ valyria_magic_waters_of_mother_rhoyne = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
 				SPELL  = waters_of_mother_rhoyne_spell_flag
-				MANACOST = 1
+				MANACOST = 4
 			}
 		}
 		scope:recipient = { 
@@ -2339,7 +2742,7 @@ valyria_magic_waters_of_mother_rhoyne = {
 		scope:actor = {
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
-					MANACOST = 1
+					MANACOST = 4
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
