@@ -687,9 +687,6 @@ valyria_magic_shadow_dagger = {
 				MANACOST = 1
 			}
 		}
-		scope:recipient = { 
-			is_commanding_army = yes 
-		}
 	}
 
 	icon = shadow_magic
@@ -752,7 +749,7 @@ valyria_magic_shadow_shield = {
 				limit = {
 					zz_valyria_valid_caster = {
 						MANACOST = 1
-						SPELL = shadow_dagger_spell_flag
+						SPELL = shadow_shield_spell_flag
 					}
 				}
 				save_scope_as = secondary_actor
@@ -762,7 +759,7 @@ valyria_magic_shadow_shield = {
 	populate_actor_list = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
-				SPELL  = shadow_dagger_spell_flag
+				SPELL  = shadow_shield_spell_flag
 				MANACOST = 1
 			}
 		}
@@ -770,7 +767,7 @@ valyria_magic_shadow_shield = {
 	is_shown = {
 		scope:actor = {
 			zz_valyria_knows_spell_court = { 
-				SPELL = shadow_dagger_spell_flag
+				SPELL = shadow_shield_spell_flag
 			}
 			is_imprisoned = no
 		}
@@ -778,7 +775,7 @@ valyria_magic_shadow_shield = {
 	is_valid_showing_failures_only = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
-				SPELL  = shadow_dagger_spell_flag
+				SPELL  = shadow_shield_spell_flag
 				MANACOST = 1
 			}
 		}
@@ -819,7 +816,7 @@ valyria_magic_shadow_shield = {
 					modifier = {
 						add = zz_spellcast_value
 					}
-					zz_valyria_shadow_dagger = yes
+					zz_valyria_shadow_shield  = yes
 				}
 				80 = { 
 					zz_valyria_spell_failure_effect = yes
@@ -831,12 +828,12 @@ valyria_magic_shadow_shield = {
 	send_options_exclusive = yes
 
 	send_option = {
-		flag = shadow_dagger_blessing
-		localization = shadow_dagger_blessing
+		flag = shadow_shield_blessing
+		localization = shadow_shield_blessing
 	}
 	send_option = {
-		flag = shadow_dagger_curse
-		localization = shadow_dagger_curse
+		flag = shadow_shield_curse
+		localization = shadow_shield_curse
 	}
 }
 valyria_magic_shadow_cloak = {
@@ -846,7 +843,7 @@ valyria_magic_shadow_cloak = {
 				limit = {
 					zz_valyria_valid_caster = {
 						MANACOST = 1
-						SPELL = shadow_dagger_spell_flag
+						SPELL = shadow_cloak_spell_flag
 					}
 				}
 				save_scope_as = secondary_actor
@@ -856,7 +853,7 @@ valyria_magic_shadow_cloak = {
 	populate_actor_list = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
-				SPELL  = shadow_dagger_spell_flag
+				SPELL  = shadow_cloak_spell_flag
 				MANACOST = 1
 			}
 		}
@@ -864,7 +861,7 @@ valyria_magic_shadow_cloak = {
 	is_shown = {
 		scope:actor = {
 			zz_valyria_knows_spell_court = { 
-				SPELL = shadow_dagger_spell_flag
+				SPELL = shadow_cloak_spell_flag
 			}
 			is_imprisoned = no
 		}
@@ -872,15 +869,13 @@ valyria_magic_shadow_cloak = {
 	is_valid_showing_failures_only = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
-				SPELL  = shadow_dagger_spell_flag
+				SPELL  = shadow_cloak_spell_flag
 				MANACOST = 1
 			}
 		}
-		scope:recipient = { 
-			is_commanding_army = yes 
-		}
 	}
-
+	target_type = title
+	target_filter = recipient_domain_titles
 	icon = shadow_magic
 	common_interaction = no
 	interface_priority = 10
@@ -891,9 +886,16 @@ valyria_magic_shadow_cloak = {
 	ignores_pending_interaction_block = yes
 	use_diplomatic_range = yes
 	#hidden = yes
-
+	can_be_picked_title = {
+		scope:target = {
+			is_leased_out = no
+			tier = tier_county
+		}
+	}
 	on_accept = {
-		
+		scope:target = {
+			save_scope_as = ttile
+		}
 		scope:actor = {
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
@@ -913,7 +915,7 @@ valyria_magic_shadow_cloak = {
 					modifier = {
 						add = zz_spellcast_value
 					}
-					zz_valyria_shadow_dagger = yes
+					zz_valyria_shadow_cloak = yes
 				}
 				80 = { 
 					zz_valyria_spell_failure_effect = yes
@@ -925,12 +927,12 @@ valyria_magic_shadow_cloak = {
 	send_options_exclusive = yes
 
 	send_option = {
-		flag = shadow_dagger_blessing
-		localization = shadow_dagger_blessing
+		flag = shadow_cloak_blessing
+		localization = shadow_cloak_blessing
 	}
 	send_option = {
-		flag = shadow_dagger_curse
-		localization = shadow_dagger_curse
+		flag = shadow_cloak_curse
+		localization = shadow_cloak_curse
 	}
 }
 
@@ -2234,9 +2236,6 @@ valyria_magic_fire_storm = {
 				SPELL  = fire_storm_spell_flag
 				MANACOST = 15
 			}
-		}
-		scope:recipient = { 
-			is_commanding_army = yes 
 		}
 	}
 
