@@ -62,6 +62,52 @@ valyria_magic_teach_decision = {
 	}
 }
 
+
+valyria_magic_self_wounding = {
+	is_shown = {
+		scope:recipient = {
+			zz_valyria_is_mage = yes 
+			is_imprisoned = no
+			is_ai = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:recipient  = {
+			zz_valyria_is_mage = yes 
+		}
+	}
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 10
+	category = interaction_secrets_of_valyria
+
+	cooldown_against_recipient = { days = 90 } 
+	cooldown = { years = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			scope:recipient = {
+				increase_wounds_effect = { REASON = blood_magic }
+				zz_valyria_mana_gain = {
+					MANAGAIN = 1
+				}
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+
 ## Blood Sacrifice
 valyria_designate_blood_magic_sacrifice_interaction = {
 	icon = icon_scheme_abduct
