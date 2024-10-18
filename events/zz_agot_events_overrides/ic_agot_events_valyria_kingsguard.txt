@@ -1,3 +1,154 @@
+agot_kingsguard.1008 = { # Bestowing Event
+	type = character_event
+	title = agot_kingsguard.1008.t
+	desc = agot_kingsguard.1008.desc
+	theme = court
+	override_background = {
+		reference = agot_iron_throne
+	}
+	immediate = {
+		if = { #Close Landed Family Take Priority
+			limit = {
+				scope:kingsguard_candidate = {
+					any_close_family_member = {
+						is_landed = yes
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				random_close_family_member = {
+					limit = {
+						is_landed = yes
+					}
+					save_scope_as = family_member
+				}
+			}
+		}
+		else_if = {
+			limit = { # Then Landed Extended Fam
+				scope:kingsguard_candidate = {
+					any_close_or_extended_family_member = {
+						is_landed = yes
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				random_close_or_extended_family_member = {
+					limit = {
+						is_landed = yes
+					}
+					save_scope_as = family_member
+				}
+			}
+		}
+		else_if = { # Then Unlanded General Family
+			limit = {
+				scope:kingsguard_candidate = {
+					any_close_family_member = {
+						exists = yes
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				random_close_family_member = {
+					limit = {
+						exists = yes
+					}
+					save_scope_as = family_member
+				}
+			}
+		}
+	}
+	left_portrait = {
+		character = scope:kingsguard_candidate
+		animation = throne_room_bow_1
+	}
+	right_portrait = {
+		character = root
+		animation = personality_content
+	}
+	option = {
+		name = agot_kingsguard.1008.a
+		scope:kingsguard_candidate = {
+			if = {
+				limit = {
+					title:e_the_iron_throne.holder = liege
+				}
+				hidden_effect = { add_trait = kingsguard }
+				agot_create_artifact_kingsguard_armour_effect = { OWNER = this }
+				agot_create_artifact_kingsguard_sword_effect = { OWNER = this }
+				trigger_event = {
+					id = agot_kingsguard.1012
+					days = 1
+				}
+			}
+			if = {
+				limit = {
+					title:e_valyria.holder = liege
+				}
+				hidden_effect = { add_trait = kingsguard }
+				agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
+				agot_create_artifact_kingsguard_sword_effect = { OWNER = this }
+				trigger_event = {
+					id = agot_kingsguard.1012
+					days = 1
+				}
+			}
+		}
+		if = { 		#Family Reaction
+			limit = {
+				exists = scope:family_member
+				NOT = {
+					scope:family_member = root
+				}
+			}
+			trigger_event = agot_kingsguard.1009
+		}
+		# event for appointing foreigner
+		#event for appointing different religion
+	}
+	after = {
+		#Courtly Vassals Upset at Lowborn Appointment
+		if = {
+			limit = {
+				scope:kingsguard_candidate = {
+					is_lowborn = yes
+				}
+			}
+			every_vassal = {
+				limit = {
+					has_vassal_stance = courtly
+				}
+				add_opinion = {
+					target = root
+					modifier = courtly_lowborn_kingsguard_opinion
+					opinion = -20
+				}
+			}
+		}
+		#Zealot Vassals Upset at Heathen Appointment
+		if = {
+			limit = {
+				NOT = {
+					scope:kingsguard_candidate = {
+						faith = root.faith
+					}
+				}
+			}
+			every_zealot_vassal = {
+				limit = {
+					faith = root.faith
+				}
+				add_opinion = {
+					target = root
+					modifier = zealot_infidel_kingsguard_opinion
+					opinion = -35
+				}
+			}
+		}
+	}
+}
+
 agot_kingsguard.1010 = { # Lord Commander Death / Removal
 	type = character_event
 	title = agot_kingsguard.1010.t
@@ -113,7 +264,7 @@ agot_kingsguard.1010 = { # Lord Commander Death / Removal
 				copy_title_history = title:d_kingsguard
 			}
 			title:d_dummy_kingsguard2 = {
-				copy_title_history = title:d_draconicguard
+				copy_title_history = title:d_bloodguard
 			}
 			# destroy_title = title:d_kingsguard
 			# create_title_and_vassal_change = {
@@ -321,10 +472,10 @@ agot_kingsguard.9004 = {
 		if = {
 			limit = {
 				scope:landed_title = title:e_valyria
-				exists = title:d_draconicguard.holder
+				exists = title:d_bloodguard.holder
 			}
 			title:d_kingsguard.holder = {
-				destroy_title = title:d_draconicguard
+				destroy_title = title:d_bloodguard
 			}
 		}
 	}
@@ -580,7 +731,7 @@ agot_kingsguard.9007 = {
 				change_government = kingsguard_government
 			}
 		}
-		title:d_draconicguard.holder ?= {
+		title:d_bloodguard.holder ?= {
 			if = {
 				limit = { NOT = { has_government = kingsguard_government } }
 				change_government = kingsguard_government
@@ -598,7 +749,7 @@ agot_kingsguard.9007 = {
 				limit = {
 					exists = cp:kingsguard_lord_commander
 					cp:kingsguard_lord_commander = {
-						scope:kingsguard_title = title:d_draconicguard
+						scope:kingsguard_title = title:d_bloodguard
 					}
 				}
 			}
@@ -734,15 +885,15 @@ agot_kingsguard.9008 = {
 		if = { #Ensure Kingsguard title is a vassal
 			limit = {
 				has_title = title:e_valyria
-				NOT = { has_title = title:d_draconicguard }
-				exists = title:d_draconicguard.holder
+				NOT = { has_title = title:d_bloodguard }
+				exists = title:d_bloodguard.holder
 			}
 			create_title_and_vassal_change = {
 				type = swear_fealty
 				save_scope_as = change
 				add_claim_on_loss = no
 			}
-			title:d_draconicguard.holder = {
+			title:d_bloodguard.holder = {
 				change_liege = {
 					liege = root
 					change = scope:change
