@@ -1,10 +1,9 @@
-﻿activity_witch_ritual = {
+﻿valyria_blood_sacrifice_ritual = {
 	is_shown = {
 		highest_held_title_tier > tier_barony
 		is_playable_character = yes
 		is_ai = no 
-		has_trait = zz_magister
-		always = no
+		zz_valyria_is_mage = yes  
 		trigger_if = {
 			limit = {
 				is_ai = yes
@@ -16,21 +15,7 @@
 
 	can_start_showing_failures_only = {
 		is_available_adult = yes
-		activity_witch_ritual_valid_trigger = yes
-		trigger_if = {
-			limit = {
-				NOR = {
-					has_trait = witch
-					any_secret = {
-						secret_type = secret_witch
-					}
-				}
-			}
-			custom_tooltip = {
-				text = REASON_NOT_A_WITCH
-				always = no
-			}
-		}
+		zz_valyria_is_mage = yes 
 	}
 
 	is_valid = {
@@ -39,15 +24,9 @@
 			has_variable = activity_invalidated
 		}
 		scope:host = {
+			zz_valyria_is_mage = yes 
 			is_playable_character = yes
 			NOT = { is_incapable = yes }
-		}
-		# If no one shows up
-		trigger_if = {
-			limit = {
-				is_current_phase_active = yes
-			}
-			has_attending_activity_guests = yes
 		}
 	}
 
@@ -78,16 +57,6 @@
 				limit = { NOT = { this = scope:host } }
 				trigger_event = activity_system.0331
 			}
-		}
-		if = { # No one shows up
-			limit = {
-				has_attending_activity_guests = no
-			}
-			scope:activity = {
-				activity_type = { save_scope_as = activity_type }
-				activity_location = { save_scope_as = location }
-			}
-			scope:host = { trigger_event = activity_system.0100 }
 		}
 	}
 
@@ -126,7 +95,7 @@
 						#Grand ritual (also sends event to every participant based on outcome)
 						##After grand ritual, participants can choose what they want to do during the feast
 					trigger_event = {
-						id = witch.3010
+						id = valyria_blood_sacrifices.1
 						days = 7
 					}
 				}
@@ -134,11 +103,7 @@
 
 			on_end = {
 				# Run conclusion stuff here
-				if = {
-					limit = { this = scope:host }
-					trigger_event = witch.3098
-				}
-				else = { trigger_event =  witch.3099 }
+
 			}
 		}
 	}
@@ -352,7 +317,7 @@
 	
 	pulse_actions = {
 		entries = {
-			sacrifed_small_animal demonic_chant recited_witchcraft_treatise admire_moon mournful_music praised_horned_god_together apa_communal_prayer apa_silent_contemplation apa_imbued_artifact
+			
 		}
 		chance_of_no_event = 5
 	}
@@ -365,8 +330,8 @@
 
 	guest_invite_rules = {
 		defaults = {
-			1 = activity_invite_rule_house_witches
-			2 = activity_invite_rule_other_witches
+			1 = activity_invite_rule_house_mages
+			2 = activity_invite_rule_other_mages
 		}
 		rules = {
 			# MP 
@@ -375,15 +340,10 @@
 	}
 
 	can_be_activity_guest = {
-		faith = scope:host.faith
 		is_adult = yes
 		is_available = yes
+		has_trait = zz_magister
 		save_temporary_scope_as = invited_witch
-		#Both know about each other's witch status
-		scope:host = {
-			knows_about_character_being_witch_trigger = { CHARACTER = scope:invited_witch }
-		}
-		knows_about_character_being_witch_trigger = { CHARACTER = scope:host }
 		#No non-house rivals
 		trigger_if = {
 			limit = {
@@ -417,7 +377,6 @@
 		if = {
 			limit = { this = scope:host }
 			scope:host = {
-				disburse_witch_ritual_host_rewards_effect = yes
 			}
 		}
 	}

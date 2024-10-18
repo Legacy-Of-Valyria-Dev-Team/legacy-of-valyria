@@ -316,12 +316,42 @@ magic_education_student_setup = {
 }
 
 resolve_magic_education_success_reward_effect = {
+	scope:host = { 
+		switch = {
+			trigger = has_activity_intent
+			study_valyrian_secrets = { 
+				add_character_flag = study_valyrian_secrets 
+			}
+			study_blood_magic = { 
+				add_character_flag = study_blood_magic 
+			}
+			study_shadow_magic = { 
+				add_character_flag = study_shadow_magic 
+			}
+			study_dream_magic = { 
+				add_character_flag = study_dream_magic 
+			}
+			study_alchemical_magic = { 
+				add_character_flag = study_alchemical_magic 
+			}
+			study_fire_magic = { 
+				add_character_flag = study_fire_magic 
+			}
+			study_air_magic = { 
+				add_character_flag = study_air_magic 
+			}
+			study_water_magic = { 
+				add_character_flag = study_water_magic 
+			}
+		}
+	}
 	involved_activity ?= {
 		#Perfect studies - 75-100
 		if = {
 			limit = { var:activity_special_type_progression >= 75 }
 			scope:host = {
 				add_character_flag = perfect_studies_reward
+				add_character_flag = perfect_reward
 			}
 		}
 		#High-end studies - 50-75
@@ -332,6 +362,7 @@ resolve_magic_education_success_reward_effect = {
 			} 
 			scope:host = {
 				add_character_flag = high_studies_reward
+				add_character_flag = high_reward
 			}
 		}
 		#OK studies - 25-50
@@ -342,6 +373,7 @@ resolve_magic_education_success_reward_effect = {
 			}
 			scope:host = {
 				add_character_flag = mid_studies_reward
+				add_character_flag = ok_reward
 			}
 		}
 		#Lousy studies - 0-25
@@ -356,6 +388,7 @@ resolve_magic_education_success_reward_effect = {
 
 
 magic_education_completed_log_entry_effect = {
+	
 	involved_activity = {
 		add_activity_log_entry = {
 			key = magic_education_studies_completed_log
@@ -378,13 +411,8 @@ disburse_magic_education_reward_effect = {
 	switch = { # Hand out lifestyle perks/xp
 		trigger = has_character_flag
 		perfect_studies_reward = {
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
 			random = {
-				chance = 60
+				chance = 25
 				if = { 
 					limit = { 
 						has_trait = born_under_a_red_comet
@@ -403,21 +431,12 @@ disburse_magic_education_reward_effect = {
 			remove_character_flag = perfect_studies_reward
 		}
 		high_studies_reward = {
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
-
 			remove_character_flag = high_studies_reward
 		}
 		mid_studies_reward = {
-			zz_random_gain_magic_spell = yes
-			zz_random_gain_magic_spell = yes
-
 			remove_character_flag = mid_studies_reward
 		}
 		low_studies_reward = {
-			zz_random_gain_magic_spell = yes
-
 			remove_character_flag = low_studies_reward
 		}
 	}
@@ -453,6 +472,7 @@ disburse_magic_education_reward_effect = {
 					target = scope:newly_created_artifact
 				}
 			}
+			add_learning_skill = 1
 		}
 	}
 	else_if = {
@@ -496,35 +516,6 @@ disburse_magic_education_reward_effect = {
 					target = scope:newly_created_artifact
 				}
 			}
-		}
-		if = {
-			limit = {
-				has_trait = education_diplomacy
-			}
-			add_diplomacy_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_martial
-			}
-			add_martial_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_stewardship
-			}
-			add_stewardship_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_intrigue
-			}
-			add_intrigue_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_learning
-			}
 			add_learning_skill = 1
 		}
 	}
@@ -537,35 +528,6 @@ disburse_magic_education_reward_effect = {
 				}
 			}
 		}
-		if = {
-			limit = {
-				has_trait = education_diplomacy
-			}
-			add_diplomacy_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_martial
-			}
-			add_martial_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_stewardship
-			}
-			add_stewardship_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_intrigue
-			}
-			add_intrigue_skill = 1
-		}
-		else_if = {
-			limit = {
-				has_trait = education_learning
-			}
-			add_learning_skill = 1
-		}
+		add_learning_skill = 1
 	}
 }
