@@ -1,0 +1,49 @@
+﻿##Study Dragonlore
+
+decision_study_dragonlore = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_misc.dds"
+	}
+	title = decision_study_dragonlore.t
+	desc = decision_study_dragonlore_desc
+	ai_check_interval = 0
+	major = no
+	is_shown = {
+		any_character_artifact = {
+			has_artifact_modifier = dragonlore_book_modifier
+		}
+	}
+	is_valid = {
+		custom_tooltip = {
+			any_character_artifact = {
+				has_artifact_modifier = dragonlore_book_modifier
+			}
+			text = has_dragonlore_book
+		}
+		custom_tooltip = {
+			NOT = { has_character_flag = read_dragonlore_book }
+			text = has_not_read_dragonlore_book
+		}
+		
+	}
+	
+	effect = {
+		add_character_modifier = agot_taught_dragonlore
+		add_character_flag = read_dragonlore_book
+		custom_tooltip = {
+			text = agot_dragon_hatching_dragonlore_increase
+			if = {
+				limit = {
+					exists = var:dragonlore
+				}
+				change_variable = {
+					name = dragonlore
+					add = 12
+				}
+			}
+			else = {
+				set_variable = { name = dragonlore value = 12 }
+			}
+		}
+	}
+}

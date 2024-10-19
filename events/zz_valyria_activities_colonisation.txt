@@ -148,15 +148,16 @@ zz_valyria_colonisation.0010 = {
 	title = zz_valyria_colonisation.0010.t
 	desc = {
 		first_valid = {
-			desc = zz_valyria_colonisation.0010.desc_religious
+			desc = zz_valyria_colonisation.0010.desc_begin
 		}
-		desc = zz_valyria_colonisation.0010.desc_end
 		triggered_desc = {
 			trigger = {
 				"scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive
 			}
 			desc = zz_valyria_colonisation.0010.desc_very_very_far
 		}
+		desc = zz_valyria_colonisation.0010.desc_end
+		
 	}
 	theme = university
 
@@ -174,8 +175,9 @@ zz_valyria_colonisation.0010 = {
 	}
 }
 
-## Destination Events 
-## Progress Event Learning
+## Destination Events
+
+## Progress Event Learning - Catalog Flora and Fauna
 zz_valyria_colonisation.0100 = {
 	type = activity_event
 	title = zz_valyria_colonisation.0100.t
@@ -315,7 +317,7 @@ zz_valyria_colonisation.0100 = {
 	}
 }
 
-## Progress Event Stewardship
+## Progress Event Stewardship - Logistics & Supply Flow
 zz_valyria_colonisation.0200 = {
 	type = activity_event
 	title = zz_valyria_colonisation.0200.t
@@ -416,8 +418,10 @@ zz_valyria_colonisation.0200 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.0200.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -556,8 +560,10 @@ zz_valyria_colonisation.0300 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.0300.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -595,7 +601,7 @@ zz_valyria_colonisation.0300 = {
 	}
 }
 
-## Progress Event Intrigue
+## Progress Event Intrigue - Scouting
 zz_valyria_colonisation.0400 = {
 	type = activity_event
 	title = zz_valyria_colonisation.0400.t
@@ -696,8 +702,10 @@ zz_valyria_colonisation.0400 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.0400.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -714,8 +722,10 @@ zz_valyria_colonisation.0400 = {
 	# Option C: opt-out
 	option = {
 		name = zz_valyria_colonisation.0400.c
-		stress_impact = {
-			base = medium_stress_impact_loss
+		remove_short_term_gold = {
+			gold = {
+				value = root.medium_gold_min_value
+			}
 		}
 		ai_chance = {
 			base = 50
@@ -836,8 +846,10 @@ zz_valyria_colonisation.0500 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.0500.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -854,8 +866,10 @@ zz_valyria_colonisation.0500 = {
 	# Option C: opt-out
 	option = {
 		name = zz_valyria_colonisation.0500.c
-		stress_impact = {
-			base = medium_stress_impact_loss
+		remove_short_term_gold = {
+			gold = {
+				value = root.medium_gold_min_value
+			}
 		}
 		ai_chance = {
 			base = 50
@@ -875,7 +889,7 @@ zz_valyria_colonisation.0500 = {
 	}
 }
 
-## Progress Event Prowess
+## Progress Event Prowess (Mutant Attack)
 zz_valyria_colonisation.0600 = {
 	type = activity_event
 	title = zz_valyria_colonisation.0600.t
@@ -1029,6 +1043,10 @@ zz_valyria_colonisation.0600 = {
 		}
 	}
 }
+
+## Progress Event Prowess
+
+## Wyvern Attack
 zz_valyria_colonisation.0601 = {
 	type = activity_event
 	title = zz_valyria_colonisation.0601.t
@@ -1086,6 +1104,22 @@ zz_valyria_colonisation.0601 = {
 					left_icon = root
 					
 					#custom_tooltip = zz_valyria_colonisation.0601.a.tt
+					add_prestige = monumental_prestige_gain
+					if = {
+						limit = {
+							OR = {
+								has_any_nickname = no
+								has_bad_nickname = yes
+							}
+						}
+						random_list = {
+							50 = { # Nickname
+								give_nickname = nick_the_wyvernslayer
+							}
+							50 = { }
+						}
+						
+					}
 					scope:activity = {
 						add_activity_log_entry = {
 							key = sic_et_non_log
@@ -1094,8 +1128,11 @@ zz_valyria_colonisation.0601 = {
 							character = root
 			
 							#Effect
-							custom_tooltip = zz_valyria_colonisation_tt_positive_massive
-							scope:activity = { activity_special_type_progression_massive = yes }
+							hidden_effect = {
+								custom_tooltip = zz_valyria_colonisation_tt_positive_massive
+								scope:activity = { activity_special_type_progression_massive = yes }
+							}
+							
 						}
 					}
 				}
@@ -1113,8 +1150,10 @@ zz_valyria_colonisation.0601 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.0601.a.success.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation_tt_positive_major
-					scope:activity = { activity_special_type_progression_major = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_colonisation_tt_positive_major
+						scope:activity = { activity_special_type_progression_major = yes }
+					}
 				}
 				stress_impact = {
 					base = minor_stress_impact_loss
@@ -1130,8 +1169,10 @@ zz_valyria_colonisation.0601 = {
 				send_interface_toast = {
 					title = zz_valyria_colonisation.0601.a.failure.tt
 					left_icon = root
-					custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
-					scope:activity = { activity_special_type_progression_tiny = yes }
+					hidden_effect = {
+						custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny = yes }
+					}
 				}
 				random_list = {
 					25 = { # Death
@@ -1142,12 +1183,11 @@ zz_valyria_colonisation.0601 = {
 					30 = { # Maimed
 						add_trait = maimed
 					}
-					25 = { # Greyscale
+					25 = { # wounded
 						add_trait = wounded_1
-						add_trait = greyscale
 					}
 					50 = { # Wounding
-						add_trait = wounded_1
+						add_trait = scarred
 					}
 				}
 			}
