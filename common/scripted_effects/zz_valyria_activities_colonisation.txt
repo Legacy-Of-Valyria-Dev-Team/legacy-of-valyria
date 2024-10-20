@@ -1,5 +1,5 @@
 ﻿# Set up a University Teacher
-valyria_settlement_teacher_setup = {
+valyria_colonisation_teacher_setup = {
 	scope:activity.activity_location = { save_scope_as = location }
 	if = {
 		limit = {
@@ -178,7 +178,7 @@ valyria_settlement_teacher_setup = {
 }
 
 # Set up a University student
-valyria_settlement_student_setup = {
+valyria_colonisation_student_setup = {
 	scope:activity.activity_location = { save_scope_as = location }
 	if = {
 		limit = {
@@ -315,61 +315,39 @@ valyria_settlement_student_setup = {
 	}
 }
 
-resolve_valyria_settlement_success_reward_effect = {
-	scope:host = { 
-		if = { 
-			limit = { 
-				has_activity_intent = settle_castle 
-			}
-			add_character_flag = settle_castle
-		}
-		if = { 
-			limit = { 
-				has_activity_intent = settle_city 
-			}
-			add_character_flag = settle_city
-		}
-		if = { 
-			limit = { 
-				has_activity_intent = settle_temple 
-			}
-			add_character_flag = settle_temple
-		}
-	}
-	
+resolve_valyria_colonisation_success_reward_effect = {
 	involved_activity ?= {
-		
-		#Perfect settlement - 75-100
+		#Perfect colonisation - 75-100
 		if = {
 			limit = { var:activity_special_type_progression >= 75 }
 			scope:host = {
-				add_character_flag = perfect_settlement_reward
+				add_character_flag = perfect_colonisation_reward
 			}
 		}
-		#High-end settlement - 50-75
+		#High-end colonisation - 50-75
 		else_if = {
 			limit = { 
 				var:activity_special_type_progression < 75
 				var:activity_special_type_progression >= 50
 			} 
 			scope:host = {
-				add_character_flag = high_settlement_reward
+				add_character_flag = high_colonisation_reward
 			}
 		}
-		#OK settlement - 25-50
+		#OK colonisation - 25-50
 		else_if = {
 			limit = {
 				var:activity_special_type_progression < 50
 				var:activity_special_type_progression >= 25
 			}
 			scope:host = {
-				add_character_flag = mid_settlement_reward
+				add_character_flag = mid_colonisation_reward
 			}
 		}
-		#Lousy settlement - 0-25
+		#Lousy colonisation - 0-25
 		else = {
 			scope:host = {
-				add_character_flag = low_settlement_reward
+				add_character_flag = low_colonisation_reward
 			}
 		}
 	}
@@ -377,151 +355,92 @@ resolve_valyria_settlement_success_reward_effect = {
 
 
 
-valyria_settlement_completed_log_entry_effect = {
+valyria_colonisation_completed_log_entry_effect = {
 	involved_activity = {
 		add_activity_log_entry = {
-			key = valyria_settlement_studies_completed_log
+			key = valyria_colonisation_studies_completed_log
 			tags = { completed }
 			score = 100
 			show_in_conclusion = yes
 			character = root
 			#Effects
 			root = {
-				disburse_valyria_settlement_reward_effect = yes
+				disburse_valyria_colonisation_reward_effect = yes
 			}
 		}
 	}
 }
-disburse_valyria_settlement_reward_effect = {
+
+
+zz_valyria_colonise_claim_titles = { 
+	if = { 
+		limit = { 
+			is_landless_adventurer = no
+		}
+		get_title = scope:province.county
+	}
+	else_if = { 
+		limit = { 
+			is_landless_adventurer = yes
+		}
+		scope:province.county = { add_to_list = seized_titles }
+		ep3_become_landed_save_liege_effect = {
+			TITLE_GIVER = scope:actor
+			ALWAYS_INDEPENDENT = yes
+			TITLE_LIST = seized_titles
+		}
+		# Resolve title, liege, government changes
+		ep3_become_landed_transfer_effect = {
+			TITLE_RECEIVER = scope:host 
+			TITLE_LIST = seized_titles
+			TYPE = conquest
+			REASON = flag:conquest 
+		}
+	}
+	scope:province.county = {
+		every_county_province = {
+			remove_holding = yes 
+		}
+	}
+	scope:province.county = { 
+		set_county_faith = scope:host.faith
+		set_county_culture = scope:host.culture
+	}
+	if = {
+		limit = { this = scope:host }
+		create_character_memory = {
+			type = completed_colonisation
+		}
+		scope:new_memory = {
+			set_variable = {
+				name = education_destination
+				value = scope:activity.activity_location
+			}
+		}
+	}
+}
+
+
+disburse_valyria_colonisation_reward_effect = {
+
 	switch = { # Hand out lifestyle perks/xp
 		trigger = has_character_flag
-		perfect_settlement_reward = { 
-			zz_valyria_settlement_effect = yes
+		perfect_colonisation_reward = { 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			zz_valyria_colonise_claim_titles = yes
+			remove_character_flag = perfect_colonisation_reward
 		}
-		high_settlement_reward = { 
-			zz_valyria_settlement_effect = yes
+		high_colonisation_reward = { 
+			zz_valyria_colonise_claim_titles = yes
+			remove_character_flag = high_colonisation_reward
 		}
-		mid_settlement_reward = { 
-			zz_valyria_settlement_effect = yes			
+		mid_colonisation_reward = { 
+			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+			remove_character_flag = mid_colonisation_reward
 		}
-		low_settlement_reward = { 
-			remove_character_flag = low_settlement_reward
-		}
-	}
-}
-
-
-
-zz_valyria_settlement_effect = { 
-	scope:host = { 
-		switch = {
-			trigger = has_character_flag 
-			settle_castle = { 
-				scope:province = {
-					set_holding_type = castle_holding	
-					switch = {
-						trigger = has_character_flag
-						perfect_settlement_reward = {
-							add_building = castle_03
-							remove_character_flag = perfect_settlement_reward
-						}
-						high_settlement_reward = {
-							add_building = castle_02
-							remove_character_flag = high_settlement_reward
-						}
-						mid_settlement_reward ={
-							add_building = castle_01
-							remove_character_flag = mid_settlement_reward
-						}
-					}
-					barony = { set_coa = this.holder.house }
-				}
-				remove_character_flag = settle_castle
-			}
-			settle_city = { 
-				scope:province  = {
-					set_holding_type = city_holding
-					switch = {
-						trigger = has_character_flag
-						perfect_settlement_reward = {
-							add_building = city_03
-							remove_character_flag = perfect_settlement_reward
-						}
-						high_settlement_reward = {
-							add_building = city_02
-							remove_character_flag = high_settlement_reward
-						}
-						mid_settlement_reward ={
-							add_building = city_01
-							remove_character_flag = mid_settlement_reward
-						}
-					}
-					barony = { set_coa = this.holder.house }
-				}
-				remove_character_flag = settle_city
-			}
-			settle_temple = { 
-				scope:province = {
-					set_holding_type = church_holding
-					switch = {
-						trigger = has_character_flag
-						perfect_settlement_reward = {
-							add_building = temple_03
-							remove_character_flag = perfect_settlement_reward
-						}
-						high_settlement_reward = {
-							add_building = temple_02
-							remove_character_flag = high_settlement_reward
-						}
-						mid_settlement_reward ={
-							add_building = temple_01
-							remove_character_flag = mid_settlement_reward
-						}
-					}
-					barony = { set_coa = this.holder.house }
-				}
-				remove_character_flag = settle_temple
-			}
+		low_colonisation_reward = { 
+			remove_character_flag = low_colonisation_reward
 		}
 	}
-}
-
-
-zz_valyria_settlment_construct_secondary_buildings ={
-	if = { 
-		limit = {
-			has_character_flag = learning_building_flag
-		}
-		remove_character_flag = learning_building_flag
-	}
-	if = { 
-		limit = {
-			has_character_flag = diplomacy_building_flag
-		}
-		remove_character_flag = diplomacy_building_flag
-	}
-	if = { 
-		limit = {
-			has_character_flag = stewardship_building_flag
-		}
-		remove_character_flag = stewardship_building_flag
-	}
-	if = { 
-		limit = {
-			has_character_flag = intrigue_building_flag
-		}
-		remove_character_flag = intrigue_building_flag
-	}
-	if = { 
-		limit = {
-			has_character_flag = martial_building_flag
-		}
-		remove_character_flag = martial_building_flag
-	}
-	if = { 
-		limit = {
-			has_character_flag = prowess_building_flag
-		}
-		remove_character_flag = prowess_building_flag
-	}
+	# Options rewards
 }
