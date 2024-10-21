@@ -9,13 +9,48 @@ agot_dragon_personality.0015 = { # dragon_cannibal
 	desc = {
 		first_valid = {
 			triggered_desc = {
-				trigger = { has_character_flag = read_dragonlore_book }
+				trigger = { 
+					has_character_flag = read_dragonlore_book
+					scope:growing_dragon = {
+						has_trait = dragon_aggressive
+					}
+				}
 				desc = agot_dragon_personality.0015.warning.desc
 			}
 			triggered_desc = {
 				trigger = { NOT = { has_character_flag = read_dragonlore_book } }
 				desc = agot_dragon_personality.0015.desc
 			}
+		}
+		triggered_desc = {
+			trigger = { 
+				has_character_flag = read_dragonlore_book
+				scope:growing_dragon = {
+					OR = {
+						has_trait = dragon_aggressive
+						has_trait = dragon_bloodthirsty
+					}
+				}
+			}
+			desc = agot_dragon_personality.0015.aggressive.desc
+		}
+		triggered_desc = {
+			trigger = { 
+				has_character_flag = read_dragonlore_book
+				scope:growing_dragon = {
+					OR = {
+						has_trait = dragon_aggressive
+						has_trait = dragon_bloodthirsty
+					}
+				}
+			}
+			desc = agot_dragon_personality.0015.voracious.desc
+		}
+		triggered_desc = {
+			trigger = { 
+				has_character_flag = read_dragonlore_book
+			}
+			desc = agot_dragon_personality.0015.warning.end
 		}
 	}
 	
@@ -140,9 +175,6 @@ agot_dragon_personality.0015 = { # dragon_cannibal
 
 	option = { # Execute
 		name = agot_dragon_personality.0015.c
-		trigger = {
-			NOT = { has_character_flag = read_dragonlore_book }
-		}
 		flavor = agot_dragon_personality.0015.c.f
 		ai_chance = {
 			base = 0
@@ -221,9 +253,9 @@ agot_dragon_personality.0015 = { # dragon_cannibal
 						remove_trait = dragon_cannibal
 					}
 					#custom_tooltip = agot_dragon_personality.0015.d.success.tt
-				}
-				stress_impact = {
-					base = medium_stress_impact_loss
+					stress_impact = {
+						base = medium_stress_impact_loss
+					}
 				}
 			}
 			60 = {
@@ -237,6 +269,9 @@ agot_dragon_personality.0015 = { # dragon_cannibal
 					title = agot_dragon_personality.0015.d.failure.tt
 					left_icon = root
 					#custom_tooltip = agot_dragon_personality.0015.d.failure.tt
+					stress_impact = {
+						base = medium_stress_impact_gain
+					}
 				}
 			}
 		}
