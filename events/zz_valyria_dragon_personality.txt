@@ -1,0 +1,249 @@
+﻿namespace = agot_dragon_personality
+
+# DRAGON CANNIBALISM CAN BE IDENTIFIED AND TREATED EARLY IF YOU HAVE READ DRAGONLORE
+
+agot_dragon_personality.0015 = { # dragon_cannibal
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon_personality.0015.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { has_character_flag = read_dragonlore_book }
+				desc = agot_dragon_personality.0015.warning.desc
+			}
+			triggered_desc = {
+				trigger = { NOT = { has_character_flag = read_dragonlore_book } }
+				desc = agot_dragon_personality.0015.desc
+			}
+		}
+	}
+	
+	trigger = {
+		scope:growing_dragon = {
+			is_alive = yes
+			exists = court_owner
+			has_character_flag = owned_dragon
+			NOT = { has_trait = dragon_cannibal }
+			NOT = { has_trait = dragon_restrained }
+			NOT = { has_trait = dragon_friendly }
+			OR = {
+				has_trait = dragon_aggressive
+				has_trait = dragon_voracious
+				has_trait = dragon_bloodthirsty
+			}
+		}
+		any_living_dragon = {
+			count >= lower_cannibal_dragon_value
+		}
+		trigger_if = {
+			limit = {
+				any_living_dragon = {
+					count < upper_cannibal_dragon_value
+				}
+			}
+			any_living_dragon = {
+				count < 1
+				has_trait = dragon_cannibal
+			}
+		}
+		trigger_else = {
+			any_living_dragon = {
+				count < global_dragon_cannibal_limit
+				has_trait = dragon_cannibal
+			}
+		}
+		scope:growing_dragon_victim = {
+			NOT = { this = scope:growing_dragon } # Not the would-be cannibal
+			has_character_flag = owned_dragon # Is owned or tamed
+			location = scope:growing_dragon.location # In the same location
+			NOT = { has_trait = dragon_cannibal } # No cascading cannibalism
+			dragon_combat_effectiveness <= scope:growing_dragon.dragon_combat_effectiveness # Not stronger than the dragon
+		}
+	}
+	theme = dragon
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+	lower_center_portrait = {
+		character = scope:growing_dragon_victim
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		if = {
+			limit = { NOT = { has_character_flag = read_dragonlore_book } }
+			scope:growing_dragon = {
+				add_trait = dragon_cannibal
+			}
+			scope:growing_dragon_victim = {
+				death = {
+					death_reason = death_dragon_ate
+					killer = scope:growing_dragon
+				}
+			}
+		}
+		else = {
+			scope:growing_dragon = {
+				add_trait = dragon_cannibal
+			}
+		}
+	}
+
+	option = { # Can't do anything about it
+		name = agot_dragon_personality.0015.a
+		trigger = {
+			NOT = { has_character_flag = read_dragonlore_book }
+		}
+		flavor = agot_dragon_personality.0015.a.f
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_boldness = -0.5
+				ai_compassion = 0.1
+			}
+		}
+		stress_impact = {
+			forgiving = minor_stress_impact_loss
+			compassionate = minor_stress_impact_loss
+			vengeful = medium_stress_impact_gain
+		}
+	}
+
+	option = { # Send away
+		name = agot_dragon_personality.0015.b
+		trigger = {
+			NOT = { has_character_flag = read_dragonlore_book }
+		}
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_compassion = 0.5
+				ai_rationality = -0.1
+			}
+		}
+		scope:growing_dragon = {
+			agot_dragon_flees_province = yes
+		}
+		stress_impact = {
+			vengeful = minor_stress_impact_gain
+		}
+	}
+
+	option = { # Execute
+		name = agot_dragon_personality.0015.c
+		trigger = {
+			NOT = { has_character_flag = read_dragonlore_book }
+		}
+		flavor = agot_dragon_personality.0015.c.f
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_rationality = 0.2
+				ai_compassion = -0.2
+				ai_vengefulness = 0.2
+			}
+		}
+		show_as_tooltip = {
+			scope:growing_dragon = {
+				death = {
+					killer = root
+					death_reason = death_execution
+				}
+			}
+		}
+		hidden_effect = {
+			random_list = {
+				80 = {
+					scope:growing_dragon = {
+						death = {
+							death_reason = death_execution
+							killer = root
+						}
+					}
+				}
+				20 = {
+					trigger_event = agot_dragon_personality.0016
+				}
+			}
+		}
+		stress_impact = {
+			compassionate = minor_stress_impact_gain
+			vengeful = minor_stress_impact_loss
+			paranoid = minor_stress_impact_loss
+		}
+	}
+	
+	option = { # Educate Dragon
+		name = agot_dragon_personality.0015.d
+		trigger = {
+			has_character_flag = read_dragonlore_book
+		}
+		flavor = agot_dragon_personality.0015.d.f
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_rationality = 0.2
+				ai_compassion = -0.2
+				ai_vengefulness = 0.2
+			}
+		}
+		show_as_tooltip = {
+			scope:growing_dragon = {
+				death = {
+					killer = root
+					death_reason = death_execution
+				}
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			40 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = agot_dragon_personality.0015.d.success
+				send_interface_toast = {
+					title = agot_dragon_personality.0015.d.success.tt
+					left_icon = root
+					scope:growing_dragon = {
+						remove_trait = dragon_cannibal
+					}
+					#custom_tooltip = agot_dragon_personality.0015.d.success.tt
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			60 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = agot_dragon_personality.0015.d.failure
+				send_interface_toast = {
+					title = agot_dragon_personality.0015.d.failure.tt
+					left_icon = root
+					#custom_tooltip = agot_dragon_personality.0015.d.failure.tt
+				}
+			}
+		}
+		stress_impact = {
+			compassionate = minor_stress_impact_gain
+			vengeful = minor_stress_impact_loss
+			paranoid = minor_stress_impact_loss
+		}
+	}
+}
