@@ -16,6 +16,10 @@
 
 	can_start_showing_failures_only = {
 		zz_valyria_is_mage = yes 
+		scope:host = {
+			any_prisoner = { 
+				has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier 
+			}
 	}
 
 	is_valid = {
@@ -105,7 +109,120 @@
 
 			on_end = {
 				# Run conclusion stuff here
-
+				scope:host = {
+					save_scope_as = blotter
+					random_prisoner = {
+						limit = {
+							has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier
+						}
+						save_scope_as = unlucky_guest
+					}
+					
+					if = { 
+						limit = { 
+							has_character_flag = chosen_of_the_red_comet
+						}
+						remove_character_flag = chosen_of_the_red_comet
+						if = { 
+							limit = { 
+								has_trait = born_under_a_red_comet
+							}
+							add_trait_xp = { 
+								trait = born_under_a_red_comet 
+								track = chosen_of_the_heavens
+								value = 5
+							}
+						}
+						else = { 
+							add_trait_force_tooltip = born_under_a_red_comet
+						}
+					}
+				}
+				scope:activity = {
+					add_activity_log_entry = {
+						key = gruesome_festival_immediate_log
+						score = 1000
+						show_in_conclusion = yes
+						character = root 
+						# Piety based on value calculated from the selected activity option 
+						activity_host = {
+							if = {
+								limit = { exists = var:gf_piety_value }
+								add_piety = var:gf_piety_value
+								remove_variable = gf_piety_value
+							}
+						}
+						## Big RIP, scope:unlucky_guest.
+						if = {
+							limit = { exists = scope:unlucky_guest }
+							# Sort opinions and kinslaying.
+							add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:unlucky_guest}
+							execute_opinion_effect = {
+								VICTIM = scope:unlucky_guest
+								EXECUTIONER = scope:blotter
+							}
+							# Are you HumSac'ing the HoF of a faith that doesn't practice HumSac?
+							## We hide this, since it's too late for you to do anything about now and it's more fun/terrifying to find out about it *after* the sacrifice.
+							hidden_effect = {
+								humsacd_a_hof_effect = {
+									SACRIFICER = scope:blotter
+									SACRIFICED_HOF = scope:unlucky_guest
+								}
+							}
+							## And are you actually humsac'ing your *OWN* HoF?
+							if = {
+								limit = { scope:blotter.faith.religious_head = scope:unlucky_guest }
+								# Inform players that they're an abysmal, abysmal faith adherent.
+								every_player = {
+									limit = {
+										NOT = { this = scope:blotter }
+										faith = scope:unlucky_guest.faith
+									}
+									trigger_event = fp1_other_decisions.0023
+								}
+								# Update scope:blotter's HumSac'd HoFs kill tally manually, since we're not going through the usual effect.
+								add_to_variable_list = {
+									name = humsacd_hofs
+									target = scope:unlucky_guest.faith
+								}
+								# And tell scope:blotter they dun goofed.
+								trigger_event = {
+									id = fp1_other_decisions.0024
+									# We give it a day's delay, since they _might_ have taken a conversion option in the event itself, in which case the follow-up event is invalid.
+									days = 1
+								}
+							}
+							# How exactly do they die?
+							scope:unlucky_guest = {
+								death = {
+									killer = scope:blotter
+									death_reason = death_sacrificed_to_gods
+								}
+							}
+						}
+					}
+					every_attending_character = {
+						if = {
+							limit = {
+								scope:unlucky_guest = {
+									OR = {
+										agot_is_dragonblood_character = yes
+										agot_has_dragonblood_heritage = yes 
+									}
+									
+								}
+							}
+							zz_valyria_mana_gain = {
+								MANAGAIN = 9 
+							}
+						}
+						else ={
+							zz_valyria_mana_gain = {
+								MANAGAIN = 3
+							}
+						}
+					}
+				}
 			}
 		}
 	}
