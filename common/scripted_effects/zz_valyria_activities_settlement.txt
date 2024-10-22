@@ -414,12 +414,12 @@ disburse_valyria_settlement_reward_effect = {
 
 zz_valyria_settlement_effect = { 
 	scope:host = { 
+		barony = { set_coa = this.holder.house }
 		switch = {
 			trigger = has_character_flag 
 			settle_castle = { 
 				scope:province = {
 					set_holding_type = castle_holding	
-					barony = { set_coa = this.holder.house }
 				}
 				switch = {
 					trigger = has_character_flag
@@ -448,7 +448,7 @@ zz_valyria_settlement_effect = {
 			settle_city = { 
 				scope:province  = {
 					set_holding_type = city_holding
-					barony = { set_coa = this.holder.house }
+					
 				}
 				switch = {
 					trigger = has_character_flag
@@ -476,7 +476,6 @@ zz_valyria_settlement_effect = {
 			settle_temple = { 
 				scope:province = {
 					set_holding_type = church_holding
-					barony = { set_coa = this.holder.house }
 				}
 				switch = {
 					trigger = has_character_flag
@@ -502,6 +501,22 @@ zz_valyria_settlement_effect = {
 				remove_character_flag = settle_temple
 			}
 		}
+		if = {
+			limit = { has_character_flag = large_settlement_development_gain }
+			 scope:province = {
+				 county = {
+					 change_development_level = 10
+				 }
+			 }
+		 }
+		 else_if = {
+			 limit = { has_character_flag = med_settlement_development_gain }
+			 scope:province = {
+				 county = {
+					 change_development_level = 6
+				 }
+			 }
+		 }
 	}
 }
 
@@ -544,3 +559,4 @@ zz_valyria_settlment_construct_secondary_buildings = {
 		remove_character_flag = prowess_building_flag
 	}
 }
+
