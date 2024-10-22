@@ -1,4 +1,4 @@
-namespace = valyria_blood_sacrifices
+﻿namespace = valyria_blood_sacrifices
 scripted_effect grand_rite_good_outcome = {
 	scope:activity = {
 		every_attending_character = {
@@ -50,19 +50,18 @@ valyria_blood_sacrifices.1 = { #by Mathilda Bjarnehed
 		duel = {
 			skill = learning
 			value = high_skill_rating
-			25 = {
+			10 = {
 				desc = valyria_blood_sacrifices.1.a.great
 				compare_modifier = {
 					value = scope:duel_value
 					multiplier = 5
 				}
-				save_scope_value_as = {
-					name = grand_rite_ceremony_outcome
-					value = flag:great_translation
+				scope:host = {
+					add_character_flag = chosen_of_the_red_comet
 				}
 				show_as_tooltip = { grand_rite_good_outcome = yes }
 			}
-			75 = {	
+			90 = {	
 				desc = valyria_blood_sacrifices.1.a.poor
 				compare_modifier = {
 					value = scope:duel_value
@@ -89,6 +88,26 @@ valyria_blood_sacrifices.1 = { #by Mathilda Bjarnehed
 					has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier
 				}
 				save_scope_as = unlucky_guest
+			}
+			
+			if = { 
+				limit = { 
+					has_character_flag = chosen_of_the_red_comet
+				}
+				remove_character_flag = chosen_of_the_red_comet
+				if = { 
+					limit = { 
+						has_trait = born_under_a_red_comet
+					}
+					add_trait_xp = { 
+						trait = born_under_a_red_comet 
+						track = chosen_of_the_heavens
+						value = 5
+					}
+				}
+				else = { 
+					add_trait_force_tooltip = born_under_a_red_comet
+				}
 			}
 		}
 		scope:activity = {
@@ -155,8 +174,20 @@ valyria_blood_sacrifices.1 = { #by Mathilda Bjarnehed
 				}
 			}
 			every_attending_character = {
-				zz_valyria_mana_gain = {
-					MANAGAIN = 1
+				if = {
+					limit = {
+						scope:unlucky_guest = {
+							agot_has_dragonblood_heritage = yes
+						}
+					}
+					zz_valyria_mana_gain = {
+						MANAGAIN = 9 
+					}
+				}
+				else ={
+					zz_valyria_mana_gain = {
+						MANAGAIN = 3
+					}
 				}
 			}
 		}
