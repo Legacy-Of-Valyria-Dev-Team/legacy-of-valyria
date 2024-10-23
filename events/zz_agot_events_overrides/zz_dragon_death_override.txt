@@ -1,0 +1,87 @@
+agot_dragon.0001 = {
+	hidden = yes
+
+	trigger = { 
+		has_trait = dragon 
+	}
+
+	immediate = {
+		save_scope_as = dead_dragon
+		if = { # Is ridden dragon
+			limit = {
+				exists = var:current_rider
+			}
+		
+			var:current_rider = {
+				if = {
+					limit = {
+						is_alive = yes
+					}
+					# Remove flags from the rider
+					remove_character_flag = conducting_terror_campaign
+					# Remove modifiers from rider
+					remove_character_modifier = agot_contributing_to_dragonlore
+					remove_character_modifier = agot_clearing_woods_with_dragonfire
+					# Add character memory
+					create_character_memory = {
+						type = agot_dragon_died
+						participants = { dead_dragon = root }
+					}
+					# Set up event to ensure dragonrider outlived dragon
+					trigger_event = {
+						id = agot_dragon_death.0001
+						days = 1
+					}
+				}
+			}
+
+			add_to_variable_list = {
+				name = past_riders
+				target = var:current_rider
+			}
+
+			if = {
+				limit = { has_variable = rebind_count}
+				remove_variable = rebind_count
+			}
+		}
+		else_if = { # Is owned dragon
+			limit = {
+				any_relation = {
+					type = agot_dragon
+					is_alive = yes
+				}
+			}
+			random_relation = {
+				type = agot_dragon
+				save_scope_as = bonded_human
+			}
+			scope:bonded_human = {
+				# Add character memory
+				create_character_memory = {
+					type = agot_dragon_died
+					participants = { dead_dragon = root }
+				}
+				# Set up event to ensure dragonrider outlived dragon
+				trigger_event = {
+					id = agot_dragon_death.0001
+					days = 1
+				}
+			}
+		}
+		else = { # Is wild dragon
+
+		}
+
+		# Remove worshiping if applicable
+		var:lair ?= {
+			county =  { remove_county_modifier = agot_worshiping_dragon }
+			if = {
+				limit = { # Only if they don't need the variable anymore
+					NOT = { county = { has_county_modifier = agot_dragon_cult_gone_wrong } }
+				}
+				remove_local_variable = worshiped_dragon
+			}
+		}
+	}
+}
