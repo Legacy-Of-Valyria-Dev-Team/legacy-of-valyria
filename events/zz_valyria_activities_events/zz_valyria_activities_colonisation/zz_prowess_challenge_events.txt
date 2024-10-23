@@ -165,7 +165,7 @@ zz_valyria_colonisation.0601 = {
 	theme = corruption
 	override_background = battlefield
 
-	center_portrait = {
+	left_portrait = {
 		character = root
 		animation = personality_rational
 	}
@@ -308,11 +308,33 @@ zz_valyria_colonisation.0601 = {
 			base = 100
 		}
 	}
+	
+	# Option B: Dracarys
+	option = {
+		name = zz_valyria_colonisation.0601.b
+		trigger = {
+			has_trait = dragonrider
+		}
+		custom_tooltip = zz_valyria_colonisation.0601.b.tt
+		trigger_event = zz_valyria_colonisation.06011
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+		}
+	}
 
 
-	# Option B: Flee
+	# Option C: Flee
 	option = {
 		name = zz_valyria_colonisation.0601.c
+		trigger = {
+			NOT = {
+				has_trait = dragonrider
+			}
+		}
 		stress_impact = {
 			base = medium_stress_impact_loss
 		}
@@ -333,6 +355,39 @@ zz_valyria_colonisation.0601 = {
 		}
 	}
 }
+
+## Dragon attacks Wyvern
+zz_valyria_colonisation.06011 = {
+	type = activity_event
+	title = zz_valyria_colonisation.06011.t
+	desc = zz_valyria_colonisation.06011.desc
+	theme = corruption
+	override_background = battlefield
+
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	right_portrait = {
+		character = root.var:current_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+	}
+	
+	option = { # Option title
+		name = zz_valyria_colonisation.06011.a.title
+		add_prestige = minor_prestige_gain
+		hidden_effect = {
+			custom_tooltip = zz_valyria_colonisation_tt_positive_massive
+			scope:activity = { activity_special_type_progression_massive = yes }
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
 zz_valyria_colonisation.0602 = {
 	type = activity_event
 	title = zz_valyria_colonisation.0602.t
