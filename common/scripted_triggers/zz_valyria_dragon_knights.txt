@@ -1,0 +1,87 @@
+﻿can_be_dragonknight_trigger = {
+	can_be_councillor_basics_trigger = yes
+	OR = {
+		is_ruler = no
+		AND = {
+			has_title = title:d_kingsguard
+			has_trait = kingsguard
+		}
+	}
+	is_married = no
+	is_capable_adult = yes
+	is_human = yes
+	NOR = {
+		has_trait = nightswatch
+		has_trait = dragon #Go away Drogon
+		has_trait = order_member #Go away Areo Hotah
+		has_trait = devoted
+		has_trait = septon
+		has_trait = maester
+		has_trait = kingsguard
+	}
+	save_temporary_scope_as = root_character
+	OR = {
+		can_be_knight_trigger = { ARMY_OWNER = $COURT_OWNER$ }
+		#for historical KG who don't meet reqs
+		has_trait = kingsguard
+	}
+	is_male = yes #for now
+}
+
+highborn_dragonknight_candidate = {
+	any_parent = {
+		is_landed = yes
+		highest_held_title_tier >= tier_county
+	}
+	NOT = { exists = betrothed }
+	is_lowborn = no
+	has_trait = education_martial_prowess #Send me people who can fight plz
+	NOT = { #Don't send your heir dummy
+		any_heir_title = {
+			place_in_line_of_succession = {
+				target = prev
+				value == 1
+			}
+		}
+		has_trait = kingsguard
+		has_trait = nightswatch
+		has_trait = maester
+		has_trait = order_member
+	}
+	OR = { #Same faith or big opinion
+		faith = root.faith
+		any_close_or_extended_family_member = {
+			is_landed = yes
+			highest_held_title_tier >= tier_county
+			opinion = {
+				target = root
+				value > 75
+			}
+		}
+	}
+}
+
+can_have_dragonknight = {
+	primary_title = {
+		has_variable = dragonknight
+	}
+	# TODO pretenders should also be able to have a dragonknight; eg Rhaenyra or Daenerys
+}
+
+has_dragonknight = {
+	primary_title = {
+		has_variable = dragonknight
+	}
+}
+
+valid_dragonknight_bodyguard_councillor = {
+	scope:councillor = {
+		agot_is_councillor_available_trigger = yes
+	}
+}
+
+valid_dragonknight_bodyguard_target = {
+	exists = dynasty
+	dynasty = scope:councillor_liege.dynasty
+	num_of_relation_bodyguard = 0
+}
