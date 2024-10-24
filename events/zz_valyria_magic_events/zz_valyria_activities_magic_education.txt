@@ -1889,7 +1889,7 @@ zz_valyria_magic_education.2100 = {
 				add = 100
 			}
 			modifier = {
-				has_trait = intellect_badhas_activity_intent = study_blood_magic
+				has_trait = intellect_bad
 				add = 100
 			}
 			modifier = {
@@ -1900,6 +1900,359 @@ zz_valyria_magic_education.2100 = {
 	}
 }
 
+
+zz_valyria_magic_education.2200 = {
+	type = activity_event
+	title = zz_valyria_magic_education.2200.t
+	desc = zz_valyria_magic_education.2200.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 3 }
+
+	trigger = {
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.2200.a
+		trigger = {
+			has_activity_intent = study_valyrian_secrets
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.a.crit_success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education.2200.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+							scope:activity = { activity_special_type_progression_medium = yes }
+							hidden_effect = {
+								zz_random_gain_magic_spell = yes
+							}
+							custom_tooltip = zz_valyria_magic_education_tt_learn_random_spell
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.2200.b
+		trigger = {
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.b.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.b.crit_success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education.2200.b.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+							scope:activity = { activity_special_type_progression_medium = yes }
+							hidden_effect = {
+								switch = {
+									trigger = has_activity_intent
+									study_valyrian_secrets = { 
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = secrets_of_the_higher_mysteries
+										}
+									}
+									study_blood_magic = { 
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = blood_magic
+										}
+									}
+									study_shadow_magic = {
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = shadow_magic
+										}
+									}
+									study_dream_magic = {
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = dream_magic
+										}
+									}
+									study_alchemy_magic = {
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = alchemy_magic
+										}
+									}
+									study_fire_magic ={
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = fire_magic
+										}
+									}
+									study_air_magic = {
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = air_magic
+										}
+									}
+									study_water_magic = {
+										zz_valyria_gain_spell_experience = {
+											XPGAIN = 1 
+											XPTRACK = water_magic
+										}
+									}
+								
+								}
+							}
+							custom_tooltip = zz_valyria_magic_education_tt_gain_technical_skill
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.a.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education_tt_positive_tiny
+					scope:activity = { activity_special_type_progression_tiny = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.a.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.2200.y
+		trigger = {
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.y.crit_success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.y.crit_success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education.2200.y.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+							scope:activity = { activity_special_type_progression_massive = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.y.success
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.y.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_magic_education.2200.y.failure
+				send_interface_toast = {
+					title = zz_valyria_magic_education.2200.y.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_magic_education_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.2200.z
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
 
 
 ## Learn a Spell 
