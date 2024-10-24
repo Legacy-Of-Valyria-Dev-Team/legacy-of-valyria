@@ -62,6 +62,7 @@
 									max = 1
 								}
 							}
+							
 							ill = { 
 								remove_trait = ill
 							}
@@ -76,6 +77,12 @@
 							}
 							impotent = {
 								remove_trait = impotent
+							}
+							scaly = { 
+								remove_trait = scaly
+							}
+							spindly = { 
+								remove_trait = spindly
 							}
 							bleeder = {
 								remove_trait = bleeder
@@ -402,6 +409,58 @@ zz_valyria_magic_blood_magic_04_mysteries_of_renewal_effect = {
 			commanding_army = { 
 				every_army_maa_regiment = {
 					change_maa_troops_count = zz_blood_healing_scaling_value 
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_blood_magic_05_mysteries_of_replication.t
+		desc = zz_valyria_magic_blood_magic_05_mysteries_of_replication.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_blood_magic_05_mysteries_of_replication.tt
+		destroy_artifact = scope:target 
+		
+		if = { 
+			limit = {
+				scope:zz_valyria_magic_blood_magic_05_mysteries_of_replication_option_clone = yes 
+			}
+			create_character = {
+				age = scope:recipient.age
+				gender = male
+				gender_female_chance = {
+					value = 0
+					if = {
+						limit = { scope:recipient = { is_female = yes } }
+						add = 100
+					}
+				}
+				template_character = scope:recipient
+	
+	
+	
+				location = scope:actor.location
+	
+				random_traits = no
+	
+				#faith = scope:recipient.faith
+				#culture = scope:recipient.culture
+				#dynasty_house = scope:recipient.father.house
+	
+				save_scope_as = character_clone 
+	
+				after_creation = {
+					copy_inheritable_appearance_from = scope:recipient
+					copy_traits = scope:recipient
+					change_first_name = { template_character = scope:recipient }
+					#set_father = scope:recipient.father
+					#set_mother = scope:recipient.mother
+					remove_trait = dragonrider
+					
 				}
 			}
 		}
