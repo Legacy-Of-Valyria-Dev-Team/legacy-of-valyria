@@ -1395,8 +1395,6 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_interaction = {
 }
 
 
-
-
 ## Shadow Magic 
 zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds_interaction = {
 
@@ -3242,5 +3240,76 @@ zz_valyria_magic_water_magic_02_mysteries_of_the_surging_torrent_interaction = {
 	auto_accept = yes
 }
 ## add Army supply regeneration 
+
+zz_valyria_magic_water_magic_03_mysteries_of_army_resupply_interaction = {
+
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			always = no
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+				MANACOST = 1
+			}
+		}
+		scope:recipient = { 
+			is_commanding_army = yes 
+		}
+	}
+
+	icon = blood_magic
+	common_interaction = no
+	interface_priority = 10
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+
+	on_accept = {
+		
+		scope:actor = {
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = blood_magic
+				}
+			}
+			scope:recipient = {
+				commanding_army = {
+					
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL  = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+			}
+		}
+	}
+	auto_accept = yes
+}
 
 ## Add a Plague Outbreak in location spell
