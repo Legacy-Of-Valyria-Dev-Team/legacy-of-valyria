@@ -222,6 +222,50 @@ convert_to_freehold_from_feudel_effect = {
 
 }
 
+create_noble_family_dragonrider_effect = {
+	debug_log = create_noble_family_title
+
+	save_scope_as = new_noble_family_holder
+	hidden_effect = { # NF can only be held by house heads
+		house ?= {
+			if = {
+				limit = { house_head != scope:new_noble_family_holder }
+				set_house_head = scope:new_noble_family_holder
+			}
+		}
+	}
+	give_noble_family_title = {
+		name = noble_family_name
+		article = DEFAULT_TITLE_NAME_ARTICLE
+		save_scope_as = new_title
+	}
+	scope:new_title = {
+		holder = {
+			save_scope_as = noble_family_head
+			change_government = freehold_government
+		}
+		set_coa = scope:noble_family_head.house
+	}
+	custom_description = {
+		text = create_noble_family_tt
+	}
+
+	#Notifications
+	top_liege ?= {
+		every_vassal = {
+			limit = {
+				is_ai = no
+				NOT = { this = scope:new_noble_family_holder }
+			}
+			trigger_event = {
+				id = ep3_emperor_yearly.2410
+				days = 1
+			}
+		}
+	}
+
+	debug_log_scopes = yes
+}
 
 change_to_freehold_effect = {
 	save_scope_as = governor
@@ -241,7 +285,7 @@ change_to_freehold_effect = {
 				}
 			}
 		}
-		create_noble_family_effect = yes
+		create_noble_family_dragonrider_effect = yes
 	}
 
 	hidden_effect = {
@@ -256,7 +300,7 @@ change_to_freehold_effect = {
 	if = {
 		limit = { exists = scope:new_admin }
 		domicile ?= {
-			set_up_domicile_estate_effect = yes
+			#set_up_domicile_estate_effect = yes
 		}
 	}
 }
