@@ -21,6 +21,11 @@ valyria_magic_teach_decision = {
 		scope:actor = {
 			zz_valyria_is_mage = yes 
 		}
+		scope:secondary_actor = {
+			NOT = {
+				has_character_flag = zz_valyria_magic_taught_magic 
+			}
+		}
 	}
 	icon = icon_magic
 	common_interaction = yes
@@ -28,14 +33,18 @@ valyria_magic_teach_decision = {
 	category = interaction_secrets_of_valyria
 
 	cooldown_against_recipient = { days = 0 } 
-	cooldown = { years = 1 } 
+	cooldown = { years = 0 } 
 	ignores_pending_interaction_block = yes
 	use_diplomatic_range = yes
 	on_accept = {
+		
 		scope:actor = {
 			scope:recipient = {
 				add_trait_force_tooltip = zz_magister
 				zz_random_gain_magic_spell = yes
+			}
+			scope:secondary_actor = {
+				add_character_flag = { flag = zz_valyria_magic_taught_magic months = 9 } 
 			}
 		}
 	}
