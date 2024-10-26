@@ -1,5 +1,6 @@
 ﻿on_building_completed = {
 	effect = {
+		#save the county holder as the character in case the construction wasn't started through GUI or by the AI 
 		if = {
 			limit = {
 				NOT = { exists = scope:character }
@@ -528,7 +529,7 @@
 			#AGOT Added
 			if = {
 				limit = {
-					NOT  = {
+					NOR = {
 						zz_has_natural_dragon_pit_barony = yes
 					}
 					county = {
@@ -578,6 +579,31 @@
 					}
 					remove_variable = has_dragonkeeper_order
 				}
+			}
+
+			#AGOT Added, Scorpion Defenses
+			if = {
+				limit ={
+					culture = { has_innovation = innovation_agot_anti_dragon_fighting }
+					OR = {
+						fort_level >= 10
+						has_building_or_higher = workshops_05
+					}
+				}
+				add_province_modifier = scorpions_prepared
+			}
+			if = {
+				limit = {
+					has_province_modifier = scorpions_prepared
+					OR = {
+						NOT = { culture = { has_innovation = innovation_agot_anti_dragon_fighting } }
+						NOR = {
+							fort_level >= 10
+							has_building_or_higher = workshops_05
+						}
+					}
+				}
+				remove_province_modifier = scorpions_prepared
 			}
 		}
 	}
