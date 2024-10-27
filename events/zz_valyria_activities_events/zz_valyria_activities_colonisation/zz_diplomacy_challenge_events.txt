@@ -1,0 +1,354 @@
+﻿namespace = zz_valyria_colonisation
+
+
+## Progress Event Diplomacy
+zz_valyria_colonisation.0300 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0300.t
+	desc = zz_valyria_colonisation.0300.desc
+	theme = university
+
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Investigate documents yourself
+	option = {
+		name = zz_valyria_colonisation.0300.a
+		trigger = {
+		}
+		duel = {
+			skill = diplomacy
+			value = high_skill_rating
+			65 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				custom_tooltip = zz_valyria_colonisation.0300.a.success.tt
+				trigger_event = zz_valyria_colonisation.03001
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				custom_tooltip = zz_valyria_colonisation.0300.a.failure.tt
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				trigger_event = zz_valyria_colonisation.03002
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option B: Make him disappear
+	option = {
+		name = zz_valyria_colonisation.0300.b
+		trigger = {
+		}
+		duel = {
+			skill = intrigue
+			value = high_skill_rating
+			65 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				custom_tooltip = zz_valyria_colonisation.0300.b.success.tt
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+				hidden_effect = {
+					create_character = {
+						gender = male
+						culture = root.culture
+						faith = root.faith
+						dynasty = none
+						random_traits = yes
+
+						martial = 5
+						diplomacy = 5
+						intrigue = 5
+						stewardship = 5
+						learning = 5
+						prowess = 5
+						
+						trait = ambitious
+						trait = deceitful
+						trait = education_intrigue_2
+
+						save_scope_as = forger
+					}
+					scope:forger = {
+						death = {
+							killer = root
+							death_reason = death_disappearance
+						}
+					}
+				}
+				
+			}
+			35 = {
+				custom_tooltip = zz_valyria_colonisation.0300.b.failure.tt
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				hidden_effect = {
+					create_character = {
+						gender = male
+						culture = root.culture
+						faith = root.faith
+						dynasty = none
+						random_traits = yes
+
+						martial = 5
+						diplomacy = 5
+						intrigue = 5
+						stewardship = 5
+						learning = 5
+						prowess = 5
+						
+						trait = ambitious
+						trait = deceitful
+						trait = education_intrigue_2
+
+						save_scope_as = forger
+					}
+					scope:forger = {
+						death = {
+							killer = root
+							death_reason = death_murder
+						}
+					}
+					
+					root = {
+						add_trait = murderer
+						add_tyranny = major_tyranny_value
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+
+	# Option C: Pay him off!
+	option = {
+		name = zz_valyria_colonisation.0300.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		remove_short_term_gold = {
+			gold = {
+				value = root.medium_gold_value_check
+			}
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+
+## Forgery detected
+zz_valyria_colonisation.03001 = {
+	type = activity_event
+	title = zz_valyria_colonisation.03001.t
+	desc = zz_valyria_colonisation.03001.desc
+	theme = university
+	
+	immediate = {
+		create_character = {
+			gender = male
+			culture = root.culture
+			faith = root.faith
+			dynasty = none
+			random_traits = yes
+
+			martial = 5
+			diplomacy = 5
+			intrigue = 5
+			stewardship = 5
+			learning = 5
+			prowess = 5
+			
+			trait = ambitious
+			trait = deceitful
+			trait = education_intrigue_2
+
+			save_scope_as = forger
+		}
+	}
+	
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	right_portrait = {
+		character = scope:forger
+		animation = personality_rational
+	}
+	
+	option = { # Invite him to court
+		name = zz_valyria_colonisation.03001.a.title
+		
+		scope:forger = {
+			set_employer = root
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+	option = { # Hang him
+		name = zz_valyria_colonisation.03001.b.title
+		
+		scope:forger = {
+			death = {
+				killer = root
+				death_reason = death_execution
+			}
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+## Forgery Not Detected
+zz_valyria_colonisation.03002 = {
+	type = activity_event
+	title = zz_valyria_colonisation.03002.t
+	desc = zz_valyria_colonisation.03002.desc
+	theme = university
+	
+	immediate = {
+		create_character = {
+			gender = male
+			culture = root.culture
+			faith = root.faith
+			dynasty = none
+			random_traits = yes
+
+			martial = 5
+			diplomacy = 5
+			intrigue = 5
+			stewardship = 5
+			learning = 5
+			prowess = 5
+			
+			trait = ambitious
+			trait = deceitful
+			trait = education_intrigue_2
+
+			save_scope_as = forger
+		}
+	}
+	
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	right_portrait = {
+		character = scope:forger
+		animation = personality_rational
+	}
+	
+	option = { # Pay him
+		name = zz_valyria_colonisation.03002.a.title
+		
+		remove_short_term_gold = {
+			gold = {
+				value = root.major_gold_value_check
+			}
+		}
+		hidden_effect = {
+			scope:forger = {
+				death = {
+					death_reason = death_disappearance
+				}
+			}
+		}
+		
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+	option = { # Kill him
+		name = zz_valyria_colonisation.03002.b.title
+		
+		scope:forger = {
+			death = {
+				killer = root
+				death_reason = death_murder
+			}
+		}
+		
+		root = {
+			add_trait = murderer
+			add_tyranny = major_tyranny_value
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+}
