@@ -1,0 +1,731 @@
+﻿cv_agot_join_dragonknight_effect = {
+	$DRAGONKNIGHT$ = {
+		add_trait = dragonknight
+		add_character_flag = { flag = blocked_from_leaving }
+		if = {
+			limit = {
+				has_trait = refusing_marriage
+			}
+			remove_trait = refusing_marriage
+		}
+		if = {
+			limit = {
+				has_character_modifier = training_for_dragonknight
+			}
+			remove_character_modifier = training_for_dragonknight
+		}
+	}
+	$KING$ = {
+		if = {
+			limit = {
+				NAND = {
+					exists = $DRAGONKNIGHT$.liege_or_court_owner
+					$DRAGONKNIGHT$.liege_or_court_owner = this
+				}
+			}
+			add_courtier ?= $DRAGONKNIGHT$
+		}
+		if = {
+			limit = {
+				$DRAGONKNIGHT$ = {
+					has_character_flag = dragonknight_lord_commander
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						any_councillor = {
+							has_council_position = dragonknight_lord_commander
+						}
+					}
+				}
+				assign_councillor_type = {
+					type = dragonknight_lord_commander
+					target = $DRAGONKNIGHT$
+				}
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_lord_commander
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { exists = cp:dragonknight_1 }
+			}
+			assign_councillor_type = {
+				type = dragonknight_1
+				target = $DRAGONKNIGHT$
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_1
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { exists = cp:dragonknight_2 }
+			}
+			assign_councillor_type = {
+				type = dragonknight_2
+				target = $DRAGONKNIGHT$
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_2
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { exists = cp:dragonknight_3 }
+			}
+			assign_councillor_type = {
+				type = dragonknight_3
+				target = $DRAGONKNIGHT$
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_3
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { exists = cp:dragonknight_4 }
+			}
+			assign_councillor_type = {
+				type = dragonknight_4
+				target = $DRAGONKNIGHT$
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_4
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { exists = cp:dragonknight_5 }
+			}
+			assign_councillor_type = {
+				type = dragonknight_5
+				target = $DRAGONKNIGHT$
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_5
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { exists = cp:dragonknight_6 }
+			}
+			assign_councillor_type = {
+				type = dragonknight_6
+				target = $DRAGONKNIGHT$
+			}
+			primary_title = {
+				set_variable = {
+					name = dragonknight_6
+					value = $DRAGONKNIGHT$
+				}
+			}
+		}
+	}
+}
+
+cv_agot_assign_dragonknight_lord_commander_effect = {
+	$DKCOMMANDER$ = {
+		create_character_memory = {
+			type = cv_agot_dragonknight_lord_commander_memory
+			participants = {
+				king = $KING$
+			}
+		}
+		if = {
+			limit = {
+				any_artifact = {
+					has_variable = dragons_book
+					count = 0
+				}
+			}
+			cv_agot_create_artifact_the_dragons_book_effect = yes
+		}
+		add_character_flag = dragonknight_lord_commander
+	}
+
+	$KING$ = {
+		primary_title = {
+			if = {
+				limit = {
+					exists = var:dragonknight_1
+					var:dragonknight_1 = $    DKCOMMANDER$
+				}
+				remove_variable = dragonknight_1
+			}
+			else_if = {
+				limit = {
+					exists = var:dragonknight_2
+					var:dragonknight_2 = $DKCOMMANDER$
+				}
+				remove_variable = dragonknight_2
+			}
+			else_if = {
+				limit = {
+					exists = var:dragonknight_3
+					var:dragonknight_3 = $DKCOMMANDER$
+				}
+				remove_variable = dragonknight_3
+			}
+			else_if = {
+				limit = {
+					exists = var:dragonknight_4
+					var:dragonknight_4 = $DKCOMMANDER$
+				}
+				remove_variable = dragonknight_4
+			}
+			else_if = {
+				limit = {
+					exists = var:dragonknight_5
+					var:dragonknight_5 = $DKCOMMANDER$
+				}
+				remove_variable = dragonknight_5
+			}
+			else_if = {
+				limit = {
+					exists = var:dragonknight_6
+					var:dragonknight_6 = $DKCOMMANDER$
+				}
+				remove_variable = dragonknight_6
+			}
+
+			set_variable = {
+				name = dragonknight_lord_commander
+				value = $DKCOMMANDER$
+			}
+		}
+
+		random_character_artifact = {
+			limit = {
+				has_variable = dragons_book
+			}
+			set_owner = $DKCOMMANDER$
+			save_scope_as = dragons_book
+		}
+
+		assign_councillor_type = {
+			type = dragonknight_lord_commander
+			target = $DKCOMMANDER$
+		}
+	}
+
+	hidden_effect = {
+		title:d_the_dragonknight_order = {
+			copy_title_history = title:d_dummy_dragonknight
+		}
+	}
+
+	create_title_and_vassal_change = {
+		type = granted
+		save_scope_as = change
+	}
+	title:d_the_dragonknight_order = {
+		change_title_holder = {
+			holder = $DKCOMMANDER$
+			change = scope:change
+		}
+	}
+
+	resolve_title_and_vassal_change = scope:change
+
+	title:d_the_dragonknight_order = {
+		set_coa = d_kingsguard
+	}
+
+	hidden_effect = {
+		title:d_dummy_dragonknight = {
+			copy_title_history = title:d_the_dragonknight_order
+		}
+	}
+
+	#destroy_title = title:d_the_dragonknight_order
+
+	$KING$ = { trigger_event = agot_kingsguard.9007 } #grab back the lord commander you yeeted
+}
+
+cv_agot_remove_dragonknight_effect = {
+	$DRAGONKNIGHT$ = { save_scope_as = removed_dk }
+
+	scope:removed_dk = {
+		if = {
+			limit = {
+				OR = {
+					has_council_position = dragonknight_lord_commander
+					has_character_flag = dragonknight_lord_commander
+				}
+			}
+			dragons_book_transfer = yes
+			save_scope_as = dk_is_lord_commander
+		}
+	}
+
+	scope:removed_dk = {
+		if = {
+			limit = {
+				NOT = { exists = scope:dead_dragonknight }
+			}
+
+			remove_trait = dragonknight
+			cv_agot_dragonknight_destroy_artifacts = yes
+			add_character_flag = can_fire_dragonknight
+			title:e_valyria.holder = {
+				if = {
+					limit = {
+						prev = { is_councillor_of = title:e_valyria.holder }
+					}
+					fire_councillor = prev
+				}
+			}
+		}
+	}
+
+	title:e_valyria = {
+		if = {
+			limit = {
+				exists = var:dragonknight_lord_commander
+				var:dragonknight_lord_commander = scope:removed_dk
+			}
+			remove_variable = dragonknight_lord_commander
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_1
+				var:dragonknight_1 = scope:removed_dk
+			}
+			remove_variable = dragonknight_1
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_2
+				var:dragonknight_2 = scope:removed_dk
+			}
+			remove_variable = dragonknight_2
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_3
+				var:dragonknight_3 = scope:removed_dk
+			}
+			remove_variable = dragonknight_3
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_4
+				var:dragonknight_4 = scope:removed_dk
+			}
+			remove_variable = dragonknight_4
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_5
+				var:dragonknight_5 = scope:removed_dk
+			}
+			remove_variable = dragonknight_5
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_6
+				var:dragonknight_6 = scope:removed_dk
+			}
+			remove_variable = dragonknight_6
+		}
+	}
+
+	title:e_valyria.holder = {
+		if = {
+			limit = {
+				is_ai = yes
+				exists = scope:dk_is_lord_commander
+			}
+			create_title_and_vassal_change = {
+				type = granted
+				save_scope_as = change
+			}
+			title:d_the_dragonknight_order = {
+				change_title_holder = {
+					holder = title:e_valyria.holder
+					change = scope:change
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+
+			trigger_event = {
+				id = agot_kingsguard.9001
+				days = 3
+			}
+		}
+		else_if = {
+			limit = {
+				exists = scope:dk_is_lord_commander
+			}
+			title:d_dummy_dragonknight = {
+				copy_title_history = title:d_the_dragonknight_order
+			}
+			destroy_title = title:d_the_dragonknight_order
+			title:d_the_dragonknight_order = {
+				copy_title_history = title:d_dummy_dragonknight
+			}
+			trigger_event = {
+				id = agot_kingsguard.1010
+				delayed = yes
+			}
+		}
+
+		if = {
+			limit = {
+				is_ai = yes
+			}
+			trigger_event = {
+				id = agot_kingsguard.9002
+				days = 4
+			}
+		}
+		else = {
+			trigger_event = agot_kingsguard.1001
+		}
+	}
+}
+
+cv_agot_on_get_dragonknight = {
+	got_council_position_effect = yes
+	add_character_flag = blocked_from_leaving
+	if = {
+		limit = {
+			exists = betrothed
+		}
+		if = {
+			limit = {
+				has_been_promised_grand_wedding = yes
+			}
+			break_grand_wedding_betrothal_effect = yes
+		}
+		else = {
+			break_betrothal = betrothed
+		}
+	}
+}
+
+cv_agot_on_get_dragonknight_lord_commander = {
+	got_council_position_effect = yes
+	add_character_flag = dragonknight_lord_commander
+	add_character_flag = blocked_from_leaving
+	if = {
+		limit = {
+			exists = betrothed
+		}
+		if = {
+			limit = {
+				has_been_promised_grand_wedding = yes
+			}
+			break_grand_wedding_betrothal_effect = yes
+		}
+		else = {
+			break_betrothal = betrothed
+		}
+	}
+	top_liege.primary_title = {
+		if = {
+			limit = {
+				exists = var:dragonknight_1
+				var:dragonknight_1 = root
+			}
+			remove_variable = dragonknight_1
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_2
+				var:dragonknight_2 = root
+			}
+			remove_variable = dragonknight_2
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_3
+				var:dragonknight_3 = root
+			}
+			remove_variable = dragonknight_3
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_4
+				var:dragonknight_4 = root
+			}
+			remove_variable = dragonknight_4
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_5
+				var:dragonknight_5 = root
+			}
+			remove_variable = dragonknight_5
+		}
+		else_if = {
+			limit = {
+				exists = var:dragonknight_6
+				var:dragonknight_6 = root
+			}
+			remove_variable = dragonknight_6
+		}
+	}
+}
+
+cv_agot_dragonknight_fled_effect = {
+	cv_agot_remove_dragonknight_effect = { DRAGONKNIGHT = scope:recipient }
+	add_character_modifier = dragonknight_oathbreaker
+
+	scope:recipient = {
+		save_scope_as = fleeing_dragonknight
+	}
+
+	scope:actor = {
+		save_scope_as = crown
+	}
+
+	scope:crown = {
+		add_opinion = {
+			target = scope:fleeing_dragonknight
+			modifier = broke_vows_opinion
+		}
+	}
+
+	if = {
+		limit = {
+			any_parent = {
+				is_landed = yes
+				NOT = {
+					this = scope:crown
+				}
+			}
+		}
+		random_parent = {
+			limit = {
+				is_landed = yes
+				NOT = {
+					this = scope:crown
+				}
+			}
+			save_scope_as = ruling_relative
+		}
+	}
+	else_if = {
+		limit = {
+			any_close_family_member = {
+				is_landed = yes
+				NOT = {
+					this = scope:crown
+				}
+			}
+		}
+		random_close_family_member = {
+			limit = {
+				is_landed = yes
+				NOT = {
+					this = scope:crown
+				}
+			}
+			save_scope_as = ruling_relative
+		}
+	}
+	else_if = {
+		limit = {
+			any_close_or_extended_family_member = {
+				is_landed = yes
+				NOT = {
+					this = scope:crown
+				}
+			}
+		}
+		random_close_or_extended_family_member = {
+			limit = {
+				is_landed = yes
+				NOT = {
+					this = scope:crown
+				}
+			}
+			save_scope_as = ruling_relative
+		}
+	}
+	else_if = {
+		limit = {
+			dynasty ?= {
+				any_dynasty_member = {
+					is_landed = yes
+				}
+			}
+		}
+		dynasty ?= {
+			random_dynasty_member = {
+				limit = {
+					is_landed = yes
+				}
+				save_scope_as = ruling_relative
+			}
+		}
+	}
+	scope:fleeing_dragonknight = {
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+
+			50 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				random_list = {
+					70 = { trigger_event = agot_kingsguard.2004 }
+					25 = {
+							agot_add_to_nightswatch_effect = yes
+							title:k_the_wall.holder = { add_courtier = scope:fleeing_dragonknight }
+						}
+					5 = { scope:ruling_relative = { trigger_event = agot_kingsguard.2003 } }
+				}
+			}
+			50 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				death = {
+					death_reason = death_kg_fleeing
+					killer = scope:crown
+				}
+			}
+		}
+	}
+}
+
+cv_agot_dragonknight_destroy_artifacts = {
+	if = {
+		limit = {
+			any_character_artifact = {
+				has_variable = dragonknight_armour
+			}
+		}
+		random_character_artifact = {
+			limit = { has_variable = dragonknight_armour }
+			destroy_artifact = this
+		}
+	}
+}
+
+cv_agot_on_fired_from_dragonknight = {
+	fired_from_council_position_effect = yes
+	remove_character_flag = blocked_from_leaving
+	#remove_trait = dragonknight
+}
+
+cv_agot_on_start_dragonknight_default = {
+	cv_agot_on_cancel_dragonknight_bodyguard = yes
+	liege = {
+		add_character_flag = {
+			flag = no_marshal_side_effects_first_month
+			days = 30
+		}
+	}
+}
+
+cv_agot_on_monthly_dragonknight_default = {
+	liege = {
+		if = {
+			limit = {
+				has_character_flag = no_marshal_side_effects_first_month
+			}
+			remove_character_flag = no_marshal_side_effects_first_month
+		}
+		else = {
+		}
+	}
+}
+
+cv_agot_on_start_dragonknight_bodyguard = {
+	scope:councillor_liege = {
+		trigger_event = agot_kingsguard.2001
+	}
+}
+
+cv_agot_start_bodyguarding = {
+	$TARGET$ = {
+		set_relation_bodyguard = scope:councillor
+	}
+	scope:councillor = {
+		set_variable = {
+			name = agot_target_court
+			value = scope:target_character
+		}
+		agot_start_councillor_travel_effect = yes
+	}
+}
+
+cv_agot_on_monthly_dragonknight_bodyguard = {
+	scope:councillor = {
+		# Add agot_target_court variable and dragonknight_bodyguard modifier to target if not present
+		# This is mainly for savegame compatibility, could be removed at some point
+		if = {
+			limit = {
+				NOT = { has_variable = agot_target_court }
+			}
+			set_variable = {
+				name = agot_target_court
+				value = scope:target_character
+			}
+		}
+		every_relation = {
+			type = bodyguard_target
+			if = {
+				limit = {
+					NOT = { has_character_modifier = dragonknight_bodyguard }
+				}
+				add_character_modifier = dragonknight_bodyguard
+			}
+		}
+
+		if = {
+			limit = { is_available = yes }
+			agot_start_councillor_travel_effect = yes
+		}
+	}
+}
+
+cv_agot_on_cancel_dragonknight_bodyguard = {
+	scope:councillor = {
+		every_relation = {
+			type = bodyguard_target
+			remove_relation_bodyguard = scope:councillor
+		}
+		remove_variable = agot_target_court
+		agot_cancel_councillor_travel_effect = yes
+	}
+}
+
+dragons_book_transfer = {
+	random_character_artifact = {
+		limit = {
+			has_variable = dragons_book
+		}
+		set_owner = prev.top_liege
+	}
+}
+
