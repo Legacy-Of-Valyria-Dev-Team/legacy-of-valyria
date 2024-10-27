@@ -1,332 +1,364 @@
-﻿# Set up a University Teacher
-magic_education_teacher_setup = {
-	scope:activity.activity_location = { save_scope_as = location }
-	if = {
-		limit = {
-			scope:activity = {
-				NOT = {
-					any_attending_character = {
-						has_character_flag = teacher_1
-					}
-				}
+﻿zz_valyria_magic_education_learning_skill_test = {
+	duel = {
+		skill = learning
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				zz_valyria_education_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
-				save_scope_as = teacher_1
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else_if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_adult_education_teacher = yes
-				}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_adult_education_teacher = yes
-				}
-				save_scope_as = teacher_1
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_magic_education_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
 			}
-		}
-		else = {
-			create_character = {
-				template = adult_education_teacher
-				dynasty = none
-				location = scope:location
-				save_scope_as = teacher_1
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		scope:teacher_1 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
 			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_magic_education_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
+
 			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
+			stress_impact = {
+				base = medium_stress_impact_gain
 			}
-			add_to_activity = scope:activity
-			add_character_flag = teacher_1
 		}
 	}
-	if = {
-		limit = {
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+zz_valyria_education_reward = {
+	switch = {
+		trigger = has_character_flag
+		zz_valyria_magic_education.0100.a = {
+			zz_magic_education_increase_skill_effect = {
+				NUMBER = 5
+			}
 			scope:activity = {
-				NOT = {
-					any_attending_character = {
-						has_character_flag = teacher_2
-					}
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
 				}
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
+		zz_valyria_magic_education.0100.b = {
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+					scope:activity = { activity_special_type_progression_massive = yes }
 				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
-				save_scope_as = teacher_2
 			}
 		}
-		else_if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_adult_education_teacher = yes
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
+		zz_valyria_magic_education.0200.a = {
+			zz_magic_education_increase_skill_effect = {
+				NUMBER = 5
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_adult_education_teacher = yes
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
 				}
-				save_scope_as = teacher_2						
 			}
 		}
-		else = {	
-			create_character = {
-				template = adult_education_teacher
-				dynasty = none
-				location = scope:location
-				save_scope_as = teacher_2
+		zz_valyria_magic_education.0200.b = {
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+					scope:activity = { activity_special_type_progression_massive = yes }
+				}
 			}
 		}
-		scope:teacher_2 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
+		zz_valyria_magic_education.1100.a = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+					scope:activity = { activity_special_type_progression_massive = yes }
 				}
-				remove_character_flag = teacher_1
 			}
-			if = {
-				limit = {
-					has_character_flag = student_1
+		}
+		zz_valyria_magic_education.1100.b = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
 				}
-				remove_character_flag = student_1
 			}
-			if = {
-				limit = {
-					has_character_flag = student_2
+		}
+		zz_valyria_magic_education.1200.a = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+					scope:activity = { activity_special_type_progression_massive = yes }
 				}
-				remove_character_flag = student_2
 			}
-			add_to_activity = scope:activity
-			add_character_flag = teacher_2
+		}
+		zz_valyria_magic_education.1200.b = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+			}
+		}
+		zz_valyria_magic_education.2100.a = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+					scope:host = {zz_random_gain_magic_spell = yes}
+					custom_tooltip = zz_valyria_magic_education_tt_learn_random_spell
+				}
+			}
+		}
+		zz_valyria_magic_education.2100.b = {
+			zz_magic_education_increase_skill_effect = {
+				NUMBER = 3
+			}
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+			}
+		}
+		zz_valyria_magic_education.2100.y = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+			}
+		}
+		zz_valyria_magic_education.2200.a = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+					scope:host = {zz_random_gain_magic_spell = yes}
+					custom_tooltip = zz_valyria_magic_education_tt_learn_random_spell
+				}
+			}
+		}
+		zz_valyria_magic_education.2200.b = {
+			zz_magic_education_increase_skill_effect = {
+				NUMBER = 3
+			}
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+			}
+		}
+		zz_valyria_magic_education.2200.y = { 
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_magic_education_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+			}
 		}
 	}
 }
 
-# Set up a University student
-magic_education_student_setup = {
-	scope:activity.activity_location = { save_scope_as = location }
-	if = {
-		limit = {
-			NOT = {
-				scope:activity = {
-					any_attending_character = {
-						has_character_flag = student_1
-					}
-				}
+zz_magic_education_increase_skill_effect = { 
+	switch = {
+		trigger = has_activity_intent
+		study_valyrian_secrets = { 
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$ 
+				XPTRACK = secrets_of_the_higher_mysteries
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-					exists = this
-				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-				}
-				save_scope_as = student_1
+		study_blood_magic = { 
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = blood_magic
 			}
 		}
-		else = {
-			create_character = {
-				template = adult_education_student
-				dynasty = none
-				location = scope:location
-				save_scope_as = student_1
-			}
-			scope:student_1 = {
-				add_character_flag = generated_character_uni
+		study_shadow_magic = {
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = shadow_magic
 			}
 		}
-		scope:student_1 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = student_1
-		}
-	}
-
-	if = {
-		limit = {
-			NOT = {
-				scope:activity = {
-					any_attending_character = {
-						has_character_flag = student_2
-					}
-				}
+		study_dream_magic = {
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = dream_magic
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-					exists = this
-				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-				}
-				save_scope_as = student_2
+		study_alchemy_magic = {
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = alchemy_magic
 			}
 		}
-		else = {
-			create_character = {
-				template = adult_education_student
-				dynasty = none
-				location = scope:location
-				save_scope_as = student_2
-			}
-			scope:student_2 = {
-				add_character_flag = generated_character_uni
+		study_fire_magic ={
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = fire_magic
 			}
 		}
-		scope:student_2 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
+		study_air_magic = {
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = air_magic
 			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
+		}
+		study_water_magic = {
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = $NUMBER$
+				XPTRACK = water_magic
 			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			add_to_activity = scope:activity
-			add_character_flag = student_2
 		}
 	}
 }
+
 
 ### Learn Spell Effect conclusion event 
 zz_magic_education_learn_spell_effect = {
 	zz_add_spell = { 
 		SPELL = $SPELL$
 	}
-	scope:activity = {
+	scope:activity ?= {
 		add_activity_log_entry = {
 			key = sic_et_non_log
 			score = 25
 			tags = { good learning activity }
 			character = root
-
 			#Effect
 			custom_tooltip = learn_$SPELL$.t
 		}
