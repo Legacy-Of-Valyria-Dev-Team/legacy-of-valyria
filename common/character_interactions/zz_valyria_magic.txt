@@ -1401,6 +1401,87 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_interaction = {
 	}
 }
 
+zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_interaction = {
+
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_interaction
+				MANACOST = 90
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_interaction
+			}
+			is_imprisoned = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_interaction
+				MANACOST = 90
+			}
+		}
+	}
+	icon = blood_magic
+	common_interaction = no
+	interface_priority = 10
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	target_type = artifact
+	target_filter = recipeint_artifacts
+	
+	can_be_picked_artifact = {
+		scope:target = {
+			has_variable = dragon_egg
+			has_variable = dud_egg 
+		}
+	}
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 90
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1
+					XPTRACK = alchemy_magic
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_interaction
+			}
+		}
+	}
+
+
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+	}
+}
+
 
 ## Shadow Magic 
 zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds_interaction = {
