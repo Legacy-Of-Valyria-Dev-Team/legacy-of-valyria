@@ -1,4 +1,4 @@
-on_set_relation_bodyguard = {
+﻿on_set_relation_bodyguard = {
 	effect = {
 		add_bodyguard_modifier_effect = yes
 	}
@@ -36,24 +36,24 @@ task_dragonknight_side_effects = {
 		chance_to_happen = 2
 		100 = 0
 		#Good side effects
-		100 = agot_dragonknight.3002 #Good DK Gains Gallant
-		250 = agot_dragonknight.3005 #Powerful warrior asks to join your guard
-		100 = agot_dragonknight.3006 # Two Dragonknight become friends
-		100 = agot_dragonknight.3007 #DK Improves Swordsmanship
-		100 = agot_dragonknight.3008 #Training for DK asks to join and can hang out at court until there's a space - Balon Swann
-		100 = agot_dragonknight.3010 #Dragonknight trains to become STRONK
-		100 = agot_dragonknight.3014 #Dragonknight gains a blademaster
-		100 = agot_dragonknight.3015 #Dragonknight gains a hunter
-		100 = agot_dragonknight.3016 #Dragonknight gains a falconer
+		100 = cv_agot_dragonknight.3002 #Good DK Gains Gallant
+		250 = cv_agot_dragonknight.3005 #Powerful warrior asks to join your guard
+		100 = cv_agot_dragonknight.3006 # Two Dragonknight become friends
+		100 = cv_agot_dragonknight.3007 #DK Improves Swordsmanship
+		100 = cv_agot_dragonknight.3008 #Training for DK asks to join and can hang out at court until there's a space - Balon Swann
+		100 = cv_agot_dragonknight.3010 #Dragonknight trains to become STRONK
+		100 = cv_agot_dragonknight.3014 #Dragonknight gains a blademaster
+		100 = cv_agot_dragonknight.3015 #Dragonknight gains a hunter
+		100 = cv_agot_dragonknight.3016 #Dragonknight gains a falconer
 		#Gardening Dragonknight?
 
 		#Bad side effects
-		50 = agot_dragonknight.3003  #Lucamore the Lusty
-		100 = agot_dragonknight.3004  #Dragonknight tramples a Child at Court
-		#50 = agot_dragonknight.3009 #Assassinated by a DK whose family you're at war with - Jaime Lannister
-		150 = agot_dragonknight.3011 #Bad dragonknight is challenged to a duel by character training
-		100 = agot_dragonknight.3013 #Dragonknight is being rowdy and carousing
-		100 = agot_dragonknight.3017 #Dragonknight found dead in brothel - Owen Bush
+		50 = cv_agot_dragonknight.3003  #Lucamore the Lusty
+		100 = cv_agot_dragonknight.3004  #Dragonknight tramples a Child at Court
+		#50 = cv_agot_dragonknight.3009 #Assassinated by a DK whose family you're at war with - Jaime Lannister
+		150 = cv_agot_dragonknight.3011 #Bad dragonknight is challenged to a duel by character training
+		100 = cv_agot_dragonknight.3013 #Dragonknight is being rowdy and carousing
+		100 = cv_agot_dragonknight.3017 #Dragonknight found dead in brothel - Owen Bush
 		#Lord Wants you to declare their child next dragonknight
 
 		#Dontos Hollard - DK Drunk on Duty
@@ -70,288 +70,6 @@ task_dragonknight_side_effects = {
 		# Get wounded
 
 		#Dragonknight with no family asks to be released to propogate their line
-	}
-}
-
-on_arrive_from_pool_wildlings = {
-	effect = {
-		#Wildlings coming to the north become secret wildlings
-		if = {
-			limit = {
-				culture = { agot_is_wildling_culture = yes }
-				is_lowborn = yes
-				any_traveling_family_member = { count = 1 }
-				scope:host = {
-					OR = {
-						AND = {
-							exists = capital_province
-							capital_province = { geographical_region = world_westeros_the_north }
-						}
-						AND = {
-							NOT = { exists = capital_province }
-							location = { geographical_region = world_westeros_the_north }
-						}
-					}
-				}
-				NOT = { has_trait = nightswatch }
-			}
-
-			if = {
-				limit = { is_female = yes }
-				change_first_name = Alarra
-			}
-			else = {
-				change_first_name = Alaric
-			}
-			set_variable = {
-				name = orig_culture
-				value = culture
-			}
-			set_variable = {
-				name = orig_faith
-				value = faith
-			}
-			culture:northman = {
-				random_culture_county = {
-					limit = { holder.culture = culture:northman }
-					holder = {
-						random_courtier = {
-							limit = {
-								culture = culture:northman
-								OR = {
-									AND = {
-										is_male = yes
-										root = { is_male = yes }
-									}
-									AND = {
-										is_female = yes
-										root = { is_female = yes }
-									}
-								}
-							}
-							save_scope_as = identity_theft_target
-						}
-					}
-				}
-			}
-			if = {
-				limit = { exists = scope:identity_theft_target }
-				change_first_name = { template_character = scope:identity_theft_target }
-			}
-			set_culture = culture:northman
-			set_character_faith = faith:old_gods_south
-			add_secret = { type = secret_agot_wildling }
-		}
-		else_if = {
-			limit = {
-				culture = { agot_is_wildling_culture = yes }
-				scope:host = {
-					culture = { agot_is_wildling_culture = no }
-				}
-				NOT = { has_trait = nightswatch }
-			}
-			every_traveling_family_member = {
-				if = {
-					limit = {
-						title:c_whitetree.holder = {
-							culture = { agot_is_wildling_culture = yes }
-						}
-					}
-					move_to_pool_at = title:c_whitetree.holder.capital_province
-				}
-				else = {
-					move_to_pool = yes
-				}
-			}
-		}
-		#westeros stay in westeros
-		if = {
-			limit = {
-				culture = { agot_is_wildling_culture = no }
-				scope:host = {
-					culture = { agot_is_wildling_culture = yes }
-				}
-				NOT = {
-					any_traveling_family_member = {
-						culture = { agot_is_wildling_culture = yes }
-					}
-				}
-				# Allow banished characters, maesters, recruited prisoners, and nightswatch to stay
-				NOR = {
-					has_variable = agot_banisher
-					is_imprisoned_by = scope:new_employer
-					has_trait = nightswatch
-					has_character_flag = recruited_maester
-				}
-				NAND = {
-					scope:new_employer ?= title:e_the_iron_throne.holder
-					OR = {
-						has_trait = kingsguard
-						has_inactive_trait = grandmaester
-					}
-				}
-                NAND = {
-					scope:new_employer ?= title:e_valyria.holder
-					OR = {
-                        has_trait = dragonknight
-						has_inactive_trait = grandmaester
-					}
-				}
-			}
-			every_traveling_family_member = {
-				if = {
-					limit = {
-						title:c_sullen_hills.holder = {
-							culture = { agot_is_wildling_culture = no }
-						}
-					}
-					move_to_pool_at = title:c_sullen_hills.holder.capital_province
-				}
-				else = {
-					move_to_pool = yes
-				}
-			}
-		}
-	}
-}
-
-on_join_court_wildlings = {
-	effect = {
-		#Wildlings coming to the north become secret wildlings
-		if = {
-			limit = {
-				exists = scope:old_employer
-				culture = { agot_is_wildling_culture = yes }
-				is_lowborn = yes
-				any_traveling_family_member = { count = 1 }
-				scope:new_employer = {
-					OR = {
-						AND = {
-							exists = capital_province
-							capital_province = { geographical_region = world_westeros_the_north }
-						}
-						AND = {
-							 NOT = { exists = capital_province }
-							 location = { geographical_region = world_westeros_the_north }
-						}
-					}
-				}
-				NOT = { has_trait = nightswatch }
-			}
-
-			if = {
-				limit = { is_female = yes }
-				change_first_name = Alarra
-			}
-			else = {
-				change_first_name = Alaric
-			}
-			set_variable = {
-				name = orig_culture
-				value = culture
-			}
-			set_variable = {
-				name = orig_faith
-				value = faith
-			}
-			culture:northman = {
-				random_culture_county = {
-					limit = { holder.culture = culture:northman }
-					holder = {
-						random_courtier = {
-							limit = {
-								culture = culture:northman
-								OR = {
-									AND = {
-										is_male = yes
-										root = { is_male = yes }
-									}
-									AND = {
-										is_female = yes
-										root = { is_female = yes }
-									}
-								}
-							}
-							save_scope_as = identity_theft_target
-						}
-					}
-				}
-			}
-			if = {
-				limit = { exists = scope:identity_theft_target }
-				change_first_name = { template_character = scope:identity_theft_target }
-			}
-			set_culture = culture:northman
-			set_character_faith = faith:old_gods_south
-			add_secret = { type = secret_agot_wildling }
-		}
-		else_if = {
-			limit = {
-				exists = scope:old_employer
-				culture = { agot_is_wildling_culture = yes }
-				scope:new_employer = {
-					culture = { agot_is_wildling_culture = no }
-				}
-				scope:old_employer = {
-					culture = { agot_is_wildling_culture = yes }
-				}
-				# Allow banished characters, recruited prisoners, and nightswatch to stay
-				NOR = {
-					has_variable = agot_banisher
-					is_imprisoned_by = scope:new_employer
-					has_trait = nightswatch
-				}
-			}
-			every_traveling_family_member = {
-				scope:old_employer = {
-					add_courtier ?= prev
-				}
-			}
-		}
-		#westeros stay in westeros
-		if = {
-			limit = {
-				exists = scope:old_employer
-				culture = { agot_is_wildling_culture = no }
-				scope:new_employer = {
-					culture = { agot_is_wildling_culture = yes }
-				}
-				scope:old_employer = {
-					culture = { agot_is_wildling_culture = no }
-				}
-				NOT = {
-					any_traveling_family_member = {
-						culture = { agot_is_wildling_culture = yes }
-					}
-				}
-				# Allow banished characters, maesters, recruited prisoners, and nightswatch to stay
-				NOR = {
-					has_variable = agot_banisher
-					is_imprisoned_by = scope:new_employer
-					has_trait = nightswatch
-					has_character_flag = recruited_maester
-				}
-				NAND = {
-					scope:new_employer ?= title:e_the_iron_throne.holder
-					OR = {
-						has_trait = kingsguard
-						has_inactive_trait = grandmaester
-					}
-				}
-				NAND = {
-					scope:new_employer ?= title:e_valyria.holder
-					OR = {
-                        has_trait = dragonknight
-						has_inactive_trait = grandmaester
-					}
-				}
-			}
-			every_traveling_family_member = {
-				scope:old_employer = {
-					add_courtier ?= prev
-				}
-			}
-		}
 	}
 }
 

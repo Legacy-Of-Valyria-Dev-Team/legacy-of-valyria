@@ -96,3 +96,33 @@ valid_dragonknight_bodyguard_target = {
 	dynasty = scope:councillor_liege.dynasty
 	num_of_relation_bodyguard = 0
 }
+
+potential_dragonknight_bodyguard_court = {
+	scope:councillor = {
+		trigger_if = {
+			limit = { var:agot_target_court ?= scope:target_character }
+			scope:target_character = {
+				is_landed = yes
+			}
+			any_relation = {
+				type = bodyguard_target
+				is_in_the_same_court_as_or_guest = scope:target_character
+				is_imprisoned = no
+			}
+		}
+	}
+}
+
+valid_dragonknight_bodyguard_court = {
+	custom_description = {
+		text = valid_dragonknight_bodyguard_court
+		scope:target_character = {
+			OR = {
+				valid_dragonknight_bodyguard_target = yes
+				any_courtier_or_guest = {
+					valid_dragonknight_bodyguard_target = yes
+				}
+			}
+		}
+	}
+}
