@@ -1,316 +1,672 @@
-﻿# Set up a University Teacher
-valyria_settlement_teacher_setup = {
-	scope:activity.activity_location = { save_scope_as = location }
-	if = {
-		limit = {
-			scope:activity = {
-				NOT = {
-					any_attending_character = {
-						has_character_flag = teacher_1
+﻿zz_valyria_settlement_random_test = {
+	random_list = {
+		25 = {
+			desc = $ZZ_EVENT_OPTION_NAME$.crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_positive_major
+				scope:activity = {
+					add_activity_log_entry = {
+						key = sic_et_non_log
+						score = 25
+						tags = { good learning activity }
+						character = root
+		
+						#Effect
+						custom_tooltip = zz_valyria_colonisation_tt_positive_major
+						scope:activity = { activity_special_type_progression_major  = yes }
 					}
 				}
+				
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
+		25 = {
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+				scope:activity = {
+					add_activity_log_entry = {
+						key = sic_et_non_log
+						score = 25
+						tags = { good learning activity }
+						character = root
+		
+						#Effect
+						custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+						scope:activity = { activity_special_type_progression_medium  = yes }
 					}
 				}
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
-				save_scope_as = teacher_1
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else_if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_adult_education_teacher = yes
-				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_adult_education_teacher = yes
-				}
-				save_scope_as = teacher_1
-			}
-		}
-		else = {
-			create_character = {
-				template = adult_education_teacher
-				dynasty = none
-				location = scope:location
-				save_scope_as = teacher_1
-			}
-		}
-		scope:teacher_1 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = teacher_1
-		}
-	}
-	if = {
-		limit = {
-			scope:activity = {
-				NOT = {
-					any_attending_character = {
-						has_character_flag = teacher_2
+		25 = {
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+				scope:activity = {
+					add_activity_log_entry = {
+						key = sic_et_non_log
+						score = 25
+						tags = { good learning activity }
+						character = root
+		
+						#Effect
+						custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+						scope:activity = { activity_special_type_progression_tiny  = yes }
 					}
 				}
 			}
-		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
-				save_scope_as = teacher_2
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else_if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_adult_education_teacher = yes
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
+		25 = {
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = 
+				scope:activity = {
+					add_activity_log_entry = {
+						key = sic_et_non_log
+						score = 25
+						tags = { good learning activity }
+						character = root
+		
+						#Effect
+						custom_tooltip = zz_valyria_colonisation_tt_negative
+						scope:activity = { activity_special_type_progression_negative  = yes }
 					}
 				}
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_adult_education_teacher = yes
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
-				save_scope_as = teacher_2						
+			stress_impact = {
+				base = medium_stress_impact_gain
 			}
-		}
-		else = {	
-			create_character = {
-				template = adult_education_teacher
-				dynasty = none
-				location = scope:location
-				save_scope_as = teacher_2
-			}
-		}
-		scope:teacher_2 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = teacher_2
 		}
 	}
 }
+zz_valyria_settlement_learning_test = {
+	duel = {
+		skill = learning
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$.crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
 
-# Set up a University student
-valyria_settlement_student_setup = {
-	scope:activity.activity_location = { save_scope_as = location }
-	if = {
-		limit = {
-			NOT = {
-				scope:activity = {
-					any_attending_character = {
-						has_character_flag = student_1
-					}
-				}
 			}
-		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-					exists = this
-				}
+			stress_impact = {
+				base = medium_stress_impact_gain
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-				}
-				save_scope_as = student_1
-			}
-		}
-		else = {
-			create_character = {
-				template = adult_education_student
-				dynasty = none
-				location = scope:location
-				save_scope_as = student_1
-			}
-			scope:student_1 = {
-				add_character_flag = generated_character_uni
-			}
-		}
-		scope:student_1 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = student_1
 		}
 	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+zz_valyria_settlement_diplomacy_test = {
+	duel = {
+		skill = diplomacy
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$..crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
 
-	if = {
-		limit = {
-			NOT = {
-				scope:activity = {
-					any_attending_character = {
-						has_character_flag = student_2
-					}
-				}
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-					exists = this
-				}
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+zz_valyria_settlement_stewardship_test = {
+	duel = {
+		skill = stewardship
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$..crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-				}
-				save_scope_as = student_2
-			}
-		}
-		else = {
-			create_character = {
-				template = adult_education_student
-				dynasty = none
-				location = scope:location
-				save_scope_as = student_2
-			}
-			scope:student_2 = {
-				add_character_flag = generated_character_uni
+			stress_impact = {
+				base = medium_stress_impact_loss
 			}
 		}
-		scope:student_2 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
 			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
 			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
-			add_to_activity = scope:activity
-			add_character_flag = student_2
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
+
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
+			}
+		}
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+zz_valyria_settlement_intrigue_test = {
+	duel = {
+		skill = intrigue
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$..crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
+
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
+			}
+		}
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+zz_valyria_settlement_martial_test = {
+	duel = {
+		skill = stewardship
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$..crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
+
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
+			}
+		}
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+zz_valyria_settlement_martial_test = {
+	duel = {
+		skill = martial
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$..crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
+
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
+			}
+		}
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+
+zz_valyria_settlement_prowess_test = {
+	duel = {
+		skill = prowess
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}			
+			desc = $ZZ_EVENT_OPTION_NAME$..crit_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success.tt
+				left_icon = root
+				
+				custom_tooltip = $ZZ_EVENT_OPTION_NAME$.tt
+				
+				zz_valyria_settlement_reward = yes
+				
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_medium
+				scope:activity = { activity_special_type_progression_medium  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.small_success
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_positive_tiny
+				scope:activity = { activity_special_type_progression_tiny  = yes }
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+		}
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			desc = $ZZ_EVENT_OPTION_NAME$.failure
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure.tt
+				left_icon = root
+				custom_tooltip = zz_valyria_settlement_tt_negative
+				scope:activity = { activity_special_type_progression_negative = yes }
+
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
+			}
+		}
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+
+zz_valyria_settlement_reward = {
+	switch = {
+		trigger = has_character_flag
+		zz_valyria_settlement.0100.a = {
+
+			scope:activity = {
+				add_activity_log_entry = {
+					key = sic_et_non_log
+					score = 25
+					tags = { good learning activity }
+					character = root
+	
+					#Effect
+					custom_tooltip = zz_valyria_settlement_tt_positive_major
+					scope:activity = { activity_special_type_progression_major = yes }
+				}
+			}
 		}
 	}
 }
@@ -414,7 +770,7 @@ disburse_valyria_settlement_reward_effect = {
 
 zz_valyria_settlement_effect = { 
 	scope:host = { 
-		barony = { set_coa = this.holder.house }
+		scope:province = { barony = { set_coa = this.holder.house }} 
 		switch = {
 			trigger = has_character_flag 
 			settle_castle = { 

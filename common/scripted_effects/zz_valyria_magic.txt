@@ -15,6 +15,90 @@
 		}
 	}
 	else_if = {
+		limit ={
+			has_trait = zz_magister
+			OR = {
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_01
+					value  < 100
+				}
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_02
+					value  < 100
+				}
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_03
+					value  < 100
+				}
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_04
+					value  < 100
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_01
+					value < 100
+				}
+			}
+			add_trait_xp = {
+				trait = zz_magister
+				track = stores_of_power_01
+				value = $MANAGAIN$
+			}
+		}
+		else_if = {
+			limit = {
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_02
+					value < 100
+				}
+			}
+			add_trait_xp = {
+				trait = zz_magister
+				track = stores_of_power_02
+				value = $MANAGAIN$ 
+			}
+		}
+		else_if = {
+			limit = {
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_03
+					value < 100
+				}
+			}
+			add_trait_xp = {
+				trait = zz_magister
+				track = stores_of_power_03
+				value = $MANAGAIN$
+			}
+		}
+		else_if = {
+			limit = {
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_04
+					value < 100
+				}
+			}
+			add_trait_xp = {
+				trait = zz_magister
+				track = stores_of_power_01
+				value = $MANAGAIN$ 
+			}
+		}
+		
+	}
+	else_if = {
 		limit = {
 			NOR = {
 				has_character_modifier = zz_valyria_magic_drops_power
@@ -33,15 +117,98 @@ zz_valyria_mana_spend = {
 		}
 		remove_character_modifier = zz_valyria_magic_drops_power
 	}
-	
+	else_if  = { 
+		limit =  { 
+			has_trait = born_under_a_red_comet
+			OR = {
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_04
+					value =< $MANACOST$
+				}
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_03
+					value =< $MANACOST$
+				}
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_02
+					value =< $MANACOST$
+				}
+				has_trait_xp = {
+					trait = born_under_a_red_comet
+					track = stores_of_power_01
+					value =< $MANACOST$
+				}
+			} 
+		}
+		set_variable = { 
+			name = manacost
+			value = $MANACOST$
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					has_trait_xp = {
+						trait = born_under_a_red_comet
+						track = stores_of_power_04
+						value =< $MANACOST$
+					}
+				}
+				add_trait_xp = {
+					trait = zz_magister
+					track = stores_of_power_04
+					value = zz_spend_mana 
+				}
+			}
+			else_if = {
+				limit = {
+					has_trait_xp = {
+						trait = born_under_a_red_comet
+						track = stores_of_power_03
+						value =< $MANACOST$
+					}
+				}
+				add_trait_xp = {
+					trait = zz_magister
+					track = stores_of_power_03
+					value = zz_spend_mana 
+				}
+			}
+			else_if = {
+				limit = {
+					has_trait_xp = {
+						trait = born_under_a_red_comet
+						track = stores_of_power_02
+						value =< $MANACOST$
+					}
+				}
+				add_trait_xp = {
+					trait = zz_magister
+					track = stores_of_power_02
+					value = zz_spend_mana 
+				}
+			}
+			else_if = {
+				limit = {
+					has_trait_xp = {
+						trait = born_under_a_red_comet
+						track = stores_of_power_01
+						value =< $MANACOST$
+					}
+				}
+				add_trait_xp = {
+					trait = zz_magister
+					track = stores_of_power_01
+					value = zz_spend_mana 
+				}
+			}
+		}
+	}
 	else_if  = { 
 		limit =  { 
 			has_trait = zz_magister 
-			has_trait_xp = {
-				trait = zz_magister
-				track = drops_of_power
-				value >= $MANACOST$
-			}
 		}
 		set_variable = { 
 			name = manacost
@@ -183,7 +350,7 @@ zz_add_spell = {
 			type = event_generic_neutral
 			title = learn_$SPELL$.t
 			desc = learn_$SPELL$.desc
-			left_icon = scope:actor
+			left_icon = scope:spell_learner
 			right_icon = scope:spell_learner
 			custom_tooltip = learn_$SPELL$.tt
 			add_character_flag =  $SPELL$_flag
@@ -249,6 +416,18 @@ zz_gain_blood_magic_spell = {
 				SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication
 			}
 		}	
+		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+				}
+				add = -100
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+			}
+		}
+		
 	}
 }
 
@@ -492,24 +671,124 @@ zz_gain_air_magic_spell = {
 zz_random_gain_magic_spell = {
 	random_list = {
 		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_03_mysteries_of_regeneration
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+				}
+				
+				add = -100
+			}
 			zz_gain_blood_magic_spell = yes 
 		}
 		100 = { 
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_02_mysteries_of_shadowy_daggers
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_03_mysteries_of_the_shadow_shield
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_04_mysteries_of_the_shadowy_cloak
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic
+				}
+				add = -100
+			}
 			zz_gain_shadow_magic_spell = yes 
 		}
 		100 = { 
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_01_mysteries_mental_domination
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_03_mysteries_of_dreams
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_04_mysteries_of_secrets
+				}
+				add = -100
+			}
 			zz_gain_dream_magic_spell = yes 
 		}
 		100 = { 
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms
+				}
+				add = -100
+			}
 			zz_gain_alchemy_spell = yes 
 		}
 		100 = { 
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire
+				}
+				add = -100
+			}
 			zz_gain_fire_magic_spell = yes
 		}
 		100 = {
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_02_mysteries_of_the_surging_torrent
+				}
+				add = -100
+			}
 			zz_gain_water_magic_spell  = yes 
 		}
 		100 = { 
+			modifier = {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind
+				}
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_air_magic_02_mysteries_of_the_tempestuous_winds
+				}
+				add = -100
+			}
 			zz_gain_air_magic_spell = yes
 		}			
 	}

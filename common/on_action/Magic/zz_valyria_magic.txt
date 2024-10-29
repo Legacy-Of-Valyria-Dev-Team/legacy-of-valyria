@@ -1,0 +1,132 @@
+﻿on_game_start_after_lobby = {
+	on_actions = {
+		zz_valyria_on_game_start_after_lobby
+	}
+}
+
+
+zz_valyria_on_game_start_after_lobby = {
+	effect = { 
+		dynasty:dynn_Nezdareon = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+	}
+	events = {
+		zz_valyria_magic.1
+	}
+}
+
+
+
+quarterly_playable_pulse = {
+	on_actions = {
+		zz_valyria_mana_gain_on_action
+	}
+}
+random_yearly_everyone_pulse = {
+	on_actions = {
+		zz_valyria_mana_gain_on_action
+		zz_valyria_magic_dragon_life_extension
+		zz_valyria_magic_dragon_life_extension_lost 
+	}
+}
+
+zz_valyria_magic_dragon_life_extension = { 
+	trigger = {
+		has_trait = dragon 
+	
+		liege_or_court_owner.capital_province ?= { 
+			geographical_region = world_valyria
+		}
+		
+		NOT = { 
+			has_trait = immortal 
+		}
+	}
+	effect = { 
+		add_trait_force_tooltip = immortal 
+	}
+}
+zz_valyria_magic_dragon_life_extension_lost = {
+	trigger = {
+		has_trait = dragon 
+		has_trait = immortal 
+		NOT = { 
+			liege_or_court_owner.capital_province ?= { 
+				geographical_region = world_valyria
+			}
+		}
+	}
+	effect = { 
+		remove_trait  = immortal 
+	}
+}
+
+zz_valyria_mana_gain_on_action = {
+	trigger = {
+		has_trait = born_under_a_red_comet
+	}
+	effect = {
+		zz_valyria_mana_gain = {
+			MANAGAIN = 1
+		}
+		if = {
+			limit = {
+				has_variable = dragonlore
+			}
+			change_variable = {
+				name = dragonlore
+				add = 1
+			}
+		}
+		else = {
+			set_variable = {
+				name = dragonlore
+				value = 1
+			}
+		}
+	}
+}
+
+zz_valyria_magic_grant_spells = {
+	trigger = {
+		has_trait = zz_magister
+	}
+	effect = {
+		if = { 
+			limit = { 
+				has_trait = born_under_a_red_comet
+			}
+			add_trait_xp = {
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value = 100
+			}
+		}
+		zz_random_gain_magic_spell = yes 
+		zz_random_gain_magic_spell = yes 
+
+	}
+}
+
+
+
+on_building_completed = {
+	on_actions = {
+		zz_valyria_on_building_completed
+	}
+}
+
+zz_valyria_on_building_completed = { 
+	effect = { 
+		if = { 
+			limit = {  
+				has_building_with_flag = { flag = travel_point_of_interest_magic }
+				NOT = { has_travel_point_of_interest = poi_valyria_magic }
+			}
+			add_travel_point_of_interest = poi_valyria_magic
+		}
+	}
+}
+
+on_travel_plan_cancel = {
+
+}
