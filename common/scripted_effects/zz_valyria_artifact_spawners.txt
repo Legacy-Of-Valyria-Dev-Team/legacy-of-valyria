@@ -62,8 +62,8 @@ cv_agot_create_artifact_the_dragons_book_effect = {
 		visuals = book
 		description = the_dragons_book_desc
 		type = miscellaneous
-		wealth = 100
-		quality = 100
+		wealth = scope:wealth
+		quality = scope:quality
 		template = marco_polo_book
 		modifier = the_dragons_book_modifier
 		save_scope_as = dragons_book_created
@@ -74,5 +74,59 @@ cv_agot_create_artifact_the_dragons_book_effect = {
 			name = historical_unique_artifact
 			value = yes
 		}
+	}
+}
+
+cv_agot_create_artifact_dragonknight_armour_effect = {
+	# Get the character the artifact is being made for.
+	$OWNER$ = { save_scope_as = owner }
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = dragonknight_armour_name
+		description = dragonknight_armour_description
+		type = armor_plate
+		visuals = valyrian_steel_armor_visuals
+		wealth = scope:wealth
+		quality = scope:quality
+		template = valyrian_steel_armor_template
+		modifier = valyrian_steel_armor_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+
+	scope:newly_created_artifact = {
+		save_scope_as = epic #for loc
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
+		set_variable = { name = valyrian_steel value = yes }
+		set_variable = { name = dragonknight_armour value = yes }
+		equip_artifact_to_owner_replace = yes
+	}
+}
+
+agot_create_artifact_vs_valyrian_longsword_silver_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = dragonknight_sword_name
+		description = dragonknight_sword_description
+		visuals = vs_valyrian_longsword_silver_visuals
+		type = sword
+		wealth = scope:wealth
+		quality = scope:quality
+		template = vs_generic_valyrian_template
+		modifier = vs_generic_valyrian_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		save_scope_value_as = {name = valyrian_steel value = yes }
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = valyrian_longsword_silver_artifact value = yes }
+		set_variable = { name = valyrian_steel value = yes }
+		set_variable = { name = dragonknight_sword value = yes }
+		equip_artifact_to_owner_replace = yes
 	}
 }
