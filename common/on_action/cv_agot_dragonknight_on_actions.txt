@@ -1,20 +1,38 @@
 ﻿on_set_relation_bodyguard = {
+	on_actions = {
+		cv_bodyguard_on_set
+	}
+}
+
+cv_bodyguard_on_set = {
 	effect = {
-		add_bodyguard_modifier_effect = yes
+		add_character_modifier = dragonknight_bodyguard
 	}
 }
 
 on_remove_relation_bodyguard = {
+	on_actions = {
+		cv_bodyguard_on_remove
+	}
+}
+
+cv_bodyguard_on_set = {
 	effect = {
-		remove_bodyguard_modifier_effect = yes
+		add_character_modifier = dragonknight_bodyguard
 	}
 }
 
 # Fired when a bodyguard dies, root is the bodyguard, scope:target is the target.
 on_death_relation_bodyguard_target = {
+	on_actions = {
+		cv_bodyguard_target_on_death
+	}
+}
+
+cv_bodyguard_target_on_death = {
 	effect = {
 		scope:target = {
-			remove_bodyguard_modifier_effect = yes
+			remove_character_modifier = dragonknight_bodyguard
 		}
 	}
 }
@@ -74,34 +92,38 @@ task_dragonknight_side_effects = {
 }
 
 on_death = {
-	events = {
-		agot_small_council.0002 # Cleans up Small Councillor
-		agot_kingsguard.1000 # KG Maintenance
-        cv_agot_dragonknight.1000 # DK Maintenance
-		agot_widowed_events.999 #Check to see if widowed story cycle should begin
-		agot_valyrian_steel.0003
-		agot_dragonstone.0006
-		agot_dragon.0001
-	}
 	on_actions = {
-		agot_after_death_on_action
-		agot_maester_death_on_action
-		faegon_on_death_on_action
-		faegon_taken_title_from_death_on_action
+		cv_dragonknight_on_death
+	}
+}
+
+cv_dragonknight_on_death = {
+	events = {
+		cv_agot_dragonknight.1000 # DK Maintenance
 	}
 }
 
 agot_on_16th_birthday = {
-	events = {
-		agot_dragonstone.0001 #Prince of Dragonstone Maintenance
-		delay = { days = 1 }
-		agot_kingsguard.1014 #Maintenance for crap swordsmen realising their dream is over
-        cv_agot_dragonknight.1014 #Maintenance for crap swordsmen realising their dream is over
-		coronation.0008 #Removes uncrowned child modifier and adds regular one.
+	on_actions = {
+		cv_dragonknight_on_16th_birthday
 	}
 }
 
-agot_on_title_gain_dragonknight = { # This only works if the previous owner has a title to fall back on, and thus, has a court
+cv_dragonknight_on_16th_birthday = {
+	events = {
+		cv_agot_dragonknight.1014 #Maintenance for crap swordsmen realising their dream is over
+	}
+}
+
+agot_on_title_gain = {
+	on_actions = {
+		cv_agot_on_title_gain_dragonknight
+		cv_agot_on_title_gain
+	}
+}
+
+
+cv_agot_on_title_gain_dragonknight = { # This only works if the previous owner has a title to fall back on, and thus, has a court
 	trigger = {
 		scope:title = {
 			has_variable = dragonknight
@@ -195,24 +217,48 @@ agot_on_title_gain_dragonknight = { # This only works if the previous owner has 
 	}
 }
 
+cv_agot_on_title_gain = {
+	events = {
+		cv_agot_dragonknight.1013
+		cv_agot_dragonknight.9008
+	}
+}
+
+agot_maintenance_pulse = {
+	on_actions = {
+		cv_agot_maintenance_pulse
+	}
+}
+
 agot_maintenance_pulse = {
 	events = {
-		agot_kingsguard.9007 #Reassign lost KG
         cv_agot_dragonknight.9007 #Reassign lost DK
 	}
 }
 
 agot_ai_character_pulse = {
+	on_actions = {
+		cv_agot_ai_character_pulse
+	}
+}
+
+cv_agot_ai_character_pulse = {
 	trigger = {
 		is_ai = yes
 	}
 	events = {
-		agot_kingsguard.9000 #Kingsguard fallback assingment for AI
         cv_agot_dragonknight.9000 #Dragonknight fallback assingment for AI
 	}
 }
 
-agot_filler_yearly_valyria  = {
+quarterly_playable_pulse = {
+	on_actions = {
+		cv_agot_filler_quarterly_valyria
+	}
+}
+
+
+cv_agot_filler_quarterly_valyria  = {
 	trigger = {
 		capital_province ?= { geographical_region = world_valyria }
 	}
@@ -222,4 +268,40 @@ agot_filler_yearly_valyria  = {
 
         300 = cv_agot_dragonknight.3001  # Child asks to train for DK
     }
+}
+
+on_leave_court = {
+	on_actions = {
+		cv_on_leave_court
+	}
+}
+
+cv_on_leave_court = {
+	events = {
+		cv_agot_dragonknight.9003 #AGOT Added Come here you fucking idiot Dragonknight stop leaving my court
+	}
+}
+
+on_title_gain_inheritance = {
+	on_actions = {
+		cv_on_title_gain_inheritance
+	}
+}
+
+cv_on_title_gain_inheritance = {
+	events = {
+		cv_agot_dragonknight.9008
+	}
+}
+
+on_title_destroyed = {
+	on_actions = {
+		cv_on_title_destroyed
+	}
+}
+
+cv_on_title_destroyed = {
+	events = {
+		cv_agot_dragonknight.9004 #Dragonknight Title Destruction maintenance & Remove KG variables to prevent them rising from the grave
+	}
 }
