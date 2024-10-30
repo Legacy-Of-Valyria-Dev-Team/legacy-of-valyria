@@ -1,0 +1,307 @@
+﻿on_set_relation_bodyguard = {
+	on_actions = {
+		cv_bodyguard_on_set
+	}
+}
+
+cv_bodyguard_on_set = {
+	effect = {
+		add_character_modifier = dragonknight_bodyguard
+	}
+}
+
+on_remove_relation_bodyguard = {
+	on_actions = {
+		cv_bodyguard_on_remove
+	}
+}
+
+cv_bodyguard_on_remove = {
+	effect = {
+		add_character_modifier = dragonknight_bodyguard
+	}
+}
+
+# Fired when a bodyguard dies, root is the bodyguard, scope:target is the target.
+on_death_relation_bodyguard_target = {
+	on_actions = {
+		cv_bodyguard_target_on_death
+	}
+}
+
+cv_bodyguard_target_on_death = {
+	effect = {
+		scope:target = {
+			remove_character_modifier = dragonknight_bodyguard
+		}
+	}
+}
+
+task_dragonknight_side_effects = {
+	trigger = {
+		NOT = { has_variable = had_dragonknight_side_effect }
+		OR = {
+			exists = cp:dragonknight_1
+			exists = cp:dragonknight_2
+			exists = cp:dragonknight_3
+			exists = cp:dragonknight_4
+			exists = cp:dragonknight_5
+			exists = cp:dragonknight_6
+			exists = cp:dragonknight_lord_commander
+		}
+	}
+	random_events = {
+		chance_to_happen = 2
+		100 = 0
+		#Good side effects
+		100 = cv_agot_dragonknight.3002 #Good DK Gains Gallant
+		250 = cv_agot_dragonknight.3005 #Powerful warrior asks to join your guard
+		100 = cv_agot_dragonknight.3006 # Two Dragonknight become friends
+		100 = cv_agot_dragonknight.3007 #DK Improves Swordsmanship
+		100 = cv_agot_dragonknight.3008 #Training for DK asks to join and can hang out at court until there's a space - Balon Swann
+		100 = cv_agot_dragonknight.3010 #Dragonknight trains to become STRONK
+		100 = cv_agot_dragonknight.3014 #Dragonknight gains a blademaster
+		100 = cv_agot_dragonknight.3015 #Dragonknight gains a hunter
+		100 = cv_agot_dragonknight.3016 #Dragonknight gains a falconer
+		#Gardening Dragonknight?
+
+		#Bad side effects
+		50 = cv_agot_dragonknight.3003  #Lucamore the Lusty
+		100 = cv_agot_dragonknight.3004  #Dragonknight tramples a Child at Court
+		#50 = cv_agot_dragonknight.3009 #Assassinated by a DK whose family you're at war with - Jaime Lannister
+		150 = cv_agot_dragonknight.3011 #Bad dragonknight is challenged to a duel by character training
+		100 = cv_agot_dragonknight.3013 #Dragonknight is being rowdy and carousing
+		100 = cv_agot_dragonknight.3017 #Dragonknight found dead in brothel - Owen Bush
+		#Lord Wants you to declare their child next dragonknight
+
+		#Dontos Hollard - DK Drunk on Duty
+		#evil DK does something bad
+		#DK found dead
+		#DK Fight eachtother - Loras
+		#Bad King is attacked by peasants, dragonknight dies in riot - Preston Greenfield
+
+		# Two Dragonknight become lovers :O
+		# Dragonknight begins relation with King's Daughter
+		# Become Friends with the King
+		# Become Rival with the King
+		# Start banging king/prince - Criston Cole
+		# Get wounded
+
+		#Dragonknight with no family asks to be released to propogate their line
+	}
+}
+
+on_death = {
+	on_actions = {
+		cv_dragonknight_on_death
+	}
+}
+
+cv_dragonknight_on_death = {
+	events = {
+		cv_agot_dragonknight.1000 # DK Maintenance
+	}
+}
+
+agot_on_16th_birthday = {
+	on_actions = {
+		cv_dragonknight_on_16th_birthday
+	}
+}
+
+cv_dragonknight_on_16th_birthday = {
+	events = {
+		cv_agot_dragonknight.1014 #Maintenance for crap swordsmen realising their dream is over
+	}
+}
+
+agot_on_title_gain = {
+	on_actions = {
+		cv_agot_on_title_gain_dragonknight
+		cv_agot_on_title_gain
+	}
+}
+
+
+cv_agot_on_title_gain_dragonknight = { # This only works if the previous owner has a title to fall back on, and thus, has a court
+	trigger = {
+		scope:title = {
+			has_variable = dragonknight
+		}
+	}
+	effect = {
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_lord_commander
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_lord_commander
+			assign_councillor_type = {
+				type = dragonknight_lord_commander
+				target = scope:title.var:dragonknight_lord_commander
+			}
+		}
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_1
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_1
+			assign_councillor_type = {
+				type = dragonknight_1
+				target = scope:title.var:dragonknight_1
+			}
+		}
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_2
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_2
+			assign_councillor_type = {
+				type = dragonknight_2
+				target = scope:title.var:dragonknight_2
+			}
+		}
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_3
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_3
+			assign_councillor_type = {
+				type = dragonknight_3
+				target = scope:title.var:dragonknight_3
+			}
+		}
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_4
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_4
+			assign_councillor_type = {
+				type = dragonknight_4
+				target = scope:title.var:dragonknight_4
+			}
+		}
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_5
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_5
+			assign_councillor_type = {
+				type = dragonknight_5
+				target = scope:title.var:dragonknight_5
+			}
+		}
+		if = {
+			limit = {
+				scope:title = {
+					exists = var:dragonknight_6
+				}
+			}
+			add_courtier ?= scope:title.var:dragonknight_6
+			assign_councillor_type = {
+				type = dragonknight_6
+				target = scope:title.var:dragonknight_6
+			}
+		}
+	}
+}
+
+cv_agot_on_title_gain = {
+	events = {
+		cv_agot_dragonknight.1013
+		cv_agot_dragonknight.9008
+	}
+}
+
+agot_maintenance_pulse = {
+	on_actions = {
+		cv_agot_maintenance_pulse
+	}
+}
+
+cv_agot_maintenance_pulse = {
+	events = {
+        cv_agot_dragonknight.9007 #Reassign lost DK
+	}
+}
+
+agot_ai_character_pulse = {
+	on_actions = {
+		cv_agot_ai_character_pulse
+	}
+}
+
+cv_agot_ai_character_pulse = {
+	trigger = {
+		is_ai = yes
+	}
+	events = {
+        cv_agot_dragonknight.9000 #Dragonknight fallback assingment for AI
+	}
+}
+
+quarterly_playable_pulse = {
+	on_actions = {
+		cv_agot_filler_quarterly_valyria
+	}
+}
+
+
+cv_agot_filler_quarterly_valyria  = {
+	trigger = {
+		capital_province ?= { geographical_region = world_valyria }
+	}
+	random_events = {
+		chance_to_happen = 25
+		300 = 0
+
+        300 = cv_agot_dragonknight.3001  # Child asks to train for DK
+    }
+}
+
+on_leave_court = {
+	on_actions = {
+		cv_on_leave_court
+	}
+}
+
+cv_on_leave_court = {
+	events = {
+		cv_agot_dragonknight.9003 #AGOT Added Come here you fucking idiot Dragonknight stop leaving my court
+	}
+}
+
+on_title_gain_inheritance = {
+	on_actions = {
+		cv_on_title_gain_inheritance
+	}
+}
+
+cv_on_title_gain_inheritance = {
+	events = {
+		cv_agot_dragonknight.9008
+	}
+}
+
+on_title_destroyed = {
+	on_actions = {
+		cv_on_title_destroyed
+	}
+}
+
+cv_on_title_destroyed = {
+	events = {
+		cv_agot_dragonknight.9004 #Dragonknight Title Destruction maintenance & Remove KG variables to prevent them rising from the grave
+	}
+}
