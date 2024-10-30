@@ -112,7 +112,7 @@ zz_valyria_colonisation.0500 = {
 		duel = {
 			skill = stewardship
 			value = high_skill_rating
-			50 = { # Hire Golden Company
+			50 = { # Hire Golden Company, Second Sons and Long Lances
 				compare_modifier = {
 					value = scope:duel_value
 					multiplier = 3.5
@@ -128,13 +128,13 @@ zz_valyria_colonisation.0500 = {
 					base = medium_stress_impact_loss
 				}
 			}
-			50 = { 
+			50 = { # Hire Stormcrows, Second Sons and Long Lances
 				compare_modifier = {
 					value = scope:duel_value
 					multiplier = 3.5
 					min = -49
 				}
-				trigger = { # Golden Company doesn't exist yet / Can't hire them due to being a Targ
+				trigger = { # Golden Company doesn't exist yet / Can't hire them due to being a Targ -> Hire Stormcrows
 					OR = {
 						NOT = { exists = title:d_laamp_merc_golden_company.holder }
 						AND = {
@@ -143,9 +143,10 @@ zz_valyria_colonisation.0500 = {
 								has_house_modifier = divided_dynasty_house_modifier
 							}
 						}
+						#always = yes
 					}
 				}
-				
+				trigger_event = { id = zz_valyria_colonisation.05007 days = 7 }
 				custom_tooltip = zz_valyria_colonisation.0500.b.critical_success_alt.tt
 				scope:activity = { activity_special_type_progression_major = yes }
 				stress_impact = {
@@ -159,6 +160,7 @@ zz_valyria_colonisation.0500 = {
 					min = -49
 				}
 				custom_tooltip = zz_valyria_colonisation.0500.b.success.tt
+				trigger_event = { id = zz_valyria_colonisation.05008 days = 7 }
 				scope:activity = { activity_special_type_progression_major = yes }
 				stress_impact = {
 					base = minor_stress_impact_loss
@@ -751,6 +753,202 @@ zz_valyria_colonisation.05003 = {
 	}
 }
 
+## Stormcrows, Second Sons and the Long Lances respond
+zz_valyria_colonisation.05007 = {
+	type = activity_event
+	title = zz_valyria_colonisation.05003.t
+	desc = {
+		desc = zz_valyria_colonisation.05003.beginning.desc
+		desc = zz_valyria_colonisation.05007.stormcrows.desc
+		desc = zz_valyria_colonisation.05003.ss.desc
+		desc = zz_valyria_colonisation.05003.ll.desc
+		desc = zz_valyria_colonisation.05003.end.desc
+	}
+	theme = martial_authority_focus
+	
+	left_portrait = {
+		character = title:d_laamp_merc_stormcrows.holder
+		animation = personality_rational
+	}
+	
+	center_portrait = {
+		character = title:d_laamp_merc_second_sons.holder
+		animation = personality_rational
+	}
+	
+	right_portrait = {
+		character = title:d_laamp_merc_long_lances.holder
+		animation = personality_rational
+	}
+	
+	option = { # Stormcrows
+		name = zz_valyria_colonisation.05007.sc.title
+		host = {
+			pay_long_term_gold = {
+				target = title:d_laamp_merc_stormcrows.holder
+				gold = monumental_gold_max_value_static
+			}
+			add_character_flag = stormcrows_hired_colonization
+		}
+		custom_tooltip = merc_company_50004_hired
+		hidden_effect = {
+			random_list = {
+				40 = { # Critical Success
+					add_character_flag = merc_50005_crit
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 } 
+				}
+				45 = { # Success
+					add_character_flag = merc_50005_success
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 } 
+				}
+				15 = { # Failure
+					add_character_flag = merc_50005_fail
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 } 
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+	option = { # HIRE SECOND SONS
+		name = zz_valyria_colonisation.05003.ss.title
+		pay_long_term_gold = {
+			target = title:d_laamp_merc_second_sons.holder
+			gold = root.major_gold_value_check
+		}
+		add_character_flag = second_sons_hired_colonisation
+		custom_tooltip = merc_company_50004_hired
+		hidden_effect = {
+			random_list = {
+				20 = { # Critical Success
+					add_character_flag = merc_50005_crit
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+				45 = { # Success
+					add_character_flag = merc_50005_success
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+				35 = { # Failure
+					add_character_flag = merc_50005_fail
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+	option = { # HIRE LONG LANCES
+		name = zz_valyria_colonisation.05003.ll.title
+		pay_long_term_gold = {
+			target = title:d_laamp_merc_long_lances.holder
+			gold = root.medium_gold_value_check
+		}
+		add_character_flag = long_lances_hired_colonisation
+		custom_tooltip = merc_company_50004_hired
+		hidden_effect = {
+			random_list = {
+				55 = { # Success
+					add_character_flag = merc_50005_success
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+				45 = { # Failure
+					add_character_flag = merc_50005_fail
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+## Second Sons and the Long Lances respond
+zz_valyria_colonisation.05008 = {
+	type = activity_event
+	title = zz_valyria_colonisation.05003.t
+	desc = {
+		desc = zz_valyria_colonisation.05003.beginning.desc
+		desc = zz_valyria_colonisation.05003.ss.desc
+		desc = zz_valyria_colonisation.05003.ll.desc
+		desc = zz_valyria_colonisation.05003.end.desc
+	}
+	theme = martial_authority_focus
+	
+	left_portrait = {
+		character = title:d_laamp_merc_second_sons.holder
+		animation = personality_rational
+	}
+	
+	right_portrait = {
+		character = title:d_laamp_merc_long_lances.holder
+		animation = personality_rational
+	}
+	
+	option = { # HIRE SECOND SONS
+		name = zz_valyria_colonisation.05003.ss.title
+		pay_long_term_gold = {
+			target = title:d_laamp_merc_second_sons.holder
+			gold = root.major_gold_value_check
+		}
+		add_character_flag = second_sons_hired_colonisation
+		custom_tooltip = merc_company_50004_hired
+		hidden_effect = {
+			random_list = {
+				20 = { # Critical Success
+					add_character_flag = merc_50005_crit
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+				45 = { # Success
+					add_character_flag = merc_50005_success
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+				35 = { # Failure
+					add_character_flag = merc_50005_fail
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+	option = { # HIRE LONG LANCES
+		name = zz_valyria_colonisation.05003.ll.title
+		pay_long_term_gold = {
+			target = title:d_laamp_merc_long_lances.holder
+			gold = root.medium_gold_value_check
+		}
+		add_character_flag = long_lances_hired_colonisation
+		custom_tooltip = merc_company_50004_hired
+		hidden_effect = {
+			random_list = {
+				55 = { # Success
+					add_character_flag = merc_50005_success
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+				45 = { # Failure
+					add_character_flag = merc_50005_fail
+					trigger_event = { id = zz_valyria_colonisation.05005 days = 14 }
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
 ## Golden Company Result
 
 zz_valyria_colonisation.05004 = {
@@ -970,6 +1168,12 @@ zz_valyria_colonisation.05005 = {
 				is_alive = yes
 			}
 		}
+		OR = {
+			has_character_flag = stormcrows_hired_colonization
+			title:d_laamp_merc_stormcrows.holder = {
+				is_alive = yes
+			}
+		}
 	}
 	
 	immediate = {
@@ -986,6 +1190,14 @@ zz_valyria_colonisation.05005 = {
 				has_character_flag = long_lances_hired_colonisation
 			}
 			title:d_laamp_merc_long_lances.holder = {
+				save_scope_as = captain
+			}
+		}
+		else_if = {
+			limit = {
+				has_character_flag = stormcrows_hired_colonization
+			}
+			title:d_laamp_merc_stormcrows.holder = {
 				save_scope_as = captain
 			}
 		}
@@ -1057,6 +1269,7 @@ zz_valyria_colonisation.05005 = {
 	after = {
 		hidden_effect = {
 			remove_character_flag = second_sons_hired_colonisation
+			remove_character_flag = stormcrows_hired_colonization
 			remove_character_flag = long_lances_hired_colonisation
 		}
 	}
