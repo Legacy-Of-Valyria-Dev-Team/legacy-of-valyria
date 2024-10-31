@@ -150,6 +150,16 @@ valyria_magic_teach_spell = {
 				}
 			}
 		}
+		else_if = {
+			limit = {
+				scope:teach_zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood = yes
+			}
+			scope:recipient = {
+				zz_add_spell = { 
+					SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+				}
+			}
+		}
 
 		else_if = {
 			limit = {
@@ -333,6 +343,16 @@ valyria_magic_teach_spell = {
 		}
 		else_if = {
 			limit = {
+				scope:teach_zz_valyria_magic_water_magic_04_mysteries_of_rhoyne = yes
+			}
+			scope:recipient = {
+				zz_add_spell = { 
+					SPELL = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+				}
+			}
+		}
+		else_if = {
+			limit = {
 				scope:air_magic_slicing_winds = yes
 			}
 			scope:recipient = {
@@ -457,6 +477,24 @@ valyria_magic_teach_spell = {
 				NOT = { 
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+					}
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = teach_zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+		localization = teach_zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+		is_shown = {
+			scope:secondary_actor  ?= {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+				}
+			}
+			scope:recipient ?= {
+				NOT = { 
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
 					}
 				}
 			}
@@ -782,6 +820,24 @@ valyria_magic_teach_spell = {
 				NOT = { 
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_water_magic_03_mysteries_of_endurance
+					}
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = teach_zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+		localization = teach_zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+		is_shown = {
+			scope:secondary_actor  ?= {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+				}
+			}
+			scope:recipient ?= {
+				NOT = { 
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
 					}
 				}
 			}
@@ -1554,6 +1610,78 @@ zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_interaction =
 
 	ai_will_do = {
 		base = 0
+	}
+}
+
+zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_interaction = {
+
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+				MANACOST = 1
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+			}
+			is_imprisoned = no
+		}
+		scope:recipient = {
+			NOT = { has_trait = dragon }
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+				MANACOST = 1
+			}
+		}
+	}
+	icon = blood_magic
+	common_interaction = yes
+	interface_priority = 100
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 1
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = blood_magic
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
 	}
 }
 
@@ -2396,7 +2524,7 @@ zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_interaction = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
 				SPELL  = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
-				MANACOST = 2
+				MANACOST = 1
 			}
 		}
 	}
@@ -2413,7 +2541,7 @@ zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_interaction = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
 				SPELL  = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
-				MANACOST = 2
+				MANACOST = 1
 			}
 		}
 	}
@@ -2433,7 +2561,7 @@ zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_interaction = {
 			save_scope_as = magic_user
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
-					MANACOST = 2
+					MANACOST = 1
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
@@ -2496,7 +2624,7 @@ zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_interaction = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
 				SPELL  = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms
-				MANACOST = 5
+				MANACOST = 50
 			}
 		}
 	}
@@ -2513,7 +2641,7 @@ zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_interaction = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
 				SPELL  = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms
-				MANACOST = 5
+				MANACOST = 50
 			}
 		}
 	}
@@ -2533,7 +2661,7 @@ zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_interaction = {
 			save_scope_as = magic_user
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
-					MANACOST = 5
+					MANACOST = 50
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
