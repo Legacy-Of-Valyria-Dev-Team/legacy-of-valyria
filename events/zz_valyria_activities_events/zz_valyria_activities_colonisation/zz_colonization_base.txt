@@ -1,10 +1,38 @@
 ﻿namespace = zz_valyria_colonisation
 
 ##establish a foundation
-zz_valyria_colonisation.0020 = { # You are summoned to the Command Tent
+zz_valyria_colonisation.0020 = { # Your men have established a camp -> You are summoned to the Command Tent
 	type = activity_event
 	title = zz_valyria_colonisation.0020.t
-	desc = zz_valyria_colonisation.0020.desc
+	desc = {
+		desc = zz_valyria_colonisation.0020.desc
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					has_character_flag = colonization_supply_issues
+				}
+				desc = zz_valyria_colonisation.0020.supply.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = colonization_map_issues
+				}
+				desc = zz_valyria_colonisation.0020.map.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = colonization_settler_soldier_issues
+				}
+				desc = zz_valyria_colonisation.0020.settler_soldier.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = colonization_sickness_issues
+				}
+				desc = zz_valyria_colonisation.0020.sickness.desc
+			}
+		}
+	}
 	theme = university
 
 	center_portrait = {
@@ -21,12 +49,20 @@ zz_valyria_colonisation.0020 = { # You are summoned to the Command Tent
 		scope:activity.activity_location = { save_scope_as = location }
 		add_character_flag = { flag = colonisation_foundation months = 10}
 		
-		# Randomly set what the problem is here
-			# Problem List:
-			- Not enough supplies brought along / Part of supply convoy or wagon lost
-			- Inaccurate Maps -> Camp setup at wrong location
-			- Troops / Settlers want to go home as it finally dawns upon them how dangerous Valyria is / Religion tension
-			- 
+		random_list = {
+			#25 = { # Not enough supplies brought along / Part of supply convoy or wagon lost
+			#	add_character_flag = colonization_supply_issues
+			#}
+			#25 = { # Inaccurate Maps
+			#	add_character_flag = colonization_map_issues
+			#}
+			25 = { # Troops / Settlers want to go home as it finally dawns upon them how dangerous Valyria is
+				add_character_flag = colonization_settler_soldier_issues
+			}
+			25 = { # People get sick during voyage / journey
+				add_character_flag = colonization_sickness_issues
+			}
+		}
 	}
 
 	weight_multiplier = {
@@ -39,80 +75,83 @@ zz_valyria_colonisation.0020 = { # You are summoned to the Command Tent
 		}
 	}
 
-	# Option A: Use your learning ability to try and establish a sound foundation
+	# Option A: Setup a Diesase Management Strategy
 	option = {
-		name = zz_valyria_colonisation.0020.a
+		name = zz_valyria_colonisation.0020.diesase.a
 		trigger = {
-			scope:host = {learning > 20}
+			scope:host = {learning > 16}
+			has_character_flag = colonization_sickness_issues
 		}
 		add_character_flag = zz_valyria_colonisation.0020.a
 		zz_valyria_colonisation_skill_test = {
 			SKILL = learning 
-			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.a
+			ZZ_EVENT_OPTION_NAME = colonization_sickness_issues
 		}
 		
 		ai_chance = {
 			base = 100
 		}
 	}
-	# Option B: Use your stewardship to focus on logistical management to support your progress
+	# Option B: Hire More Workers
 	option = {
-		name = zz_valyria_colonisation.0020.b
+		name = zz_valyria_colonisation.0020.diesase.b
 		trigger = {
-			scope:host = {stewardship > 20}
+			has_character_flag = colonization_sickness_issues
+			scope:host = {stewardship > 16}
 		}
-		add_character_flag = zz_valyria_colonisation.0020.b
 		zz_valyria_colonisation_skill_test = {
 			SKILL = stewardship 
-			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.b
+			ZZ_EVENT_OPTION_NAME = colonization_sickness_issues
 		}
 		
 		ai_chance = {
 			base = 100
 		}
 	}
-	# Option C: Use diplomacy to ensure regular supplies of resources will be forthcoming
+	# Option C: Convince the remaining men to work doubly hard
 	option = {
-		name = zz_valyria_colonisation.0020.c
+		name = zz_valyria_colonisation.0020.diesase.c
 		trigger = {
-			scope:host = {diplomacy > 20}
+			has_character_flag = colonization_sickness_issues
+			scope:host = {diplomacy > 16}
 		}
-		add_character_flag = zz_valyria_colonisation.0020.c
 		zz_valyria_colonisation_skill_test = {
 			SKILL = diplomacy 
-			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.c
+			ZZ_EVENT_OPTION_NAME = colonization_sickness_issues
 		}
 		
 		ai_chance = {
 			base = 100
 		}
 	}
-	# Option D: Use Martial to order your forces to ensure strict discipline and prevent a collapse into anarchy 
+	
+	# Option D: Fordibly Quarantine the Sick
 	option = {
-		name = zz_valyria_colonisation.0020.d
+		name = zz_valyria_colonisation.0020.diesase.d
 		trigger = {
-			scope:host = {martial > 20}
+			has_character_flag = colonization_sickness_issues
+			scope:host = {martial > 16}
 		}
-		add_character_flag = zz_valyria_colonisation.0020.d
 		zz_valyria_colonisation_skill_test = {
 			SKILL = martial 
-			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.d
+			ZZ_EVENT_OPTION_NAME = colonization_sickness_issues
 		}
 		
 		ai_chance = {
 			base = 100
 		}
 	}
-	# Option E: Use your intrigue to create a climate of fear and suspicion, ensuring that your colonists will strictly obey
+	
+	# Option E: Secretly Euthanize the Sick
 	option = {
-		name = zz_valyria_colonisation.0020.e
+		name = zz_valyria_colonisation.0020.diesase.e
 		trigger = {
-			scope:host = {intrigue > 20}
+			has_character_flag = colonization_sickness_issues
+			scope:host = {intrigue > 16}
 		}
-		add_character_flag = zz_valyria_colonisation.0020.e
 		zz_valyria_colonisation_skill_test = {
 			SKILL = intrigue 
-			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.e
+			ZZ_EVENT_OPTION_NAME = colonization_sickness_issues
 		}
 		
 		ai_chance = {
@@ -120,11 +159,14 @@ zz_valyria_colonisation.0020 = { # You are summoned to the Command Tent
 		}
 	}
 
-	# Option Z: muddle through, a 25% chance of major, medium, tiny, negative progress
+	# Option D: Delegate Command
 	option = {
-		name = zz_valyria_colonisation.0020.z
+		name = zz_valyria_colonisation.0020.diesase.f
+		trigger = {
+			has_character_flag = colonization_sickness_issues
+		}
 		zz_valyria_colonisation_random_test = {
-			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.z
+			ZZ_EVENT_OPTION_NAME = colonization_sickness_issues
 		}
 		ai_chance = {
 			base = 50
@@ -142,4 +184,31 @@ zz_valyria_colonisation.0020 = { # You are summoned to the Command Tent
 			}
 		}
 	}
+	
+	# Option D: Delegate Command
+	option = {
+		name = zz_valyria_colonisation.0020.settler_soldier_issues.f
+		trigger = {
+			has_character_flag = colonization_settler_soldier_issues
+		}
+		zz_valyria_colonisation_random_test = {
+			ZZ_EVENT_OPTION_NAME = colonization_settler_soldier_issues
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+	
 }
