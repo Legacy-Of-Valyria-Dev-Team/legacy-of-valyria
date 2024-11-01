@@ -1,0 +1,317 @@
+task_colonise = {
+	position = councillor_steward
+
+	task_type = task_type_county
+	county_target = neighbor_land
+	ai_county_target = neighbor_land
+	task_progress = task_progress_percentage
+
+	effect_desc = {
+		desc = {
+			desc = task_convince_dejure_effect_desc
+			desc = council_task_possible_side_effects
+			triggered_desc = {
+				trigger = {
+					stewardship > mediocre_skill_rating
+				}
+				desc = task_convince_dejure_gain_prestige
+			}
+			triggered_desc = {
+				trigger = {
+					stewardship < high_skill_rating
+				}
+				desc = task_convince_dejure_lose_prestige
+			}
+			triggered_desc = {
+				trigger = {
+					stewardship < high_skill_rating
+				}
+				desc = task_convince_dejure_diplomatic_blunder
+			}
+		}
+	}
+
+	is_shown = {
+		has_dlc_feature = royal_court
+	}
+
+	progress = {
+		value = 0
+		add = {
+			value = steward_convince_dejure_base
+			desc = STEWARD_PROGRESS_BASE
+		}
+		add = {
+			value = scope:councillor.steward_convince_dejure_monthly_increase
+			desc = SCALED_COUNCILLOR_STEWARDSHIP_VALUE
+		}
+		#CGV bonuses/maluses
+		if = {
+			limit = {
+				scope:councillor_liege = {
+					court_grandeur_current_level = 7
+				}
+			}
+			add = {
+				value = 0.1
+				desc = steward_convince_dejure_cg_bonus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:councillor_liege = {
+					court_grandeur_current_level = 8
+				}
+			}
+			add = {
+				value = 0.2
+				desc = steward_convince_dejure_cg_bonus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:councillor_liege = {
+					court_grandeur_current_level = 9
+				}
+			}
+			add = {
+				value = 0.3
+				desc = steward_convince_dejure_cg_bonus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:councillor_liege = {
+					court_grandeur_current_level = 10
+				}
+			}
+			add = {
+				value = 0.4
+				desc = steward_convince_dejure_cg_bonus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:county.holder.top_liege = {
+					court_grandeur_current_level = 7
+				}
+			}
+			add = {
+				value = -0.1
+				desc = steward_convince_dejure_cg_malus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:county.holder.top_liege = {
+					court_grandeur_current_level = 8
+				}
+			}
+			add = {
+				value = -0.2
+				desc = steward_convince_dejure_cg_malus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:county.holder.top_liege = {
+					court_grandeur_current_level = 9
+				}
+			}
+			add = {
+				value = -0.3
+				desc = steward_convince_dejure_cg_malus_desc
+			}
+		}
+		if = {
+			limit = {
+				scope:county.holder.top_liege = {
+					court_grandeur_current_level = 10
+				}
+			}
+			add = {
+				value = -0.4
+				desc = steward_convince_dejure_cg_malus_desc
+			}
+		}
+		# Relation Bonuses/Penalties
+		if = { # Friend
+			limit = {
+				scope:councillor_liege = {
+					has_relation_friend = scope:councillor
+					NOT = { has_relation_best_friend = scope:councillor }
+				}
+			}
+			add = {
+				value = scope:councillor.steward_convince_dejure_monthly_increase_friend_bonus
+				desc = COUNCILLOR_IS_YOUR_FRIEND
+			}
+		}
+		if = { # Best Friend
+			limit = {
+				scope:councillor_liege = {
+					has_relation_best_friend = scope:councillor
+				}
+			}
+			add = {
+				value = scope:councillor.steward_convince_dejure_monthly_increase_best_friend_bonus
+				desc = COUNCILLOR_IS_YOUR_BEST_FRIEND
+			}
+		}
+		if = { # Rival
+			limit = {
+				scope:councillor_liege = {
+					has_relation_rival = scope:councillor
+					NOT = { has_relation_nemesis = scope:councillor }
+				}
+			}
+			add = {
+				value = scope:councillor.steward_convince_dejure_monthly_increase_rival_bonus
+				desc = COUNCILLOR_IS_YOUR_RIVAL
+			}
+		}
+		if = { # Nemesis
+			limit = {
+				scope:councillor_liege = {
+					has_relation_nemesis = scope:councillor
+				}
+			}
+			add = {
+				value = scope:councillor.steward_convince_dejure_monthly_increase_nemesis_bonus
+				desc = COUNCILLOR_IS_YOUR_NEMESIS
+			}
+		}
+		if = {
+			limit = {
+				councillor_liege_has_erudition_legacy_5_perk = yes
+			}
+			add = {
+				value = steward_convince_dejure_erudition_bonus
+				desc = ERUDITION_DYNASTY_PERK_BONUS_VALUE
+			}
+		}
+		if = {
+			limit = {
+				councillor_liege_has_family_business_bonus = yes
+			}
+			add = {
+				value = steward_convince_dejure_family_business_bonus
+				desc = FAMILY_BUSINESS_BONUS_VALUE
+			}
+		}
+		if = {
+			limit = {
+				councillor_liege_has_consulted_house_bonus = yes
+			}
+			add = {
+				value = steward_convince_dejure_consulted_house_bonus
+				desc = CONSULTED_HOUSE_BONUS_VALUE
+			}
+		}
+	}
+
+	#Unlocked at Court Grandeur level 6
+	is_valid_showing_failures_only = {
+		scope:councillor_liege = {
+			court_grandeur_current_level >= 6
+		}
+	}
+
+	potential_county = {
+		scope:province = {
+			has_holding_type = ruin_holding
+			geographical_region = world_valyria 
+			NOT = { 
+				county.holder = scope:host
+			} 
+		}
+	}
+
+	on_finish_task_county = {
+		scope:councillor = {
+			start_default_task = yes
+		}
+		scope:councillor_liege = {
+			if = {
+				limit = {
+					is_independent_ruler = no
+				}
+				add_character_flag = {
+					flag = no_de_jure_convince
+					years = 50
+				}
+			}
+			else = {
+				add_character_flag = {
+					flag = no_de_jure_convince
+					years = 20
+				}
+			}
+		}
+		scope:councillor_liege = {
+			get_title = scope:province
+		}
+	}
+
+	monthly_on_action = task_convince_dejure_side_effects
+	
+	ai_will_do = {
+		value = 0
+		if = {
+			limit = {
+				scope:councillor = {
+					is_performing_council_task = task_convince_dejure
+				}
+			}
+			add = 10000 # Always keep going if this is already chosen
+		}
+		# increase likelyhood with court grandeur level
+		if = {
+			limit = {
+				scope:councillor_liege = {
+					has_character_modifier = court_grandeur_level_6
+				}
+			}
+			add = 100
+		}
+		else_if = {
+			limit = {
+				scope:councillor_liege = {
+					has_character_modifier = court_grandeur_level_7
+				}
+			}
+			add = 150
+		}
+		else_if = {
+			limit = {
+				scope:councillor_liege = {
+					has_character_modifier = court_grandeur_level_8
+				}
+			}
+			add = 200
+		}
+		else_if = {
+			limit = {
+				scope:councillor_liege = {
+					has_character_modifier = court_grandeur_level_9
+				}
+			}
+			add = 250
+		}
+		else_if = {
+			limit = {
+				scope:councillor_liege = {
+					has_character_modifier = court_grandeur_level_10
+				}
+			}
+			add = 300
+		}
+		if = {
+			# Don't do this too often
+			limit = {
+				scope:councillor_liege = { has_character_flag = no_de_jure_convince }
+			}
+			multiply = 0
+		}
+	}
+}
