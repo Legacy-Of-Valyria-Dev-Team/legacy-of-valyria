@@ -353,25 +353,36 @@ zz_valyria_colonise_claim_titles = {
 
 
 disburse_valyria_colonisation_reward_effect = {
-
-	switch = { # Hand out lifestyle perks/xp
-		trigger = has_character_flag
-		perfect_colonisation_reward = { 
-			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+	if = { 
+		limit = { 
+			has_character_flag = perfect_colonisation_reward
+		}
+		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
 			zz_valyria_colonise_claim_titles = yes
 			remove_character_flag = perfect_colonisation_reward
-		}
-		high_colonisation_reward = { 
-			zz_valyria_colonise_claim_titles = yes
-			remove_character_flag = high_colonisation_reward
-		}
-		mid_colonisation_reward = { 
-			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
-			remove_character_flag = mid_colonisation_reward
-		}
-		low_colonisation_reward = { 
-			remove_character_flag = low_colonisation_reward
-		}
 	}
-	# Options rewards
+	else_if = {
+		limit = { 
+			has_character_flag = high_colonisation_reward
+		}
+		zz_valyria_colonise_claim_titles = yes
+		remove_character_flag = high_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = high_colonisation_reward
+		}
+		zz_valyria_colonise_claim_titles = yes
+		remove_character_flag = high_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = mid_colonisation_reward
+		}
+		zz_valyria_colonise_claim_titles = yes
+		remove_character_flag = mid_colonisation_reward
+	}
+	else = {
+		remove_character_flag = low_colonisation_reward
+	}
 }
