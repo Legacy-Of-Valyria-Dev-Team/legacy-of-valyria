@@ -753,13 +753,22 @@ disburse_valyria_settlement_reward_effect = {
 	switch = { # Hand out lifestyle perks/xp
 		trigger = has_character_flag
 		perfect_settlement_reward = { 
-			zz_valyria_settlement_effect = yes
+			zz_valyria_settlement_effect = {
+				NUM = 03
+			}
+			remove_character_flag = perfect_settlement_reward
 		}
 		high_settlement_reward = { 
-			zz_valyria_settlement_effect = yes
+			zz_valyria_settlement_effect = {
+				NUM = 02
+			}
+			remove_character_flag = high_settlement_reward
 		}
 		mid_settlement_reward = { 
-			zz_valyria_settlement_effect = yes			
+			zz_valyria_settlement_effect = {
+				NUM = 01
+			}	
+			remove_character_flag = mid_settlement_reward
 		}
 		low_settlement_reward = { 
 			remove_character_flag = low_settlement_reward
@@ -772,91 +781,54 @@ disburse_valyria_settlement_reward_effect = {
 zz_valyria_settlement_effect = { 
 	scope:host = { 
 		scope:province = { barony = { set_coa = this.holder.house }} 
-		switch = {
-			trigger = has_character_flag 
-			settle_castle = { 
-				scope:province = {
-					set_holding_type = castle_holding	
-				}
-				switch = {
-					trigger = has_character_flag
-					perfect_settlement_reward = {
-						scope:province = {
-							add_building = castle_03
-						}
-						remove_character_flag = perfect_settlement_reward
-					}
-					high_settlement_reward = {
-						scope:province = {
-							add_building = castle_02
-						}
-						remove_character_flag = high_settlement_reward
-					}
-					mid_settlement_reward ={
-						scope:province = {
-							add_building = castle_01
-						}
-						remove_character_flag = mid_settlement_reward
-					}
-				}
+		if = { 
+			limit = {
+				has_character_flag = settle_castle
+			}
+			scope:province = {
+				set_holding_type = castle_holding	
+				add_building = castle_$NUM$
+			}
+			remove_character_flag = settle_castle
+		}
+		else_if = { 
+			limit = {
+				has_character_flag = settle_city
+			}
+			scope:province  = {
+				set_holding_type = city_holding
+				add_building = city_$NUM$
 				
-				remove_character_flag = settle_castle
 			}
-			settle_city = { 
-				scope:province  = {
-					set_holding_type = city_holding
-					
+			switch = {
+				trigger = has_character_flag
+				perfect_settlement_reward = {
+					scope:province = {
+						add_building = city_03
+					}
+					remove_character_flag = perfect_settlement_reward
 				}
-				switch = {
-					trigger = has_character_flag
-					perfect_settlement_reward = {
-						scope:province = {
-							add_building = city_03
-						}
-						remove_character_flag = perfect_settlement_reward
+				high_settlement_reward = {
+					scope:province = {
+						add_building = city_02
 					}
-					high_settlement_reward = {
-						scope:province = {
-							add_building = city_02
-						}
-						remove_character_flag = high_settlement_reward
-					}
-					mid_settlement_reward ={
-						scope:province = {
-							add_building = city_01
-						}
-						remove_character_flag = mid_settlement_reward
-					}
+					remove_character_flag = high_settlement_reward
 				}
-				remove_character_flag = settle_city
+				mid_settlement_reward ={
+					scope:province = {
+						add_building = city_01
+					}
+					remove_character_flag = mid_settlement_reward
+				}
 			}
-			settle_temple = { 
-				scope:province = {
-					set_holding_type = church_holding
-				}
-				switch = {
-					trigger = has_character_flag
-					perfect_settlement_reward = {
-						scope:province = {
-							add_building = temple_03
-						}
-						remove_character_flag = perfect_settlement_reward
-					}
-					high_settlement_reward = {
-						scope:province = {
-							add_building = temple_02
-						}
-						remove_character_flag = high_settlement_reward
-					}
-					mid_settlement_reward ={
-						scope:province = {
-							add_building = temple_01
-						}
-						remove_character_flag = mid_settlement_reward
-					}
-				}
-				remove_character_flag = settle_temple
+			remove_character_flag = settle_city
+		}
+		else = {
+			scope:province = {
+				set_holding_type = church_holding
+				add_building = temple_$NUM$
 			}
+			remove_character_flag = settle_temple
 		}
 		if = {
 			limit = { has_character_flag = large_settlement_development_gain }
