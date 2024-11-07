@@ -23,6 +23,10 @@ valyria_magic_teach_decision = {
 			zz_valyria_is_mage_can_teach = yes 
 		}
 	}
+	cost = {
+		piety = 1000
+		gold = 500
+	}
 	icon = icon_magic
 	common_interaction = yes
 	interface_priority = 10
@@ -79,7 +83,9 @@ valyria_magic_teach_spell = {
 			
 		}	
 	}
-	secondary_scopes_optional = no
+	cost = {
+		piety = 100
+	}
 	icon = icon_magic
 	common_interaction = yes
 	interface_priority = 100
@@ -1089,15 +1095,18 @@ valyria_magic_self_wounding = {
 	common_interaction = yes
 	interface_priority = 10
 	category = interaction_secrets_of_valyria
-
-	cooldown_against_recipient = { days = 90 } 
+	
+	cooldown_against_recipient = { days = 30 } 
 	cooldown = { years = 0 } 
 	ignores_pending_interaction_block = yes
 	use_diplomatic_range = yes
 	on_accept = {
 		scope:actor = {
 			scope:recipient = {
-				increase_wounds_effect = { REASON = blood_magic }
+				random = {
+					chance = 50
+					increase_wounds_effect = { REASON = blood_magic }
+				}				
 				if = {
 					limit = {
 						OR = {
@@ -1296,7 +1305,7 @@ valyria_remove_designated_blood_magic_sacrifice_interaction = {
 zz_valyria_magic_blood_magic_01_mysteries_of_restoration_interaction = {
 
 	desc = zz_valyria_magic_blood_magic_01_mysteries_of_restoration_interaction_desc
-
+	secondary_scopes_optional = no
 	populate_actor_list = {
 		scope:actor = { 
 			zz_valyria_populate_spell_caster_list = {
