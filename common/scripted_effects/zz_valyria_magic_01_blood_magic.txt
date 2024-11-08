@@ -660,3 +660,72 @@ zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_effect = {
 		}
 	}
 }
+
+zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.t
+		desc = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.tt
+		
+		scope:recipient = {
+			#Tamed Dragon, rider family to employer
+			if = {
+				limit = {
+					exists = var:current_rider
+					exists = employer
+					employer = {
+						OR = {
+							is_spouse_of = prev.var:current_rider
+							is_close_family_of = prev.var:current_rider
+							house ?= prev.var:current_rider.house
+						}
+					}
+				}
+				employer = { save_scope_as = egg_receiver }
+			}	
+			#Tamed Dragon, rider not family to employer
+			else_if = {
+				limit = {
+					exists = var:current_rider
+				}
+				var:current_rider = { save_scope_as = egg_receiver }
+			}
+			#Owned Dragon
+			else_if = {
+				limit = {
+					exists = employer
+				}
+				employer = { save_scope_as = egg_receiver }
+			}
+			#Fallback, something went wrong
+			else = {
+				change_variable = { name = clutches add = -1 }
+				remove_character_flag = recently_laid_eggs
+			}
+
+			scope:egg_receiver ?= {
+				random_list = {
+					1 = {
+						trigger = {
+							NOT = { scope:dragon_parent = { has_trait = dragon_fertile } }
+							agot_dragon_population_low = no
+						}
+						trigger_event = {
+							id = agot_dragon_egg_lay.0001
+							days = { 1 364 }
+						}
+					}
+					9 = {
+						trigger_event = {
+							id = agot_dragon_egg_lay.0002
+							days = { 1 364 }
+						}
+					}
+				}
+			}
+		}
+	}
+}
