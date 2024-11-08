@@ -166,6 +166,16 @@ valyria_magic_teach_spell = {
 				}
 			}
 		}
+		else_if = {
+			limit = {
+				scope:teach_zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying = yes
+			}
+			scope:recipient = {
+				zz_add_spell = { 
+					SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				}
+			}
+		}
 
 		else_if = {
 			limit = {
@@ -655,6 +665,25 @@ valyria_magic_teach_spell = {
 				NOT = { 
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+					}
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = teach_zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+		localization = teach_zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+		is_shown = {
+			scope:zz_valyria_magic_teach_magic_01_blood_magic = yes
+			scope:secondary_actor  ?= {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				}
+			}
+			scope:recipient ?= {
+				NOT = { 
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
 					}
 				}
 			}
@@ -1906,6 +1935,80 @@ zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_interaction = {
 			}
 			zz_valyria_magic_cast_effect = { 
 				SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_interaction = {
+	
+	desc = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_interaction_desc
+	
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				MANACOST = 90
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+			}
+			is_imprisoned = no
+		}
+		scope:recipient = {
+			has_trait = dragon 
+			is_female = yes
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				MANACOST = 90
+			}
+		}
+	}
+	icon = blood_magic
+	common_interaction = yes
+	interface_priority = 100
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 90
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = blood_magic
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
 			}
 		}
 	}
