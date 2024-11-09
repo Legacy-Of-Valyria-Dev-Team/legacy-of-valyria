@@ -326,7 +326,7 @@
 
 	is_single_location = yes
 
-	province_filter = all
+	province_filter = top_realm
 
 	ai_province_filter = holy_sites
 
@@ -404,64 +404,6 @@
 	# OPTIONS
 	###################
 
-	options = {
-		#########
-		
-		#########
-		settlement_program = { 
-			settlement_program_normal = {
-				is_shown = { has_dlc_feature = advanced_activities }
-				default = yes
-				is_valid = {
-					
-				}
-				cost = {
-					gold = {
-						value = 0 
-						desc = settlement_program_normal
-						add = {
-							value = major_gold_value_static_max
-							desc = settlement_program_normal
-							min = 300
-						}
-						add = {
-							value = major_gold_value_static_max
-							multiply = activity_cost_scale_by_era
-							subtract = major_gold_value_static_max
-							desc = activity_cost_scale_by_era_desc 
-						}
-					}
-				}
-				ai_will_do = {
-					value = 100
-					if = {
-						limit = { has_trait = lazy }
-						add = 50
-					}
-					if = {
-						limit = { has_trait = greedy }
-						add = 100
-					}
-					if = {
-						limit = { has_trait = fickle }
-						add = 25
-					}
-					if = {
-						limit = { has_trait = impatient }
-						add = 25
-					}
-					if = {
-						limit = { has_trait = gregarious }
-						add = 50
-					}
-					if = {
-						limit = { has_trait = humble }
-						add = 25
-					}
-				}
-			}
-		}
-	}
 
 	###################
 	# PHASES
@@ -504,10 +446,11 @@
 			}
 
 			on_end = {
-				resolve_valyria_settlement_success_reward_effect = yes 
-				trigger_event = zz_valyria_settlement.0009 	
+				
 				if = {
 					limit = { this = scope:host }
+					resolve_valyria_settlement_success_reward_effect = yes 
+					trigger_event = zz_valyria_settlement.0009 	
 					create_character_memory = {
 						type = completed_settlement
 					}
@@ -558,6 +501,16 @@
 
 	pulse_actions = {
 		entries = {
+			zz_valyria_weevils_in_the_granaries
+			zz_valyria_food_riots
+			zz_valyria_rotting_lumber
+			zz_valyria_disgruntled_labourers
+			zz_valyria_hunting_small_game
+			zz_valyria_fruitfull_harvests
+			zz_valyria_happy_labourers
+			zz_valyria_sturdy_foundations
+			zz_valyria_surplus_stone_slabs
+			zz_valyria_find_gold
 		}
 		chance_of_no_event = 25
 	}
@@ -675,7 +628,6 @@
 			NOT = { scope:host.location = scope:activity.activity_location }
 			scope:host.location = {
 				is_riverside_province = yes
-				geographical_region = world_europe
 				OR = {
 					terrain = farmlands
 					terrain = plains

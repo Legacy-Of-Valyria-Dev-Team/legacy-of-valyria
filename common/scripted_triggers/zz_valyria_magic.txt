@@ -6,6 +6,38 @@ zz_valyria_has_mana_to_cast = {
 	OR = {
 		has_character_modifier = zz_valyria_magic_drops_power
 		AND = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_04
+				value >= $MANACOST$
+			}
+		}
+		AND = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_03
+				value >= $MANACOST$
+			}
+		}
+		AND = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_02
+				value >= $MANACOST$
+			}
+		}
+		AND = {
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_01
+				value >= $MANACOST$
+			}
+		}
+		AND = {
 			has_trait = zz_magister
 			has_trait_xp = {
 				trait = zz_magister
@@ -26,9 +58,54 @@ zz_valyria_can_gain_mana = {
 				value < 100
 			}
 		}
-		NOR = {
+		AND = {
+			has_trait = zz_magister
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_01
+				value < 100
+			}
+		}
+		AND = {
+			has_trait = zz_magister
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_02
+				value < 100
+			}
+		}
+		AND = {
+			has_trait = zz_magister
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_03
+				value < 100
+			}
+		}
+		AND = {
+			has_trait = zz_magister
+			has_trait = born_under_a_red_comet
+			has_trait_xp = {
+				trait = born_under_a_red_comet
+				track = stores_of_power_04
+				value < 100
+			}
+		}
+		NAND = {
 			has_trait = zz_magister
 			has_character_modifier = zz_valyria_magic_drops_power
+		}
+	}
+}
+
+zz_valyria_is_mage_activities = {
+	OR = { 
+		has_trait = zz_magister
+		any_living_mage = {
+			liege_or_court_owner ?= PREV 
 		}
 	}
 }
@@ -36,12 +113,8 @@ zz_valyria_can_gain_mana = {
 zz_valyria_is_mage = {
 	OR = { 
 		has_trait = zz_magister
-		
-		any_courtier_or_guest = { 
-			has_trait = zz_magister
-		}
-		any_child = { 
-			has_trait = zz_magister
+		any_living_mage = {
+			liege_or_court_owner ?= scope:actor 
 		}
 	}
 }
@@ -61,29 +134,17 @@ zz_valyria_is_mage_can_teach = {
 				}
 			}
 		}
-		any_courtier_or_guest = { 
-			AND = {
-				has_trait = zz_magister
-				NOT = { 
-					has_character_flag = zz_valyria_magic_taught_magic 
-				}
-			}
-		}
-		any_child = { 
-			AND = {
-				has_trait = zz_magister
-				NOT = { 
-					has_character_flag = zz_valyria_magic_taught_magic 
-				}
-			}
-		}
 	}
 }
 
 
 zz_valyria_knows_spell = {
 	OR = { 
-		has_character_flag = $SPELL$_flag
+		any_memory = {
+			has_memory_type = $SPELL$
+		}
+		#has_character_flag = $SPELL$_flag
+		
 		any_artifact = { has_variable = $SPELL$_flag }
 	}
 }
@@ -93,12 +154,8 @@ zz_valyria_knows_spell_court = {
 		zz_valyria_knows_spell = {
 			SPELL = $SPELL$
 		}
-		any_courtier_or_guest = { 
-			zz_valyria_knows_spell = {
-				SPELL = $SPELL$
-			}
-		}
-		any_child = { 
+		any_living_mage = {
+			liege_or_court_owner ?= scope:actor 
 			zz_valyria_knows_spell = {
 				SPELL = $SPELL$
 			}
@@ -122,13 +179,8 @@ zz_valyria_valid_caster_court = {
 			SPELL = $SPELL$
 			MANACOST = $MANACOST$
 		}
-		any_courtier_or_guest = { 
-			zz_valyria_valid_caster = {
-				SPELL = $SPELL$
-				MANACOST = $MANACOST$
-			}
-		}
-		any_child = { 
+		any_living_mage = {
+			liege_or_court_owner ?= scope:actor 
 			zz_valyria_valid_caster = {
 				SPELL = $SPELL$
 				MANACOST = $MANACOST$

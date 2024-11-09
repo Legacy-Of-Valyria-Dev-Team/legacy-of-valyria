@@ -1,4 +1,139 @@
 ﻿
+zz_create_cadet_branch = {
+
+	category = interaction_category_vassal
+	common_interaction = no
+	icon = powerful_family_shield
+	cost = {
+		prestige = 1000
+		influence = {
+			add =  scope:actor.medium_influence_value
+		}
+	}
+	is_shown = {
+		#always = no 
+		scope:actor = {
+			government_has_flag = government_is_freehold 
+		}
+		
+		scope:recipient = {
+			liege = scope:actor
+			is_ruler = yes
+			#has_trait = dragonrider
+		}
+	}
+
+	auto_accept = yes
+	on_accept = {
+		scope:recipient = {
+			found_cadet_house_decision_effect = {
+				CHARACTER = scope:recipient 
+				PRESTIGE = major_prestige_gain
+			}
+			if = {
+				limit = {
+					government_allows = administrative
+					highest_held_title_tier >= tier_duchy
+					liege ?= {
+						is_independent_ruler = yes
+						government_allows = administrative
+						NOT = {
+							government_has_flag = government_is_freehold
+						}
+					}
+				}
+				create_noble_family_effect = yes
+				change_influence = major_influence_gain
+			}
+			else_if = {
+				limit = { 
+					government_allows = administrative
+					highest_held_title_tier >= tier_duchy
+					liege = {
+						is_independent_ruler = yes
+						government_allows = administrative
+						government_has_flag = government_is_freehold
+					}
+				}
+				create_noble_family_dragonrider_effect  = yes
+				change_influence = major_influence_gain
+			}
+		}
+	}
+}
+
+zz_establish_dragon_rider_house = {
+
+	category = interaction_category_vassal
+	common_interaction = no
+	icon = powerful_family_shield
+
+	is_shown = {
+		#always = no 
+		scope:actor = {
+			government_has_flag = government_is_freehold 
+		}
+		
+		scope:recipient = {
+			liege = scope:actor
+			is_ruler = no
+			has_trait = dragonrider
+		}
+	}
+
+	auto_accept = yes
+	on_accept = {
+		scope:recipient = {
+			found_cadet_house_decision_effect = {
+				CHARACTER = scope:recipient 
+				PRESTIGE = major_prestige_gain
+			}
+			create_dynamic_title = {
+				tier = duchy
+				name = NEW_CREATED_TITLE_NAME
+			}
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			scope:new_title = {
+				change_title_holder = {
+					holder = scope:recipient
+					change = scope:change
+					government_base = scope:actor
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+			if = {
+				limit = {
+					liege ?= {
+						is_independent_ruler = yes
+						government_allows = administrative
+						NOT = {
+							government_has_flag = government_is_freehold
+						}
+					}
+				}
+				create_noble_family_effect = yes
+				change_influence = major_influence_gain
+			}
+			else_if = {
+				limit = { 
+					liege = {
+						is_independent_ruler = yes
+						government_allows = administrative
+						government_has_flag = government_is_freehold
+					}
+				}
+				create_noble_family_dragonrider_effect  = yes
+				change_influence = major_influence_gain
+			}
+		}
+	}
+}
+
+
 grant_freehold_interaction = {
 	icon = grant_governorship
 	category = interaction_category_vassal

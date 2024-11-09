@@ -1,4 +1,4 @@
-#On actions about titles
+﻿#On actions about titles
 
 # All on-actions in this file provide scope:transfer_type unless otherwise noted
 # scope:transfer_type has the following permutations:
@@ -165,6 +165,9 @@ on_title_gain = {
 				liege = {
 					is_independent_ruler = yes
 					government_allows = administrative
+					NOT = {
+						government_has_flag = government_is_freehold
+					}
 				}
 				NOR = {
 					any_held_title = { is_noble_family_title = yes }
@@ -177,6 +180,28 @@ on_title_gain = {
 			}
 			create_noble_family_effect = yes
 			domicile ?= { set_up_domicile_estate_effect = yes }
+		}
+		else_if = {
+			limit = { 
+				government_allows = administrative
+				is_house_head = yes
+				highest_held_title_tier >= tier_duchy
+				liege = {
+					is_independent_ruler = yes
+					government_allows = administrative
+					government_has_flag = government_is_freehold
+				}
+				NOR = {
+					any_held_title = { is_noble_family_title = yes }
+					house = {
+						any_house_member = {
+							any_held_title = { is_noble_family_title = yes }
+						}
+					}
+				}
+			}
+			create_noble_family_dragonrider_effect  = yes
+			#domicile ?= { set_up_domicile_estate_effect = yes }
 		}
 		# EP3 - Ensure Emperor keeps old realm capital in admin realms & apply unique domicile building bonus if appropriate
 		if = {

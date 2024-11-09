@@ -355,27 +355,11 @@
 	ui_predicted_cost = {
 		gold = {
 			add = { # Base Cost, scaled by era
-				value = adult_education_activity_cost
+				value = zz_valyria_colonisation_activity_cost
 				multiply = activity_cost_scale_by_era
 			}
 			
-			# Options 
-			add = { # Books Option 
-				value = 0
-				subtract = minor_gold_value_static_max
-				add = {
-					value = medium_gold_value_static_max
-					min = 150
-				}
-				add = {
-					value = major_gold_value_static_max
-					min = 300
-				}
-				# Scale option costs by era
-				multiply = activity_cost_scale_by_era
-				# Divide by the number of option levels to get an average option cost
-				divide = 4
-			}
+
 			
 			# Make it a multiple of 5 (rounded up)
 			divide = 5
@@ -387,67 +371,7 @@
 	###################
 	# OPTIONS
 	###################
-
-	options = {
-		#########
-		
-		#########
-		colonisation_program = { 
-			colonisation_program_normal = {
-				default = yes
-				is_shown = { has_dlc_feature = advanced_activities }
-
-				is_valid = {
-					
-				}
-				cost = {
-					gold = {
-						value = 0 
-						desc = colonisation_program_normal
-						add = {
-							value = major_gold_value_static_max
-							desc = colonisation_program_normal
-							min = 300
-						}
-						add = {
-							value = major_gold_value_static_max
-							multiply = activity_cost_scale_by_era
-							subtract = major_gold_value_static_max
-							desc = activity_cost_scale_by_era_desc 
-						}
-					}
-				}
-				ai_will_do = {
-					value = 100
-					if = {
-						limit = { has_trait = lazy }
-						add = 50
-					}
-					if = {
-						limit = { has_trait = greedy }
-						add = 100
-					}
-					if = {
-						limit = { has_trait = fickle }
-						add = 25
-					}
-					if = {
-						limit = { has_trait = impatient }
-						add = 25
-					}
-					if = {
-						limit = { has_trait = gregarious }
-						add = 50
-					}
-					if = {
-						limit = { has_trait = humble }
-						add = 25
-					}
-				}
-			}
-		}
-	}
-
+	
 	###################
 	# PHASES
 	###################
@@ -492,18 +416,6 @@
 				scope:host = {
 					resolve_valyria_colonisation_success_reward_effect = yes 
 					trigger_event = zz_valyria_colonisation.0009 	
-					if = {
-						limit = { this = scope:host }
-						create_character_memory = {
-							type = completed_colonisation
-						}
-						scope:new_memory = {
-							set_variable = {
-								name = education_destination
-								value = scope:activity.activity_location
-							}
-						}
-					}
 				}
 			}
 		}
@@ -545,6 +457,16 @@
 
 	pulse_actions = {
 		entries = {
+			zz_valyria_weevils_in_the_granaries
+			zz_valyria_food_riots
+			zz_valyria_rotting_lumber
+			zz_valyria_disgruntled_labourers
+			zz_valyria_hunting_small_game
+			zz_valyria_fruitfull_harvests
+			zz_valyria_happy_labourers
+			zz_valyria_sturdy_foundations
+			zz_valyria_surplus_stone_slabs
+			zz_valyria_find_gold
 		}
 		chance_of_no_event = 25
 	}

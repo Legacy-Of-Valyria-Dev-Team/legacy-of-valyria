@@ -371,6 +371,112 @@ zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification_effect = {
 					remove_trait = infertile
 				} 		
 			}		
+
+
+			else_if = {
+				limit = {
+					scope:add_trait_intellect_bad_3 = yes
+				}
+				scope:recipient = { 
+					if = {
+						limit = { 
+							has_trait = intellect_good 
+						}
+						change_trait_rank = {
+							trait = intellect_good
+							rank = -1
+						}
+					}
+					else = {
+						if = {
+							limit = {
+								NOT = {
+									has_trait = intellect_bad
+								}
+							}
+							add_trait_force_tooltip = intellect_bad_1
+						}
+						else = {
+							change_trait_rank = {
+								trait = intellect_good
+								rank = 1
+							}
+						}
+					}
+				} 
+			}			
+			else_if = {
+				limit = {
+					scope:add_trait_physique_bad_3 = yes
+				}
+				scope:recipient = { 
+					if = {
+						limit = { 
+							has_trait = physique_good
+						}
+						change_trait_rank = {
+							trait = physique_good
+							rank = -1
+						}
+					}
+					else = {
+						if = {
+							limit = {
+								NOT = {
+									has_trait = physique_bad
+								}
+							}
+							add_trait_force_tooltip = physique_bad_1
+						}
+						else = {
+							change_trait_rank = {
+								trait = physique_bad
+								rank = 1
+							}
+						}
+					}
+				}
+			}			
+			else_if = {
+				limit = {
+					scope:add_trait_beauty_bad_3 = yes
+				}
+				scope:recipient = { 
+					if = {
+						limit = { 
+							has_trait = beauty_good 
+						}
+						change_trait_rank = {
+							trait = beauty_good
+							rank = -1
+						}
+					}
+					else = {
+						if = {
+							limit = {
+								NOT = {
+									has_trait = beauty_bad
+								}
+							}
+							add_trait_force_tooltip = beauty_bad_1
+						}
+						else = {
+							change_trait_rank = {
+								trait = beauty_bad
+								rank = 1
+							}
+						}
+					}
+				}
+			}			
+			else_if = {
+				limit = {
+					scope:add_trait_infertile = yes
+				}
+				scope:recipient = { 
+					add_trait_force_tooltip  = infertile
+				} 		
+			}		
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -451,7 +557,7 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 		
 					#faith = scope:recipient.faith
 					#culture = scope:recipient.culture
-					#dynasty_house = scope:recipient.father.house
+					dynasty_house = scope:recipient.father.house
 		
 					save_scope_as = character_clone 
 		
@@ -506,6 +612,157 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 						remove_trait = pregnant
 						remove_trait = infertile
 						
+					}
+				}
+			}
+			else_if = { 
+				limit = {
+					scope:zz_valyria_magic_blood_magic_05_option_03 = yes 
+				}
+				custom_tooltip = zz_valyria_make_clone
+				destroy_artifact = scope:target 
+				create_character = {
+					age = scope:recipient.age
+					gender = male
+					opposite_gender = scope:recipient
+					template_character = scope:recipient
+		
+		
+		
+					location = scope:actor.location
+		
+					random_traits = no
+		
+					#faith = scope:recipient.faith
+					#culture = scope:recipient.culture
+					dynasty_house = scope:recipient.father.house
+		
+					save_scope_as = character_clone 
+		
+					after_creation = {
+						copy_inheritable_appearance_from = scope:recipient
+						copy_traits = scope:recipient
+						change_first_name = { template_character = scope:recipient }
+						set_father = scope:recipient.father
+						set_mother = scope:recipient.mother
+						remove_trait = dragonrider
+						remove_trait = pregnant
+						remove_trait = infertile
+					}
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation.t
+		desc = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation.tt
+		
+		scope:target = {
+			if = {
+				limit = { has_variable = cradled_egg }
+				remove_variable = cradled_egg
+			}
+			if = {
+				limit = { has_variable = cradled_egg_year }
+				remove_variable = cradled_egg_year
+			}
+			remove_variable = dud_egg
+			agot_set_living_egg_description = yes
+		}
+	}
+}
+
+zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood.t
+		desc = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood.tt
+		
+		scope:recipient = {
+			add_character_flag = { 
+				flag = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_effect_flag
+				years =  zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_value
+			}	
+		}
+	}
+}
+
+zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.t
+		desc = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.tt
+		
+		scope:recipient = {
+			add_character_flag = { flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag years = 1 } 
+			save_scope_as = dragon_parent
+			set_variable = { name = clutches value = 0 }
+			remove_character_flag = recently_laid_eggs
+			#Tamed Dragon, rider family to employer
+			if = {
+				limit = {
+					exists = var:current_rider
+					exists = employer
+					employer = {
+						OR = {
+							is_spouse_of = prev.var:current_rider
+							is_close_family_of = prev.var:current_rider
+							house ?= prev.var:current_rider.house
+						}
+					}
+				}
+				employer = { save_scope_as = egg_receiver }
+			}	
+			#Tamed Dragon, rider not family to employer
+			else_if = {
+				limit = {
+					exists = var:current_rider
+				}
+				var:current_rider = { save_scope_as = egg_receiver }
+			}
+			#Owned Dragon
+			else_if = {
+				limit = {
+					exists = employer
+				}
+				employer = { save_scope_as = egg_receiver }
+			}
+			#Fallback, something went wrong
+			else = {
+				change_variable = { name = clutches add = -1 }
+				remove_character_flag = recently_laid_eggs
+			}
+
+			scope:egg_receiver ?= {
+				random_list = {
+					1 = {
+						trigger = {
+							NOT = { scope:dragon_parent = { has_trait = dragon_fertile } }
+							agot_dragon_population_low = no
+						}
+						trigger_event = {
+							id = agot_dragon_egg_lay.0001
+							days = { 1 364 }
+						}
+					}
+					9 = {
+						trigger_event = {
+							id = agot_dragon_egg_lay.0002
+							days = { 1 364 }
+						}
 					}
 				}
 			}

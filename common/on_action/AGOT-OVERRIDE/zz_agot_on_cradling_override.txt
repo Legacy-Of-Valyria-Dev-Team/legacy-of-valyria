@@ -144,3 +144,167 @@
 		}
 	}
 }
+
+
+on_dragon_lay_master_on_action = {
+	effect = {
+		every_living_dragon = {
+			limit = { # Only owned/tamed dragons, wild dragons are handled by event or assumed to be not found
+				has_character_flag = owned_dragon
+				is_female = yes
+				age >= 10
+			}
+			random = {
+				chance = 2
+
+				## in valyria 
+				modifier = {
+					liege_or_court_owner.capital_province ?= { 
+						geographical_region = world_valyria
+					}
+					add = 12
+				}
+				### Dragon fertility spell 
+				modifier = { 
+					has_character_flag = zz_valyria_blood_magic_dragon_fertility_flag
+					add = 20
+				}
+
+				# humming one is the loneliest number
+				modifier = {
+					agot_dragon_population_low = yes
+					add = 12
+				}
+				# Dragon bond increases chance of laying egg
+				modifier = {
+					var:current_rider ?= {
+						has_trait_xp = {
+							trait = dragonrider
+							track = dragon_bond
+							value >= 65
+						}
+					}
+					add = 1
+				}
+				modifier = {
+					var:current_rider ?= {
+						has_trait_xp = {
+							trait = dragonrider
+							track = dragon_bond
+							value >= 100
+						}
+					}
+					add = 1
+				}
+				modifier = {
+					has_trait = dragon_fertile
+					add = 4
+				}
+				modifier = {
+					any_relation = {
+						type = soulmate
+						has_trait = dragon_fertile
+					}
+					add = 2
+				}
+				modifier = {
+					any_relation = {
+						type = soulmate
+						count > 0
+					}
+					add = 2
+				}
+				modifier = {
+					exists = var:clutches
+					var:clutches > 1
+					NOT = { has_trait = dragon_fertile }
+					add = clutches_subtract_script_val
+				}
+				modifier = {
+					exists = var:clutches
+					var:clutches > 2
+					has_trait = dragon_fertile
+					NOT = { 
+						has_trait = immortal 
+					}
+					add = clutches_subtract_script_val
+				}
+				modifier = {
+					has_character_flag = recently_laid_eggs
+					factor = 0
+				}
+
+				save_scope_as = dragon_parent
+				add_character_flag = {
+					flag = recently_laid_eggs
+					years = { 4 20 }
+				}
+				if = {
+					limit = {
+						NOT = { exists = var:clutches }
+					}
+					set_variable = { name = clutches value = 1 }
+				}
+				else = {
+					change_variable = { name = clutches add = 1 }
+				}
+
+				#Tamed Dragon, rider family to employer
+				if = {
+					limit = {
+						exists = var:current_rider
+						exists = employer
+						employer = {
+							OR = {
+								is_spouse_of = prev.var:current_rider
+								is_close_family_of = prev.var:current_rider
+								house ?= prev.var:current_rider.house
+							}
+						}
+					}
+					employer = { save_scope_as = egg_receiver }
+				}
+				#Tamed Dragon, rider not family to employer
+				else_if = {
+					limit = {
+						exists = var:current_rider
+					}
+					var:current_rider = { save_scope_as = egg_receiver }
+				}
+				#Owned Dragon
+				else_if = {
+					limit = {
+						exists = employer
+					}
+					employer = { save_scope_as = egg_receiver }
+				}
+				#Fallback, something went wrong
+				else = {
+					change_variable = { name = clutches add = -1 }
+					remove_character_flag = recently_laid_eggs
+				}
+
+				scope:egg_receiver ?= {
+					random_list = {
+						1 = {
+							trigger = {
+								NOT = { scope:dragon_parent = { has_trait = dragon_fertile } }
+								agot_dragon_population_low = no
+							}
+							trigger_event = {
+								id = agot_dragon_egg_lay.0001
+								days = { 1 364 }
+							}
+						}
+						9 = {
+							trigger_event = {
+								id = agot_dragon_egg_lay.0002
+								days = { 1 364 }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

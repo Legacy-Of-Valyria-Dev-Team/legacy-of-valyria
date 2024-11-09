@@ -45,7 +45,7 @@ zz_valyria_magic_dragon_life_extension = {
 		add_trait_force_tooltip = immortal 
 	}
 }
-zz_valyria_magic_dragon_life_extension_lost = { 1
+zz_valyria_magic_dragon_life_extension_lost = {
 	trigger = {
 		has_trait = dragon 
 		has_trait = immortal 
@@ -65,23 +65,16 @@ zz_valyria_mana_gain_on_action = {
 		has_trait = born_under_a_red_comet
 	}
 	effect = {
+		if = {
+			limit = { 
+				has_nickname = nick_the_mage
+			}
+			zz_valyria_mana_gain = {
+				MANAGAIN = 1
+			}
+		}
 		zz_valyria_mana_gain = {
 			MANAGAIN = 1
-		}
-		if = {
-			limit = {
-				has_variable = dragonlore
-			}
-			change_variable = {
-				name = dragonlore
-				add = 1
-			}
-		}
-		else = {
-			set_variable = {
-				name = dragonlore
-				value = 1
-			}
 		}
 	}
 }
@@ -129,4 +122,18 @@ zz_valyria_on_building_completed = {
 
 on_travel_plan_cancel = {
 
+}
+
+on_birthday = {
+	on_actions = {
+		on_enchanted_blood_birthday
+	}
+}
+on_enchanted_blood_birthday = {
+	trigger = {
+		has_character_flag = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_effect_flag
+	}
+	events = {
+		zz_valyria_magic_blood_magic.0001 # Gain a random skill point
+	}
 }

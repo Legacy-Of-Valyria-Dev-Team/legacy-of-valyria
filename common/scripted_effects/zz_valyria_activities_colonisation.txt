@@ -1,316 +1,257 @@
-﻿# Set up a University Teacher
-valyria_colonisation_teacher_setup = {
-	scope:activity.activity_location = { save_scope_as = location }
-	if = {
-		limit = {
-			scope:activity = {
-				NOT = {
-					any_attending_character = {
-						has_character_flag = teacher_1
-					}
-				}
+﻿zz_valyria_colonisation_random_test = {
+	random_list = {
+		25 = {
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_positive_major
+				zz_valyria_colonisation_reward_major = yes
+				
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
+		25 = {
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+				zz_valyria_colonisation_reward_medium = yes
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-				}
-				save_scope_as = teacher_1
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else_if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_adult_education_teacher = yes
-				}
+		25 = {
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_positive_tiny
+				zz_valyria_colonisation_reward_minor = yes
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_adult_education_teacher = yes
-				}
-				save_scope_as = teacher_1
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else = {
-			create_character = {
-				template = adult_education_teacher
-				dynasty = none
-				location = scope:location
-				save_scope_as = teacher_1
+		25 = {
+			desc = $ZZ_EVENT_OPTION_NAME$.failure.tt
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_negative
+				zz_valyria_colonisation_reward_failure = yes
 			}
-		}
-		scope:teacher_1 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
+			stress_impact = {
+				base = medium_stress_impact_gain
 			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = teacher_1
 		}
 	}
-	if = {
-		limit = {
-			scope:activity = {
-				NOT = {
-					any_attending_character = {
-						has_character_flag = teacher_2
-					}
-				}
+}
+zz_valyria_colonisation_skill_test = {
+	add_character_flag = $ZZ_EVENT_OPTION_NAME$
+	duel = {
+		skill = $SKILL$
+		value = high_skill_rating
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 5
+				min = -49
+			}			
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.crit_success
+				left_icon = root
+				zz_valyria_colonisation_reward_massive = yes
+			}
+			stress_impact = {
+				base = medium_stress_impact_loss
 			}
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 4
+				min = -49
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					OR = {
-						has_character_flag = teacher_1
-						has_character_flag = teacher_2
-					}
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
-				save_scope_as = teacher_2
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.success
+				left_icon = root
+				zz_valyria_colonisation_reward_medium = yes
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else_if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_adult_education_teacher = yes
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
+		20 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = 2
+				min = -49
 			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_adult_education_teacher = yes
-					trigger_if = {
-						limit = { exists = scope:teacher_1 }
-						NOT = { this = scope:teacher_1 }
-					}
-				}
-				save_scope_as = teacher_2						
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.small_success
+				left_icon = root
+				zz_valyria_colonisation_reward_minor = yes
+			}
+			stress_impact = {
+				base = minor_stress_impact_loss
 			}
 		}
-		else = {	
-			create_character = {
-				template = adult_education_teacher
-				dynasty = none
-				location = scope:location
-				save_scope_as = teacher_2
+		40 = {
+			compare_modifier = {
+				value = scope:duel_value
+				multiplier = -3.5
+				min = -49
+			}
+			send_interface_toast = {
+				title = $ZZ_EVENT_OPTION_NAME$.failure
+				left_icon = root
+				custom_tooltip = zz_valyria_colonisation_tt_negative
+				zz_valyria_colonisation_reward_failure = yes
+
+			}
+			stress_impact = {
+				base = medium_stress_impact_gain
 			}
 		}
-		scope:teacher_2 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = teacher_2
+	}
+	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
+}
+
+zz_valyria_colonisation_reward = {
+	switch = {
+		trigger = has_character_flag
+		zz_valyria_colonisation.0020.a = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0020.b = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0020.c = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0020.d = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0020.e = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0030.a = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0030.b = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0030.c = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0030.d = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0030.e = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0040.a = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0040.b = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0040.c = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0040.d = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0040.e = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0050.a = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0050.b = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0050.c = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0050.d = {
+			zz_valyria_colonisation_reward_massive = yes 
+		}
+		zz_valyria_colonisation.0050.e = {
+			zz_valyria_colonisation_reward_massive = yes 
 		}
 	}
 }
 
-# Set up a University student
-valyria_colonisation_student_setup = {
-	scope:activity.activity_location = { save_scope_as = location }
-	if = {
-		limit = {
-			NOT = {
-				scope:activity = {
-					any_attending_character = {
-						has_character_flag = student_1
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-					exists = this
-				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-				}
-				save_scope_as = student_1
-			}
-		}
-		else = {
-			create_character = {
-				template = adult_education_student
-				dynasty = none
-				location = scope:location
-				save_scope_as = student_1
-			}
-			scope:student_1 = {
-				add_character_flag = generated_character_uni
-			}
-		}
-		scope:student_1 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			add_to_activity = scope:activity
-			add_character_flag = student_1
+zz_valyria_colonisation_reward_massive = {
+	scope:activity = {
+		add_activity_log_entry = {
+			key = sic_et_non_log
+			score = 40
+			tags = { good learning activity }
+			character = root
+
+			#Effect
+			custom_tooltip = zz_valyria_colonisation_tt_positive_massive
+			scope:activity = { activity_special_type_progression_massive = yes }
 		}
 	}
+}
+zz_valyria_colonisation_reward_major = {
+	scope:activity = {
+		add_activity_log_entry = {
+			key = sic_et_non_log
+			score = 10
+			tags = { good learning activity }
+			character = root
 
-	if = {
-		limit = {
-			NOT = {
-				scope:activity = {
-					any_attending_character = {
-						has_character_flag = student_2
-					}
-				}
-			}
+			#Effect
+			custom_tooltip = zz_valyria_colonisation_tt_positive_major
+			scope:activity = { activity_special_type_progression_major = yes }
 		}
-		if = {
-			limit = {
-				any_pool_character = {
-					province = scope:location
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-					exists = this
-				}
-			}
-			random_pool_character = {
-				province = scope:location
-				limit = {
-					is_available_healthy_ai_adult = yes
-					NOT = {
-						exists = involved_activity
-					}
-				}
-				save_scope_as = student_2
-			}
+	}
+}
+zz_valyria_colonisation_reward_medium = {
+	scope:activity = {
+		add_activity_log_entry = {
+			key = sic_et_non_log
+			score = 5
+			tags = { good learning activity }
+			character = root
+
+			#Effect
+			custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+			scope:activity = { activity_special_type_progression_medium = yes }
 		}
-		else = {
-			create_character = {
-				template = adult_education_student
-				dynasty = none
-				location = scope:location
-				save_scope_as = student_2
-			}
-			scope:student_2 = {
-				add_character_flag = generated_character_uni
-			}
+	}
+}
+zz_valyria_colonisation_reward_minor = {
+	scope:activity = {
+		add_activity_log_entry = {
+			key = sic_et_non_log
+			score = 1
+			tags = { good learning activity }
+			character = root
+
+			#Effect
+			custom_tooltip = zz_valyria_colonisation_tt_positive_tiny	
+			scope:activity = { activity_special_type_progression_tiny  = yes }
 		}
-		scope:student_2 = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			add_to_activity = scope:activity
-			add_character_flag = student_2
+	}
+}
+zz_valyria_colonisation_reward_failure = {
+	scope:activity = {
+		add_activity_log_entry = {
+			key = sic_et_non_log
+			score = -5
+			tags = { good learning activity }
+			character = root
+
+			#Effect
+			# custom_tooltip = zz_valyria_colonisation_tt_failure	
+			scope:activity = { activity_special_type_progression_negative  = yes }
 		}
 	}
 }
@@ -376,19 +317,29 @@ zz_valyria_colonise_claim_titles = {
 	if = { 
 		limit = { 
 			is_landless_adventurer = no
+		}		
+		create_title_and_vassal_change = {
+			type = conquest
+			add_claim_on_loss = yes
+			save_scope_as = change
 		}
-		get_title = scope:province.county
+		scope:province.county = {	
+			change_title_holder_include_vassals = {
+				holder = scope:host
+				change = scope:change
+				take_baronies = no
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		#get_title = scope:province.county
+		
 	}
 	else_if = { 
 		limit = { 
 			is_landless_adventurer = yes
 		}
 		scope:province.county = { add_to_list = seized_titles }
-		ep3_become_landed_save_liege_effect = {
-			TITLE_GIVER = scope:actor
-			ALWAYS_INDEPENDENT = yes
-			TITLE_LIST = seized_titles
-		}
+		
 		# Resolve title, liege, government changes
 		ep3_become_landed_transfer_effect = {
 			TITLE_RECEIVER = scope:host 
@@ -417,25 +368,36 @@ zz_valyria_colonise_claim_titles = {
 
 
 disburse_valyria_colonisation_reward_effect = {
-
-	switch = { # Hand out lifestyle perks/xp
-		trigger = has_character_flag
-		perfect_colonisation_reward = { 
-			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
+	if = { 
+		limit = { 
+			has_character_flag = perfect_colonisation_reward
+		}
+		agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
 			zz_valyria_colonise_claim_titles = yes
 			remove_character_flag = perfect_colonisation_reward
-		}
-		high_colonisation_reward = { 
-			zz_valyria_colonise_claim_titles = yes
-			remove_character_flag = high_colonisation_reward
-		}
-		mid_colonisation_reward = { 
-			agot_create_random_dragon_egg_artifact = { OWNER = scope:host } 
-			remove_character_flag = mid_colonisation_reward
-		}
-		low_colonisation_reward = { 
-			remove_character_flag = low_colonisation_reward
-		}
 	}
-	# Options rewards
+	else_if = {
+		limit = { 
+			has_character_flag = high_colonisation_reward
+		}
+		zz_valyria_colonise_claim_titles = yes
+		remove_character_flag = high_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = high_colonisation_reward
+		}
+		zz_valyria_colonise_claim_titles = yes
+		remove_character_flag = high_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = mid_colonisation_reward
+		}
+		zz_valyria_colonise_claim_titles = yes
+		remove_character_flag = mid_colonisation_reward
+	}
+	else = {
+		remove_character_flag = low_colonisation_reward
+	}
 }
