@@ -104,12 +104,8 @@ zz_valyria_can_gain_mana = {
 zz_valyria_is_mage = {
 	OR = { 
 		has_trait = zz_magister
-		
-		any_courtier_or_guest = { 
-			has_trait = zz_magister
-		}
-		any_child = { 
-			has_trait = zz_magister
+		any_living_mage = {
+			liege_or_court_owner ?= scope:actor 
 		}
 	}
 }
@@ -129,29 +125,17 @@ zz_valyria_is_mage_can_teach = {
 				}
 			}
 		}
-		any_courtier_or_guest = { 
-			AND = {
-				has_trait = zz_magister
-				NOT = { 
-					has_character_flag = zz_valyria_magic_taught_magic 
-				}
-			}
-		}
-		any_child = { 
-			AND = {
-				has_trait = zz_magister
-				NOT = { 
-					has_character_flag = zz_valyria_magic_taught_magic 
-				}
-			}
-		}
 	}
 }
 
 
 zz_valyria_knows_spell = {
 	OR = { 
+		any_memory = {
+			has_memory_type = $SPELL$
+		}
 		has_character_flag = $SPELL$_flag
+		
 		any_artifact = { has_variable = $SPELL$_flag }
 	}
 }
@@ -161,12 +145,8 @@ zz_valyria_knows_spell_court = {
 		zz_valyria_knows_spell = {
 			SPELL = $SPELL$
 		}
-		any_courtier_or_guest = { 
-			zz_valyria_knows_spell = {
-				SPELL = $SPELL$
-			}
-		}
-		any_child = { 
+		any_living_mage = {
+			liege_or_court_owner ?= scope:actor 
 			zz_valyria_knows_spell = {
 				SPELL = $SPELL$
 			}
@@ -190,13 +170,8 @@ zz_valyria_valid_caster_court = {
 			SPELL = $SPELL$
 			MANACOST = $MANACOST$
 		}
-		any_courtier_or_guest = { 
-			zz_valyria_valid_caster = {
-				SPELL = $SPELL$
-				MANACOST = $MANACOST$
-			}
-		}
-		any_child = { 
+		any_living_mage = {
+			liege_or_court_owner ?= scope:actor 
 			zz_valyria_valid_caster = {
 				SPELL = $SPELL$
 				MANACOST = $MANACOST$

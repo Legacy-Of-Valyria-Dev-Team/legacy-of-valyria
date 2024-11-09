@@ -354,11 +354,13 @@ zz_dragon_dreams = {
 
 
 zz_add_spell = {
-	
 	if = {
 		limit = {
-			NOT  = {
-				has_character_flag = $SPELL$
+			NOR  = {
+				any_memory = {
+					has_memory_type = $SPELL$
+				}
+				has_character_flag = $SPELL$_flag
 			}
 		}
 		save_scope_as = spell_learner
@@ -370,6 +372,17 @@ zz_add_spell = {
 			right_icon = scope:spell_learner
 			custom_tooltip = learn_$SPELL$.tt
 			add_character_flag =  $SPELL$_flag
+			scope:spell_learner = {
+				create_character_memory = {
+					type = $SPELL$
+				}
+				scope:new_memory = {
+					set_variable = {
+						name = learning_location
+						value = scope:spell_learner.location
+					}
+				}
+			}
 		}		
 	}
 }

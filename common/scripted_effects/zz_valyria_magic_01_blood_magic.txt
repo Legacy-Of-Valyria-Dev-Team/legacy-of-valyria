@@ -615,6 +615,42 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 					}
 				}
 			}
+			else_if = { 
+				limit = {
+					scope:zz_valyria_magic_blood_magic_05_option_03 = yes 
+				}
+				custom_tooltip = zz_valyria_make_clone
+				destroy_artifact = scope:target 
+				create_character = {
+					age = scope:recipient.age
+					gender = male
+					opposite_gender = scope:recipient
+					template_character = scope:recipient
+		
+		
+		
+					location = scope:actor.location
+		
+					random_traits = no
+		
+					#faith = scope:recipient.faith
+					#culture = scope:recipient.culture
+					dynasty_house = scope:recipient.father.house
+		
+					save_scope_as = character_clone 
+		
+					after_creation = {
+						copy_inheritable_appearance_from = scope:recipient
+						copy_traits = scope:recipient
+						change_first_name = { template_character = scope:recipient }
+						set_father = scope:recipient.father
+						set_mother = scope:recipient.mother
+						remove_trait = dragonrider
+						remove_trait = pregnant
+						remove_trait = infertile
+					}
+				}
+			}
 		}
 	}
 }
@@ -671,6 +707,10 @@ zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect = {
 		custom_tooltip = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying.tt
 		
 		scope:recipient = {
+			add_character_flag = { flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag years = 1 } 
+			save_scope_as = dragon_parent
+			set_variable = { name = clutches value = 0 }
+			remove_character_flag = recently_laid_eggs
 			#Tamed Dragon, rider family to employer
 			if = {
 				limit = {
