@@ -1,0 +1,112 @@
+decision_establish_mages_council = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_recruitment.dds"
+	}
+
+	title = decision_establish_mages_council
+	desc = decision_establish_mages_council_desc
+	decision_group_type = zz_valyria_colonisation
+	ai_check_interval = 0
+
+    confirm_text = decision_establish_mages_council_confirm
+
+    ai_potential = {
+		always = no
+	}
+
+    cost = {
+        gold = 5000
+		prestige = 2500
+	}
+
+	is_shown = {
+		OR = { 
+			title:e_valyria ?= {
+				NOT = { has_variable = mages_council }
+			}
+			title:k_valyria ?= {
+				NOT = { has_variable = mages_council }
+			}
+		}
+		
+		
+	}
+
+	is_valid = {
+		custom_tooltip = {
+			title:e_valyria.holder = {
+				prestige_level >= 4
+			}
+			text = decision_form_dk_order_tooltip
+		}
+	}
+	
+	effect = {
+		custom_tooltip = {
+			text = decision_form_dk_order_tooltip2
+			if = {
+				limit = { 
+					primary_title = title:e_valyria
+				}
+				title:e_valyria = {
+					set_variable = { name = mages_council value = yes }
+				}
+			}
+			if = {
+				limit = { 
+					primary_title = title:k_lyria
+				}
+				title:k_lyria = {
+					set_variable = { name = mages_council value = yes }
+				}
+			}
+		}
+	}
+}
+
+decision_establish_dragonlord_council = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_recruitment.dds"
+	}
+
+	title = decision_establish_dragonlord_council
+	desc = decision_establish_dragonlord_council_desc
+	decision_group_type = zz_valyria_colonisation
+	ai_check_interval = 0
+
+    confirm_text = decision_establish_dragonlord_council_confirm
+
+    ai_potential = {
+		always = no
+	}
+
+    cost = {
+        gold = 5000
+		prestige = 2500
+	}
+
+	is_shown = {
+		has_title = title:e_valyria
+		title:e_valyria = {
+			NOT = { has_variable = dragonlords }
+		}
+	}
+
+	is_valid = {
+		custom_tooltip = {
+			title:e_valyria.holder = {
+				prestige_level >= 4
+			}
+			text = decision_establish_dragonlord_council_tooltip
+		}
+	}
+	
+	effect = {
+		custom_tooltip = {
+			text = decision_establish_dragonlord_council_tooltip2
+			title:e_valyria = {
+				set_variable = { name = dragonlords value = yes }
+			}
+		}
+	}
+}
