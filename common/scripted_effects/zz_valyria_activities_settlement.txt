@@ -263,13 +263,13 @@ resolve_valyria_settlement_success_reward_effect = {
 			}
 			add_character_flag = settle_castle
 		}
-		if = { 
+		else_if = { 
 			limit = { 
 				has_activity_intent = settle_city 
 			}
 			add_character_flag = settle_city
 		}
-		if = { 
+		else_if = { 
 			limit = { 
 				has_activity_intent = settle_temple 
 			}
@@ -334,29 +334,38 @@ valyria_settlement_completed_log_entry_effect = {
 	}
 }
 disburse_valyria_settlement_reward_effect = {
-	switch = { # Hand out lifestyle perks/xp
-		trigger = has_character_flag
-		perfect_settlement_reward = { 
-			zz_valyria_settlement_effect = {
-				NUM = 03
-			}
-			remove_character_flag = perfect_settlement_reward
+	if = { 
+		limit = {
+			has_character_flag = perfect_settlement_reward
 		}
-		high_settlement_reward = { 
-			zz_valyria_settlement_effect = {
-				NUM = 02
-			}
-			remove_character_flag = high_settlement_reward
+		zz_valyria_settlement_effect = {
+			NUM = 03
 		}
-		mid_settlement_reward = { 
-			zz_valyria_settlement_effect = {
-				NUM = 01
-			}	
-			remove_character_flag = mid_settlement_reward
+		remove_character_flag = perfect_settlement_reward
+	}
+	else_if = { 
+		limit = {
+			has_character_flag = high_settlement_reward
 		}
-		low_settlement_reward = { 
-			remove_character_flag = low_settlement_reward
+		zz_valyria_settlement_effect = {
+			NUM = 02
 		}
+		remove_character_flag = high_settlement_reward
+	}
+	else_if = { 
+		limit = {
+			has_character_flag = mid_settlement_reward
+		}
+		zz_valyria_settlement_effect = {
+			NUM = 01
+		}
+		remove_character_flag = mid_settlement_reward
+	}
+	else_if = { 
+		limit = {
+			has_character_flag = low_settlement_reward
+		}
+		remove_character_flag = low_settlement_reward
 	}
 }
 
@@ -383,27 +392,6 @@ zz_valyria_settlement_effect = {
 				set_holding_type = city_holding
 				add_building = city_$NUM$
 				
-			}
-			switch = {
-				trigger = has_character_flag
-				perfect_settlement_reward = {
-					scope:province = {
-						add_building = city_03
-					}
-					remove_character_flag = perfect_settlement_reward
-				}
-				high_settlement_reward = {
-					scope:province = {
-						add_building = city_02
-					}
-					remove_character_flag = high_settlement_reward
-				}
-				mid_settlement_reward ={
-					scope:province = {
-						add_building = city_01
-					}
-					remove_character_flag = mid_settlement_reward
-				}
 			}
 			remove_character_flag = settle_city
 		}
@@ -432,7 +420,6 @@ zz_valyria_settlement_effect = {
 		 }
 	}
 }
-
 
 zz_valyria_settlment_construct_secondary_buildings = {
 	if = { 
