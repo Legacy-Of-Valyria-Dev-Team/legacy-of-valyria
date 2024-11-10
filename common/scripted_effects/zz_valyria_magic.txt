@@ -310,17 +310,9 @@ zz_valyria_populate_spell_caster_list = {
 		}
 		add_to_list = characters
 	}
-	every_courtier = {
-		limit = {
-			zz_valyria_valid_caster = {
-				SPELL = $SPELL$
-				MANACOST = $MANACOST$
-			}
-		}
-		add_to_list = characters
-	}
-	every_child = {
-		limit = {
+	every_living_mage = { 
+		limit = { 
+			liege_or_court_owner ?= scope:actor 
 			zz_valyria_valid_caster = {
 				SPELL = $SPELL$
 				MANACOST = $MANACOST$
@@ -354,11 +346,13 @@ zz_dragon_dreams = {
 
 
 zz_add_spell = {
-	
 	if = {
 		limit = {
-			NOT  = {
-				has_character_flag = $SPELL$
+			NOR  = {
+				any_memory = {
+					has_memory_type = $SPELL$
+				}
+				has_character_flag = $SPELL$_flag
 			}
 		}
 		save_scope_as = spell_learner
@@ -369,7 +363,18 @@ zz_add_spell = {
 			left_icon = scope:spell_learner
 			right_icon = scope:spell_learner
 			custom_tooltip = learn_$SPELL$.tt
-			add_character_flag =  $SPELL$_flag
+			#add_character_flag =  $SPELL$_flag
+			scope:spell_learner = {
+				create_character_memory = {
+					type = $SPELL$
+				}
+				scope:new_memory = {
+					set_variable = {
+						name = learning_location
+						value = scope:spell_learner.location
+					}
+				}
+			}
 		}		
 	}
 }
@@ -465,9 +470,6 @@ zz_gain_blood_magic_spell = {
 				SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
 			}
 		}
-
-		
-		
 	}
 }
 
@@ -771,7 +773,6 @@ zz_random_gain_magic_spell = {
 				zz_valyria_knows_spell  = {
 					SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying				
 				}
-				
 				add = -100
 			}
 			zz_gain_blood_magic_spell = yes 
@@ -789,9 +790,6 @@ zz_random_gain_magic_spell = {
 				}
 				zz_valyria_knows_spell  = {
 					SPELL = zz_valyria_magic_shadow_magic_04_mysteries_of_the_shadowy_cloak
-				}
-				zz_valyria_knows_spell  = {
-					SPELL = zz_valyria_magic_shadow_magic
 				}
 				add = -100
 			}
