@@ -450,6 +450,7 @@
 				if = {
 					limit = { this = scope:host }
 					resolve_valyria_settlement_success_reward_effect = yes 
+					valyria_settlement_completed_log_entry_effect = yes
 					trigger_event = zz_valyria_settlement.0009 	
 					create_character_memory = {
 						type = completed_settlement
@@ -519,30 +520,6 @@
 		
 		
 		scope:host = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
 		}
 		scope:activity ?= {
 			#Counter for the Activity Success Progress bar
@@ -587,32 +564,10 @@
 				}
 				# To reduce inflaction of generic characters
 				scope:activity = {
-					every_attending_character = {
-						limit = {
-							OR = {
-								has_character_flag = student_1
-								has_character_flag = student_2
-							}
-							has_character_flag = generated_character_uni
-						}
-						silent_disappearance_effect = yes
-					}
 				}
 			}
 			else = {
 				scope:activity = {
-					every_attending_character = {
-						limit = {
-							has_character_flag = student_1
-						}
-						remove_character_flag = student_1
-					}
-					every_attending_character = {
-						limit = {
-							has_character_flag = student_2
-						}
-						remove_character_flag = student_2
-					}
 				}
 			}
 		}
