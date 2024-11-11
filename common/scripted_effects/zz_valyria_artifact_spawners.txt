@@ -19,7 +19,7 @@
 		save_scope_as = newly_created_artifact
 		decaying = no
 	}
-	scope:newly_created_artifact = {
+	scope:newly_created_artifact ?= {
 		set_variable = {
 			name = historical_unique_artifact
 			value = yes
@@ -47,7 +47,7 @@ agot_create_artifact_book_of_life = {
 		save_scope_as = newly_created_artifact
 		decaying = no
 	}
-	scope:newly_created_artifact = {
+	scope:newly_created_artifact ?= {
 		set_variable = {
 			name = historical_unique_artifact
 			value = yes
@@ -69,7 +69,7 @@ cv_agot_create_artifact_the_dragons_book_effect = {
 		save_scope_as = dragons_book_created
 		decaying = no
 	}
-	scope:dragons_book_created = {
+	scope:dragons_book_created ?= {
 		set_variable = {
 			name = historical_unique_artifact
 			value = yes
@@ -98,7 +98,7 @@ cv_agot_create_artifact_dragonknight_armour_effect = {
 		decaying = no
 	}
 
-	scope:newly_created_artifact = {
+	scope:newly_created_artifact ?= {
 		save_scope_as = epic #for loc
 		set_variable = { name = historical_unique_artifact value = yes }
 		set_variable = { name = valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
@@ -132,5 +132,59 @@ cv_agot_create_artifact_dragonknight_sword_effect = {
 		set_variable = { name = valyrian_steel value = yes }
 		set_variable = { name = dragonknight_artifact value = yes }
 		equip_artifact_to_owner_replace = yes
+	}
+}
+
+cv_create_artifact_dragon_saddle_effect = {
+	$OWNER$ = { save_scope_as = owner }
+
+	save_scope_value_as = {
+		name = saddle_type
+		value = flag:$TYPE$
+	}
+
+	set_artifact_rarity_illustrious = yes
+
+	create_artifact = {
+		name = dragon_saddle_name
+		description = placeholder
+		visuals = dragon_saddle
+		type = dragon_saddle
+		template = dragon_saddle_template
+		modifier = dragon_saddle_modifier
+		save_scope_as = newly_created_artifact
+		wealth = scope:wealth
+		quality = scope:quality
+		decaying = no
+	}
+	hidden_effect_new_object = {
+		scope:newly_created_artifact ?= {
+			set_variable = { name = dragon_saddle value = yes }
+			set_variable = { name = historical_unique_artifact value = yes }
+
+			equip_artifact_to_owner_replace = yes
+
+			set_artifact_feature_group = dragon_saddle_type
+			set_artifact_description = dragon_saddle_desc
+
+			if = {
+				limit = {
+					scope:saddle_type = flag:brown_common
+				}
+				set_artifact_rarity_common = yes
+			}
+			if = {
+				limit = {
+					scope:saddle_type = flag:brown_masterwork
+				}
+				set_artifact_rarity_masterwork = yes
+			}
+			if = {
+				limit = {
+					scope:saddle_type = flag:black_famed
+				}
+				set_artifact_rarity_famed = yes
+			}
+		}
 	}
 }
