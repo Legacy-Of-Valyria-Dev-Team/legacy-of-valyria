@@ -1,0 +1,296 @@
+﻿namespace = zz_valyria_colonisation
+
+# INTRIGUE: HIRE PIRATES / RAIDERS TO STEAL SUPPLIES
+# MARTIAL: SEIZE SUPLPIES FROM CAPITAL
+# LEARNING : CRAFT SUPPLIES, LEARN ABOUT HOW TO EXPLOIT LOCAL AREA, which crops can be grown, which pieces of wood can be used to build houses etc
+
+## Progress Event Stewardship - Logistics & Supply Flow
+zz_valyria_colonisation.0200 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0200.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { 
+					scope:location= {
+						is_coastal = yes
+					}
+				}
+				desc = zz_valyria_colonisation.0200.coastal.desc
+			}
+			triggered_desc = {
+				desc = zz_valyria_colonisation.0200.land.desc
+			}
+		}
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		add_character_flag = colonization_busy
+	}
+
+	# Option A: Try to negotiate with the merchants
+	option = {
+		name = zz_valyria_colonisation.0200.a
+		trigger = {
+			scope:host = {diplomacy > 20}
+		}
+		hidden_effect = {
+			zz_valyria_colonisation_skill_test_event = {
+				SKILL = diplomacy 
+				CRIT_SUCCESS_EVENT = zz_valyria_colonisation.02001
+				SUCCESS_EVENT = zz_valyria_colonisation.02002
+				SMALL_SUCCESS_EVENT = zz_valyria_colonisation.02003
+				FAILURE_EVENT = zz_valyria_colonisation.02004
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option B: Organize a rationing program
+	option = {
+		name = zz_valyria_colonisation.0200.b
+		trigger = {
+			scope:host = {stewardship > 20}
+		}
+		hidden_effect = {
+			zz_valyria_colonisation_skill_test_event = {
+				SKILL = stewardship 
+				CRIT_SUCCESS_EVENT = zz_valyria_colonisation.02005
+				SUCCESS_EVENT = zz_valyria_colonisation.02006
+				SMALL_SUCCESS_EVENT = zz_valyria_colonisation.02007
+				FAILURE_EVENT = zz_valyria_colonisation.02008
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+	# Option Z: muddle through, a 25% chance of major, medium, tiny, negative progress
+	option = {
+		name = zz_valyria_colonisation.0200.z
+		zz_valyria_colonisation_random_test = {
+			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0200.z
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+################ DIPLOMACY SOLUTIONS #####################
+
+zz_valyria_colonisation.02001 = { ## Successful negotiations with Merchants (Critical Success)
+	type = activity_event
+	title = zz_valyria_colonisation.02001.t
+	desc = zz_valyria_colonisation.02001.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Option title
+		name = zz_valyria_colonisation.02001.a.title
+		add_gold = medium_gold_value_check
+		zz_valyria_colonisation_reward_massive = yes
+		remove_character_flag = colonization_busy
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+zz_valyria_colonisation.02002 = { ## Successful negotiations with Merchants (Success)
+	type = activity_event
+	title = zz_valyria_colonisation.02002.t
+	desc = zz_valyria_colonisation.02002.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Option title
+		name = zz_valyria_colonisation.02002.a.title
+		zz_valyria_colonisation_reward_medium = yes
+		remove_character_flag = colonization_busy
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+zz_valyria_colonisation.02003 = { ## Successful negotiations with Merchants (Success)
+	type = activity_event
+	title = zz_valyria_colonisation.02003.t
+	desc = zz_valyria_colonisation.02003.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Option title
+		name = zz_valyria_colonisation.02003.a.title
+		zz_valyria_colonisation_reward_minor = yes
+		remove_character_flag = colonization_busy
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+zz_valyria_colonisation.02004 = { ## Unsuccessful negotiations with Merchants
+	type = activity_event
+	title = zz_valyria_colonisation.02004.t
+	desc = zz_valyria_colonisation.02004.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Option title
+		name = zz_valyria_colonisation.02004.a.title
+		remove_short_term_gold = {
+			gold = {
+				value = root.medium_gold_value_check
+			}
+		}
+		remove_character_flag = colonization_busy
+		zz_valyria_colonisation_reward_failure = yes
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+######### Stewardship Events ##############
+
+zz_valyria_colonisation.02005 = { #Stewardship critical success
+	type = activity_event
+	title = zz_valyria_colonisation.02005.t
+	desc = zz_valyria_colonisation.02005.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Huzzah
+		name = zz_valyria_colonisation.02005.a.title
+		remove_character_flag = colonization_busy
+		zz_valyria_colonisation_reward_massive = yes 
+	}
+}
+
+zz_valyria_colonisation.02006 = { #Stewardship success
+	type = activity_event
+	title = zz_valyria_colonisation.02006.t
+	desc = zz_valyria_colonisation.02006.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Huzzah
+		name = zz_valyria_colonisation.02006.a.title
+		remove_character_flag = colonization_busy
+		zz_valyria_colonisation_reward_medium = yes
+	}
+}
+
+zz_valyria_colonisation.02007 = { #Stewardship small success
+	type = activity_event
+	title = zz_valyria_colonisation.02007.t
+	desc = zz_valyria_colonisation.02007.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Huzzah
+		name = zz_valyria_colonisation.02007.a.title
+		remove_character_flag = colonization_busy
+		zz_valyria_colonisation_reward_minor = yes
+	}
+}
+
+zz_valyria_colonisation.02008 = { #Stewardship fail
+	type = activity_event
+	title = zz_valyria_colonisation.02008.t
+	desc = zz_valyria_colonisation.02008.desc
+	
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	
+	option = { # Huzzah
+		name = zz_valyria_colonisation.02008.a.title
+		remove_character_flag = colonization_busy
+		zz_valyria_colonisation_reward_failure = yes
+	}
+}
