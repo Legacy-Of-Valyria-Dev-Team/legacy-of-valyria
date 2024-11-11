@@ -64,22 +64,7 @@ zz_valyria_item_crafting.0009 = {
 		#Reward effects
 		scope:activity.activity_location = { save_scope_as = location }
 	
-		involved_activity ?= {
-			#Perfect settlement - 65-100
-			if = {
-				limit = { var:activity_special_type_progression >= 65 }
-				scope:host = {
-					add_character_flag = crafting_successs_reward
-				}
-			}
-			#crafting failure
-			else = {
-				scope:host = {
-					add_character_flag = crafting_failure_reward
-				}
-			}
-		}
-	}
+		
 	option = {
 		name = zz_valyria_item_crafting.0009.a
 		trigger = {
@@ -214,17 +199,24 @@ zz_valyria_item_crafting.0011= {
 	immediate = {
 		scope:activity.activity_location = { save_scope_as = location }
 	}
+	### Mana Gain Multiplier
 	option = {
 		name = zz_valyria_item_crafting.0011.a
+		add_character_flag = { flag = craft_modifier_01 months = 3 } 
 	}
+	### Magic Xp Gain
 	option = {
 		name = zz_valyria_item_crafting.0011.b
+		add_character_flag = { flag = craft_modifier_02 months = 3 } 
 	}
+	### Passive Mana Gain
 	option = {
 		name = zz_valyria_item_crafting.0011.c
+		add_character_flag = { flag = craft_modifier_03 months = 3 } 
 	}
+	### Not for me
 	option = {
-		name = zz_valyria_item_crafting.0011.d
+		name = zz_valyria_item_crafting.0011.z
 	}
 }
 
@@ -252,6 +244,73 @@ zz_valyria_item_crafting.0013 = {
 		scope:activity.activity_location = { save_scope_as = location }
 	}
 	option = {
-		name = zz_valyria_item_crafting.0013.a
+		name = zz_valyria_item_crafting.0013.magic_catalyst_25
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_magic
+				}
+			}
+			zz_valyria_has_mana_to_cast = { MANACOST = 25 }
+		}
+		zz_valyria_mana_spend = {
+			MANACOST = 25
+		} 
+		activity_special_type_progression_variable = { NUM = 25 } 
+	}
+	option = {
+		name = zz_valyria_item_crafting.0013.magic_catalyst_50
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_magic
+				}
+			}
+			zz_valyria_has_mana_to_cast = { MANACOST = 50 }
+		}
+		zz_valyria_mana_spend = {
+			MANACOST = 50
+		} 
+		activity_special_type_progression_variable = { NUM = 50 } 
+	}
+	option = {
+		name = zz_valyria_item_crafting.0013.magic_catalyst_100
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_magic
+				}
+			}
+			zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+		}
+		zz_valyria_mana_spend = {
+			MANACOST = 100
+		} 
+		activity_special_type_progression_variable = { NUM = 100 } 
+	}
+	option = {
+		name = zz_valyria_item_crafting.0013.dragon_fire_catalyst
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_dragon_fire
+				}
+			}
+		}
+		random_list = { 
+			1 = {
+				activity_special_type_progression_variable = { NUM = 25  } 
+			}
+			1 = {
+				activity_special_type_progression_variable = { NUM = 45  } 
+			}
+			1 = {
+				activity_special_type_progression_variable = { NUM = 150  } 
+			}
+		}
 	}
 }
