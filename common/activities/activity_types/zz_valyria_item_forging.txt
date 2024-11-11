@@ -411,7 +411,7 @@
 					}
 				}
 			}
-			magic_item_crafting_catalyst_blood_sacrfice = {
+			magic_item_crafting_catalyst_blood_sacrifice = {
 				is_shown = { 
 					has_dlc_feature = advanced_activities 
 				}
@@ -466,7 +466,7 @@
 					}
 				}
 			}
-			magic_item_crafting_catalyst_dragon_fire= {
+			magic_item_crafting_catalyst_dragon_fire = {
 				is_shown = { 
 					has_dlc_feature = advanced_activities 
 				}
@@ -600,116 +600,47 @@
 
 					### trigger first event, select item type to be constructed. 	
 					trigger_event = {
-						id = zz_valyria_item_forging.1
+						id = zz_valyria_item_crafting.0010 
 						days = 1
 					}	
-					### trigger second event,  select the particular item of the kind you are constructing
+					### trigger second event, initial forging, select whether you wish to add a new modifier, or to forge more the item.
 					trigger_event = {
-						id = zz_valyria_item_forging.2
+						id =  zz_valyria_item_crafting.0011 
 						days = 7
 					}
 					### Forging event, random progress based on alternative skill checks, dragonbond, magic, learning etc
 					trigger_event = {
-						id = zz_valyria_item_forging.3
+						id =  zz_valyria_item_crafting.0012 
 						days = 14
 					}
-					## Intervention Event, where your activity intent is able to be used to change the chances of your forging success. Intents, Magic, Dragonfire, Skill
+					## Intervention Event, use the second option to try and complete your crafting.
 					trigger_event = {
-						id = zz_valyria_item_forging.4
+						id = zz_valyria_item_crafting.0013 
 						days = 21
 					}
 				}
 			}
 
 			on_end = {
-				# Run conclusion stuff here
-				scope:host = {
-					save_scope_as = crafter
-				}
-				scope:activity = {
-					add_activity_log_entry = {
-						key = gruesome_festival_immediate_log
-						score = 1000
-						show_in_conclusion = yes
-						character = root 
-						# Piety based on value calculated from the selected activity option 
-						activity_host = {
-							if = {
-								limit = { exists = var:gf_piety_value }
-								add_piety = var:gf_piety_value
-								remove_variable = gf_piety_value
-							}
-						}
-						## Big RIP, scope:unlucky_guest.
-						if = {
-							limit = { exists = scope:unlucky_guest }
-							# Sort opinions and kinslaying.
-							add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:unlucky_guest}
-							execute_opinion_effect = {
-								VICTIM = scope:unlucky_guest
-								EXECUTIONER = scope:blotter
-							}
-							# Are you HumSac'ing the HoF of a faith that doesn't practice HumSac?
-							## We hide this, since it's too late for you to do anything about now and it's more fun/terrifying to find out about it *after* the sacrifice.
-							hidden_effect = {
-								humsacd_a_hof_effect = {
-									SACRIFICER = scope:blotter
-									SACRIFICED_HOF = scope:unlucky_guest
-								}
-							}
-							## And are you actually humsac'ing your *OWN* HoF?
-							if = {
-								limit = { scope:blotter.faith.religious_head = scope:unlucky_guest }
-								# Inform players that they're an abysmal, abysmal faith adherent.
-								every_player = {
-									limit = {
-										NOT = { this = scope:blotter }
-										faith = scope:unlucky_guest.faith
-									}
-									trigger_event = fp1_other_decisions.0023
-								}
-								# Update scope:blotter's HumSac'd HoFs kill tally manually, since we're not going through the usual effect.
-								add_to_variable_list = {
-									name = humsacd_hofs
-									target = scope:unlucky_guest.faith
-								}
-								# And tell scope:blotter they dun goofed.
-								trigger_event = {
-									id = fp1_other_decisions.0024
-									# We give it a day's delay, since they _might_ have taken a conversion option in the event itself, in which case the follow-up event is invalid.
-									days = 1
-								}
-							}
-							# How exactly do they die?
-							scope:unlucky_guest = {
-								death = {
-									killer = scope:blotter
-									death_reason = death_sacrificed_to_gods
-								}
-							}
-						}
-						every_attending_character = {
-							if = {
-								limit = {
-									scope:unlucky_guest = {
-										OR = {
-											agot_is_dragonblood_character = yes
-											agot_has_dragonblood_heritage = yes 
-										}
-										
-									}
-								}
-								zz_valyria_mana_gain = {
-									MANAGAIN = 9 
-								}
-							}
-							else ={
-								zz_valyria_mana_gain = {
-									MANAGAIN = 3
-								}
-							}
+				if = {
+					limit = { this = scope:host }
+					resolve_zz_valyria_item_crafting_success_reward_effect = yes 
+					zz_valyria_item_crafting_completed_log_entry_effect = yes
+					#Conclusion event
+					trigger_event = zz_valyria_item_crafting.0009 
+
+					create_character_memory = {
+						type = completed_adult_education
+					}
+					scope:new_memory = {
+						set_variable = {
+							name = education_destination
+							value = scope:activity.activity_location
 						}
 					}
+					#Resolve how how successful we were so we can bake that into the total reward
+					
+						
 				}
 			}
 		}
@@ -927,6 +858,53 @@
 			
 		}
 		chance_of_no_event = 5
+	}
+
+	on_start = {
+		
+		scope:host = {
+		}
+		scope:activity ?= {
+			#Counter for the Activity Success Progress bar
+			activity_setup_special_type_progression_effect = yes
+			if = {
+				limit = {
+					has_activity_option = {
+						category = magic_item_crafting_ingredient
+						option = magic_item_crafting_ingredient_iron
+					}
+				}
+				activity_special_type_progression_variable = { NUM = 5 } 
+			}
+			else_if = {
+				limit = {
+					has_activity_option = {
+						category = magic_item_crafting_ingredient
+						option = magic_item_crafting_ingredient_steel
+					}
+				}
+				activity_special_type_progression_variable = { NUM = 10 } 
+			}
+			else_if = {
+				limit = {
+					has_activity_option = {
+						category = magic_item_crafting_ingredient
+						option = magic_item_crafting_ingredient_dragonglass
+					}
+				}
+				activity_special_type_progression_variable = { NUM = 20 } 
+			}
+			else_if = {
+				limit = {
+					has_activity_option = {
+						category = magic_item_crafting_ingredient
+						option = magic_item_crafting_ingredient_valyrian_steel
+					}
+				}
+				activity_special_type_progression_variable = { NUM = 40 } 
+			}
+			activity_location = { save_scope_as = location }
+		}
 	}
 
 	###################

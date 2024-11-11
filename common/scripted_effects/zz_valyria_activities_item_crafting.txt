@@ -1,0 +1,231 @@
+resolve_zz_valyria_item_crafting_success_reward_effect = {
+	involved_activity ?= {
+		#Perfect settlement - 65-100
+		if = {
+			limit = { var:activity_special_type_progression >= 65 }
+			scope:host = {
+				add_character_flag = crafting_successs_reward
+			}
+		}
+		#crafting failure
+		else = {
+			scope:host = {
+				add_character_flag = crafting_failure_reward
+			}
+		}
+	}
+}
+
+zz_valyria_create_magic_ring_effect = {
+	$OWNER$ = { save_scope_as = owner }
+	set_artifact_rarity_illustrious = yes
+
+	create_artifact = {
+		name = zz_valyria_artifact_mages_ring_name
+		description = zz_valyria_artifact_mages_ring_desc
+		visuals = archmaester_ring
+		type = archmaester_ring
+		template = zz_valyria_mages_ring_artifact_template
+		modifier = zz_valyria_magic_xp_gain_passive_modifier
+		history = {
+			type = created_before_history
+		}
+		save_scope_as = newly_created_artifact
+		wealth = scope:wealth
+		quality = scope:quality
+		decaying = no
+	}
+	hidden_effect_new_object = {
+		scope:newly_created_artifact = {
+			clear_artifact_modifiers = yes
+			if = { 
+				limit = {
+					scope:ring_modifier = flag:blood_magic
+				}
+				add_artifact_modifier = zz_valyria_blood_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:shadow_magic
+				}
+				add_artifact_modifier = zz_valyria_shadow_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:dream_magic
+				}
+				add_artifact_modifier = zz_valyria_dream_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:alchemy_magic
+				}
+				add_artifact_modifier = zz_valyria_alchemy_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:fire_magic
+				}
+				add_artifact_modifier = zz_valyria_fire_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:air_magic
+				}
+				add_artifact_modifier = zz_valyria_air_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:water_magic
+				}
+				add_artifact_modifier = zz_valyria_water_magic_xp_gain_modifier_01_stacking
+			}
+			
+			set_variable = {
+				name = maesterwork
+				value = yes
+			}
+			add_artifact_history = {
+				type = given
+				recipient = scope:owner
+			}
+			equip_artifact_to_owner_replace = yes
+		}
+	}
+}
+
+
+
+
+
+
+zz_valyria_item_crafting_completed_log_entry_effect = {
+	involved_activity = {
+		add_activity_log_entry = {
+			key = zz_valyria_item_crafting__completed_log
+			tags = { completed }
+			score = 100
+			show_in_conclusion = yes
+			character = root
+			#Effects
+			root = {
+				zz_valyria_activities_item_crafting_crafting_reward_effect = yes
+			}
+		}
+	}
+}
+
+zz_valyria_activities_item_crafting_crafting_reward_effect = {
+	if = {
+		limit = { 
+			has_character_flag = crafting_successs_reward
+		}
+		remove_character_flag = crafting_successs_reward
+		if = { 
+			limit = {
+				has_character_flag = craft_weapon_01
+			}
+			agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:host } 
+			remove_character_flag = craft_weapon_01
+		}
+		else_if = { 
+			limit = {
+				has_character_flag = craft_weapon_02
+			}
+			agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = scope:host }
+			remove_character_flag = craft_weapon_02
+		}
+		else_if = { 
+			limit = {
+				has_character_flag = craft_weapon_03
+			}
+			agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = scope:host } 
+			remove_character_flag = craft_weapon_03
+		}
+		else_if = { 
+			limit = {
+				has_character_flag = craft_weapon_04
+			}
+			agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = scope:host } 
+			remove_character_flag = craft_weapon_04
+		}
+		else_if = { 
+			limit = {
+				has_character_flag = craft_weapon_05
+			}
+			agot_create_artifact_dragonbone_longbow_effect = { OWNER = ROOT }
+			remove_character_flag = craft_weapon_05
+		}
+		else_if = { 
+			limit = {
+				has_character_flag = craft_armour_01
+			}
+			agot_create_artifact_valyrian_steel_armor_effect = { OWNER = scope:host } 
+			remove_character_flag = craft_armour_01
+		}
+		else_if = {
+			limit = {
+				has_character_flag = craft_trinket_01
+			}
+			zz_valyria_create_magic_ring_effect ={ OWNER = scope:host    }
+			
+			remove_character_flag = craft_trinket_01			
+		}
+		else_if = {
+			limit = {
+				has_character_flag = craft_trinket_02
+			}
+			cv_create_artifact_dragon_saddle_effect ={ OWNER = scope:host  }
+			
+			remove_character_flag = craft_trinket_02			
+		}
+		else_if = {
+			limit = {
+				has_character_flag = craft_trinket_05
+			}
+			agot_create_random_glass_candle_effect = { OWNER =  scope:host   }
+			
+			remove_character_flag = craft_trinket_05			
+		}
+		zz_valyria_activities_item_crafting_crafting_apply_modifier_effect = yes 
+		scope:activity = {
+			add_to_variable_list = {
+				name = artifact_rewards
+				target = scope:newly_created_artifact
+			}
+		}	
+	}
+	else = { 
+		remove_character_flag = crafting_failure_reward
+	}
+}
+
+zz_valyria_activities_item_crafting_crafting_apply_modifier_effect = {
+	if = {
+		limit = {
+			has_character_flag = craft_modifier_01
+		}
+		remove_character_flag = craft_modifier_01
+		scope:newly_created_artifact = {
+			add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		}
+	}
+	if = {
+		limit = {
+			has_character_flag = craft_modifier_02
+		}
+		remove_character_flag = craft_modifier_02
+		scope:newly_created_artifact = {
+			add_artifact_modifier = zz_valyria_magic_xp_gain_modifier_01_stacking
+		}
+	}
+	if = {
+		limit = {
+			has_character_flag = craft_modifier_03
+		}
+		remove_character_flag = craft_modifier_03
+		scope:newly_created_artifact = {
+			add_artifact_modifier = zz_valyria_magic_xp_gain_passive_modifier
+		}
+	}
+}

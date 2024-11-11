@@ -18,8 +18,7 @@ zz_valyria_on_game_start_after_lobby = {
 
 quarterly_playable_pulse = {
 	on_actions = {
-		zz_valyria_mana_gain_nick_the_mage_on_action
-		zz_valyria_mana_gain_red_comet_on_action
+		zz_valyria_mana_gain_on_actions
 	}
 }
 
@@ -28,8 +27,15 @@ random_yearly_everyone_pulse = {
 	on_actions = {
 		zz_valyria_magic_dragon_life_extension
 		zz_valyria_magic_dragon_life_extension_lost 
+		zz_valyria_mana_gain_on_actions
+	}
+}
+
+zz_valyria_mana_gain_on_actions = {
+	on_actions = {
 		zz_valyria_mana_gain_nick_the_mage_on_action
 		zz_valyria_mana_gain_red_comet_on_action
+		zz_valyria_mana_gain_items_on_action
 	}
 }
 
@@ -82,6 +88,26 @@ zz_valyria_mana_gain_nick_the_mage_on_action = {
 	effect = {
 		zz_valyria_mana_gain = {
 			MANAGAIN = 1
+		}
+	}
+}
+
+zz_valyria_mana_gain_items_on_action = {
+	trigger = {
+		any_equipped_character_artifact = {
+			has_artifact_modifier = zz_valyria_magic_xp_gain_passive_modifier
+		}
+	}
+	effect = {
+		set_variable = { name = managain value = 0 days = 1 }
+		every_equipped_character_artifact = {			
+			limit = {
+				has_artifact_modifier = zz_valyria_magic_xp_gain_passive_modifier
+			}
+			change_variable = { name = managain add = 0.5 }
+		}
+		zz_valyria_mana_gain = {
+			MANAGAIN = var:managain
 		}
 	}
 }

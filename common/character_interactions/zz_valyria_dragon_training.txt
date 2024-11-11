@@ -279,7 +279,7 @@ zz_valyria_take_nickname_action = {
 	}
 	icon = icon_magic
 	common_interaction = no
-	interface_priority = 900
+	interface_priority = 999
 	category = interaction_secrets_of_valyria
 
 	cooldown_against_recipient = { days = 0 } 
@@ -467,6 +467,200 @@ zz_valyria_take_nickname_action = {
 			scope:recipient = {
 				NOT = {
 					has_nickname = nick_the_dragonknight
+				}
+			}
+		}	
+	}
+
+
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 100
+	}
+}
+
+zz_valyria_command_magic_school_action = {
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+			has_character_flag = dragon_training
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			has_trait = zz_magister
+		}
+	}
+	icon = icon_magic
+	common_interaction = no
+	interface_priority = 900
+	category = interaction_secrets_of_valyria
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 30 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:recipient = {
+			if = {
+				limit = {
+					scope:zz_generalist_school = yes
+				}
+				set_variable = {name = current_school_of_magic value = flag:generalist_magic}
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_blood_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:blood_magic}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_shadow_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:shadow_magic}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_dream_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:dream_magic}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_alchemy_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:alchemy_magic}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_fire_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:fire_magic}
+				}
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_air_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:air_magic }
+				}
+
+			}
+			else_if = { 
+				limit = { 
+					scope:zz_water_school = yes 
+				}
+				scope:recipient = {
+					set_variable = {name = current_school_of_magic value = flag:water_magic}
+				}
+			}
+		}
+	}
+	send_options_exclusive = yes
+
+	send_option = {
+		flag = zz_generalist_school
+		localization = zz_generalist_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:generalist_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_blood_school
+		localization = zz_blood_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:blood_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_shadow_school
+		localization = zz_shadow_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:shadow_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_dream_school
+		localization = zz_dream_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:dream_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_alchemy_school
+		localization = zz_alchemy_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:alchemy_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_fire_school
+		localization = zz_fire_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:fire_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_air_school
+		localization = zz_air_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:air_magic
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = zz_water_school
+		localization = zz_water_school
+		is_shown = {
+			scope:recipient = {
+				NOT = {
+					var:current_school_of_magic = flag:water_magic
 				}
 			}
 		}	
