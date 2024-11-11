@@ -251,13 +251,13 @@ zz_valyria_gain_spell_experience = {
 
 zz_valyria_magic_cast_effect = { 
 	random_list = { 
-		20 = { 
+		40 = { 
 			modifier = {
 				add = zz_spellcast_value
 			}
 			$SPELL$_effect = yes
 		}
-		80 = { 
+		60 = { 
 			zz_valyria_spell_failure_effect = yes
 		}
 	}
@@ -372,6 +372,16 @@ zz_add_spell = {
 					set_variable = {
 						name = learning_location
 						value = scope:spell_learner.location
+					}
+				}
+				scope:activity ?= {
+					add_activity_log_entry = {
+						key = learn_$SPELL$.t
+						score = 25
+						tags = { good learning activity }
+						character = root
+						#Effect
+						custom_tooltip = learn_$SPELL$.t
 					}
 				}
 			}
