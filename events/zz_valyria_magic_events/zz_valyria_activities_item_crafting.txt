@@ -39,7 +39,7 @@ zz_valyria_item_crafting.0009 = {
 		triggered_desc = {
 			trigger = {
 				scope:host = { 
-					has_character_flag = crafting_successs_reward 
+					has_character_flag = crafting_failure_reward_event 
 				}
 			}
 			desc = zz_valyria_item_crafting.0009.desc_perfect_reward
@@ -47,22 +47,36 @@ zz_valyria_item_crafting.0009 = {
 		triggered_desc = {
 			trigger = {
 				scope:host = { 
-					has_character_flag = crafting_failure_reward 
+					has_character_flag = crafting_failure_reward_event 
 				}
 			}
 			desc = zz_valyria_item_crafting.0009.desc_failure
 		}
 	}
-	theme = university
-
+	theme = dragon
 	center_portrait = {
 		character = root
-		animation = thinking
+		animation = happy_teacher
 	}
 
 	immediate = {
 		#Reward effects
 		scope:activity.activity_location = { save_scope_as = location }
+		involved_activity ?= {
+			#Perfect settlement - 65-100
+			if = {
+				limit = { var:activity_special_type_progression >= 65 }
+				scope:host = {
+					add_character_flag = crafting_successs_reward_event
+				}
+			}
+			#crafting failure
+			else = {
+				scope:host = {
+					add_character_flag = crafting_failure_reward_event
+				}
+			}
+		}
 	}
 		
 	option = {
@@ -86,8 +100,8 @@ zz_valyria_item_crafting.0009 = {
 		}
 	}
 	after = { 
-		remove_character_flag = crafting_successs_reward
-		remove_character_flag = crafting_failure_reward
+		remove_character_flag = crafting_successs_reward_event
+		remove_character_flag = crafting_failure_reward_event
 		
 	}
 }
@@ -119,12 +133,12 @@ zz_valyria_item_crafting.0010 = {
 			}
 		}
 	}
-	theme = university
-
+	theme = dragon
 	center_portrait = {
 		character = root
 		animation = happy_teacher
 	}
+
 
 	immediate = {
 		scope:activity.activity_location = { save_scope_as = location }
@@ -204,7 +218,7 @@ zz_valyria_item_crafting.0010 = {
 		name = zz_valyria_item_crafting.0010.craft_trinket_02
 		add_character_flag = { flag = craft_trinket_02 months = 3 } 
 		trigger_event = {
-			id = zz_valyria_item_crafting.0101
+			id = zz_valyria_item_crafting.0102
 			days = 1
 		 }
 	}
@@ -238,12 +252,14 @@ zz_valyria_item_crafting.0101 = {
 	type = activity_event
 	title = zz_valyria_item_crafting.0101.t
 	desc =  zz_valyria_item_crafting.0101.desc
-	immediate = {
-		scope:activity.activity_location = { save_scope_as = location }
-	}
+	theme = dragon
 	center_portrait = {
 		character = root
 		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
 	}
 	option = {
 		name = zz_valyria_item_crafting.0101.a
@@ -301,12 +317,14 @@ zz_valyria_item_crafting.0102 = {
 	type = activity_event
 	title = zz_valyria_item_crafting.0102.t
 	desc =  zz_valyria_item_crafting.0102.desc
-	immediate = {
-		scope:activity.activity_location = { save_scope_as = location }
-	}
+	theme = dragon
 	center_portrait = {
 		character = root
 		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
 	}
 	option = {
 		name = zz_valyria_item_crafting.0102.a
@@ -342,13 +360,15 @@ zz_valyria_item_crafting.0200 = {
 	type = activity_event
 	title = zz_valyria_item_crafting.0200.t
 	desc =  zz_valyria_item_crafting.0200.desc
-	immediate = {
-		scope:activity.activity_location = { save_scope_as = location }
-	}
+	theme = dragon
 	center_portrait = {
 		character = root
 		animation = happy_teacher
 	}
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
 	### Mana Gain Multiplier
 	option = {
 		name = zz_valyria_item_crafting.0200.a
@@ -365,7 +385,7 @@ zz_valyria_item_crafting.0200 = {
 	option = {
 		name = zz_valyria_item_crafting.0200.c
 		add_character_flag = { flag = craft_modifier_03 months = 3 }
-		scope:activity ?= {activity_special_type_progression_variable = { NUM = 100 }  }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -100 }  }
 	}
 	### Not for me
 	option = {
@@ -379,13 +399,16 @@ zz_valyria_item_crafting.0300 = {
 	type = activity_event
 	title = zz_valyria_item_crafting.0300.t
 	desc =  zz_valyria_item_crafting.0300.desc
-	immediate = {
-		scope:activity.activity_location = { save_scope_as = location }
-	}
+	theme = dragon
 	center_portrait = {
 		character = root
 		animation = happy_teacher
 	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
 	## use valyrian secrets
 	option = {
 		name = zz_valyria_item_crafting.0300.a
@@ -418,6 +441,12 @@ zz_valyria_item_crafting.0400 = {
 	type = activity_event
 	title = zz_valyria_item_crafting.0400.t
 	desc =  zz_valyria_item_crafting.0400.desc
+	theme = dragon
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
 	immediate = {
 		scope:activity.activity_location = { save_scope_as = location }
 		if = { 
@@ -433,10 +462,6 @@ zz_valyria_item_crafting.0400 = {
 				save_scope_as = crafting_sacrifice 
 			}
 		}
-	}
-	center_portrait = {
-		character = root
-		animation = happy_teacher
 	}
 	option = {
 		name = zz_valyria_item_crafting.0400.magic_catalyst_25
