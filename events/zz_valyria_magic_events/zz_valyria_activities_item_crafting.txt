@@ -63,7 +63,7 @@ zz_valyria_item_crafting.0009 = {
 	immediate = {
 		#Reward effects
 		scope:activity.activity_location = { save_scope_as = location }
-	
+	}
 		
 	option = {
 		name = zz_valyria_item_crafting.0009.a
@@ -160,21 +160,44 @@ zz_valyria_item_crafting.0010 = {
 		name = zz_valyria_item_crafting.0010.craft_armour_01
 		add_character_flag = { flag = craft_armour_01 months = 3 } 
 	}
-	### valyrian mirror
+	### magic_ring
 	option = {
-		name = zz_valyria_item_crafting.0010.craft_trinket_01
+		name = zz_valyria_item_crafting.0010.craft_trinket_01.a
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
 		add_character_flag = { flag = craft_trinket_01 months = 3 } 
+		trigger_event = {
+			id = zz_valyria_item_crafting.0101
+			days = 1
+		 }
 	}
+	## Craft Dragon Saddle
 	option = {
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
 		name = zz_valyria_item_crafting.0010.craft_trinket_02
 		add_character_flag = { flag = craft_trinket_02 months = 3 } 
+		trigger_event = {
+			id = zz_valyria_item_crafting.0101
+			days = 1
+		 }
 	}
+	## Craft Dragon Horn
 	option = {
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
 		name = zz_valyria_item_crafting.0010.craft_trinket_03
 		add_character_flag = { flag = craft_trinket_03 months = 3 } 
 	}
 	### Dragon Horn
 	option = {
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+			always = no
+		}
 		name = zz_valyria_item_crafting.0010.craft_trinket_04
 		add_character_flag = { flag = craft_trinket_04 months = 3 } 
 	}
@@ -190,64 +213,174 @@ zz_valyria_item_crafting.0010 = {
 	}
 }
 
+## Choose the type of magical ring you want
+zz_valyria_item_crafting.0101 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0101.t
+	desc =  zz_valyria_item_crafting.0101.desc
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.a
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_blood_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.b
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_shadow_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.c
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_dream_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.d
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_alchemy_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.e
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_fire_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.e
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_air_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.craft_trinket_01.f
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_water_magic months = 3}
+	}
+}
+
+## Choose your dragon saddle
+zz_valyria_item_crafting.0102 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0102.t
+	desc =  zz_valyria_item_crafting.0102.desc
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
+	option = {
+		name = zz_valyria_item_crafting.0102.craft_trinket_01.a
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = dragon_saddle_type value = flag:brown_common months = 3}
+		
+	}
+	option = {
+		name = zz_valyria_item_crafting.0102.craft_trinket_01.b
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = dragon_saddle_type value = flag:brown_masterwork months = 3}
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -15 }  }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0102.craft_trinket_01.c
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = dragon_saddle_type value = flag:black_famed months = 3}
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -30 }  }
+			
+	}
+}
+
+
 
 ### add a modifier at the expense of your progress 
-zz_valyria_item_crafting.0011= {
+zz_valyria_item_crafting.0200 = {
 	type = activity_event
-	title = zz_valyria_item_crafting.0010.t
-	desc =  zz_valyria_item_crafting.0010.desc
+	title = zz_valyria_item_crafting.0200.t
+	desc =  zz_valyria_item_crafting.0200.desc
 	immediate = {
 		scope:activity.activity_location = { save_scope_as = location }
 	}
 	### Mana Gain Multiplier
 	option = {
-		name = zz_valyria_item_crafting.0011.a
+		name = zz_valyria_item_crafting.0200.a
 		add_character_flag = { flag = craft_modifier_01 months = 3 } 
-		activity_special_type_progression_variable = { NUM = -25 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -25 }  }
 	}
 	### Magic Xp Gain
 	option = {
-		name = zz_valyria_item_crafting.0011.b
+		name = zz_valyria_item_crafting.0200.b
 		add_character_flag = { flag = craft_modifier_02 months = 3 } 
-		activity_special_type_progression_variable = { NUM = -45 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -50 }  }
 	}
 	### Passive Mana Gain
 	option = {
-		name = zz_valyria_item_crafting.0011.c
+		name = zz_valyria_item_crafting.0200.c
 		add_character_flag = { flag = craft_modifier_03 months = 3 }
-		activity_special_type_progression_variable = { NUM = -100 }  
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 100 }  }
 	}
 	### Not for me
 	option = {
-		name = zz_valyria_item_crafting.0011.z
+		name = zz_valyria_item_crafting.0200.z
 	}
 }
 
 ## Forging event, options for progress
 
-zz_valyria_item_crafting.0012= {
+zz_valyria_item_crafting.0300 = {
 	type = activity_event
-	title = zz_valyria_item_crafting.0012.t
-	desc =  zz_valyria_item_crafting.0012.desc
+	title = zz_valyria_item_crafting.0300.t
+	desc =  zz_valyria_item_crafting.0300.desc
 	immediate = {
 		scope:activity.activity_location = { save_scope_as = location }
 	}
 	option = {
-		name = zz_valyria_item_crafting.0012.a
+		name = zz_valyria_item_crafting.0300.a
 	}
 }
 
 
 ### intervention event, use second option to force event progress, spend mana, use dragon fire, kill someone. 
-zz_valyria_item_crafting.0013 = {
+zz_valyria_item_crafting.0400 = {
 	type = activity_event
-	title = zz_valyria_item_crafting.0013.t
-	desc =  zz_valyria_item_crafting.0013.desc
+	title = zz_valyria_item_crafting.0400.t
+	desc =  zz_valyria_item_crafting.0400.desc
 	immediate = {
 		scope:activity.activity_location = { save_scope_as = location }
+		if = { 
+			limit = {
+				scope:activity ?= {
+					has_activity_option = {
+						category = magic_item_crafting_catalyst
+						option = magic_item_crafting_catalyst_blood_sacrifice
+					}
+				}
+			}
+			random_courtier_or_guest = {
+				save_scope_as = crafting_sacrifice 
+			}
+		}
 	}
 	option = {
-		name = zz_valyria_item_crafting.0013.magic_catalyst_25
+		name = zz_valyria_item_crafting.0400.magic_catalyst_25
 		trigger = {
 			scope:activity ?= {
 				has_activity_option = {
@@ -260,10 +393,10 @@ zz_valyria_item_crafting.0013 = {
 		zz_valyria_mana_spend = {
 			MANACOST = 25
 		} 
-		activity_special_type_progression_variable = { NUM = 25 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 25 }  }
 	}
 	option = {
-		name = zz_valyria_item_crafting.0013.magic_catalyst_50
+		name = zz_valyria_item_crafting.0400.magic_catalyst_50
 		trigger = {
 			scope:activity ?= {
 				has_activity_option = {
@@ -276,10 +409,10 @@ zz_valyria_item_crafting.0013 = {
 		zz_valyria_mana_spend = {
 			MANACOST = 50
 		} 
-		activity_special_type_progression_variable = { NUM = 50 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 50 }  }
 	}
 	option = {
-		name = zz_valyria_item_crafting.0013.magic_catalyst_100
+		name = zz_valyria_item_crafting.0400.magic_catalyst_100
 		trigger = {
 			scope:activity ?= {
 				has_activity_option = {
@@ -292,10 +425,10 @@ zz_valyria_item_crafting.0013 = {
 		zz_valyria_mana_spend = {
 			MANACOST = 100
 		} 
-		activity_special_type_progression_variable = { NUM = 100 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 100 }  }
 	}
 	option = {
-		name = zz_valyria_item_crafting.0013.dragon_fire_catalyst
+		name = zz_valyria_item_crafting.0400.dragon_fire_catalyst
 		trigger = {
 			scope:activity ?= {
 				has_activity_option = {
@@ -306,14 +439,41 @@ zz_valyria_item_crafting.0013 = {
 		}
 		random_list = { 
 			1 = {
-				activity_special_type_progression_variable = { NUM = 25  } 
+				scope:activity ?= {activity_special_type_progression_variable = { NUM = 25 }  }
 			}
 			1 = {
-				activity_special_type_progression_variable = { NUM = 45  } 
+				scope:activity ?= {activity_special_type_progression_variable = { NUM = 50 }  }
 			}
 			1 = {
-				activity_special_type_progression_variable = { NUM = 150  } 
+				scope:activity ?= {activity_special_type_progression_variable = { NUM = 150 }  }
 			}
 		}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0400.blood_sacrifice_catalyst
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_blood_sacrifice
+				}
+			}
+		}
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 200 }  }
+		add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:crafting_sacrifice}
+		execute_opinion_effect = {
+			VICTIM = scope:crafting_sacrifice
+			EXECUTIONER = scope:host
+		}
+		scope:crafting_sacrifice = {
+			death = {
+				killer = scope:crafting_sacrifice
+				death_reason = death_sacrificed_to_gods
+			}
+		}
+	}
+	### Do not seek enchancement
+	option = {
+		name = zz_valyria_item_crafting.0400.z
 	}
 }

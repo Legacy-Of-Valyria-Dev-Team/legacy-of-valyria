@@ -1,3 +1,6 @@
+
+
+
 resolve_zz_valyria_item_crafting_success_reward_effect = {
 	involved_activity ?= {
 		#Perfect settlement - 65-100
@@ -16,9 +19,15 @@ resolve_zz_valyria_item_crafting_success_reward_effect = {
 	}
 }
 
+
 zz_valyria_create_magic_ring_effect = {
 	$OWNER$ = { save_scope_as = owner }
 	set_artifact_rarity_illustrious = yes
+
+	save_scope_value_as = {
+		name = ring_modifier
+		value = flag:$RING_MODIFIER$
+	}
 
 	create_artifact = {
 		name = zz_valyria_artifact_mages_ring_name
@@ -167,17 +176,83 @@ zz_valyria_activities_item_crafting_crafting_reward_effect = {
 			limit = {
 				has_character_flag = craft_trinket_01
 			}
-			zz_valyria_create_magic_ring_effect ={ OWNER = scope:host    }
-			
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_blood_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = blood_magic   }
+			}
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_shadow_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = shadow_magic   }	
+			}
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_dream_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = dream_magic   }	
+			}
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_alchemy_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = alchemy_magic   }	
+			}
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_fire_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = fire_magic   }	
+			}
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_air_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = air_magic   }	
+			}
+			if = {
+				limit = {
+					var:magic_ring_type = flag:ring_water_magic 
+				}
+				zz_valyria_create_magic_ring_effect ={ OWNER = scope:host RING_MODIFIER = water_magic   }	
+			}
+			remove_variable = magic_ring_type
 			remove_character_flag = craft_trinket_01			
 		}
 		else_if = {
 			limit = {
 				has_character_flag = craft_trinket_02
 			}
-			cv_create_artifact_dragon_saddle_effect ={ OWNER = scope:host  }
-			
+			if = {
+				limit = {
+					var:dragon_saddle_type = flag:brown_common 
+				}
+				cv_create_artifact_dragon_saddle_effect ={ OWNER = scope:host TYPE = brown_common   }
+			}
+			if = {
+				limit = {
+					var:dragon_saddle_type = flag:brown_masterwork 
+				}
+				cv_create_artifact_dragon_saddle_effect ={ OWNER = scope:host TYPE = brown_masterwork   }
+			}
+			if = {
+				limit = {
+					var:dragon_saddle_type = flag:black_famed 
+				}
+				cv_create_artifact_dragon_saddle_effect ={ OWNER = scope:host TYPE = black_famed   }
+			}
+			remove_variable = dragon_saddle_type
 			remove_character_flag = craft_trinket_02			
+		}
+		else_if = {
+			limit = {
+				has_character_flag = craft_trinket_03
+			}
+			agot_create_artifact_dragon_horn_effect = { OWNER = scope:host DRAGON = scope:host }
+			
+			remove_character_flag = craft_trinket_03			
 		}
 		else_if = {
 			limit = {
