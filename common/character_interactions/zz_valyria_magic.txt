@@ -3696,7 +3696,89 @@ zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_interaction = {
 	}
 }
 
+zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_interaction = {
+	
+	desc = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_interaction_desc
+	
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+				MANACOST = 50
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+			}
+			is_imprisoned = no
+		}
+		scope:recipient = {NOT = { has_trait = dragon }}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+				MANACOST = 50
+			}
+		}
+	}
+	icon = alchemy_magic
+	common_interaction = no
+	interface_priority = 404
+	category = interaction_magic_friendly
 
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 50
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = alchemy_magic
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL  = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+			}	
+		}
+	}
+	send_options_exclusive = yes	
+	send_option = {
+		flag = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1
+		localization = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1
+	}
+    send_option = {
+		flag = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1
+		localization = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_2
+	}
+
+	
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+	}
+}
 
 ## Fire Magic
 

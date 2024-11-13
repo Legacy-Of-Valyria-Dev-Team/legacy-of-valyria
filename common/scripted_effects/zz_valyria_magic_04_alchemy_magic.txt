@@ -310,3 +310,63 @@ zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_effect = {
 		}
 	}
 }
+
+
+zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification.t
+		desc = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification.tt
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = {			
+			if = {
+				limit = {
+					scope:zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1 = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_alchemy_apply_character_modifier_effect = { 
+						MODIFIER = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1_modifier
+						DURATION = -1
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					scope:zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_2 = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_alchemy_apply_character_modifier_effect = { 
+						MODIFIER =zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_2_modifer
+						DURATION = -1
+					}
+				}
+			}
+			
+			
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}
