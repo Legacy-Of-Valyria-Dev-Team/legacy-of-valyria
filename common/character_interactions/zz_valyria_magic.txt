@@ -186,6 +186,26 @@ valyria_magic_teach_spell = {
 				}
 			}
 		}
+		else_if = {
+			limit = {
+				scope:teach_zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood = yes
+			}
+			scope:recipient = {
+				zz_add_spell = { 
+					SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:teach_zz_valyria_magic_blood_magic_11_mysteries_of_longevity = yes
+			}
+			scope:recipient = {
+				zz_add_spell = { 
+					SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+				}
+			}
+		}
 
 		else_if = {
 			limit = {
@@ -304,6 +324,16 @@ valyria_magic_teach_spell = {
 			scope:recipient = {
 				zz_add_spell = { 
 					SPELL = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:teach_zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification = yes
+			}
+			scope:recipient = {
+				zz_add_spell = { 
+					SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
 				}
 			}
 		}
@@ -718,6 +748,44 @@ valyria_magic_teach_spell = {
 			}
 		}	
 	}
+	send_option = {
+		flag = teach_zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+		localization = teach_zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+		is_shown = {
+			scope:zz_valyria_magic_teach_magic_01_blood_magic = yes
+			scope:secondary_actor  ?= {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+				}
+			}
+			scope:recipient ?= {
+				NOT = { 
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+					}
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = teach_zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+		localization = teach_zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+		is_shown = {
+			scope:zz_valyria_magic_teach_magic_01_blood_magic = yes
+			scope:secondary_actor  ?= {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+				}
+			}
+			scope:recipient ?= {
+				NOT = { 
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+					}
+				}
+			}
+		}	
+	}
 	
 	send_option = {
 		flag = shadow_magic_speed
@@ -942,6 +1010,25 @@ valyria_magic_teach_spell = {
 				NOT = { 
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
+					}
+				}
+			}
+		}	
+	}
+	send_option = {
+		flag = teach_zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+		localization = teach_zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+		is_shown = {
+			scope:zz_valyria_magic_teach_magic_04_alchemy_magic = yes 
+			scope:secondary_actor  ?= {
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+				}
+			}
+			scope:recipient ?= {
+				NOT = { 
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
 					}
 				}
 			}
@@ -2090,7 +2177,7 @@ zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_interaction = 
 	is_valid_showing_failures_only = {
 		scope:actor = {
 			zz_valyria_valid_caster_court = {
-				SPELL  = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				SPELL  = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
 				MANACOST = 35
 			}
 		}
@@ -2110,6 +2197,155 @@ zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_interaction = 
 			scope:secondary_actor = {
 				zz_valyria_mana_spend = {
 					MANACOST = 35
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = blood_magic
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood_interaction = {
+	
+	desc = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood_interaction_desc
+	
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+				MANACOST = 35
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+			}
+			is_imprisoned = no
+		}
+		scope:recipient = {
+			NOR = { 23
+				has_character_flag = historical_dragonseed
+				agot_is_dragonblood_character = yes
+				agot_has_dragonblood_heritage = yes 
+			}
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+				MANACOST = 35
+			}
+		}
+	}
+	icon = blood_magic
+	common_interaction = no
+	interface_priority = 992
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 35
+				} 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 1 
+					XPTRACK = blood_magic
+				}
+			}
+			zz_valyria_magic_cast_effect = { 
+				SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+zz_valyria_magic_blood_magic_11_mysteries_of_longevity_interaction = {
+	
+	desc = zz_valyria_magic_blood_magic_11_mysteries_of_longevity_interaction_desc
+	
+	populate_actor_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+				MANACOST = 25
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+			}
+			is_imprisoned = no
+		}
+		scope:recipient = {
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+				MANACOST = 25
+			}
+		}
+	}
+	icon = blood_magic
+	common_interaction = no
+	interface_priority = 992
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_actor = {
+				zz_valyria_mana_spend = {
+					MANACOST = 25
 				} 
 				zz_valyria_gain_spell_experience = {
 					XPGAIN = 1 
