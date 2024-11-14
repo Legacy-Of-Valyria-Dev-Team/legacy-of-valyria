@@ -1,0 +1,74 @@
+﻿unite_valyria_empire_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_decision_roman_restoration.dds"
+	}
+	desc = unite_valyria_empire_decision_desc
+	selection_tooltip = unite_valyria_empire_decision_tooltip
+	decision_group_type = zz_valyria_colonisation
+
+	ai_check_interval = 120
+
+	is_shown = {
+		is_ruler = yes
+		is_playable_character = yes
+		primary_title = title:e_valyria
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_valyrian_empire
+			}
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_has_flag = government_is_freehold
+			government_has_flag = government_is_administrative
+		}
+	}
+
+	is_valid = {
+		prestige_level >= max_prestige_level
+
+		completely_controls = title:e_valyria
+		completely_controls = title:e_lands_of_long_summer
+	}
+
+	is_valid_showing_failures_only = {
+		is_landed = yes
+		is_capable_adult = yes
+		is_imprisoned = no
+		is_independent_ruler = yes
+
+		OR = {
+			religion = { is_in_family = rf_valyrian }
+			religion = religion:valyrian
+			culture = { has_cultural_pillar = heritage_valyrian }
+		}
+	}
+
+	effect = {
+		custom_tooltip = restore_roman_empire_decision_effect_tooltip
+		show_as_tooltip = {
+			cv_unite_valyria_empire_decision_scripted_effect = yes
+		}
+		hidden_effect = {
+			add_to_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_valyrian_empire
+			}
+			set_global_variable = {
+				name = flag_restored_valyrian_empire
+				value = root
+			}
+		}
+	}
+	
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 100
+	}
+}
