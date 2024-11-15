@@ -1587,3 +1587,211 @@ start_raid_estate_interaction = {
 		}
 	}
 }
+
+cabinet_of_curiosities_interaction = {
+	category = interaction_category_admin
+	common_interaction = yes
+	interface_priority = 60
+	desc = cabinet_of_curiosities_interaction_desc
+	icon = artisan_inspiration
+
+	target_type = artifact
+	target_filter = actor_artifacts
+
+	can_be_picked_artifact = {
+		scope:actor = {
+			any_artifact = {
+				this = scope:target
+			}
+			#block the artifact from the laamp escort contract
+			NOT = {
+				any_scheme = {
+					var:escorted_artifact ?= scope:target
+				}
+			}
+		}
+	}
+
+	is_shown = {
+		scope:recipient = scope:actor
+		scope:actor = {
+			domicile ?= {
+				OR = {
+					has_domicile_building_or_higher = cabinet_of_curiosities_01
+					has_domicile_building_or_higher = dragonkeep_cabinet_of_curiosities_01
+				}
+				
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		# needs to have an artifact to give away
+		scope:actor = {
+			has_any_artifact = yes
+			is_imprisoned = no
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = cabinet_of_curiosities_interaction_notification
+				left_icon = scope:actor
+				right_icon = scope:target
+
+				custom_tooltip = artifact_added_to_domicile_tt
+
+				# Determine Bonus
+				if = {
+					limit = {
+						scope:target = { is_unique = yes }
+					}
+					house = {
+						if = {
+							limit = {
+								has_variable = ep3_legacy_domicile_artifact_counter_unique
+							}
+							change_variable = {
+								name = ep3_legacy_domicile_artifact_counter_unique
+								add = 1
+							}
+						}
+						else = {
+							set_variable = {
+								name = ep3_legacy_domicile_artifact_counter_unique
+								value = 1
+							}
+						}
+					}
+				}
+				scope:target = {
+					if = {
+						limit = { rarity = common }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_common
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_common
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_common
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = masterwork }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_masterwork
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_masterwork
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_masterwork
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = famed }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_famed
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_famed
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_famed
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = illustrious }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_illustrious
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_illustrious
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_illustrious
+									value = 1
+								}
+							}
+						}
+					}
+				}
+			}
+
+			custom_tooltip = add_artifact_to_domicile_warning
+			hidden_effect = {
+				destroy_artifact = scope:target
+				house = {
+					if = {
+						limit = {
+							has_variable = ep3_legacy_domicile_artifact_counter
+						}
+						change_variable = {
+							name = ep3_legacy_domicile_artifact_counter
+							add = 1
+						}
+					}
+					else = {
+						set_variable = {
+							name = ep3_legacy_domicile_artifact_counter
+							value = 1
+						}
+					}
+				}
+			}
+		}
+	}
+
+	auto_accept = yes
+
+	# AI
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 84
+
+	ai_potential = {
+		has_any_unequipped_artifact = yes
+		any_character_artifact = {
+			count >= 5
+			is_equipped = no
+		}
+	}
+
+	ai_will_do = {
+		base = 30
+	}
+}
