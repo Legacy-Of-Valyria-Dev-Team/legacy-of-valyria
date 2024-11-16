@@ -6,7 +6,7 @@
 		left_icon = scope:actor
 		right_icon = scope:recipient
 		custom_tooltip = spell_failure_txt
-		scope:secondary_actor  = {
+		scope:secondary_recipient  = {
 			random_list = {
 				50 = {
 					increase_wounds_effect = { REASON = fire_magic }
@@ -60,7 +60,7 @@ zz_vayria_magic_duel_contest_effect = {
 		limit = {
 			scope:weaken_spell_flag = yes
 		}
-		scope:secondary_actor = {
+		scope:secondary_recipient = {
 			duel = {
 				skill = learning 
 				target = scope:recipient
@@ -117,7 +117,7 @@ zz_vayria_magic_duel_contest_effect = {
 		limit = {
 			scope:weaken_spell_flag = no
 		}
-		scope:secondary_actor = {
+		scope:secondary_recipient = {
 			duel = {
 				skill = learning 
 				target = scope:recipient
@@ -189,7 +189,7 @@ zz_vayria_magic_duel_contest_effect = {
 								}	
 							}
 						}
-						execute_opinion_effect = { VICTIM = scope:recipient EXECUTIONER = scope:secondary_actor }
+						execute_opinion_effect = { VICTIM = scope:recipient EXECUTIONER = scope:secondary_recipient }
 					}
 					scope:recipient = {
 						add_trait_xp = {
@@ -198,7 +198,7 @@ zz_vayria_magic_duel_contest_effect = {
 						}
 						death = {
 							death_reason = death_fire_magic
-							killer = scope:secondary_actor
+							killer = scope:secondary_recipient
 						}
 					}
 				}
@@ -286,7 +286,7 @@ zz_old_strike_effect = {
 		add_dread = major_dread_gain
 		if = {
 			limit = {
-				scope:secondary_actor = {
+				scope:secondary_recipient = {
 					is_in_army = yes
 					exists = commanding_army
 					commanding_army = {
@@ -302,9 +302,9 @@ zz_old_strike_effect = {
 								is_army_in_combat = yes
 							}
 							NOT = {
-								commanding_army = scope:secondary_actor.commanding_army
+								commanding_army = scope:secondary_recipient.commanding_army
 							}
-							commanding_army.location = scope:secondary_actor.commanding_army.location
+							commanding_army.location = scope:secondary_recipient.commanding_army.location
 						}
 						AND = {
 							exists = liege_or_court_owner
@@ -312,16 +312,16 @@ zz_old_strike_effect = {
 								any_army = {
 									is_army_in_combat = yes
 									NOT = {
-										THIS = scope:secondary_actor.commanding_army
+										THIS = scope:secondary_recipient.commanding_army
 									}
-									location = scope:secondary_actor.commanding_army.location
+									location = scope:secondary_recipient.commanding_army.location
 								}
 							}
 						}
 					}
 				}
 			}
-			scope:secondary_actor = {
+			scope:secondary_recipient = {
 				add_character_flag = mage_during_battle_flag
 			}
 		}
@@ -389,7 +389,7 @@ zz_old_strike_effect = {
 		}
 		if = {
 			limit = {
-				scope:secondary_actor = {
+				scope:secondary_recipient = {
 					has_character_flag = mage_during_battle_flag
 				}
 			}
@@ -400,15 +400,15 @@ zz_old_strike_effect = {
 				}
 				death = {
 					death_reason = death_battle
-					killer = scope:secondary_actor
+					killer = scope:secondary_recipient
 				}
 			}
-			scope:secondary_actor = {
+			scope:secondary_recipient = {
 				remove_character_flag = mage_during_battle_flag
 			}
 		}
 		else = {
-			execute_opinion_effect = { VICTIM = scope:recipient EXECUTIONER = scope:secondary_actor }
+			execute_opinion_effect = { VICTIM = scope:recipient EXECUTIONER = scope:secondary_recipient }
 			scope:recipient = {
 				add_trait_xp = {
 					trait = burned
@@ -416,7 +416,7 @@ zz_old_strike_effect = {
 				}
 				death = {
 					death_reason = death_execution
-					killer = scope:secondary_actor
+					killer = scope:secondary_recipient
 				}
 			}
 		}
