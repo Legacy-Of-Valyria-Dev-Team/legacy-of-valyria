@@ -17,6 +17,9 @@ zz_create_cadet_branch = {
 		}
 		
 		scope:recipient = {
+			exists = house
+			exists = house.house_head
+			is_house_head = no
 			liege = scope:actor
 			is_ruler = yes
 			#has_trait = dragonrider
@@ -995,5 +998,800 @@ grant_freehold_interaction = {
 			}
 			add = 100
 		}
+	}
+}
+request_raid_remit_interaction = {
+	icon = icon_request_raid_remit
+	category = interaction_category_admin
+	interface_priority = 90
+
+	desc = request_raid_remit_interaction_desc
+	use_diplomatic_range = yes
+
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+
+	cooldown_against_recipient = { years = 5 }
+
+	is_shown = {
+		scope:actor = {
+			is_independent_ruler = no
+			government_allows = administrative
+		}
+		scope:secondary_recipient ?= {
+			NOT = { house = scope:recipient.house }
+			top_liege = scope:actor.top_liege
+			NOT = { house = scope:actor.house }
+			government_allows = administrative
+			any_held_title = { is_noble_family_title = yes }
+		}
+		#AGOT ADDED
+		scope:actor = {
+			is_human = yes
+		}
+		scope:recipient = {
+			is_human = yes
+		}
+		scope:secondary_recipient ?= {
+			is_human = yes
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			is_adult = yes
+			custom_tooltip = {
+				text = raid_estate_noble_family_tt
+				any_held_title = { is_noble_family_title = yes }
+				house.house_head ?= this
+			}
+			custom_tooltip = {
+				text = raid_estate_already_remit_tt
+				NOT = { exists = var:raid_estate_permission }
+			}
+		}
+		scope:recipient.house.house_head ?= {
+			custom_tooltip = {
+				text = raid_estate_noble_family_target_tt
+				any_held_title = { is_noble_family_title = yes }
+			}
+			custom_tooltip = {
+				text = raid_estate_estate_tt
+				domicile ?= { is_domicile_type = estate }
+			}
+			custom_tooltip = {
+				text = raid_estate_estate_tt
+				domicile ?= { is_domicile_type = dragonkeep }
+			}
+		}
+		scope:actor = {
+			NOT = { is_at_war_with = scope:recipient }
+		}
+	}
+
+	populate_recipient_list = {
+		scope:actor.top_liege = {
+			every_noble_family = {
+				limit = {
+					NOR = {
+						holder = scope:actor
+						holder = scope:actor.top_liege
+					}
+				}
+				holder = { add_to_list = characters }
+			}
+		}
+	}
+
+	redirect = {
+		scope:recipient.house.house_head ?= { save_scope_as = secondary_recipient }
+		scope:actor.top_liege = { save_scope_as = recipient }
+	}
+
+	send_option = {
+		is_valid = { scope:actor.gold >= scope:actor.minor_gold_value }
+		flag = gold
+		localization = GENERIC_SPEND_GOLD
+	}
+	send_option = {
+		is_valid = {
+			scope:actor = { has_usable_hook = scope:recipient }
+			NOT = {
+				scope:recipient = { has_hook = scope:actor }
+			}
+		}
+		flag = hook
+		localization = GENERIC_SPEND_A_HOOK
+	}
+	should_use_extra_icon = {
+		scope:actor = { has_usable_hook = scope:recipient }
+	}
+	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
+
+	send_options_exclusive = no
+
+	on_accept = {
+		if = {
+			limit = { scope:gold = yes }
+			scope:actor = {
+				pay_short_term_gold = {
+					target = scope:recipient
+					gold = scope:actor.minor_gold_value
+				}
+			}
+		}
+		scope:recipient = { custom_tooltip = request_raid_remit_interaction_effect_tt }
+		custom_tooltip = request_raid_remit_interaction_duration_tt
+		hidden_effect = {
+			scope:actor = { trigger_event = ep3_interactions_events.0421 }
+		}
+	}
+
+	on_decline = {
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_bad
+				title = request_raid_remit_effect_toast
+				left_icon = scope:recipient
+				right_icon = scope:actor
+				scope:recipient = {
+					send_interface_toast = {
+						type = event_toast_effect_bad
+						title = request_raid_remit_effect_toast
+						left_icon = scope:recipient
+						right_icon = scope:actor
+						if = {
+							limit = { scope:actor = { is_ai = yes } }
+							reverse_add_opinion = {
+								modifier = angry_opinion
+								opinion = -20
+								target = scope:actor
+							}
+						}
+						if = {
+							limit = { is_ai = yes }
+							add_opinion = {
+								modifier = respect_opinion
+								opinion = -10
+								target = scope:actor
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	cost = {
+		influence = {
+			add = scope:actor.massive_influence_value
+			# Being a Powerful or Dominant Family reduces the cost significantly
+			scope:actor.house = {
+				if = {
+					limit = { is_dominant_family = yes }
+					add = {
+						value = massive_influence_value
+						multiply = -0.75
+						desc = is_dominant_family_desc
+					}
+				}
+				else_if = {
+					limit = { is_powerful_family = yes }
+					add = {
+						value = massive_influence_value
+						multiply = -0.5
+						desc = is_powerful_family_desc
+					}
+				}
+			}
+		}
+	}
+
+	ai_potential = {
+		is_house_head = yes
+		house ?= {
+			any_house_member = {
+				count <= 5
+				is_alive = yes
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = peer_vassals
+		ai_recipients = scripted_relations
+		max = 10
+	}
+
+	ai_accept = {
+		base = -30
+		modifier = {
+			scope:hook = yes
+			add = 40
+			desc = SCHEME_WEAK_HOOK_USED
+		}
+		modifier = {
+			scope:gold = yes
+			add = 25
+			desc = SCHEME_WITH_GIFT_SIGNIFICANT
+		}
+		modifier = { # Target house is powerful
+			add = -10
+			desc = MY_HOUSE_IS_POWERFUL
+			scope:secondary_recipient.house ?= { is_powerful_family = yes }
+		}
+		modifier = { # Target house is dominant
+			add = -25
+			desc = MY_HOUSE_IS_DOMINANT
+			scope:secondary_recipient.house ?= { is_dominant_family = yes }
+		}
+		modifier = {
+			scope:actor.house = { is_powerful_family = yes }
+			add = 10
+			desc = YOUR_FAMILY_IS_POWERFUL
+		}
+		modifier = {
+			scope:actor.house = { is_dominant_family = yes }
+			add = 25
+			desc = YOUR_FAMILY_IS_DOMINANT
+		}
+		modifier = {
+			scope:recipient.primary_spouse ?= { house ?= scope:secondary_recipient.house }
+			add = -10
+			desc = MY_SPOUSES_HOUSE
+		}
+		modifier = {
+			any_child = { house = scope:secondary_recipient.house }
+			add = -10
+			desc = MY_CHILDS_HOUSE
+		}
+		modifier = {
+			is_close_family_of = scope:secondary_recipient
+			add = -10
+			desc = TARGET_IS_MY_CLOSE_FAMILY
+		}
+		opinion_modifier = {
+			opinion_target = scope:actor
+			multiplier = 0.5
+		}
+		opinion_modifier = {
+			opinion_target = scope:secondary_recipient
+			multiplier = -0.5
+		}
+		modifier = {
+			has_relation_rival = scope:secondary_recipient
+			add = 10
+			desc = THEY_ARE_MY_RIVAL
+		}
+		modifier = {
+			add = -10
+			desc = THEY_ARE_MY_FRIEND
+			scope:secondary_recipient = { has_relation_friend = scope:recipient }
+		}
+		modifier = { # You're my friend :)
+			add = 10
+			desc = youre_my_friend_tt
+			has_relation_friend = scope:actor
+		}
+		modifier = { # You're my rival >:(
+			add = -10
+			desc = ai_opinion.reason.relation.rival
+			has_relation_rival = scope:actor
+		}
+		modifier = { # You're my guardian
+			add = 10
+			desc = youre_my_guardian_tt
+			has_relation_guardian = scope:actor
+		}
+		ai_value_modifier = {
+			ai_boldness = -0.2
+			ai_honor = -0.2
+		}
+	}
+
+	ai_frequency = 120
+
+	ai_will_do = {
+		base = -25
+		opinion_modifier = { # Opinion
+			opinion_target = scope:recipient
+			multiplier = -0.5
+		}
+		modifier = { # My rival
+			add = 25
+			scope:actor = { has_relation_rival = scope:recipient }
+		}
+		modifier = { # My friend
+			add = -25
+			scope:actor = { has_relation_friend = scope:recipient }
+		}
+		modifier = {
+			existing_feud_against_target_trigger = { TARGET = scope:recipient }
+			add = 15
+		}
+	}
+}
+
+start_raid_estate_interaction = {
+	icon = icon_raid_estate
+	interface_priority = 90
+	category = interaction_category_admin
+	send_name = START_SCHEME 
+	scheme = raid_estate
+	ignores_pending_interaction_block = yes  
+	ai_frequency = 60
+
+	ai_targets = { ai_recipients = liege }
+	ai_targets = {
+		ai_recipients = peer_vassals
+		max = 20
+	}
+	ai_targets = {
+		ai_recipients = vassals
+		max = 20
+	}
+
+	cooldown = { years = 5 }
+
+	highlighted_reason = start_raid_estate_interaction_HIGHLIGHTED
+
+	is_highlighted = { scope:actor.var:raid_estate_permission ?= scope:recipient.house }
+
+	is_shown = {
+		scope:actor = { government_allows = administrative }
+		scope:recipient.house.house_head ?= {
+			exists = house
+			NOT = { house = scope:actor.house }
+			top_liege = scope:actor.top_liege
+			government_allows = administrative
+			any_held_title = { is_noble_family_title = yes }
+		}
+		#AGOT ADDED
+		scope:actor = {
+			is_human = yes
+		}
+		scope:recipient = {
+			is_human = yes
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			is_available_adult = yes
+			custom_tooltip = {
+				text = raid_estate_noble_family_tt
+				any_held_title = { is_noble_family_title = yes }
+				house.house_head ?= this
+			}
+		}
+		scope:recipient.house.house_head ?= {
+			custom_tooltip = {
+				text = raid_estate_noble_family_target_tt
+				any_held_title = { is_noble_family_title = yes }
+			}
+			OR = {
+				custom_tooltip = {
+					text = raid_estate_estate_tt
+					domicile ?= { is_domicile_type = estate }
+				}
+				custom_tooltip = {
+					text = raid_estate_estate_tt
+					domicile ?= { is_domicile_type = dragonkeep }
+				}
+			}
+
+		}
+	}
+
+	desc = start_raid_estate_interaction_desc
+
+	# Scheme Starter Packages
+	options_heading = schemes.t.agent_packages
+	send_options_exclusive = yes
+	## Balanced agents.
+	send_option = {
+		flag = agent_focus_balance
+		current_description = start_raid_estate_interaction.tt.agent_focus_balance
+	}
+	## Focused on Success Chance.
+	send_option = {
+		flag = agent_focus_success
+		current_description = start_raid_estate_interaction.tt.agent_focus_success
+	}
+	## Focused on Speed.
+	send_option = {
+		flag = agent_focus_speed
+		current_description = start_raid_estate_interaction.tt.agent_focus_speed
+	}
+	## Focused on Secrecy.
+	send_option = {
+		flag = agent_focus_secrecy
+		current_description = start_raid_estate_interaction.tt.agent_focus_secrecy
+	}
+
+	on_accept = {
+		scope:recipient = { 
+			custom_tooltip = raid_estate_kill_maim_imprison_house_members_tt
+			custom_tooltip = raid_estate_destroy_buildings_tt
+			custom_tooltip = raid_estate_house_modifier_tt
+			random_held_title = {
+				limit = { is_noble_family_title = yes }
+				save_scope_as = target_title
+			}
+		}
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = start_raid_estate_notification
+				left_icon = scope:recipient					
+				right_icon = scope:target_title
+				# Success.
+				if = {
+					limit = { scope:agent_focus_success ?= yes }
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Success.
+						AGENT_1 = agent_scout
+						AGENT_2 = agent_scout
+						AGENT_3 = agent_muscle
+						# Speed.
+						AGENT_4 = agent_infiltrator
+						# Secrecy.
+						AGENT_5 = agent_lookout
+					}
+				}
+				# Speed.
+				else_if = {
+					limit = { scope:agent_focus_speed ?= yes }
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Speed.
+						AGENT_1 = agent_infiltrator
+						AGENT_2 = agent_infiltrator
+						AGENT_3 = agent_footpad
+						# Success.
+						AGENT_4 = agent_scout
+						# Secrecy.
+						AGENT_5 = agent_lookout
+					}
+				}
+				# Secrecy.
+				else_if = {
+					limit = { scope:agent_focus_secrecy ?= yes }
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Secrecy.
+						AGENT_1 = agent_lookout
+						AGENT_2 = agent_lookout
+						AGENT_3 = agent_alibi
+						# Success.
+						AGENT_4 = agent_scout
+						# Speed.
+						AGENT_5 = agent_infiltrator
+					}
+				}
+				# Balanced.
+				else = {
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Success.
+						AGENT_1 = agent_scout
+						AGENT_2 = agent_muscle
+						# Speed.
+						AGENT_3 = agent_infiltrator
+						AGENT_4 = agent_footpad
+						# Secrecy.
+						AGENT_5 = agent_lookout
+					}
+				}
+			}
+			# Scheme progress bonus from education
+			education_5_scheme_progress_effect = { SKILL = intrigue }
+			# Scheme bonuses from being the emperor/dominant family/powerful family
+			ep3_actor_scheme_modifier_effect = yes
+
+			custom_tooltip = raid_estate_gain_coin_tt
+			if = {
+				limit = {
+					has_relation_rival = scope:recipient
+				}
+				custom_tooltip = raid_estate_nemesis_relation_tt
+			}
+			else = {
+				custom_tooltip = raid_estate_rival_relation_tt
+			}
+
+			stress_impact = {
+				content = medium_stress_impact_gain
+			}
+			if = {
+				limit = {
+					has_relation_nemesis = scope:recipient
+				}
+				stress_impact = { base = major_stress_impact_loss }
+			}
+			else_if = {
+				limit = {
+					has_relation_rival = scope:recipient
+				}
+				stress_impact = { base = medium_stress_impact_loss }
+			}
+		}
+	}
+
+	ai_potential = {
+		NOT = {
+			any_scheme = { is_hostile = yes }
+		}
+		any_held_title = { is_noble_family_title = yes }
+	}
+	
+	auto_accept = yes
+
+	ai_will_do = {
+		base = -20
+		#Personality
+		modifier = {
+			has_trait = vengeful
+			add = 15
+		}
+		modifier = {
+			has_trait = forgiving
+			add = -15
+		}
+		modifier = {
+			has_trait = brave
+			add = 15
+		}
+		modifier = {
+			has_trait = craven
+			add = -15
+		}
+		# Relationships
+		modifier = {
+			add = -25
+			has_any_moderate_good_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = -50
+			has_any_best_good_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = 15
+			has_any_mild_bad_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = 25
+			has_any_moderate_bad_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = 50
+			has_any_worst_bad_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			scope:recipient.house = scope:actor.top_liege.house
+			add = -25
+		}
+		opinion_modifier = {
+			who = scope:actor
+			opinion_target = scope:recipient
+			multiplier = -0.25
+		}
+	}
+}
+
+cabinet_of_curiosities_interaction = {
+	category = interaction_category_admin
+	common_interaction = yes
+	interface_priority = 60
+	desc = cabinet_of_curiosities_interaction_desc
+	icon = artisan_inspiration
+
+	target_type = artifact
+	target_filter = actor_artifacts
+
+	can_be_picked_artifact = {
+		scope:actor = {
+			any_artifact = {
+				this = scope:target
+			}
+			#block the artifact from the laamp escort contract
+			NOT = {
+				any_scheme = {
+					var:escorted_artifact ?= scope:target
+				}
+			}
+		}
+	}
+
+	is_shown = {
+		scope:recipient = scope:actor
+		scope:actor = {
+			domicile ?= {
+				OR = {
+					has_domicile_building_or_higher = cabinet_of_curiosities_01
+					has_domicile_building_or_higher = dragonkeep_cabinet_of_curiosities_01
+				}
+				
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		# needs to have an artifact to give away
+		scope:actor = {
+			has_any_artifact = yes
+			is_imprisoned = no
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = cabinet_of_curiosities_interaction_notification
+				left_icon = scope:actor
+				right_icon = scope:target
+
+				custom_tooltip = artifact_added_to_domicile_tt
+
+				# Determine Bonus
+				if = {
+					limit = {
+						scope:target = { is_unique = yes }
+					}
+					house = {
+						if = {
+							limit = {
+								has_variable = ep3_legacy_domicile_artifact_counter_unique
+							}
+							change_variable = {
+								name = ep3_legacy_domicile_artifact_counter_unique
+								add = 1
+							}
+						}
+						else = {
+							set_variable = {
+								name = ep3_legacy_domicile_artifact_counter_unique
+								value = 1
+							}
+						}
+					}
+				}
+				scope:target = {
+					if = {
+						limit = { rarity = common }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_common
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_common
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_common
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = masterwork }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_masterwork
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_masterwork
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_masterwork
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = famed }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_famed
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_famed
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_famed
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = illustrious }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_illustrious
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_illustrious
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_illustrious
+									value = 1
+								}
+							}
+						}
+					}
+				}
+			}
+
+			custom_tooltip = add_artifact_to_domicile_warning
+			hidden_effect = {
+				destroy_artifact = scope:target
+				house = {
+					if = {
+						limit = {
+							has_variable = ep3_legacy_domicile_artifact_counter
+						}
+						change_variable = {
+							name = ep3_legacy_domicile_artifact_counter
+							add = 1
+						}
+					}
+					else = {
+						set_variable = {
+							name = ep3_legacy_domicile_artifact_counter
+							value = 1
+						}
+					}
+				}
+			}
+		}
+	}
+
+	auto_accept = yes
+
+	# AI
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 84
+
+	ai_potential = {
+		has_any_unequipped_artifact = yes
+		any_character_artifact = {
+			count >= 5
+			is_equipped = no
+		}
+	}
+
+	ai_will_do = {
+		base = 30
 	}
 }
