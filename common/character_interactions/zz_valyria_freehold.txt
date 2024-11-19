@@ -1795,3 +1795,578 @@ cabinet_of_curiosities_interaction = {
 		base = 30
 	}
 }
+
+house_head_request_interaction = {
+	icon = house_head_request_interaction
+	category = interaction_category_admin
+	common_interaction = yes
+	desc = house_head_request_interaction_desc
+
+	ai_maybe = yes
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+	can_send_despite_rejection = yes
+	popup_on_receive = yes
+
+	greeting = positive
+	notification_text = HOUSE_HEAD_REQUEST_PROPOSAL
+
+	pre_answer_yes_key = ACCEPT
+	pre_answer_no_key = DECLINE
+
+	ai_targets = {
+		ai_recipients = family
+		ai_recipients = peer_vassals
+		ai_recipients = vassals
+		ai_recipients = liege
+	}
+	ai_target_quick_trigger = { adult = yes }
+	ai_frequency = 36
+
+	cooldown_against_recipient = { years = 10 }
+	cooldown = { years = 2 }
+
+	redirect = {
+	}
+
+	cost = { # If the cost changes, remember to update the on_send to give correct refund in the event
+	}
+
+	is_shown = {
+		NOT = { scope:recipient = scope:actor }
+		scope:actor = {
+			government_allows = administrative
+			this = house.house_head
+		}
+		scope:recipient = {
+			government_allows = administrative
+			house = scope:actor.house
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			NOT = { is_at_war_with = scope:recipient }
+		}
+		scope:recipient = {
+			is_landed = yes
+			is_adult = yes
+		}
+	}
+
+	send_options_exclusive = yes
+	send_option = {
+		flag = gold
+		localization = HH_ASK_FOR_GOLD
+	}
+	send_option = {
+		flag = hostile_schemes
+		localization = ASK_FOR_HOSTILE_SCHEMES_HELP
+	}
+	send_option = {
+		flag = personal_schemes
+		localization = ASK_FOR_PERSONAL_SCHEMES_HELP
+	}
+	send_option = {
+		flag = political_schemes
+		localization = ASK_FOR_POLITICAL_SCHEMES_HELP
+	}
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = hh_recipient_has_valid_artifact
+				scope:recipient = {
+					any_character_artifact = {
+						save_temporary_scope_as = target_artifact
+						OR = {
+							scope:actor.house = { has_house_artifact_claim = scope:target_artifact }
+							scope:actor = { has_personal_artifact_claim = scope:target_artifact }
+						}
+					}
+				}
+			}
+		}
+		is_shown = {
+			OR = { 
+				scope:actor.domicile ?= { has_domicile_building_or_higher = cabinet_of_curiosities_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_cabinet_of_curiosities_01 }
+			}
+
+		}
+		flag = artifact
+		localization = ASK_FOR_ARTIFACT
+	}
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = hh_recipient_has_valid_knight
+				scope:recipient = {
+					number_of_knights > 0
+					any_knight = {
+						is_acclaimed = no
+						is_landed = no
+					}
+				}
+			}
+		}
+		is_shown = {
+			OR = {
+				scope:actor.domicile ?= { has_domicile_building_or_higher = guardhouse_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = barracks_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_guardhouse_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_barracks_01 }
+			}
+		}
+		flag = knight
+		localization = ASK_FOR_KNIGHT
+	}
+	send_option = {
+		is_valid = {
+			trigger_if = {
+				limit = {
+					scope:actor = {
+						NOT = {
+							any_maa_regiment = { is_personal_maa_regiment = yes }
+						}
+					}
+				}
+				custom_tooltip = {
+					text = hh_has_personal_maa
+					scope:actor = {
+						any_maa_regiment = { is_personal_maa_regiment = yes }
+					}
+				}
+			}
+			trigger_else = {
+				custom_tooltip = {
+					text = hh_has_personal_maa_size
+					scope:actor = {
+						any_maa_regiment = {
+							is_personal_maa_regiment = yes
+							can_upgrade_maa = yes
+						}
+					}
+				}
+			}
+			custom_tooltip = {
+				text = hh_recipient_has_personal_maa
+				scope:recipient = {
+					any_maa_regiment = {
+						is_personal_maa_regiment = yes
+					}
+				}
+			}
+		}
+		is_shown = {
+			OR = {
+				scope:actor.domicile ?= { has_domicile_building_or_higher = guardhouse_03 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = barracks_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = watchtower_04 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_guardhouse_03 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_barracks_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_watchtower_04 }
+			}
+		}
+		flag = maa
+		localization = ASK_FOR_MAA
+	}
+	send_option = {
+		is_shown = {
+			OR = {
+				scope:actor.domicile ?= { has_domicile_building_or_higher = storage_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = storage_warehouse_03 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_storage_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_storage_warehouse_03 }
+			}
+		}
+		flag = building
+		localization = ASK_FOR_BUILDING
+	}
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = hh_recipient_has_valid_courtier
+				scope:recipient = {
+					any_courtier_or_guest = {
+						ep3_interesting_courtier_to_ask_trigger = yes
+					}
+				}
+			}
+		}
+		flag = courtier
+		localization = ASK_FOR_COURTIER
+	}
+
+	on_send = {
+	}
+
+	on_accept = {
+		if = {
+			limit = {
+				scope:gold = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					scope:recipient = {
+						pay_short_term_gold = {
+							target = scope:actor
+							gold = medium_gold_value
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:hostile_schemes = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					custom_tooltip = {
+						text = hostile_schemes_help_request_tt
+						scope:actor = {
+							add_to_variable_list = {
+								name = supporting_hostile_schemes
+								target = scope:recipient
+								years = 10
+							}
+						}
+					}
+					scope:recipient = {
+						add_character_modifier = {
+							modifier = hostile_schemes_distracted_modifier
+							years = 5
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:personal_schemes = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					custom_tooltip = {
+						text = personal_schemes_help_request_tt
+						scope:actor = {
+							add_to_variable_list = {
+								name = supporting_personal_schemes
+								target = scope:recipient
+								years = 10
+							}
+						}
+					}
+					scope:recipient = {
+						add_character_modifier = {
+							modifier = personal_schemes_distracted_modifier
+							years = 5
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:political_schemes = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					custom_tooltip = {
+						text = political_schemes_help_request_tt
+						scope:actor = {
+							add_to_variable_list = {
+								name = supporting_political_schemes
+								target = scope:recipient
+								years = 10
+							}
+						}
+					}
+					scope:recipient = {
+						add_character_modifier = {
+							modifier = political_schemes_distracted_modifier
+							years = 5
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:artifact = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+					right_icon = scope:target_artifact
+
+					scope:recipient = {
+						random_character_artifact = {
+							limit = {
+								save_temporary_scope_as = target_artifact
+								OR = {
+									scope:actor.house = { has_house_artifact_claim = scope:target_artifact }
+									scope:actor = { has_personal_artifact_claim = scope:target_artifact }
+								}
+							}
+							save_scope_as = target_artifact
+							set_owner = scope:actor
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:knight = yes
+			}
+			scope:recipient = {
+				ordered_knight = {
+					limit = {
+						is_acclaimed = no
+						is_landed = no
+					}
+					order_by = prowess
+					save_scope_as = knight
+				}
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+					right_icon = scope:knight
+
+					scope:actor = { add_courtier = scope:knight }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:maa = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					scope:recipient = {
+						ordered_maa_regiment = {
+							limit = {
+								is_personal_maa_regiment = yes
+							}
+							save_scope_as = maa_regiment_decrease
+						}
+						scope:maa_regiment_decrease = {
+							change_maa_regiment_size = -1
+						}
+					}
+					scope:actor = {
+						ordered_maa_regiment = {
+							limit = {
+								is_personal_maa_regiment = yes
+								can_upgrade_maa = yes
+							}
+							save_scope_as = maa_regiment_increase
+						}
+						scope:maa_regiment_increase = {
+							change_maa_regiment_size = {
+								size = 1
+								reinforce = yes
+							}
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:building = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					scope:actor = {
+						add_to_variable_list = {
+							name = supporting_building
+							target = scope:recipient
+							years = 10
+						}
+						add_character_modifier = {
+							modifier = estate_supporting_buildings_modifier
+							years = 10
+						}
+					}
+					scope:recipient = {
+						add_prestige = medium_prestige_loss
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:courtier = yes
+			}
+			scope:recipient = {
+				random_courtier_or_guest = {
+					limit = {
+						ep3_interesting_courtier_to_ask_trigger = yes
+					}
+					save_scope_as = courtier
+				}
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+					right_icon = scope:courtier
+
+					add_courtier = scope:courtier
+				}
+			}
+		}
+	}
+
+	on_decline = {
+		scope:actor = {
+			send_interface_message = {
+				type = event_toast_effect_bad
+				title = house_head_request_denied
+				left_icon = scope:recipient
+
+				scope:recipient = {
+					change_influence = major_influence_loss
+				}
+			}
+		}
+
+		scope:actor = {
+			if = {
+				limit = {
+					is_ai = yes
+				}
+				add_opinion = {
+					target = scope:recipient
+					modifier = disrespect_opinion
+					opinion = -30
+				}
+			}
+		}
+	}
+
+	ai_potential = {
+		is_house_head = yes
+	}
+
+	ai_will_do = {
+		base = 50
+	}
+
+	ai_accept = {
+		base = 100
+		modifier = {
+			add = 25
+			desc = CLOSE_FAMILY_REASON
+			scope:recipient = {
+				is_close_family_of = scope:actor
+			}
+		}
+
+		modifier = {
+			add = 25
+			desc = WE_ARE_FRIENDS
+			scope:recipient = {
+				has_relation_friend = scope:actor
+			}
+		}
+
+		modifier = {
+			add = 50
+			desc = WE_ARE_BEST_FRIENDS
+			scope:recipient = {
+				has_relation_best_friend = scope:actor
+			}
+		}
+
+		modifier = {
+			add = 10
+			desc = WE_ARE_LOVERS
+			scope:recipient = {
+				has_relation_lover = scope:actor
+			}
+		}
+
+		modifier = {
+			add = -100
+			desc = WE_ARE_RIVALS
+			scope:recipient = {
+				has_relation_rival = scope:actor
+			}
+		}
+
+		modifier = {
+			add = -500
+			desc = WE_ARE_NEMESES
+			scope:recipient = {
+				has_relation_nemesis = scope:actor
+			}
+		}
+		opinion_modifier = {
+			opinion_target = scope:actor
+			multiplier = 0.5
+		}
+		modifier = {
+			# can't afford to be difficult
+			scope:recipient = {
+				influence <= major_influence_value
+			}
+			add = 30
+			desc = INFLUENCE_USED
+		}
+		# Don't bankrupt the AI
+		modifier = {
+			scope:gold = yes
+			scope:recipient.gold <= medium_gold_value
+			add = -75
+			desc = GOLD_NEGATIVE_REASON
+		}
+		# Personality
+		modifier = {
+			scope:recipient = {
+				has_trait = loyal
+			}
+			desc = INTERACTION_LOYAL
+			add = 20
+		}
+		modifier = {
+			scope:recipient = {
+				has_trait = disloyal
+			}
+			desc = INTERACTION_DISLOYAL
+			add = -20
+		}
+	}
+}
