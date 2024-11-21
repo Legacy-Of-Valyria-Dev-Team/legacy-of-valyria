@@ -17,12 +17,39 @@ zz_valyria_magic_alchemy_magic_crafting_value = {
 	}
 }
 
+zz_valyria_magic_blood_magic_base_value = { 
+	scope:secondary_recipient = { 
+		if = {
+			limit = {
+				var:casttype = exists
+			}
+			if = {
+				limit = { 
+					var:casttype = flag:potion 
+				}
+				value = scope:item.var:cast_potency
+			}
+			else_if = {
+				limit = {
+					var:casttype = flag:scroll
+				}
+				value =  scope:item.var:cast_potency
+			}
+			else = { 
+				value = "has_trait_xp(zz_magister|blood_magic)" 
+			}
+		}
+		else = { 
+			value = "has_trait_xp(zz_magister|blood_magic)" 
+		}
+	}
+}
 
 zz_valyria_magic_blood_magic_01_mysteries_of_restoration_value = { 
 	value = 1
 	add = { 
 		scope:secondary_recipient = { 
-			value = "has_trait_xp(zz_magister|blood_magic)"
+			value = zz_valyria_magic_blood_magic_base_value
 			divide = 20
 		}
 	}
