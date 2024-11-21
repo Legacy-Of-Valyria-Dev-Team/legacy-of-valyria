@@ -580,10 +580,6 @@ zz_valyria_mana_gain = {
 }
 
 zz_valyria_mana_spend = {
-	set_variable = { 
-		name = manacost
-		value = $MANACOST$
-	}
 	if = {
 		limit = {
 			OR = {
@@ -606,7 +602,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_06
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -624,7 +620,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_05
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -642,7 +638,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_04
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -659,7 +655,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_03
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -676,7 +672,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_02
-				value = zz_spend_mana 
+				value =  -$MANACOST$  
 			}
 		}
 	}
@@ -693,7 +689,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_01
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -705,7 +701,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = zz_magister
 				track = drops_of_power
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -719,8 +715,34 @@ zz_valyria_gain_spell_experience = {
 	}
 }
 
+zz_valyria_magic_cast_xp_gain = {
+	zz_valyria_gain_spell_experience = {
+		XPGAIN = 1 
+		XPTRACK = secrets_of_the_higher_mysteries
+	}
+	zz_valyria_gain_spell_experience = {
+		XPGAIN = 1 
+		XPTRACK = $SKILL$
+	}
+}
 
 zz_valyria_magic_cast_effect = { 
+
+	if = {
+		limit = {
+			NOT = {
+				exists =scope:secondary_recipient.var:casttype 
+			}
+		}
+		scope:secondary_recipient = {
+			zz_valyria_magic_cast_xp_gain = {
+				SKILL = $SKILL$
+			}
+			zz_valyria_mana_spend = {
+				MANACOST = $MANACOST$
+			} 
+		}
+	}
 	random_list = { 
 		40 = { 
 			modifier = {
@@ -1023,6 +1045,126 @@ zz_gain_blood_magic_spell = {
 			}
 			zz_add_spell  = {
 				SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
 			}
 		}
 	}
@@ -1408,6 +1550,36 @@ zz_random_gain_magic_spell = {
 					}
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection				
 					}
 				}
 			}
