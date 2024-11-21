@@ -580,10 +580,6 @@ zz_valyria_mana_gain = {
 }
 
 zz_valyria_mana_spend = {
-	set_variable = { 
-		name = manacost
-		value = $MANACOST$
-	}
 	if = {
 		limit = {
 			OR = {
@@ -606,7 +602,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_06
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -624,7 +620,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_05
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -642,7 +638,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_04
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -659,7 +655,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_03
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -676,7 +672,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_02
-				value = zz_spend_mana 
+				value =  -$MANACOST$  
 			}
 		}
 	}
@@ -693,7 +689,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_01
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -705,7 +701,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = zz_magister
 				track = drops_of_power
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -719,32 +715,32 @@ zz_valyria_gain_spell_experience = {
 	}
 }
 
-zz_valyria_magic_cast_mana_cost_xp_gain = {
-	scope:secondary_recipient = {
-		zz_valyria_mana_spend = {
-			MANACOST = $DP$
-		} 
-		zz_valyria_gain_spell_experience = {
-			XPGAIN = 1 
-			XPTRACK = secrets_of_the_higher_mysteries
-		}
-		zz_valyria_gain_spell_experience = {
-			XPGAIN = 1 
-			XPTRACK = $SKILL$
-		}
+zz_valyria_magic_cast_xp_gain = {
+	zz_valyria_gain_spell_experience = {
+		XPGAIN = 1 
+		XPTRACK = secrets_of_the_higher_mysteries
+	}
+	zz_valyria_gain_spell_experience = {
+		XPGAIN = 1 
+		XPTRACK = $SKILL$
 	}
 }
 
 zz_valyria_magic_cast_effect = { 
+
 	if = {
 		limit = {
 			NOT = {
-				scope:secondary_recipient.var:casttype = exists
+				exists =scope:secondary_recipient.var:casttype 
 			}
 		}
-		zz_valyria_magic_cast_mana_cost_xp_gain = {
-			DP = $DP$
-			SKILL = $SKILL$
+		scope:secondary_recipient = {
+			zz_valyria_magic_cast_xp_gain = {
+				SKILL = $SKILL$
+			}
+			zz_valyria_mana_spend = {
+				MANACOST = $MANACOST$
+			} 
 		}
 	}
 	random_list = { 
