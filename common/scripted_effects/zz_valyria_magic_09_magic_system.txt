@@ -727,11 +727,15 @@ zz_valyria_magic_cast_xp_gain = {
 }
 
 zz_valyria_magic_cast_effect = { 
-
+	scope:secondary_recipient = {
+		remove_variable = casttype
+	}
 	if = {
 		limit = {
 			NOT = {
-				exists =scope:secondary_recipient.var:casttype 
+				any_equipped_character_artifact = { 
+					has_variable = $SPELL$
+				}
 			}
 		}
 		scope:secondary_recipient = {
@@ -742,16 +746,58 @@ zz_valyria_magic_cast_effect = {
 				MANACOST = $MANACOST$
 			} 
 		}
+		random_list = { 
+			40 = { 
+				modifier = {
+					add = zz_spellcast_value
+				}
+				$SPELL$_effect = yes
+			}
+			60 = { 
+				zz_valyria_spell_failure_effect = yes
+			}
+		}
 	}
-	random_list = { 
-		40 = { 
-			modifier = {
-				add = zz_spellcast_value
+	else_if = {
+		limit = {
+			any_equipped_character_artifact = { 
+				has_variable = $SPELL$
+			}
+		}
+		if = { 
+			limit = {
+				any_equipped_character_artifact = { 
+					has_variable = scroll
+				}
+			}
+			random_equipped_character_artifact = {
+				limit = {
+					has_variable = scroll
+				}
+				save_scope_as = item
+				scope:secondary_recipient = {
+					set_variable = {
+						name = casttype 
+						value = flag:scroll
+					}
+				}
+				$SPELL$_effect = yes
+			}
+		}
+		else = {
+			random_equipped_character_artifact = {
+				limit = {
+					has_variable = potion
+				}
+				save_scope_as = item
+				scope:secondary_recipient = {
+					set_variable = {
+						name = casttype 
+						value = flag:potion
+					}
+				}
 			}
 			$SPELL$_effect = yes
-		}
-		60 = { 
-			zz_valyria_spell_failure_effect = yes
 		}
 	}
 }
@@ -857,11 +903,11 @@ zz_add_spell = {
 		save_scope_as = spell_learner
 		send_interface_message = {
 			type = event_generic_neutral
-			title = learn_$SPELL$.t
-			desc = learn_$SPELL$.desc
+			title = learn.$SPELL$.t
+			desc = learn.$SPELL$.desc
 			left_icon = scope:spell_learner
 			right_icon = scope:spell_learner
-			custom_tooltip = learn_$SPELL$.desc
+			custom_tooltip = learn.$SPELL$.desc
 			#add_character_flag =  $SPELL$_flag
 			scope:spell_learner = {
 				create_character_memory = {
@@ -875,12 +921,12 @@ zz_add_spell = {
 				}
 				scope:activity ?= {
 					add_activity_log_entry = {
-						key = learn_$SPELL$.t
+						key = learn.$SPELL$.t
 						score = 25
 						tags = { good learning activity }
 						character = root
 						#Effect
-						custom_tooltip = learn_$SPELL$.t
+						custom_tooltip = learn.$SPELL$.t
 					}
 				}
 			}
@@ -1285,6 +1331,18 @@ zz_gain_dream_magic_spell = {
 				SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
 			}
 		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
+			}
+		}
 	}
 }
 
@@ -1629,6 +1687,9 @@ zz_random_gain_magic_spell = {
 					}
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
 					}
 				}
 			}
