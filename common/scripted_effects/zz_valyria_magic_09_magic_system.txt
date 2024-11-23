@@ -580,10 +580,6 @@ zz_valyria_mana_gain = {
 }
 
 zz_valyria_mana_spend = {
-	set_variable = { 
-		name = manacost
-		value = $MANACOST$
-	}
 	if = {
 		limit = {
 			OR = {
@@ -606,7 +602,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_06
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -624,7 +620,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_05
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -642,7 +638,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_04
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -659,7 +655,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_03
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -676,7 +672,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_02
-				value = zz_spend_mana 
+				value =  -$MANACOST$  
 			}
 		}
 	}
@@ -693,7 +689,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_01
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -705,7 +701,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = zz_magister
 				track = drops_of_power
-				value = zz_spend_mana 
+				value = -$MANACOST$  
 			}
 		}
 	}
@@ -719,17 +715,89 @@ zz_valyria_gain_spell_experience = {
 	}
 }
 
+zz_valyria_magic_cast_xp_gain = {
+	zz_valyria_gain_spell_experience = {
+		XPGAIN = 1 
+		XPTRACK = secrets_of_the_higher_mysteries
+	}
+	zz_valyria_gain_spell_experience = {
+		XPGAIN = 1 
+		XPTRACK = $SKILL$
+	}
+}
 
 zz_valyria_magic_cast_effect = { 
-	random_list = { 
-		40 = { 
-			modifier = {
-				add = zz_spellcast_value
+	scope:secondary_recipient = {
+		remove_variable = casttype
+	}
+	if = {
+		limit = {
+			NOT = {
+				any_equipped_character_artifact = { 
+					has_variable = $SPELL$
+				}
+			}
+		}
+		scope:secondary_recipient = {
+			zz_valyria_magic_cast_xp_gain = {
+				SKILL = $SKILL$
+			}
+			zz_valyria_mana_spend = {
+				MANACOST = $MANACOST$
+			} 
+		}
+		random_list = { 
+			40 = { 
+				modifier = {
+					add = zz_spellcast_value
+				}
+				$SPELL$_effect = yes
+			}
+			60 = { 
+				zz_valyria_spell_failure_effect = yes
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			any_equipped_character_artifact = { 
+				has_variable = $SPELL$
+			}
+		}
+		if = { 
+			limit = {
+				any_equipped_character_artifact = { 
+					has_variable = scroll
+				}
+			}
+			random_equipped_character_artifact = {
+				limit = {
+					has_variable = scroll
+				}
+				save_scope_as = item
+				scope:secondary_recipient = {
+					set_variable = {
+						name = casttype 
+						value = flag:scroll
+					}
+				}
+				$SPELL$_effect = yes
+			}
+		}
+		else = {
+			random_equipped_character_artifact = {
+				limit = {
+					has_variable = potion
+				}
+				save_scope_as = item
+				scope:secondary_recipient = {
+					set_variable = {
+						name = casttype 
+						value = flag:potion
+					}
+				}
 			}
 			$SPELL$_effect = yes
-		}
-		60 = { 
-			zz_valyria_spell_failure_effect = yes
 		}
 	}
 }
@@ -835,11 +903,11 @@ zz_add_spell = {
 		save_scope_as = spell_learner
 		send_interface_message = {
 			type = event_generic_neutral
-			title = learn_$SPELL$.t
-			desc = learn_$SPELL$.desc
+			title = learn.$SPELL$.t
+			desc = learn.$SPELL$.desc
 			left_icon = scope:spell_learner
 			right_icon = scope:spell_learner
-			custom_tooltip = learn_$SPELL$.desc
+			custom_tooltip = learn.$SPELL$.desc
 			#add_character_flag =  $SPELL$_flag
 			scope:spell_learner = {
 				create_character_memory = {
@@ -853,12 +921,12 @@ zz_add_spell = {
 				}
 				scope:activity ?= {
 					add_activity_log_entry = {
-						key = learn_$SPELL$.t
+						key = learn.$SPELL$.t
 						score = 25
 						tags = { good learning activity }
 						character = root
 						#Effect
-						custom_tooltip = learn_$SPELL$.t
+						custom_tooltip = learn.$SPELL$.t
 					}
 				}
 			}
@@ -1025,6 +1093,126 @@ zz_gain_blood_magic_spell = {
 				SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
 			}
 		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
+			}
+		}
 	}
 }
 
@@ -1141,6 +1329,18 @@ zz_gain_dream_magic_spell = {
 			}
 			zz_add_spell  = {
 				SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
+			}
+		}
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
+					}
+				}
+			}
+			zz_add_spell  = {
+				SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
 			}
 		}
 	}
@@ -1409,6 +1609,36 @@ zz_random_gain_magic_spell = {
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity				
 					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection				
+					}
+					zz_valyria_knows_spell  = {
+						SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection				
+					}
 				}
 			}
 			modifier = { 
@@ -1457,6 +1687,9 @@ zz_random_gain_magic_spell = {
 					}
 					zz_valyria_knows_spell  = {
 						SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
 					}
 				}
 			}
