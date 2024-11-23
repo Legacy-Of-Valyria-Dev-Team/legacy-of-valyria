@@ -854,3 +854,103 @@ zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_effect = {
 		}
 	}
 }
+
+zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+	if = {
+		limit = {
+			NOT = {
+				has_trait = $EDUCATION$ 
+			}
+		}
+		remove_any_education_traits_effect = yes 
+	}	
+	change_trait_rank = {
+		trait =  $EDUCATION$
+		rank = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_value
+	}
+}
+
+zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation.t
+		desc = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation.tt
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		scope:recipient = { 
+			if  = { 
+				limit = {
+					scope:education_learning = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+						EDUCATION = education_learning 
+					}
+				}
+			}		
+			else_if  = { 
+				limit = {
+					scope:education_stewardship = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+						EDUCATION = education_stewardship
+					}
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:education_diplomacy = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+						EDUCATION = education_diplomacy
+					}
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:education_intrigue = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+						EDUCATION = education_intrigue
+					}
+				}
+			}	
+			else_if  = { 
+				limit = {
+					scope:education_martial = yes
+				}
+				scope:recipient = {
+					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+						EDUCATION = education_martial
+					}
+				}
+			}	
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}	
+	}
+}
