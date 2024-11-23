@@ -727,11 +727,15 @@ zz_valyria_magic_cast_xp_gain = {
 }
 
 zz_valyria_magic_cast_effect = { 
-
+	scope:secondary_recipient = {
+		remove_variable = casttype
+	}
 	if = {
 		limit = {
 			NOT = {
-				exists =scope:secondary_recipient.var:casttype 
+				any_equipped_character_artifact = { 
+					has_variable = $SPELL$
+				}
 			}
 		}
 		scope:secondary_recipient = {
@@ -742,16 +746,58 @@ zz_valyria_magic_cast_effect = {
 				MANACOST = $MANACOST$
 			} 
 		}
+		random_list = { 
+			40 = { 
+				modifier = {
+					add = zz_spellcast_value
+				}
+				$SPELL$_effect = yes
+			}
+			60 = { 
+				zz_valyria_spell_failure_effect = yes
+			}
+		}
 	}
-	random_list = { 
-		40 = { 
-			modifier = {
-				add = zz_spellcast_value
+	else_if = {
+		limit = {
+			any_equipped_character_artifact = { 
+				has_variable = $SPELL$
+			}
+		}
+		if = { 
+			limit = {
+				any_equipped_character_artifact = { 
+					has_variable = scroll
+				}
+			}
+			random_equipped_character_artifact = {
+				limit = {
+					has_variable = scroll
+				}
+				save_scope_as = item
+				scope:secondary_recipient = {
+					set_variable = {
+						name = casttype 
+						value = flag:scroll
+					}
+				}
+				$SPELL$_effect = yes
+			}
+		}
+		else = {
+			random_equipped_character_artifact = {
+				limit = {
+					has_variable = potion
+				}
+				save_scope_as = item
+				scope:secondary_recipient = {
+					set_variable = {
+						name = casttype 
+						value = flag:potion
+					}
+				}
 			}
 			$SPELL$_effect = yes
-		}
-		60 = { 
-			zz_valyria_spell_failure_effect = yes
 		}
 	}
 }
