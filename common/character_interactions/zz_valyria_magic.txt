@@ -5168,7 +5168,77 @@ zz_valyria_magic_dream_magic_09_mysteries_of_minor_scrying.interaction = {
 		base = 0
 	}
 }
+zz_valyria_magic_dream_magic_10_mysteries_of_mystic_power.interaction = {
+	
+	desc = zz_valyria_magic_dream_magic_10_mysteries_of_mystic_power.interaction.desc
+	
+	populate_recipient_list = {
+		scope:actor = { 
+			zz_valyria_populate_spell_caster_list = {
+				SPELL  = zz_valyria_magic_dream_magic_10_mysteries_of_mystic_power
+				MANACOST = 60
+			}
+		}
+	}
+	is_shown = {
+		scope:actor = {
+			zz_valyria_knows_spell_court = { 
+				SPELL = zz_valyria_magic_dream_magic_10_mysteries_of_mystic_power
+			}
+			is_imprisoned = no
+		}
+		scope:recipient = {NOT = { has_trait = dragon }}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_valid_caster_court = {
+				SPELL  = zz_valyria_magic_dream_magic_10_mysteries_of_mystic_power
+				MANACOST = 60
+			}
+		}
+	}
+	icon = dream_magic
+	common_interaction = no
+	interface_priority = 796
+	category = interaction_magic_friendly
 
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	#hidden = yes
+	
+	on_accept = {
+		scope:actor = {
+			save_scope_as = magic_user
+			scope:secondary_recipient = {
+			}
+			zz_valyria_magic_cast_effect = { 
+				MANACOST = 60
+				SKILL = dream_magic
+				SPELL  = zz_valyria_magic_dream_magic_10_mysteries_of_mystic_power
+			}	
+		}
+	}
+	send_options_exclusive = no
+
+	send_option = {
+		flag = scrying
+		localization = scrying
+		is_shown = {
+		}			
+	}		
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+	}
+}
 
 
 
