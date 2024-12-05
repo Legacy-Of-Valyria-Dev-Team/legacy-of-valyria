@@ -431,3 +431,49 @@ zz_valyria_item_granting.001 = {
 		cv_create_artifact_vs_torment_effect = { OWNER = ROOT } 
 	}
 }
+
+
+namespace = zz_valyria_magic_court_mages_ritual
+
+
+zz_valyria_magic_court_mages_ritual.001 = {
+	type = character_event
+	hidden = yes
+
+	trigger = {
+		NOT = { has_variable = drops_of_power_ritual_cooldown }
+		exists = court_position:zz_valyria_court_mages_court_position
+		has_variable = active_drops_of_power_ritual
+	}
+
+	immediate = {
+		# Set a cooldown, so it can only happen once every 6 months
+		set_variable = {
+			name = drops_of_power_ritual_cooldown
+			days = 179
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 1 
+			XPTRACK = secrets_of_the_higher_mysteries
+		}
+		scope:liege = {
+			zz_valyria_mana_gain = {
+				MANAGAIN = 1
+			}
+			every_courtier_or_guest ={ 
+				limit = {
+					has_trait = zz_magister
+				}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 1
+				}
+			}
+		}
+
+
+		trigger_event = {
+			id = zz_valyria_magic_court_mages_ritual.001
+			months = 6
+		}
+	}
+}
