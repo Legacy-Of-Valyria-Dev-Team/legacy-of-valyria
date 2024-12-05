@@ -1,9 +1,21 @@
 ﻿namespace = zz_valyria_magic_scrying
 
-#scrying 1.
+
+
 zz_valyria_magic_scrying.1 = {
 	title = zz_valyria_magic_scrying.1.t
 	desc = zz_valyria_magic_scrying.1.desc
+	theme = witchcraft
+	left_portrait = root
+	option = {
+		name = zz_valyria_magic_scrying.1.a
+	}
+}
+
+#scrying 1.
+zz_valyria_magic_scrying.2 = {
+	title = zz_valyria_magic_scrying.2.t
+	desc = zz_valyria_magic_scrying.2.desc
 	theme = witchcraft
 	left_portrait = root
 
@@ -13,23 +25,36 @@ zz_valyria_magic_scrying.1 = {
 	}
 	immediate = {
 		random_list = {
-			1= {	add_diplomacy_skill = 1	}
-			1= {	add_martial_skill = 1	}
-			1= {	add_stewardship_skill = 1	}
-			1= {	add_intrigue_skill = 1	}
-			1= {	add_learning_skill = 1	}
+			1= {	
+				add_diplomacy_skill = 1	
+			}
+			1= {	
+				add_martial_skill = 1	
+			}
+			1= {	
+				add_stewardship_skill = 1	
+			}
+			1= {	
+				add_intrigue_skill = 1	
+			}
+			1= {	
+				add_learning_skill = 1	
+			}
+			1 = {
+				trigger = {
+					NOT = {
+						has_character_modifier = bp1_1000_focus_on_work_modifier
+					}
+				}
+				add_character_modifier = {
+					modifier = bp1_1000_focus_on_work_modifier
+					years = 2
+				}
+			}
 		}
 		#tournament_astronomy_modifier
 		#bp1_1000_focus_on_work_modifier
 		#determination_modifier
-		if = {
-			limit = {
-				has_trait = zz_magister
-			}
-			random = {
-				chance = 50
-			}
-		}
 	}
 	option = {
 		name = zz_valyria_magic_scrying.1.a
@@ -49,7 +74,7 @@ zz_valyria_magic_scrying.1 = {
 }
 
 #scrying 2.
-zz_valyria_magic_scrying.2 = {
+zz_valyria_magic_scrying.3 = {
 	title = zz_valyria_magic_scrying.2.t
 	desc = zz_valyria_magic_scrying.2.desc
 	theme = witchcraft
@@ -144,22 +169,6 @@ zz_valyria_magic_scrying.2 = {
 				limit = {
 					NOT = {	exists = scope:scrying_target	}
 				}
-				#random_courtier_or_guest = {
-				#	limit = {
-				#		is_adult = yes
-				#	}
-				#	save_scope_as = scrying_target
-				#	add_secret = {
-				#		type = secret_cannibal
-				#		target = THIS
-				#	}
-				#	random_secret = {
-				#		limit = {
-				#			NOT = {	is_known_by = root	}
-				#		}
-				#		save_scope_as = sssecret
-				#	}
-				#}
 				random_living_character = {
 					limit = {
 						has_any_secrets = yes
@@ -174,7 +183,7 @@ zz_valyria_magic_scrying.2 = {
 						limit = {
 							NOT = {	is_known_by = root	}
 						}
-						save_scope_as = sssecret
+						save_scope_as = dreaming_magic_secret_target
 					}
 				}
 			}
@@ -186,16 +195,19 @@ zz_valyria_magic_scrying.2 = {
 						}
 						if = {
 							limit = {	exists = this	}
-							save_scope_as = sssecret
+							save_scope_as = dreaming_magic_secret_target
 						}
 					}
 				}
 			}
 		}
+		scope:dreaming_magic_secret_target = {
+			reveal_to = root
+		}
 	}
 	option = {
 		name = zz_valyria_magic_scrying.2.a
-		scope:sssecret = {
+		scope:dreaming_magic_secret_target = {
 			reveal_to = root
 		}
 

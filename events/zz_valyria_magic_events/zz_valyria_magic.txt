@@ -177,6 +177,10 @@ zz_valyria_blackstone.002 = {
 
 
 	immediate = {
+		trigger_event = {
+			id = zz_valyria_blackstone.003
+			days = 35
+		}
 	}
 
 	trigger = {
@@ -195,6 +199,26 @@ zz_valyria_blackstone.002 = {
 				value = root.location
 			}
 		}
+	}
+}
+zz_valyria_blackstone.003 = {
+	type = character_event
+	title = zz_valyria_blackstone.002.t
+	desc = zz_valyria_blackstone.002.desc
+	theme = university
+	left_portrait = root
+
+
+	immediate = {
+	}
+
+	trigger = {
+	}
+
+	option = {
+		name = zz_valyria_blackstone.002.a
+		trigger = {
+		}
 		create_character_memory = {
 			type = zz_valyria_secrets_blackstone_02
 		}
@@ -207,13 +231,11 @@ zz_valyria_blackstone.002 = {
 	}
 }
 
-
 namespace = zz_valyria_the_doom
 
 zz_valyria_the_doom.001 = {
 	type = character_event
 	title = zz_valyria_the_doom.001.t
-	desc = zz_valyria_the_doom.001.desc
 	theme = university
 	left_portrait = root
 	desc = {
@@ -313,7 +335,7 @@ zz_valyria_the_doom.001 = {
 
 	trigger = {
 		NOT ={
-			has_character_flag = blackstone_learned
+			has_character_flag = doom_learned
 		}
 	}
 
@@ -336,7 +358,7 @@ zz_valyria_the_doom.001 = {
 				has_character_flag = valyria_the_doom_05
 				has_character_flag = valyria_the_doom_06
 			}
-			add_character_flag = blackstone_learned
+			add_character_flag = doom_learned
 			trigger_event = {
 				id = zz_valyria_the_doom.002
 				days = 25
@@ -364,22 +386,24 @@ zz_valyria_the_doom.002 = {
 		name = zz_valyria_the_doom.002.a
 		trigger = {
 		}
-		create_character_memory = {
-			type = zz_valyria_secrets_blackstone_01
-		}
-		scope:new_memory = {
-			set_variable = {
-				name = learning_location
-				value = root.location
+		if = {
+			limit = {
+				NOT = {
+					has_trait = born_under_a_red_comet
+				}
+			}
+			add_trait_force_tooltip = born_under_a_red_comet
+			add_trait_xp = { 
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value = 25
 			}
 		}
-		create_character_memory = {
-			type = zz_valyria_secrets_blackstone_02
-		}
-		scope:new_memory = {
-			set_variable = {
-				name = learning_location
-				value = root.location
+		else = {
+			add_trait_xp = { 
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value = 50
 			}
 		}
 	}
