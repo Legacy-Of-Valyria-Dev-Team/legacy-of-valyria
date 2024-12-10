@@ -1022,20 +1022,11 @@ zz_valyria_magic_blood_magic_16_mysteries_of_blood_control_effect = {
 		left_icon = scope:actor
 		right_icon = scope:recipient					
 		custom_tooltip = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control.tt
-		scope:recipient = {
-			location = {
-				every_army_in_location = {
-					limit = { 
-						army_owner = scope:actor
-					}
-					every_army_maa_regiment = {
-						change_maa_troops_count = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control_value_02 
-					}
-				}
+		scope:target = {
+			every_army_maa_regiment = {
+				change_maa_troops_count = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control_value_02 
 			}
-			commanding_army = { 
-				deplete_army_by_percentage = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control_value_01
-			}
+			deplete_army_by_percentage = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control_value_01
 		}
 	}
 }
@@ -1052,8 +1043,9 @@ zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption_effect = {
 		zz_valyria_magic_duel_stress_effect = yes 
 		if = {
 			limit = {
-				scope:weaken_spell_flag = yes
+				var:zz_valyria_magic_blood_magic_spells.017 = flag:weaken_power
 			}
+			remove_variable = zz_valyria_magic_blood_magic_spells.017
 			scope:secondary_recipient = {
 				duel = {
 					skill = learning 
@@ -1064,36 +1056,23 @@ zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption_effect = {
 						}
 						add_dread = medium_dread_gain
 						scope:recipient = {
-							if = {
-								limit = {
-									scope:strike_imprison_flag = yes
-								}
-								maimed_in_battle_effect = yes
+							show_as_tooltip = {
+								add_trait = wounded_3
 								add_stress = massive_stress_gain
-								imprison_character_effect = {
-									TARGET = scope:recipient
-									IMPRISONER = scope:actor
-								}
 							}
-							else = {
-								show_as_tooltip = {
-									add_trait = wounded_3
-									add_stress = massive_stress_gain
-								}
-								scope:actor = {
-									if = {
-										limit = {
-											NOR = {
-												has_imprisonment_reason = scope:recipient
-												has_banish_reason = scope:recipient
-												has_execute_reason = scope:recipient
-											}
+							scope:actor = {
+								if = {
+									limit = {
+										NOR = {
+											has_imprisonment_reason = scope:recipient
+											has_banish_reason = scope:recipient
+											has_execute_reason = scope:recipient
 										}
-										add_tyranny = minor_tyranny_gain
 									}
+									add_tyranny = minor_tyranny_gain
 								}
-								custom_tooltip = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters.tyranny
 							}
+							custom_tooltip = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters.tyranny
 						}
 					}
 					25 = {
@@ -1104,8 +1083,9 @@ zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption_effect = {
 		}	
 		if = {
 			limit = {
-				scope:weaken_spell_flag = no
+				var:zz_valyria_magic_blood_magic_spells.017 = flag:max_power
 			}
+			remove_variable = zz_valyria_magic_blood_magic_spells.017
 			scope:secondary_recipient = {
 				duel = {
 					skill = learning 
@@ -1227,209 +1207,214 @@ zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics_effect = {
 				modifier = { 
 					add = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics_value 
 				}
-				scope:secondary_recipient = {
-					if = {
-						limit = {
-							scope:add_trait_dragon_physique_good = yes
+				if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:dragon_physique_good_3
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 		
+						if = {
+							limit = { 
+								has_trait = intellect_bad 
+							}
+							change_trait_rank = {
+								trait = dragon_physique_bad
+								rank = -1
+							}
 						}
-						scope:recipient = { 		
+						else = {
 							if = {
-								limit = { 
-									has_trait = intellect_bad 
+								limit = {
+									NOT = {
+										has_trait = dragon_physique_good
+									}
 								}
-								change_trait_rank = {
-									trait = dragon_physique_bad
-									rank = -1
-								}
+								add_trait_force_tooltip = dragon_physique_good_1
 							}
 							else = {
-								if = {
-									limit = {
-										NOT = {
-											has_trait = dragon_physique_good
-										}
-									}
-									add_trait_force_tooltip = dragon_physique_good_1
-								}
-								else = {
-									change_trait_rank = {
-										trait = dragon_physique_good
-										rank = 1
-									}
-								}
-							}
-						} 
-					}					
-					else_if = {
-						limit = {
-							scope:improve_trait_dragon_swift = yes
-						}
-						scope:recipient = { 
-							if = {
-								limit = { 
-									has_trait = dragon_slow 
-								}
-								remove_trait = dragon_slow
-							}
-							else_if ={
-								limit = {
-									NOT = {
-										has_trait = dragon_slow 
-									}
-								}
-								add_trait_force_tooltip = dragon_swift
-							}
-						} 	
-					}
-					else_if = {
-						limit = {
-							scope:improve_trait_dragon_appearance = yes
-						}
-						scope:recipient = { 
-							if = {
-								limit = { 
-									has_trait = dragon_ugly 
-								}
-								remove_trait = dragon_ugly
-							}
-							else_if ={
-								limit = {
-									NOT = {
-										has_trait = dragon_majestic 
-									}
-								}
-
-								add_trait_force_tooltip = dragon_majestic
-							}
-						} 		
-					}
-					else_if = {
-						limit = {
-							scope:add_dragon_physique_bad = yes
-						}
-						scope:recipient = { 
-							if = {
-								limit = { 
-									has_trait = dragon_physique_good 
-								}
 								change_trait_rank = {
 									trait = dragon_physique_good
-									rank = -1
+									rank = 1
 								}
 							}
-							else = {
-								if = {
-									limit = {
-										NOT = {
-											has_trait = dragon_physique_bad
-										}
-									}
-									add_trait_force_tooltip = dragon_physique_bad_1
-								}
-								else = {
-									change_trait_rank = {
-										trait = dragon_physique_bad
-										rank = 1
-									}
-								}
-							}
-						} 
-					}			
-					else_if = {
-						limit = {
-							scope:remove_trait_dragon_swift = yes
 						}
-						scope:recipient = { 
-							if = {
-								limit = { 
-									has_trait = dragon_swift 
-								}
-								remove_trait = dragon_swift
+					} 
+				}					
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:dragon_swift
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_slow 
 							}
-							else_if ={
-								limit = {
-									NOT = {
-										has_trait = dragon_slow 
-									}
-								}
-								add_trait_force_tooltip = dragon_slow
-							}
-						} 	
-					}	
-					else_if = {
-						limit = {
-							scope:remove_trait_dragon_majestic = yes
+							remove_trait = dragon_slow
 						}
-						scope:recipient = { 
-							if = {
-								limit = { 
+						else_if ={
+							limit = {
+								NOT = {
+									has_trait = dragon_slow 
+								}
+							}
+							add_trait_force_tooltip = dragon_swift
+						}
+					} 	
+				}
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:dragon_majestic
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_ugly 
+							}
+							remove_trait = dragon_ugly
+						}
+						else_if ={
+							limit = {
+								NOT = {
 									has_trait = dragon_majestic 
 								}
-								remove_trait = dragon_majestic
 							}
-							else_if = {
+
+							add_trait_force_tooltip = dragon_majestic
+						}
+					} 		
+				}
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:dragon_physique_bad_3
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_physique_good 
+							}
+							change_trait_rank = {
+								trait = dragon_physique_good
+								rank = -1
+							}
+						}
+						else = {
+							if = {
 								limit = {
 									NOT = {
-										has_trait = dragon_ugly 
+										has_trait = dragon_physique_bad
 									}
 								}
-
-								add_trait_force_tooltip = dragon_ugly
+								add_trait_force_tooltip = dragon_physique_bad_1
 							}
-						} 		
-					}	
-					
-					else_if = {
-						limit = {
-							scope:toggle_spindly = yes
+							else = {
+								change_trait_rank = {
+									trait = dragon_physique_bad
+									rank = 1
+								}
+							}
 						}
-						scope:recipient = { 
-							if = {
-								limit = { 
+					} 
+				}			
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:dragon_slow
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_swift 
+							}
+							remove_trait = dragon_swift
+						}
+						else_if ={
+							limit = {
+								NOT = {
+									has_trait = dragon_slow 
+								}
+							}
+							add_trait_force_tooltip = dragon_slow
+						}
+					} 	
+				}	
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:dragon_ugly
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_majestic 
+							}
+							remove_trait = dragon_majestic
+						}
+						else_if = {
+							limit = {
+								NOT = {
+									has_trait = dragon_ugly 
+								}
+							}
+
+							add_trait_force_tooltip = dragon_ugly
+						}
+					} 		
+				}	
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:toggle_spindly
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_spindly 
+							}
+							remove_trait = dragon_spindly
+						}
+						else_if ={
+							limit = { 
+								NOT = {
 									has_trait = dragon_spindly 
 								}
-								remove_trait = dragon_spindly
 							}
-							else_if ={
-								limit = { 
-									NOT = {
-										has_trait = dragon_spindly 
-									}
-								}
-								add_trait_force_tooltip = dragon_spindly
-							}
-						} 		
-					}
-					else_if = {
-						limit = {
-							scope:toggle_fertile = yes
+							add_trait_force_tooltip = dragon_spindly
 						}
-						scope:recipient = { 
-							if = {
-								limit = { 
+					} 		
+				}
+				else_if = {
+					limit = {
+						var:zz_valyria_magic_blood_magic_spells.018 = flag:toggle_fertile
+					}
+					remove_variable = zz_valyria_magic_blood_magic_spells.018
+					scope:recipient = { 
+						if = {
+							limit = { 
+								has_trait = dragon_fertile 
+							}
+							remove_trait = dragon_fertile
+						}
+						else_if ={
+							limit = {
+								NOT = {
 									has_trait = dragon_fertile 
 								}
-								remove_trait = dragon_fertile
 							}
-							else_if ={
-								limit = {
-									NOT = {
-										has_trait = dragon_fertile 
-									}
-								}
-								add_trait_force_tooltip = dragon_fertile
-							}
-						} 		
+							add_trait_force_tooltip = dragon_fertile
+						}
+					} 		
+				}
+				if = {
+					limit = {
+						NOT = { scope:actor = scope:recipient }
 					}
-					if = {
-						limit = {
-							NOT = { scope:actor = scope:recipient }
-						}
-						add_opinion = {
-							modifier = grateful_opinion
-							target = scope:actor
-							opinion = 70
-						}
+					add_opinion = {
+						modifier = grateful_opinion
+						target = scope:actor
+						opinion = 70
 					}
 				}
 			}
