@@ -1,0 +1,747 @@
+﻿namespace = zz_valyria_settlement
+
+## Progress Event Learning
+zz_valyria_settlement.0100 = {
+	type = activity_event
+	title = zz_valyria_settlement.0100.t
+	desc = zz_valyria_settlement.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_character_flag = settlement_foundation
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_settlement.0100.a
+		trigger = {
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0100.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0100.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_settlement.0100.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_settlement_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+							scope:host = {
+								add_character_flag = learning_building_flag
+							}
+							
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0100.a.success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0100.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_settlement_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0100.a.failure
+				send_interface_toast = {
+					title = zz_valyria_settlement.0100.a.failure.tt
+					left_icon = root
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_negative
+						scope:activity = { activity_special_type_progression_negative = yes }
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_settlement.0100.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## Progress Event Stewardship
+zz_valyria_settlement.0200 = {
+	type = activity_event
+	title = zz_valyria_settlement.0200.t
+	desc = zz_valyria_settlement.0200.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_character_flag = settlement_foundation
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_settlement.0200.a
+		trigger = {
+		}
+		duel = {
+			skill = stewardship
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0200.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0200.a.crit_success.tt
+					left_icon = root
+					
+					custom_tooltip = zz_valyria_settlement.0200.a.crit_success_dev_tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+							
+							scope:host = {
+								add_character_flag = large_settlement_development_gain
+							}
+							
+							#Effect
+							custom_tooltip = zz_valyria_settlement_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+							add_character_flag = stewardship_building_flag
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0200.a.success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0200.a.success.tt
+					left_icon = root
+					
+					custom_tooltip = zz_valyria_settlement.0200.a.success_dev_tt
+					scope:host = {
+						add_character_flag = med_settlement_development_gain
+					}
+					
+					custom_tooltip = zz_valyria_settlement_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0200.a.failure
+				send_interface_toast = {
+					title = zz_valyria_settlement.0200.a.failure.tt
+					left_icon = root
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_negative
+						scope:activity = { activity_special_type_progression_negative = yes }
+					}
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_settlement.0200.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## Progress Event Diplomacy - Rogue Colonists
+zz_valyria_settlement.0300 = {
+	type = activity_event
+	title = zz_valyria_settlement.0300.t
+	desc = zz_valyria_settlement.0300.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_character_flag = settlement_foundation
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_settlement.0300.a
+		trigger = {
+		}
+		duel = {
+			skill = diplomacy
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0300.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0300.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_settlement.0300.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_settlement_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+							scope:host = {
+								add_character_flag = diplomacy_building_flag
+							}
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0300.a.success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0300.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_settlement_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0300.a.failure
+				send_interface_toast = {
+					title = zz_valyria_settlement.0300.a.failure.tt
+					left_icon = root
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_negative
+						scope:activity = { activity_special_type_progression_negative = yes }
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_settlement.0300.c
+		remove_short_term_gold = {
+			gold = {
+				value = root.medium_gold_min_value
+			}
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+
+## Progress Event Martial
+zz_valyria_settlement.0500 = {
+	type = activity_event
+	title = zz_valyria_settlement.0500.t
+	desc = zz_valyria_settlement.0500.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_character_flag = settlement_foundation
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_settlement.0500.a
+		trigger = {
+		}
+		duel = {
+			skill = martial
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0500.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0500.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_settlement.0500.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+			
+							#Effect
+							scope:host = {
+								add_character_flag = martial_building_flag
+							}
+							
+							custom_tooltip = zz_valyria_settlement_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+						}
+					}
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0500.a.success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0500.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_settlement_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0500.a.failure
+				send_interface_toast = {
+					title = zz_valyria_settlement.0500.a.failure.tt
+					left_icon = root
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_negative
+						scope:activity = { activity_special_type_progression_negative = yes }
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_settlement.0500.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## Progress Event - Firewrym Attack
+zz_valyria_settlement.0600 = {
+	type = activity_event
+	title = zz_valyria_settlement.0600.t
+	desc = zz_valyria_settlement.0600.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_character_flag = settlement_foundation
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Confront Firewrym
+	option = {
+		name = zz_valyria_settlement.0600.a
+		trigger = {
+		}
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0600.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0600.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_settlement.0600.a.tt
+					add_prestige = monumental_prestige_gain
+					if = {
+						limit = {
+							OR = {
+								has_any_nickname = no
+								has_bad_nickname = yes
+							}
+						}
+						random_list = {
+							50 = { # Nickname
+								give_nickname = nick_the_wyrmslayer
+							}
+							50 = { }
+						}
+						
+					}
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good prowess activity }
+							character = root
+			
+							#Effect 
+							scope:host = {
+								add_character_flag = prowess_building_flag
+							}
+							custom_tooltip = zz_valyria_settlement_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+						}
+					}
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0600.a.success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0600.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_settlement_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0600.a.failure
+				send_interface_toast = {
+					title = zz_valyria_settlement.0600.a.failure.tt
+					left_icon = root
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_negative
+						scope:activity = { activity_special_type_progression_negative = yes }
+					}
+				}
+				random_list = {
+					25 = { # Death
+						death = {
+							death_reason = death_dragon_ate
+						}
+					}
+					30 = { # Maimed
+						add_trait = maimed
+					}
+					50 = { # Wounding
+						add_trait = wounded_1
+					}
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_settlement.0600.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
