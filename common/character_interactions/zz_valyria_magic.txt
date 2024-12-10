@@ -1891,7 +1891,102 @@ valyria_magic_teach_spell = {
 
 	}
 }
+valyria_magic_teach_spell_01 = {
 
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+			is_imprisoned = no
+		}
+		scope:recipient = {
+			has_trait = zz_magister
+			NOT = { 
+				has_trait = dragon
+			}
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			has_trait = zz_magister
+		}	
+		scope:actor = {
+			zz_valyria_is_mage_can_teach = yes 
+		}
+	}
+	cost = {
+		piety = minor_piety_value
+	}
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 20000
+	category = interaction_magic_friendly
+	
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			save_scope_as = zz_magic_user
+		}
+		scope:recipient = {
+			save_scope_as = zz_magic_learner
+		}
+		scope:actor = {
+			remove_variable = zz_magic_teacher
+			remove_variable = zz_magic_learner
+			remove_variable = zz_magic_user
+
+			set_variable = {
+				name = zz_magic_user
+				value = scope:zz_magic_user
+			}
+			set_variable = {
+				name = zz_magic_learner
+				value = scope:zz_magic_learner
+			}			
+			if = { 
+				limit = {
+					has_trait = zz_magister
+					NOT = {
+						THIS = scope:zz_magic_learner 
+					}
+				}
+				scope:actor = {
+					add_to_variable_list = {
+						name = mage_list
+						target = prev
+					}
+				}
+			}
+			every_living_mage = {
+				limit = {
+					liege_or_court_owner ?= scope:actor
+					NOT = {
+						THIS = scope:zz_magic_learner 
+					}
+				}
+				scope:actor = {
+					add_to_variable_list = {
+						name = mage_list
+						target = prev
+					}
+				}
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
 valyria_magic_self_wounding = {
 	is_shown = {
 		scope:recipient = {
