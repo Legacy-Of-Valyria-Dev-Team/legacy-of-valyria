@@ -2125,6 +2125,91 @@ valyria_remove_designated_blood_magic_sacrifice.interaction = {
 }
 ## Blood Magic
 
+zz_valyria_magic_blood_magic_01.interaction = {
+
+	desc = zz_valyria_magic_blood_magic_01_mysteries_of_restoration.interaction.desc
+
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+			
+			is_imprisoned = no
+			zz_valyria_is_mage = yes 
+		}
+		scope:recipient = {
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_is_mage = yes 
+		}
+	}
+	icon = blood_magic
+	common_interaction = no
+	interface_priority = 999
+	category = interaction_magic_friendly
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			save_scope_as = zz_magic_user
+		}
+		scope:recipient = {
+			save_scope_as = zz_magic_target
+		}
+		scope:actor = {
+			remove_variable = zz_magic_target
+			remove_variable = zz_magic_caster
+			remove_variable = zz_magic_user
+
+			set_variable = {
+				name = zz_magic_user
+				value = scope:zz_magic_user
+			}
+			set_variable = {
+				name = zz_magic_target
+				value = scope:zz_magic_target
+			}			
+			if = { 
+				limit = {
+					has_trait = zz_magister
+				}
+				scope:actor = {
+					add_to_variable_list = {
+						name = mage_list
+						target = prev
+					}
+				}
+			}
+			every_living_mage = {
+				limit = {
+					liege_or_court_owner ?= scope:actor
+				}
+				scope:actor = {
+					add_to_variable_list = {
+						name = mage_list
+						target = prev
+					}
+				}
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+
 zz_valyria_magic_blood_magic_01_mysteries_of_restoration.interaction = {
 
 	desc = zz_valyria_magic_blood_magic_01_mysteries_of_restoration.interaction.desc

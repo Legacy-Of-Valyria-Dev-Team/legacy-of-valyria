@@ -8,3 +8,602 @@ window = {
 	#using = Window_Background_Sidebar
 	visible = "[GetVariableSystem.Exists( 'zz_custom_council_window' )]"
 }
+
+
+window = {
+	name = "zz_magic_window"
+	layer = top
+	using = Window_Background
+	size = { 1500 800 }
+	datacontext = "[GetScriptedGui('zz_valyria_magic_casting')]"
+	visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+
+	state = {
+		name = _show
+		on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+	}
+	margin_widget = {
+		size = { 100% 100% }
+		margin = { 0 26 }
+		margin_right = 13
+
+		widget = {
+			size = { 100% 100% }
+
+			vbox = {
+				using = Window_Margins
+
+				header_pattern = {
+					layoutpolicy_horizontal = expanding
+
+					blockoverride "header_text"
+					{
+						text = "Magic Casting"
+					}
+
+					blockoverride "button_close"
+					{
+						onclick = "[GetScriptedGui('zz_valyria_magic_casting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+					}
+				}
+				hbox = { 
+					layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+					size = {30% 90%}
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						spacer = { size = { 0 30 } }
+						text_single = {
+							text = "Mages"
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 00 30 } }
+						scrollbox = {
+							name = "mages_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[GetPlayer.MakeScope.GetList('mage_list')]"
+								
+									item = {
+										button_standard = {
+											size = { 180 90 }
+											align = left
+											datacontext = "[Scope.GetCharacter]"
+											layoutpolicy_vertical = expanding
+											layoutpolicy_horizontal = expanding
+											
+											onclick = "[GetScriptedGui('zz_valyria_magic_caster').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_caster', Character.MakeScope ).End )]"
+											flowcontainer = {
+												portrait_head_small = {}
+												text_single = {
+													text = "[Character.GetNameNoTooltip]"
+												}
+											}
+										}								 
+									}
+								}
+							}
+						}
+					}
+					vbox = {
+						layoutpolicy_horizontal = expanding layoutpolicy_vertical = expanding
+						size = {20% 90%}
+						spacer = { size = { 00 30 } }
+						text_single = {
+							text = "Magic School"
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 00 30 } }
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Blood Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Shadow Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_2' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Dream Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_3' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Dream Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_3' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Alchemy Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_4' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Fire Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_5' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Air Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_6' )]"
+						}
+						button_standard = {
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 15 0 }
+								text = "Water Magic"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+							layoutpolicy_vertical = expanding 
+							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_7' )]"
+						}
+					}
+					vbox = {
+						layoutpolicy_horizontal = expanding layoutpolicy_vertical = expanding
+						size = {50% 90%}
+						spacer = { size = { 0 30 } }
+						text_single = {
+							text = game_concept_zz_mystery
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 0 30 } }
+						scrollbox = {
+							name = "spell_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_spell_list')]"
+								
+									item = {
+										flowcontainer = {
+											datacontext = "[Scope.CharacterMemory]"
+											button_standard = {
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}														
+
+
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+window = {
+	name = "zz_magic_teaching_window"
+	layer = top
+	using = Window_Background
+	size = { 1500 800 }
+	datacontext = "[GetScriptedGui('zz_valyria_magic_casting')]"
+	visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+
+	state = {
+		name = _show
+		on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+	}
+	margin_widget = {
+		size = { 100% 100% }
+		margin = { 0 26 }
+		margin_right = 13
+
+		widget = {
+			size = { 100% 100% }
+
+			vbox = {
+				using = Window_Margins
+
+				header_pattern = {
+					layoutpolicy_horizontal = expanding
+
+					blockoverride "header_text"
+					{
+						text = "Magic Casting"
+					}
+
+					blockoverride "button_close"
+					{
+						onclick = "[GetScriptedGui('zz_valyria_magic_casting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+					}
+				}
+				hbox = { 
+					layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+					size = {30% 90%}
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						spacer = { size = { 0 30 } }
+						text_single = {
+							text = "Mages"
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 00 30 } }
+						scrollbox = {
+							name = "mages_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[GetPlayer.MakeScope.GetList('mage_list')]"
+								
+									item = {
+										button_standard = {
+											size = { 180 90 }
+											align = left
+											datacontext = "[Scope.GetCharacter]"
+											layoutpolicy_vertical = expanding
+											layoutpolicy_horizontal = expanding
+											
+											onclick = "[GetScriptedGui('zz_valyria_magic_caster').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_caster', Character.MakeScope ).End )]"
+											flowcontainer = {
+												portrait_head_small = {}
+												text_single = {
+													text = "[Character.GetNameNoTooltip]"
+												}
+											}
+										}								 
+									}
+								}
+							}
+						}
+					}
+					vbox = {
+						layoutpolicy_horizontal = expanding layoutpolicy_vertical = expanding
+						size = {50% 90%}
+						spacer = { size = { 0 30 } }
+						text_single = {
+							text = game_concept_zz_mystery
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 0 30 } }
+						scrollbox = {
+							name = "spell_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_spell_list')]"
+								
+									item = {
+										flowcontainer = {
+											datacontext = "[Scope.CharacterMemory]"
+											button_standard = {
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}														
+
+
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+widget = {
+	allow_outside = yes
+	name = "event_window_province_selection"
+	size = { 450 250 }
+
+	vbox = {
+		#text_single = {block "header" { text = "This is a Header" } }
+		container = {
+			allow_outside = yes
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			datacontext = "[GetPlayer.MakeScope]"
+			vbox = {
+				allow_outside = yes
+
+				scrollbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					minimumsize = { 450 180 }
+					blockoverride "scrollbox_content" {
+						vbox = {
+							datamodel = "[Scope.GetList('possible_artifacts')]"
+
+							item = {
+								button_standard = {
+									size = { 410 90 }
+									datacontext = "[Scope.Artifact]"
+
+									down = "[GetScriptedGui( 'agot_artifact_selecting' ).IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'selected_artifact', Artifact.MakeScope ).End )]"
+									onclick = "[GetScriptedGui( 'agot_artifact_selecting' ).Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'selected_artifact', Artifact.MakeScope ).End )]"
+
+									widget = {
+										size = { 90 90 }
+										parentanchor = left
+										icon_artifact = {
+											blockoverride "tooltipwidget" {
+												tooltipwidget = {
+													widget = {
+														using = GeneralTooltipSetup
+														alwaystransparent = no
+
+														widget = {
+															name = "background"
+															using = DefaultTooltipBackground
+															size = { 100% 100% }
+															alwaystransparent = no
+														}
+
+														vbox = {
+															set_parent_size_to_minimum = yes
+															margin = { 20 10 }
+															margin_bottom = 16
+
+															vbox = {
+																layoutpolicy_horizontal = expanding
+																layoutpolicy_vertical = expanding
+																margin = { 6 4 }
+																margin_bottom = 12
+
+																background = {
+																	name = "header"
+																	texture = "gfx/interface/component_tiles/tile_title_big_top_01.dds"
+																	spriteType = Corneredstretched
+																	align = vcenter|left
+																	margin = { 15 0 }
+																	texture_density = 2
+
+																	modify_texture = {
+																		name = "mask"
+																		texture = "gfx/interface/component_masks/mask_title_big_top.dds"
+																		spriteType = Corneredstretched
+																		spriteborder = { 160 0 }
+																		blend_mode = alphamultiply
+																		alpha = 0.5
+																	}
+
+																	modify_texture = {
+																		name = "overlay"
+																		texture = "gfx/interface/component_overlay/overlay_title_big_top.dds"
+																		spriteType = Corneredstretched
+																		spriteborder = { 0 0 }
+																		blend_mode = overlay
+																	}
+																}
+
+																hbox = {
+																	layoutpolicy_horizontal = expanding
+
+																	vbox = {
+																		text_single = {
+																			layoutpolicy_horizontal = expanding
+																			name = "rarity"
+																			text = "[Artifact.GetRarityAndSlotType]"
+																			align = top
+																			using = Font_Size_Medium
+																		}
+
+																		text_single = {
+																			layoutpolicy_horizontal = expanding
+																			name = "title"
+																			text = "[Artifact.GetNameNoTooltip]"
+																			align = top
+																			using = Font_Size_Big
+																		}
+																	}
+
+																	expand = {}
+
+																	vbox = {
+																		layoutpolicy_vertical = expanding
+
+																		text_single = {
+																			name = "artifact_category"
+																			text = "[Artifact.GetCategory]"
+																			align = right
+																			fonttintcolor = "[TooltipInfo.GetTintColor]"
+																		}
+
+																		expand = {}
+																	}
+																}
+															}
+
+															vbox = {
+																layoutpolicy_horizontal = expanding
+																layoutpolicy_vertical = expanding
+																spacing = 10
+
+																hbox = { #icon, durability and effects
+																	layoutpolicy_horizontal = expanding
+																	spacing = 10
+
+																	background = {
+																		layoutpolicy_horizontal = expanding
+																		using = Background_Area
+																		margin = { 15 5 }
+																		margin_top = 5
+																	}
+
+																	vbox = {
+																		layoutpolicy_vertical = expanding
+
+																		icon_artifact = {
+																			size = { 160 160 }
+																			blockoverride "tooltipwidget" {}
+																		}
+
+																		expand = {}
+																	}
+
+																	vbox = {
+																		name = "main_text"
+																		layoutpolicy_horizontal = expanding
+																		layoutpolicy_vertical = expanding
+																		spacing = 5
+
+																		hbox = {
+																			name = "modifiers"
+																			layoutpolicy_horizontal = expanding
+
+																			text_multi = {
+																				visible = "[Artifact.CanBenefitPlayer]"
+																				max_width = 300
+																				autoresize = yes
+																				text = ARTIFACT_EFFECT
+																			}
+
+																			text_multi = {
+																				visible = "[Not( Artifact.CanBenefitPlayer )]"
+																				max_width = 300
+																				autoresize = yes
+																				text = ARTIFACT_EFFECT
+																				default_format = "#low"
+																				format_override = { P low }
+																				#format_override = { L X }
+																				format_override = { E low }
+																				#format_override = { S low }
+																			}
+
+																			expand = {}
+																		}
+
+																		hbox = {
+																			name = "fallback"
+																			layoutpolicy_horizontal = expanding
+
+																			visible = "[Not( Artifact.CanBenefitPlayer )]"
+
+																			text_multi = {
+																				max_width = 300
+																				autoresize = yes
+																				text = "ARTIFACT_FALLBACK_EFFECT"
+																			}
+																			expand = {}
+																		}
+																		expand = {}
+																	}
+
+																	expand = {}
+																}
+															} # vbox
+														}
+													}
+												}
+											}
+										}
+									}
+									widget = {
+										size = { 360 90 }
+										parentanchor = right
+										text_single = {
+											text = "[Scope.Artifact.GetNameNoTooltip]"
+											parentanchor = center
+											#default_format = "#high"
+											using = Font_Size_Medium
+										}
+									}
+								}
+							}
+						}
+						spacer = { size = { 0 20 } }
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
