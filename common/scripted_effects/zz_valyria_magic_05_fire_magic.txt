@@ -11,8 +11,9 @@ zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame_effect = {
 		zz_valyria_magic_duel_stress_effect = yes 
 		if = {
 			limit = {
-				scope:weaken_spell_flag = yes
+				var:zz_valyria_magic_fire_magic_spells001= flag:weaken_power
 			}
+			
 			scope:secondary_recipient = {
 				duel = {
 					skill = learning 
@@ -23,10 +24,7 @@ zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame_effect = {
 						}
 						add_dread = medium_dread_gain
 						scope:recipient = {
-							if = {
-								limit = {
-									scope:strike_imprison_flag = yes
-								}
+							show_as_tooltip = {
 								increase_wounds_effect = { REASON = fire_magic }
 								add_trait = burned
 								add_trait_xp = {
@@ -34,30 +32,20 @@ zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame_effect = {
 									value = { 5 200 }
 								}
 								add_stress = massive_stress_gain
-								imprison_character_effect = {
-									TARGET = scope:recipient
-									IMPRISONER = scope:actor
-								}
 							}
-							else = {
-								show_as_tooltip = {
-									add_trait = wounded_3
-									add_stress = massive_stress_gain
-								}
-								scope:actor = {
-									if = {
-										limit = {
-											NOR = {
-												has_imprisonment_reason = scope:recipient
-												has_banish_reason = scope:recipient
-												has_execute_reason = scope:recipient
-											}
+							scope:actor = {
+								if = {
+									limit = {
+										NOR = {
+											has_imprisonment_reason = scope:recipient
+											has_banish_reason = scope:recipient
+											has_execute_reason = scope:recipient
 										}
-										add_tyranny = minor_tyranny_gain
 									}
+									add_tyranny = minor_tyranny_gain
 								}
-								custom_tooltip = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame.tyranny
 							}
+							custom_tooltip = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame.tyranny
 						}
 					}
 					25 = {
@@ -68,7 +56,7 @@ zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame_effect = {
 		}	
 		if = {
 			limit = {
-				scope:weaken_spell_flag = no
+				var:zz_valyria_magic_fire_magic_spells001 = flag:max_power
 			}
 			scope:secondary_recipient = {
 				duel = {
@@ -160,8 +148,8 @@ zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame_effect = {
 					}
 				}
 			}
-		}	
-			
+		}
+		remove_variable = zz_valyria_magic_fire_magic_spells001			
 	}
 }
 
@@ -173,18 +161,8 @@ zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame_effect = {
 		left_icon = scope:actor
 		right_icon = scope:recipient					
 		custom_tooltip = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame.tt
-		scope:recipient = {
-			location = {
-				every_army_in_location = {
-					limit = { 
-						army_owner = scope:recipient
-					}
-					deplete_army_by_percentage = 0.3
-				}
-			}
-			commanding_army = { 
-				deplete_army_by_percentage = 0.3
-			}
+		scope:target = {
+			deplete_army_by_percentage = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame_value
 		}
 	}
 }
@@ -197,22 +175,21 @@ zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire_effect = {
 		left_icon = scope:actor
 		right_icon = scope:recipient					
 		custom_tooltip = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire.tt
-		scope:recipient = {
+		scope:target = {
+			deplete_army_by_percentage = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire_value
 			location = {
-				every_army_in_location = {
-					limit = { 
-						army_owner = scope:recipient
-					}
-					deplete_army_by_percentage = 0.75
+				random = {
+					chance = 25
+					destroy_random_building_variable_effect = yes 
 				}
 				random = {
 					chance = 25
 					destroy_random_building_variable_effect = yes 
 				}
-				
-			}
-			commanding_army = { 
-				deplete_army_by_percentage = 0.9
+				random = {
+					chance = 25
+					destroy_random_building_variable_effect = yes 
+				}
 			}
 		}
 	}
@@ -443,14 +420,16 @@ zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades_effect = {
 				BOOSTED_DURATION = 5
 			}
 		}			
-		if = {
-			limit = {
-				NOT = { scope:actor = scope:recipient }
-			}
-			add_opinion = {
-				modifier  = grateful_opinion
-				target = scope:actor
-				opinion = 70
+		scope:recipient = { 
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier  = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
 			}
 		}
 	}
