@@ -2092,10 +2092,9 @@ zz_valyria_magic_dream_magic_spells.005 = {
 		name = zz_valyria_magic_dream_magic_spells.005.opt.am
 		set_variable = { 
 			name = zz_valyria_magic_dream_magic_spells005
-			value = flag:authoritative
+			value = flag:rude
 			days = 1
 		}
-		
 		zz_valyria_magic_cast_effect = { 
 			MANACOST = 10
 			SKILL = dream_magic
@@ -2104,19 +2103,6 @@ zz_valyria_magic_dream_magic_spells.005 = {
 	}
 	option = {
 		name = zz_valyria_magic_dream_magic_spells.005.opt.an
-		set_variable = { 
-			name = zz_valyria_magic_dream_magic_spells005
-			value = flag:inquisitive
-			days = 1
-		}
-		zz_valyria_magic_cast_effect = { 
-			MANACOST = 10
-			SKILL = dream_magic
-			SPELL  = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
-		}
-	}
-	option = {
-		name = zz_valyria_magic_dream_magic_spells.005.opt.ao
 		set_variable = { 
 			name = zz_valyria_magic_dream_magic_spells005
 			value = flag:inquisitive
@@ -2668,7 +2654,7 @@ zz_valyria_magic_fire_magic_spells.002 = {
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
-			MANACOST = 1
+			MANACOST = 3
 			SKILL = fire_magic
 			SPELL  = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
 		}
@@ -2712,7 +2698,7 @@ zz_valyria_magic_fire_magic_spells.003 = {
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
-			MANACOST = 1
+			MANACOST = 15
 			SKILL = fire_magic
 			SPELL  = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
 		}
@@ -2738,7 +2724,7 @@ zz_valyria_magic_fire_magic_spells.004 = {
 		zz_valyria_magic_cast_effect = { 
 			MANACOST = 2
 			SKILL = fire_magic
-			SPELL  = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
+			SPELL  = zz_valyria_magic_fire_magic_04_mysteries_of_flaming_purification
 		}
 	}
 	option = {
@@ -2760,12 +2746,192 @@ zz_valyria_magic_fire_magic_spells.005 = {
 			}
 		}
 		zz_valyria_magic_cast_effect = { 
+			MANACOST = 5
+			SKILL = fire_magic
+			SPELL  = zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades
+		}
+	}
+	option = {
+		name = zz_valyria_magic_fire_magic_spells.005.opt.z
+	}
+}
+
+namespace = zz_valyria_magic_air_magic_spells 
+
+zz_valyria_magic_air_magic_spells.001 = {
+	type = character_event
+	title = zz_valyria_magic_air_magic_spells.001.t
+	desc = zz_valyria_magic_air_magic_spells.001.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+
+	option = {
+		name = zz_valyria_magic_air_magic_spells.001.opt.a
+		trigger = {
+			scope:recipient = {			
+			}
+		}
+		set_variable = { 
+			name = zz_valyria_magic_air_magic_spells001
+			value = flag:weaken_power
+			days = 1
+		}
+		zz_valyria_magic_cast_effect = { 
 			MANACOST = 2
 			SKILL = fire_magic
 			SPELL  = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
 		}
 	}
 	option = {
-		name = zz_valyria_magic_fire_magic_spells.005.opt.z
+		name = zz_valyria_magic_air_magic_spells.001.opt.b
+		trigger = {
+			scope:recipient = {
+				
+			}
+		}
+		set_variable = { 
+			name = zz_valyria_magic_air_magic_spells001
+			value = flag:max_power
+			days = 1
+		}
+		zz_valyria_magic_cast_effect = { 
+			MANACOST = 2
+			SKILL = air_magic
+			SPELL  = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind
+		}
+	}
+
+	option = {
+		name = zz_valyria_magic_air_magic_spells.001.opt.z
+	}
+}
+
+zz_valyria_magic_air_magic_spells.002 = {
+	type = character_event
+	title = zz_valyria_magic_air_magic_spells.002.t
+	desc = zz_valyria_magic_air_magic_spells.002.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+
+	immediate = {
+		scope:recipient = {
+			every_maa_regiment = {
+				limit = {
+					maa_current_troops_count < 0
+				}
+				root = {
+					add_to_variable_list = {
+						name = possible_regiments
+						target = prev
+					}
+				}
+			}
+		}
+
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_regiments
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_maa_selection"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_air_magic_spells.002.opt.a
+		trigger = {
+			scope:recipient = {
+				any_maa_regiment = {
+					maa_current_troops_count < 0
+				}
+			}
+
+		}
+		var:selected_regiment = { 
+			save_scope_as = target
+		}
+		zz_valyria_magic_cast_effect = { 
+			MANACOST = 3
+			SKILL = air_magic
+			SPELL  = zz_valyria_magic_air_magic_02_mysteries_of_the_tempestuous_winds
+		}	
+	}
+	option = {
+		name = zz_valyria_magic_air_magic_spells.002.opt.z
+	}
+}
+
+zz_valyria_magic_air_magic_spells.003 = {
+	type = character_event
+	title = zz_valyria_magic_air_magic_spells.003.t
+	desc = zz_valyria_magic_air_magic_spells.003.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+
+	option = {
+		name = zz_valyria_magic_air_magic_spells.003.opt.a
+		trigger = {
+			scope:recipient = {			
+			}
+		}
+		zz_valyria_magic_cast_effect = { 
+			MANACOST = 5
+			SKILL = air_magic
+			SPELL  = zz_valyria_magic_air_magic_03_mysteries_of_the_wall_of_the_wind
+		}
+	}
+	option = {
+		name = zz_valyria_magic_air_magic_spells.003.opt.z
+	}
+}
+
+zz_valyria_magic_air_magic_spells.004 = {
+	type = character_event
+	title = zz_valyria_magic_air_magic_spells.004.t
+	desc = zz_valyria_magic_air_magic_spells.004.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+
+	immediate = {
+		scope:recipient = {
+			every_realm_province = {
+				root = {
+					add_to_variable_list = {
+						name = possible_provinces
+						target = prev
+					}
+				}
+			}
+		}
+	}
+
+	widget = {
+		is_shown = {
+			is_ai = no
+		}
+		gui = "event_window_province_selection"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_air_magic_spells.004.opt.a
+		var:selected_province = { 
+			save_scope_as = target
+		}
+		zz_valyria_magic_cast_effect = { 
+			MANACOST = 25
+			SKILL = air_magic
+			SPELL  = zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane
+		}	
+	}
+	option = {
+		name = zz_valyria_magic_air_magic_spells.004.opt.z
 	}
 }
