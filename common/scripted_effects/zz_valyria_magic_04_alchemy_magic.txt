@@ -1,82 +1,5 @@
 ﻿
 
-zz_valyria_magic_alchemy_apply_modifier_effect = {
-	if  = {
-		limit = {
-			scope:secondary_recipient = { 
-				has_trait_xp = {
-					trait = zz_magister
-					track = alchemy_magic 
-					value >= 90
-				}
-			}
-		}
-		add_county_modifier = {
-			modifier = $MODIFIER$_03
-			years = $DURATION$
-		}
-	}
-	else_if  = {
-		limit = {
-			scope:secondary_recipient = { 
-				has_trait_xp = {
-					trait = zz_magister
-					track = alchemy_magic 
-					value >= 50
-				}
-			}
-		}
-		add_county_modifier = {
-			modifier = $MODIFIER$_02
-			years = $DURATION$
-		}
-	}
-	else = {
-		add_county_modifier = {
-			modifier = $MODIFIER$_01
-			years = $DURATION$
-		}
-	}
-}
-
-zz_valyria_magic_alchemy_apply_character_modifier_effect = {
-	if  = {
-		limit = {
-			scope:secondary_recipient = { 
-				has_trait_xp = {
-					trait = zz_magister
-					track = alchemy_magic 
-					value >= 90
-				}
-			}
-		}
-		add_character_modifier = {
-			modifier = $MODIFIER$_03
-			years = $DURATION$
-		}
-	}
-	else_if  = {
-		limit = {
-			scope:secondary_recipient = { 
-				has_trait_xp = {
-					trait = zz_magister
-					track = alchemy_magic 
-					value >= 50
-				}
-			}
-		}
-		add_character_modifier = {
-			modifier = $MODIFIER$_02
-			years = $DURATION$
-		}
-	}
-	else = {
-		add_character_modifier = {
-			modifier = $MODIFIER$_01
-			years = $DURATION$
-		}
-	}
-}
 
 # Alchemical Magic
 zz_valyria_magic_alchemy_magic_01_mysteries_of_growth_effect = {  
@@ -87,13 +10,11 @@ zz_valyria_magic_alchemy_magic_01_mysteries_of_growth_effect = {
 		left_icon = scope:actor
 		right_icon = scope:target
 		custom_tooltip = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth.tt
-		scope:target.title_province = {
-			county = {
-				zz_valyria_magic_apply_province_modifier_effect = { 
-					MODIFIER = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth_modifier
-					DURATION = 10
-					BOOSTED_DURATION = 20
-				}
+		scope:target = {
+			zz_valyria_magic_apply_province_modifier_effect = { 
+				MODIFIER = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth_modifier
+				DURATION = 10
+				BOOSTED_DURATION = 20
 			}
 		}
 	}
@@ -107,13 +28,11 @@ zz_valyria_magic_alchemy_magic_02_mysteries_of_construction_effect = {
 		left_icon = scope:actor
 		right_icon = scope:target
 		custom_tooltip = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction.tt
-		scope:target.title_province = {
-			county = {
-				zz_valyria_magic_apply_province_modifier_effect = { 
-					MODIFIER = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction_modifier
-					DURATION = 10
-					BOOSTED_DURATION = 20
-				}
+		scope:target = {
+			zz_valyria_magic_apply_province_modifier_effect = { 
+				MODIFIER = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction_modifier
+				DURATION = 10
+				BOOSTED_DURATION = 20
 			}
 		}
 	}
@@ -139,38 +58,43 @@ zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_effect = {
 				callous = minor_stress_gain
 			}
 		}
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:dynasty_prestige = yes
-				}
-				scope:recipient = { 
-					dynasty = { add_dynasty_prestige = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_01}
-					
-				}
+		if = {
+			limit = {
+				var:zz_valyria_magic_alchemy_magic_spells.003 = flag:gold
 			}
-			else_if = {
-				limit = {
-					scope:prestige= yes
-				}
-				scope:recipient = { add_prestige = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_02 } 
+			remove_variable = zz_valyria_magic_alchemy_magic_spells.003
+			scope:recipient = { 
+				add_gold = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_04 
+				domicile ?= { change_provisions = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_04 }
 			}
-			else_if = {
-				limit = {
-					scope:piety= yes
-				}
-				scope:recipient = { add_piety = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_03 } 
+		} 
+		if = {
+			limit = {
+				var:zz_valyria_magic_alchemy_magic_spells.003 = flag:renown
 			}
-			else_if = {
-				limit = {
-					scope:transmutation = yes
-				}
-				scope:recipient = { 
-					add_gold = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_04 
-					domicile ?= { change_provisions = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_04 }
-				} 
+			remove_variable = zz_valyria_magic_alchemy_magic_spells.003
+			scope:recipient = { 
+				dynasty = { add_dynasty_prestige = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_01}
 				
-			}				
+			}
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_alchemy_magic_spells.003 = flag:prestige
+			}
+			remove_variable = zz_valyria_magic_alchemy_magic_spells.003
+			scope:recipient = { add_prestige = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_02 } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_alchemy_magic_spells.003 = flag:piety
+			}
+			remove_variable = zz_valyria_magic_alchemy_magic_spells.003
+			scope:recipient = { add_piety = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_03 } 
+		}
+
+						
+		scope:recipient = {
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -205,81 +129,79 @@ zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_effect = {
 				callous = minor_stress_gain
 			}
 		}
+		if = {
+			limit = {
+				scope:knights_add = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_01_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:knights_bonus = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_02_modifer
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:maa_bonus = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_03_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:maa_size_bonus = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_04_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:title_maa_bonus = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_05_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:title_maa_size_bonus = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_06_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
 		scope:recipient = {			
-			if = {
-				limit = {
-					scope:knights_add = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_01_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					scope:knights_bonus = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_02_modifer
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					scope:maa_bonus = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_03_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					scope:maa_size_bonus = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_04_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					scope:title_maa_bonus = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_05_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					scope:title_maa_size_bonus = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms_option_06_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			
-			
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -315,33 +237,31 @@ zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_effect = {
 				callous = minor_stress_gain
 			}
 		}
+		if = {
+			limit = {
+				scope:zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1 = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_01_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_2 = yes
+			}
+			scope:recipient = {
+				zz_valyria_magic_apply_character_modifier_effect = { 
+					MODIFIER = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_02_modifier
+					DURATION = -1
+					BOOSTED_DURATION = -1
+				}
+			}
+		}
 		scope:recipient = {			
-			if = {
-				limit = {
-					scope:zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_1 = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_01_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_2 = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_apply_character_modifier_effect = { 
-						MODIFIER = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification_option_02_modifier
-						DURATION = -1
-						BOOSTED_DURATION = -1
-					}
-				}
-			}
-			
-			
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
