@@ -210,15 +210,43 @@ zz_valyria_magic_water_magic_04_mysteries_of_rhoyne_effect = {
 		left_icon = scope:actor
 		right_icon = scope:recipient					
 		custom_tooltip = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne.tt
-		scope:recipient = {
-			location = {
+		if = {
+			limit = {
+				var:zz_valyria_magic_water_magic_spells004 ?= flag:minor
+			}
+			scope:target = {
 				create_epidemic_outbreak = {
-					type = bubonic_plague
+					type = scope:epidemic
+					intensity = minor
+					save_scope_as = mysteries_of_rhoyne  # optional
+				}
+			}
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_water_magic_spells004 ?= flag:major
+			}
+			scope:target = {
+				create_epidemic_outbreak = {
+					type = scope:epidemic
 					intensity = major
 					save_scope_as = mysteries_of_rhoyne  # optional
 				}
 			}
 		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_water_magic_spells004 ?= flag:apocalypse
+			}
+			scope:target = {
+				create_epidemic_outbreak = {
+					type = scope:epidemic
+					intensity = apocalyptic
+					save_scope_as = mysteries_of_rhoyne  # optional
+				}
+			}
+		}
+		remove_variable = zz_valyria_magic_water_magic_spells004a
 	}
 }
 
