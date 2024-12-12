@@ -10,7 +10,7 @@
 		zz_valyria_magic_duel_stress_effect = yes 
 		if = {
 			limit = {
-				scope:weaken_spell_flag = yes
+				var:zz_valyria_magic_air_magic_spells001?= flag:weaken_power
 			}
 			scope:secondary_recipient = {
 				duel = {
@@ -18,41 +18,28 @@
 					target = scope:recipient
 					75 = {
 						modifier = {
-							add = zz_air_damage_scaling_value
+							add = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind_value
 						}
 						add_dread = medium_dread_gain
 						
 						scope:recipient = {
-							if = {
-								limit = {
-									scope:strike_imprison_flag = yes
-								}
-								maimed_in_battle_effect = yes 
+							show_as_tooltip = {
+								increase_wounds_effect = { REASON = air_magic }
 								add_stress = massive_stress_gain
-								imprison_character_effect = {
-									TARGET = scope:recipient
-									IMPRISONER = scope:actor
-								}
 							}
-							else = {
-								show_as_tooltip = {
-									add_trait = wounded_3
-									add_stress = massive_stress_gain
-								}
-								scope:actor = {
-									if = {
-										limit = {
-											NOR = {
-												has_imprisonment_reason = scope:recipient
-												has_banish_reason = scope:recipient
-												has_execute_reason = scope:recipient
-											}
+							scope:actor = {
+								if = {
+									limit = {
+										NOR = {
+											has_imprisonment_reason = scope:recipient
+											has_banish_reason = scope:recipient
+											has_execute_reason = scope:recipient
 										}
-										add_tyranny = minor_tyranny_gain
 									}
+									add_tyranny = minor_tyranny_gain
 								}
-								custom_tooltip = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind.tyranny
 							}
+							custom_tooltip = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind.tyranny
 						}
 					}
 					25 = {
@@ -63,7 +50,7 @@
 		}	
 		if = {
 			limit = {
-				scope:weaken_spell_flag = no
+				var:zz_valyria_magic_air_magic_spells001?= flag:max_power
 			}
 			scope:secondary_recipient = {
 				duel = {
@@ -71,7 +58,7 @@
 					target = scope:recipient
 					75 = {
 						modifier = {
-							add = zz_air_damage_scaling_value
+							add = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind_value
 						}
 						scope:actor = { 
 							add_dread = major_dread_gain
@@ -153,6 +140,7 @@
 				}
 			}
 		}	
+		remove_variable = zz_valyria_magic_air_magic_spells001
 	}
 }
 
@@ -228,7 +216,9 @@ zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane_effect = {
 		scope:target = {
 			every_army_in_location = {
 				limit = { 
-					army_owner = scope:recipient
+					NOT = {
+						army_owner = scope:actor
+					}
 				}
 				deplete_army_by_percentage = 0.05
 			}
