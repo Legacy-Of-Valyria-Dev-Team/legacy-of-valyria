@@ -425,26 +425,9 @@ zz_valyria_magic_blood_magic_01.interaction = {
 	cooldown = { days = 0 } 
 	ignores_pending_interaction_block = yes
 	use_diplomatic_range = yes
-	on_accept = {
+	on_send = {
 		scope:actor = {
 			save_scope_as = zz_magic_user
-		}
-		scope:recipient = {
-			save_scope_as = zz_magic_target
-		}
-		scope:actor = {
-			remove_variable = zz_magic_target
-			remove_variable = zz_magic_caster
-			remove_variable = zz_magic_user
-
-			set_variable = {
-				name = zz_magic_user
-				value = scope:zz_magic_user
-			}
-			set_variable = {
-				name = zz_magic_target
-				value = scope:zz_magic_target
-			}			
 			if = { 
 				limit = {
 					has_trait = zz_magister
@@ -466,6 +449,49 @@ zz_valyria_magic_blood_magic_01.interaction = {
 						target = prev
 					}
 				}
+			}
+			ordered_in_list = {
+				variable = mage_list
+				position = 0
+				order_by = learning
+				save_scope_as = zz_magic_caster
+			}
+			clear_variable_list ?= zz_valyria_spell_list
+			scope:zz_magic_caster = {
+				every_memory = {
+					limit = { 
+						has_memory_category = magic
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_spell_list
+							target = prev
+						}
+					}
+				}
+			}
+		}
+		scope:recipient = {
+			save_scope_as = zz_magic_target
+		}
+	}
+	on_accept = {
+		scope:actor = {
+			remove_variable = zz_magic_target
+			remove_variable = zz_magic_caster
+			remove_variable = zz_magic_user
+			
+			set_variable = {
+				name = zz_magic_user
+				value = scope:zz_magic_user
+			}			
+			set_variable = {
+				name = zz_magic_caster
+				value = scope:zz_magic_caster
+			}	
+			set_variable = {
+				name = zz_magic_target
+				value = scope:zz_magic_target
 			}
 		}
 	}
