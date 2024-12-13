@@ -60,13 +60,14 @@ zz_valyria_magic_dream_magic_01_mysteries_mental_domination_effect = {
 			}
 		}
 		add_hook = {
-				type = magic_domination_hook
-				target = scope:recipient
+			type = magic_domination_hook
+			target = scope:recipient
 		}
 		if = {
 			limit = {
-				scope:magic_domination_faith = yes
+				var:zz_valyria_magic_dream_magic_spells001 ?= flag:religion_change
 			}
+			remove_variable = zz_valyria_magic_dream_magic_spells001
 			scope:recipient = {
 				custom_tooltip = zz_valyria_magic_dream_magic_01_mysteries_mental_domination.tt
 				set_culture_same_as = scope:actor
@@ -101,186 +102,138 @@ zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_effect = {
 				callous = minor_stress_gain
 			}
 		}
-		scope:recipient = {
-			if  = { 
-				limit = {
-					scope:blademaster_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = lifestyle_blademaster }
-						add_trait_xp = {
-							trait = lifestyle_blademaster
-							value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
-						}
-					}
-					else = { add_trait = lifestyle_blademaster }
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:mystic_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = lifestyle_mystic }
-						add_trait_xp = {
-							trait = lifestyle_mystic
-							value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
-						}
-					}
-					else = { add_trait = lifestyle_mystic }
-				}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:blademaster
 			}
-			else_if  = { 
-				limit = {
-					scope:reveler_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = lifestyle_reveler }
-						add_trait_xp = {
-							trait = lifestyle_reveler
-							value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
-						}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = lifestyle_blademaster }
+					add_trait_xp = {
+						trait = lifestyle_blademaster
+						value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
 					}
-					else = { add_trait = lifestyle_reveler }
 				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:hunter_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = lifestyle_hunter }
-						add_trait_xp = {
-							trait = lifestyle_hunter
-							track = hunter
-							value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
-						}
+				else = { add_trait = lifestyle_blademaster }
+			}
+		}	
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:mystic
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = lifestyle_mystic }
+					add_trait_xp = {
+						trait = lifestyle_mystic
+						value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
 					}
-					else = { add_trait = lifestyle_hunter }
 				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:physician_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = lifestyle_physician }
-						add_trait_xp = {
-							trait = lifestyle_physician
-							value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
-						}
+				else = { add_trait = lifestyle_mystic }
+			}
+		}
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:reveler
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = lifestyle_reveler }
+					add_trait_xp = {
+						trait = lifestyle_reveler
+						value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
 					}
-					else = { add_trait = lifestyle_physician }
 				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:herbalist_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = lifestyle_herbalist }
-						#add_trait_xp = {
-						#	trait = lifestyle_herbalist
-						#	value = 30
-						#}
+				else = { add_trait = lifestyle_reveler }
+			}
+		}	
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:hunter
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = lifestyle_hunter }
+					add_trait_xp = {
+						trait = lifestyle_hunter
+						track = hunter
+						value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
 					}
-					else = { add_trait = lifestyle_herbalist }#
-					add_trait = lifestyle_herbalist 
 				}
-			}		
-			else_if  = { 
-				limit = {
-					scope:gardener_magic = yes
-				}
-				scope:recipient = {
-					if = {
-					limit = { has_trait = lifestyle_gardener }
-					#	add_trait_xp = {
-					#		trait = lifestyle_gardener
-					#		value = 30
-					#	}
+				else = { add_trait = lifestyle_hunter }
+			}
+		}	
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:physician
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = lifestyle_physician }
+					add_trait_xp = {
+						trait = lifestyle_physician
+						value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
 					}
-					else = { add_trait = lifestyle_gardener }
+				}
+				else = { add_trait = lifestyle_physician }
+			}
+		}	
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:hunter
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = lifestyle_herbalist }
+					#add_trait_xp = {
+					#	trait = lifestyle_herbalist
+					#	value = 30
+					#}
+				}
+				else = { add_trait = lifestyle_herbalist }#
+				add_trait = lifestyle_herbalist 
+			}
+		}		
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:gardener
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+				limit = { has_trait = lifestyle_gardener }
+				#	add_trait_xp = {
+				#		trait = lifestyle_gardener
+				#		value = 30
+				#	}
+				}
+				else = { add_trait = lifestyle_gardener }
 
-				}
-			}		
-			if  = { 
-				limit = {
-					scope:knight_errand_magic = yes
-				}
-				scope:recipient = {
-					if = {
-						limit = { has_trait = knight_errant }
-						add_trait_xp = {
-							trait = knight_errant
-							value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
-						}
-					}
-					else = { add_trait = knight_errant }
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_learning = yes
-				}
-				scope:recipient = {
-
-					change_trait_rank = {
-						trait = education_learning
-						rank = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value_02
+			}
+		}		
+		if  = { 
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells002 ?= flag:knight_errant
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells002 
+			scope:recipient = {
+				if = {
+					limit = { has_trait = knight_errant }
+					add_trait_xp = {
+						trait = knight_errant
+						value = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value
 					}
 				}
-			}		
-			else_if  = { 
-				limit = {
-					scope:education_stewardship = yes
-				}
-				scope:recipient = {
-					change_trait_rank = {
-						trait = education_stewardship
-						rank = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value_02
-					}
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_diplomacy = yes
-				}
-				scope:recipient = {
-					change_trait_rank = {
-						trait = education_diplomacy
-						rank = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value_02
-					}
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_intrigue = yes
-				}
-				scope:recipient = {
-					change_trait_rank = {
-						trait = education_intrigue
-						rank = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value_02
-					}
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_martial = yes
-				}
-				scope:recipient = {
-					change_trait_rank = {
-						trait = education_martial
-						rank = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies_value_02
-					}
-				}
-			}	
+				else = { add_trait = knight_errant }
+			}
+		}	
+		scope:recipient = {		
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -315,50 +268,57 @@ zz_valyria_magic_dream_magic_03_mysteries_of_dreams_effect = {
 				callous = minor_stress_gain
 			}
 		}
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:experience_learning = yes
-				}
-				scope:recipient = { add_learning_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:learning
 			}
-			else_if = {
-				limit = {
-					scope:experience_diplomacy = yes
-				}
-				scope:recipient = { add_diplomacy_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_learning_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:diplomacy
 			}
-			else_if = {
-				limit = {
-					scope:experience_stewardship = yes
-				}
-				scope:recipient = { add_stewardship_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_diplomacy_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:stewardship
 			}
-			else_if = {
-				limit = {
-					scope:experience_intrigue = yes
-				}
-				scope:recipient = { add_intrigue_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_stewardship_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:intrigue
 			}
-			else_if = {
-				limit = {
-					scope:experience_martial = yes
-				}
-				scope:recipient = { add_martial_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_intrigue_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:martial
 			}
-			else_if = {
-				limit = {
-					scope:experience_prowess = yes
-				}
-				scope:recipient = { add_nht_prowess_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_martial_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:prowess
 			}
-			else_if = {
-				limit = {
-					scope:experience_leadership = yes
-				}
-				scope:recipient = { add_nht_leadership_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_nht_prowess_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells003 ?= flag:leadership
 			}
-			
+			remove_variable = zz_valyria_magic_dream_magic_spells003
+			scope:recipient = { add_nht_leadership_lifestyle_xp = zz_valyria_magic_dream_magic_03_mysteries_of_dreams_value } 
+		}
+		
+		scope:recipient = {		
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -367,8 +327,8 @@ zz_valyria_magic_dream_magic_03_mysteries_of_dreams_effect = {
 					modifier = grateful_opinion
 					target = scope:actor
 					opinion = 70
-					}
 				}
+			}
 		}
 	}
 }
@@ -552,400 +512,439 @@ zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_effect = {
 		scope:recipient = {
 			stress_impact ={ base = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_value}  
 		}
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_01 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = diligent
-					}
-				} 
-			}			
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_02 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = lazy
-					}
-				} 
-			}		
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_03 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = lustful
-					}
-				} 
-			}	
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_04 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = chaste
-					}
-				} 
-			}	
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_05 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = gluttonous
-					}
-				} 
-			}	
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_06 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = temperate
-					}
-				} 
-			}			
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_07 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = greedy
-					}
-				} 
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:diligent
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_08 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = generous
-					}
-				} 
-			}			
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_09 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = wrathful
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_10 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = calm
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_11 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = patient
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_12 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = impatient
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_13 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = arrogant
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_14 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = humble
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_15 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = deceitful
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_16 = yes
-				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = honest
-					}
-				} 
-			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_17 = yes
-				}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
 				zz_valyria_dream_magic_personality_manipulation = {
-					TRAIT = craven
+					TRAIT = diligent
 				}
+			} 
+		}			
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:lazy
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_18 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = lazy
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = brave
-					}
-				} 
+			} 
+		}		
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:lustful
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_19 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = lustful
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = shy
-					}
-				} 
+			} 
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:chaste
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_20 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = chaste
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = gregarious
-					}
-				} 
+			} 
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:gluttonous
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_21 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = gluttonous
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = ambitious
-					}
-				} 
+			} 
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:temperate
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_22 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = temperate
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = content
-					}
-				} 
+			} 
+		}			
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:greedy
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_23 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = greedy
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = arbitrary
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:generous
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_24 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = generous
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = just
-					}
-				} 
+			} 
+		}			
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:wrathful
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_25 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = wrathful
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = cynical
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:calm
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_26 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = calm
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = zealous
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:patient
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_27 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = patient
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = paranoid
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:impatient
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_28 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = impatient
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = trusting
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:arrogant
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_29 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = arrogant
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = compassionate
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:humble
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_30 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = humble
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = callous
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:deceitful
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_31 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = deceitful
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = sadistic
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:honest
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_32 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = honest
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = stubborn
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:craven
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_33 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			zz_valyria_dream_magic_personality_manipulation = {
+				TRAIT = craven
+			}
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:brave
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = brave
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = fickle
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:shy
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_34 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = shy
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = eccentric
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:gregarious
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_35 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = gregarious
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = vengeful
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:ambitious
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_36 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = ambitious
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = forgiving
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:content
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_37 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = content
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = authoritative
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:arbitrary
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_38 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = arbitrary
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = rude
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:just
 			}
-			else_if = {
-				limit = {
-					scope:zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_option_39 = yes
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = just
 				}
-				scope:recipient = { 
-					zz_valyria_dream_magic_personality_manipulation = {
-						TRAIT = inquisitive
-					}
-				} 
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:cynical
 			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = cynical
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:zealous
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = zealous
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:paranoid
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = paranoid
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:trusting
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = trusting
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:compassionate
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = compassionate
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:callous
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = callous
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:sadistic
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = sadistic
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:stubborn
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = stubborn
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:fickle
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = fickle
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:eccentric
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = eccentric
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:vengeful
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = vengeful
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:forgiving
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = forgiving
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:authoritative
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = authoritative
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:rude
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = rude
+				}
+			} 
+		}
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells005 ?= flag:inquisitive
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells005
+			scope:recipient = { 
+				zz_valyria_dream_magic_personality_manipulation = {
+					TRAIT = inquisitive
+				}
+			} 
+		}
 
 
 
 
 
+		scope:recipient = {		
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -954,8 +953,8 @@ zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion_effect = {
 					modifier = grateful_opinion
 					target = scope:actor
 					opinion = 70
-					}
 				}
+			}
 		}
 	}
 }
@@ -999,56 +998,63 @@ zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect = {
 			stress_impact ={ 
 				base = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_value
 			}  
-			if  = { 
-				limit = {
-					scope:education_learning = yes
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells006 ?= flag:learning
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells006
+			scope:recipient = {
+				zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+					EDUCATION = education_learning 
 				}
-				scope:recipient = {
-					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
-						EDUCATION = education_learning 
-					}
+			}
+		}		
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells006 ?= flag:stewardship
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells006
+			scope:recipient = {
+				zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+					EDUCATION = education_stewardship
 				}
-			}		
-			else_if  = { 
-				limit = {
-					scope:education_stewardship = yes
+			}
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells006 ?= flag:diplomacy
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells006
+			scope:recipient = {
+				zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+					EDUCATION = education_diplomacy
 				}
-				scope:recipient = {
-					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
-						EDUCATION = education_stewardship
-					}
+			}
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells006 ?= flag:intrigue
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells006
+			scope:recipient = {
+				zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+					EDUCATION = education_intrigue
 				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_diplomacy = yes
+			}
+		}	
+		if = {
+			limit = {
+				var:zz_valyria_magic_dream_magic_spells006 ?= flag:martial
+			}
+			remove_variable = zz_valyria_magic_dream_magic_spells006
+			scope:recipient = {
+				zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
+					EDUCATION = education_martial
 				}
-				scope:recipient = {
-					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
-						EDUCATION = education_diplomacy
-					}
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_intrigue = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
-						EDUCATION = education_intrigue
-					}
-				}
-			}	
-			else_if  = { 
-				limit = {
-					scope:education_martial = yes
-				}
-				scope:recipient = {
-					zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect_modify_education_trait_effect = {
-						EDUCATION = education_martial
-					}
-				}
-			}	
+			}
+		}	
+		scope:recipient = {		
 			if = {
 				limit = {
 					NOT = { scope:actor = scope:recipient }
@@ -1059,7 +1065,7 @@ zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation_effect = {
 					opinion = 70
 				}
 			}
-		}	
+		}
 	}
 }
 
@@ -1092,14 +1098,16 @@ zz_valyria_magic_dream_magic_07_mysteries_of_dreaming_fascination_effect = {
 				BOOSTED_DURATION = 5
 			}
 		}			
-		if = {
-			limit = {
-				NOT = { scope:actor = scope:recipient }
-			}
-			add_opinion = {
-				modifier  = grateful_opinion
-				target = scope:actor
-				opinion = 70
+		scope:recipient = {		
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
 			}
 		}
 	}
@@ -1198,14 +1206,16 @@ zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power_effect = {
 				BOOSTED_DURATION = 5
 			}
 		}			
-		if = {
-			limit = {
-				NOT = { scope:actor = scope:recipient }
-			}
-			add_opinion = {
-				modifier  = grateful_opinion
-				target = scope:actor
-				opinion = 70
+		scope:recipient = {		
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
 			}
 		}
 	}
