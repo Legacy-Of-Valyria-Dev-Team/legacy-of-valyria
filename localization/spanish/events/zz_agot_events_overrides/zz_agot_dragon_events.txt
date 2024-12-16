@@ -1,0 +1,301 @@
+﻿
+namespace = agot_dragon_pits
+
+#Dragonpit Visit, Choose County
+agot_dragon_pits.3000 = {
+	type = character_event
+	title = agot_dragon_pits.3000.t
+	desc = agot_dragon_pits.3000.desc
+
+	theme = dragon
+
+	override_background = { reference = agot_dragonpit }
+
+	left_portrait = {
+		character = root
+		animation = ecstasy
+	}
+
+	right_portrait = {
+		character = scope:recipient
+		animation = ecstasy
+	}
+
+	immediate = {
+		title:c_dragonstone = { save_scope_as = dragonstone }
+		title:c_ilvonys = { save_scope_as = ilvonys }
+		title:c_valyria = { save_scope_as = valyria }
+		title:c_dragonfields = { save_scope_as = dragonfields }
+		title:c_kastaryia = { save_scope_as = kastaryia }
+		title:c_jarqanor = { save_scope_as = jarqanor }
+		random_held_county = {
+			limit = { agot_title_is_an_active_dragonpit = yes }
+			save_scope_as = dp_county_option
+		}
+	}
+
+	option = {
+		name = agot_dragon_pits.3000.a
+		title:c_dragonstone = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+	option = {
+		name = agot_dragon_pits.3000.c
+		title:c_valyria = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+	option = {
+		name = agot_dragon_pits.3000.d
+		title:c_dragonfields = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+	option = {
+		name = agot_dragon_pits.3000.e
+		title:c_ilvonys = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+	option = {
+		name = agot_dragon_pits.3000.f
+		title:c_kastaryia = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+	option = {
+		name = agot_dragon_pits.3000.g
+		title:c_jarqanor = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+	option = {
+		name = agot_dragon_pits.3000.b
+		scope:dp_county_option = { save_scope_as = dp_county }
+		trigger_event = agot_dragon_pits.3001
+	}
+}
+
+
+namespace = agot_filler_dragon
+
+agot_filler_dragon.0001 = {
+	hidden = yes
+	cooldown = {
+		years = 5
+	}
+	trigger = {
+		has_character_flag = in_dragonpit
+		has_variable = current_rider
+		location = {
+			root.var:current_rider = { is_alive = yes }
+			# An event about dragonpits should probably check for the dragonpit buildings
+			has_any_dragonpits = yes
+			OR = {
+				root.var:current_rider = province_owner
+				root.var:current_rider.employer ?= province_owner
+			}
+			county = {
+				NOT = { 
+					zz_has_valyria_natural_dragon_pit_county = yes
+				}
+				# Dragonmont doesn't really make sense
+				OR = {
+					county_opinion <= -50 # Dragonrider / controller is not popular
+					AND = { # KL has popular opinion buffs that mean we need to nerf it a bit here
+						this = title:c_kings_landing
+						county_opinion <= -25
+					}
+				}
+			}
+			county.holder = {
+				any_courtier = {
+					has_trait = dragon # Is a dragon
+					exists = var:pitted_dragon_location # Is in the dragonpit
+					var:pitted_dragon_location = scope:dragonpit_location # Is in the same dragonpit
+					count > 2 # There is more than two dragons in the dragonpit (mainly done to avoid 200 loc permutations)
+				}
+			}
+		}
+	}
+	immediate = {
+		location.county = {
+			save_scope_as = dragonpit_location
+		}
+		location.county.holder = {
+			every_courtier_or_guest = {
+				limit = {
+					has_trait = dragon # Is a dragon
+					exists = var:pitted_dragon_location # Is in the dragonpit
+					var:pitted_dragon_location = scope:dragonpit_location # Is in the same dragonpit
+				}
+				# Create peasant mob for each dragon to kill
+				set_variable = {
+					name = peasant_murders
+					value = {
+						value = 0
+						add = prowess # So there's a ceiling to how many
+						multiply = { 0 0.25 }
+					}
+				}
+				set_variable = {
+					name = created_peasants
+					value = 0
+				}
+				while = {
+					limit = { var:created_peasants < var:peasant_murders }
+					hidden_effect = {
+						create_character = { # Created just to die - what a fate
+							age = { 14 70 }
+							gender_female_chance = root_soldier_female_chance
+							culture = location.culture
+							faith = location.faith
+							location = ROOT.location
+							random_traits = yes
+							dynasty = none
+							after_creation = {
+								death = {
+									death_reason = death_dragon
+									killer = prev
+								}
+							}
+						}
+					}
+					change_variable = {
+						name = created_peasants
+						add = 1
+					}
+				}
+				remove_variable = peasant_murders
+				remove_variable = created_peasants
+				# Determine the dragon's fate
+				random_list = {
+					20 = {
+						modifier = {
+							add = {
+								value = prowess
+								multiply = 0.2
+							}
+						}
+						modifier = { # Owned dragons cannot go wild
+							factor = 0
+							any_relation = {
+								type = agot_dragon
+							}
+						}
+						root.location.county.holder = {
+							add_to_variable_list = {
+								name = dragonpit_escaped_dragons
+								target = prev
+							}
+						}
+					}
+					30 = {
+						modifier = {
+							add = {
+								value = prowess
+								multiply = 0.2
+							}
+						}
+						root.location.county.holder = {
+							add_to_variable_list = {
+								name = dragonpit_wounded_dragons
+								target = prev
+							}
+						}
+						random_list = {
+							33 = { }
+							33 = {
+								add_character_flag = {
+									flag = dragonpit_wounded_2
+									days = 3
+								}
+							}
+							33 = {
+								add_character_flag = {
+									flag = dragonpit_wounded_3
+									days = 3
+								}
+							}
+						}
+					}
+					40 = {
+						modifier = { # Weaker dragons are more likely to die
+							add = {
+								value = prowess
+								multiply = -0.2
+							}
+						}
+						root.location.county.holder = {
+							add_to_variable_list = {
+								name = dragonpit_died_dragons
+								target = prev
+							}
+						}
+					}
+				}
+			}
+			trigger_event = {
+				id = agot_filler_dragon.0002
+			}
+		}
+	}
+}
+
+agot_filler_dragon.0095 = {
+	hidden = yes
+	cooldown = {
+		months = 3
+	}
+	trigger = {
+		NOT = { has_character_flag = owned_dragon }
+		age >= dragon_maturity_age
+		NOR = { # Dragon is not badly wounded
+			has_trait = dragon_wounded_3
+			has_trait = dragon_wounded_4
+			has_trait = dragon_wounded_5
+		}
+		location.county = {
+			NOT = { #
+				zz_has_natural_dragon_pit_county = yes
+			} # No canon examples afaik
+		}
+	}
+	immediate = {
+		save_scope_as = wild_dragon
+		location = {
+			save_scope_as = wild_dragon_location
+		}
+		location.county.holder = {
+			random_list = {
+				20 = {
+					trigger_event = {
+						id = agot_filler_dragon.0096
+					}
+				}
+				20 = {
+					trigger_event = {
+						id = agot_filler_dragon.0097
+					}
+				}
+				20 = {
+					trigger_event = {
+						id = agot_filler_dragon.0098
+					}
+				}
+				20 = {
+					trigger_event = {
+						id = agot_filler_dragon.0099
+					}
+				}
+				20 = {
+					trigger_event = {
+						id = agot_filler_dragon.0100
+					}
+				}
+			}
+			random = {
+				chance = 20
+				trigger_event = {
+					id = agot_dragon.0200
+					days = { 50 200 }
+				}
+			}
+		}
+	}
+}

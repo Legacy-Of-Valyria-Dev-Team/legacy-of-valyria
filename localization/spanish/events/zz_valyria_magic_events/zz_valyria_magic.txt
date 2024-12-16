@@ -1,0 +1,479 @@
+﻿
+namespace = zz_valyria_magic
+
+#You read a book of magic. 
+zz_valyria_magic.9000 = {
+	type = character_event
+	title = zz_valyria_magic.9000.t
+	desc = zz_valyria_magic.9000.desc
+	theme = university
+	left_portrait = root
+
+
+	immediate = {
+	}
+
+	trigger = {
+		NOT = { 
+			has_character_flag = no_magic
+		}
+	}
+
+	option = {
+		name = zz_valyria_magic.9000.a
+		trigger = {
+			is_ai = no
+			NOT = {
+				has_trait = zz_magister
+			}
+		}
+		custom_tooltip = {
+			text = zz_valyira_magic_youre_a_wizard_harry
+			add_trait_force_tooltip = zz_magister
+			zz_random_gain_magic_spell = yes 
+		}
+	}
+	option = {
+		name = zz_valyria_magic.9000.b
+		trigger = {
+			has_trait = zz_magister
+		}
+		custom_tooltip = {
+			text = zz_valyira_magic_youre_a_wizard_harry
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = 5
+				XPTRACK = secrets_of_the_higher_mysteries
+			}
+			zz_random_gain_magic_spell = yes 
+		}
+	}
+	option = {
+		name = zz_valyria_magic.9000.z
+		trigger = {
+			NOT = {
+				has_trait = zz_magister
+			}
+		}
+		custom_tooltip = {
+			text = burn_you_witch
+			add_character_flag = no_magic
+		}
+	}
+}
+
+
+zz_valyria_magic.1 = {
+	hidden = yes
+	scope = none
+	trigger = {
+	}
+	immediate = {
+		every_ruler = {
+			limit = {
+				has_trait = zz_magister
+			}
+			send_interface_toast = {
+				if = { 
+					limit = { 
+						has_trait = born_under_a_red_comet
+					}
+					add_trait_xp = {
+						trait = born_under_a_red_comet
+						track = chosen_of_the_heavens
+						value = 100
+					}
+					add_trait_xp = {
+						trait = zz_magister
+						track = drops_of_power
+						value = 100
+					}
+				}
+				zz_random_gain_magic_spell = yes 
+				if = {
+					limit = {
+						has_variable = dragonlore
+					}
+					change_variable = {
+						name = dragonlore
+						add = 10
+					}
+				}
+				else = {
+					set_variable = {
+						name = dragonlore
+						value = 10
+					}
+				}
+
+			}
+		}
+	}
+}
+
+
+namespace = zz_valyria_blackstone
+
+zz_valyria_blackstone.001 = {
+	type = character_event
+	title = zz_valyria_blackstone.001.t
+	desc = zz_valyria_blackstone.001.desc
+	theme = university
+	left_portrait = root
+
+
+	immediate = {
+	}
+
+	trigger = {
+		NOT ={
+			has_character_flag = blackstone_learned
+		}
+	}
+
+	option = {
+		name = zz_valyria_blackstone.001.a
+		trigger = {
+		}
+		custom_tooltip = {
+			text = zz_valyria_blackstone.001.a.desc
+			if = { 
+				limit = { 
+					exists = var:blackstone_xp
+				}
+				change_variable = { name = blackstone_xp add = 25}
+			}
+			else = { 
+				set_variable = {
+					name = blackstone_xp
+					value = 25
+				}
+			}
+		}
+	}
+	after = {
+		if = { 
+			limit = {
+				var:blackstone_xp >= 100
+			}
+			add_character_flag = blackstone_learned
+			trigger_event = {
+				id = zz_valyria_blackstone.002
+				days = 25
+			}
+		}
+	}
+}
+
+
+zz_valyria_blackstone.002 = {
+	type = character_event
+	title = zz_valyria_blackstone.002.t
+	desc = zz_valyria_blackstone.002.desc
+	theme = university
+	left_portrait = root
+
+
+	immediate = {
+		trigger_event = {
+			id = zz_valyria_blackstone.003
+			days = 35
+		}
+	}
+
+	trigger = {
+	}
+
+	option = {
+		name = zz_valyria_blackstone.002.a
+		trigger = {
+		}
+		create_character_memory = {
+			type = zz_valyria_secrets_blackstone_01
+		}
+		scope:new_memory = {
+			set_variable = {
+				name = learning_location
+				value = root.location
+			}
+		}
+	}
+}
+zz_valyria_blackstone.003 = {
+	type = character_event
+	title = zz_valyria_blackstone.002.t
+	desc = zz_valyria_blackstone.002.desc
+	theme = university
+	left_portrait = root
+
+
+	immediate = {
+	}
+
+	trigger = {
+	}
+
+	option = {
+		name = zz_valyria_blackstone.002.a
+		trigger = {
+		}
+		create_character_memory = {
+			type = zz_valyria_secrets_blackstone_02
+		}
+		scope:new_memory = {
+			set_variable = {
+				name = learning_location
+				value = root.location
+			}
+		}
+	}
+}
+
+namespace = zz_valyria_the_doom
+
+zz_valyria_the_doom.001 = {
+	type = character_event
+	title = zz_valyria_the_doom.001.t
+	theme = university
+	left_portrait = root
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					has_character_flag = valyria_the_doom_01
+				}
+				desc = zz_valyria_the_doom.0001.01.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = valyria_the_doom_02
+				}
+				desc = zz_valyria_the_doom.0001.02.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = valyria_the_doom_03
+				}
+				desc = zz_valyria_the_doom.0001.03.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = valyria_the_doom_04
+				}
+				desc = zz_valyria_the_doom.0001.04.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = valyria_the_doom_05
+				}
+				desc = zz_valyria_the_doom.0001.05.desc
+			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = valyria_the_doom_06
+				}
+				desc = zz_valyria_the_doom.0001.06.desc
+			}
+			desc = zz_valyria_the_doom.0001.01.desc
+		}
+	}
+
+	immediate = {
+		random_list = { 
+			1 = { 
+				trigger = {
+					NOT = {
+						has_character_flag = valyria_the_doom_01
+					}
+				}
+				add_character_flag = valyria_the_doom_01
+			}
+			1 = { 
+				trigger = {
+					NOT = {
+						has_character_flag = valyria_the_doom_02
+					}
+				}
+				add_character_flag = valyria_the_doom_02
+			}
+			1 = { 
+				trigger = {
+					NOT = {
+						has_character_flag = valyria_the_doom_03
+					}
+				}
+				add_character_flag = valyria_the_doom_03
+			}
+			1 = { 
+				trigger = {
+					NOT = {
+						has_character_flag = valyria_the_doom_04
+					}
+				}
+				add_character_flag = valyria_the_doom_04
+			}
+			1 = { 
+				trigger = {
+					NOT = {
+						has_character_flag = valyria_the_doom_05
+					}
+				}
+				add_character_flag = valyria_the_doom_05
+			}
+			1 = { 
+				trigger = {
+					NOT = {
+						has_character_flag = valyria_the_doom_06
+					}
+				}
+				add_character_flag = valyria_the_doom_06
+			}
+		}
+	}
+
+	trigger = {
+		NOT ={
+			has_character_flag = doom_learned
+		}
+	}
+
+	option = {
+		name = zz_valyria_the_doom.001.a
+		trigger = {
+		}
+		custom_tooltip = {
+			text = zz_valyria_the_doom.001.a.desc
+			add_trait_force_tooltip = zz_magister
+		}
+	}
+	after = {
+		if = { 
+			limit = {
+				has_character_flag = valyria_the_doom_01
+				has_character_flag = valyria_the_doom_02
+				has_character_flag = valyria_the_doom_03
+				has_character_flag = valyria_the_doom_04
+				has_character_flag = valyria_the_doom_05
+				has_character_flag = valyria_the_doom_06
+			}
+			add_character_flag = doom_learned
+			trigger_event = {
+				id = zz_valyria_the_doom.002
+				days = 25
+			}
+		}
+	}
+}
+
+
+zz_valyria_the_doom.002 = {
+	type = character_event
+	title = zz_valyria_the_doom.002.t
+	desc = zz_valyria_the_doom.002.desc
+	theme = university
+	left_portrait = root
+
+
+	immediate = {
+	}
+
+	trigger = {
+	}
+
+	option = {
+		name = zz_valyria_the_doom.002.a
+		trigger = {
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_trait = born_under_a_red_comet
+				}
+			}
+			add_trait_force_tooltip = born_under_a_red_comet
+			add_trait_xp = { 
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value = 25
+			}
+		}
+		else = {
+			add_trait_xp = { 
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value = 50
+			}
+		}
+	}
+}
+
+namespace = zz_valyria_item_granting 
+zz_valyria_item_granting.001 = {
+	type = character_event
+	title = zz_valyria_item_granting.001.t
+	desc = zz_valyria_item_granting.001.desc
+	theme = crown
+	left_portrait = root
+
+
+	immediate = {
+	}
+
+	trigger = {
+	}
+
+	option = {
+		name = zz_valyria_item_granting.001.a
+		trigger = {
+		}
+		cv_create_artifact_vs_torment_effect = { OWNER = ROOT } 
+	}
+}
+
+
+namespace = zz_valyria_magic_court_mages_ritual
+
+
+zz_valyria_magic_court_mages_ritual.001 = {
+	type = character_event
+	hidden = yes
+
+	trigger = {
+		NOT = { has_variable = drops_of_power_ritual_cooldown }
+		liege = {
+			exists = court_position:zz_valyria_court_mages_court_position
+		}
+		
+		has_variable = active_drops_of_power_ritual
+	}
+
+	immediate = {
+		# Set a cooldown, so it can only happen once every 6 months
+		set_variable = {
+			name = drops_of_power_ritual_cooldown
+			days = 179
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 1 
+			XPTRACK = secrets_of_the_higher_mysteries
+		}
+		scope:liege = {
+			zz_valyria_mana_gain = {
+				MANAGAIN = 1
+			}
+			every_courtier_or_guest ={ 
+				limit = {
+					has_trait = zz_magister
+				}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 1
+				}
+			}
+		}
+
+
+		trigger_event = {
+			id = zz_valyria_magic_court_mages_ritual.001
+			months = 6
+		}
+	}
+}

@@ -1,0 +1,798 @@
+﻿namespace = zz_valyria_colonisation
+
+## Progress Event Prowess (Mutant Attack)
+zz_valyria_colonisation.0600 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0600.t
+	desc = zz_valyria_colonisation.0600.desc
+	theme = corruption
+	override_background = battlefield
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Lead your men in battle
+	option = {
+		name = zz_valyria_colonisation.0600.a
+		trigger = {
+		}
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0600.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0600.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_colonisation.0600.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good prowess activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+							scope:activity = { activity_special_type_progression_medium = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0600.a.success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0600.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0600.a.failure
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0600.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				random_list = {
+					25 = { # Death
+						death = {
+							death_reason = death_battle
+						}
+					}
+					30 = { # Maimed
+						add_trait = maimed
+					}
+					25 = { # Greyscale
+						add_trait = wounded_1
+						add_trait = greyscale
+					}
+					50 = { # Wounding
+						add_trait = wounded_1
+					}
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option B: Flee
+	option = {
+		name = zz_valyria_colonisation.0600.c
+		## Added a custom cost 
+		send_interface_toast = {
+			title = zz_valyria_colonisation.0600.a.failure.tt
+			left_icon = root
+			custom_tooltip = zz_valyria_colonisation_tt_negative
+			scope:activity = { activity_special_type_progression_variable = { NUM = -50 } }
+		}
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## Progress Event Prowess
+
+
+zz_valyria_colonisation.0602 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0602.t
+	desc = zz_valyria_colonisation.0602.desc
+	theme = corruption
+	override_background = battlefield
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Lead your men in battle
+	option = {
+		name = zz_valyria_colonisation.0602.a
+		trigger = {
+		}
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0602.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0602.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_colonisation.0602.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good prowess activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_colonisation_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0602.a.success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0602.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0602.a.failure
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0602.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				random_list = {
+					25 = { # Death
+						death = {
+							death_reason = death_battle
+						}
+					}
+					30 = { # Maimed
+						add_trait = maimed
+					}
+					25 = { # Greyscale
+						add_trait = wounded_1
+						add_trait = greyscale
+					}
+					50 = { # Wounding
+						add_trait = wounded_1
+					}
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option B: Flee
+	option = {
+		name = zz_valyria_colonisation.0602.c
+		send_interface_toast = {
+			title = zz_valyria_colonisation.0602.c
+			left_icon = root
+			custom_tooltip = zz_valyria_colonisation_tt_negative
+			scope:activity = { activity_special_type_progression_variable = { NUM = -50 } }
+		}
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+zz_valyria_colonisation.0603 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0603.t
+	desc = zz_valyria_colonisation.0603.desc
+	theme = corruption
+	override_background = battlefield
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Lead your men in battle
+	option = {
+		name = zz_valyria_colonisation.0603.a
+		trigger = {
+		}
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0603.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0603.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_colonisation.0603.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good prowess activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_colonisation_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0603.a.success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0603.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0603.a.failure
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0603.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				random_list = {
+					25 = { # Death
+						death = {
+							death_reason = death_battle
+						}
+					}
+					30 = { # Maimed
+						add_trait = maimed
+					}
+					25 = { # Greyscale
+						add_trait = wounded_1
+						add_trait = greyscale
+					}
+					50 = { # Wounding
+						add_trait = wounded_1
+					}
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option B: Flee
+	option = {
+		name = zz_valyria_colonisation.0603.c
+		send_interface_toast = {
+			title = zz_valyria_colonisation.0603.c
+			left_icon = root
+			custom_tooltip = zz_valyria_colonisation_tt_negative
+			scope:activity = { activity_special_type_progression_variable = { NUM = -50 } }
+		}
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+zz_valyria_colonisation.0604 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0604.t
+	desc = zz_valyria_colonisation.0604.desc
+	theme = corruption
+	override_background = battlefield
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Lead your men in battle
+	option = {
+		name = zz_valyria_colonisation.0600.a
+		trigger = {
+		}
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0604.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0604.a.crit_success.tt
+					left_icon = root
+					
+					#custom_tooltip = zz_valyria_colonisation.0604.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good prowess activity }
+							character = root
+			
+							#Effect
+							custom_tooltip = zz_valyria_colonisation_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0604.a.success
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0604.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_colonisation.0604.a.failure
+				send_interface_toast = {
+					title = zz_valyria_colonisation.0604.a.failure.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_colonisation_tt_negative
+					scope:activity = { activity_special_type_progression_negative = yes }
+				}
+				random_list = {
+					25 = { # Death
+						death = {
+							death_reason = death_battle
+						}
+					}
+					30 = { # Maimed
+						add_trait = maimed
+					}
+					25 = { # Greyscale
+						add_trait = wounded_1
+						add_trait = greyscale
+					}
+					50 = { # Wounding
+						add_trait = wounded_1
+					}
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option B: Flee
+	option = {
+		name = zz_valyria_colonisation.0604.c
+		send_interface_toast = {
+			title = zz_valyria_colonisation.0604.c
+			left_icon = root
+			custom_tooltip = zz_valyria_colonisation_tt_negative
+			scope:activity = { activity_special_type_progression_variable = { NUM = -50 } }
+		}
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+#fake targaryen
+zz_valyria_colonisation.4101 = {
+	type = character_event
+	title = zz_valyria_colonisation.4101.t
+	desc = zz_valyria_colonisation.4101.desc
+	theme = default
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:cv_fake_targ
+		animation = personality_bold
+	}
+
+
+	trigger = {
+		location = { geographical_region = world_valyria }
+	}
+
+	immediate = {
+		create_character = {
+			name = "Aegon"
+			gender = male
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			age = 20
+			dynasty_house = house:house_Targeryon
+			location = scope:location
+			random_traits = yes
+
+			martial = 10
+			diplomacy = 3
+			intrigue = 3
+			stewardship = 4
+			learning = 4
+			prowess = 6
+
+			trait = ambitious
+			trait = intellect_bad_2
+			trait = lunatic_1
+
+			save_scope_as = cv_fake_targ
+		}
+
+		hidden_effect = {
+			scope:cv_fake_targ = {
+				random = {
+					chance = 5
+					agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:cv_fake_targ }
+				}
+			}
+		}
+	}
+
+
+	option = { #throw him in the dungeons
+		name = zz_valyria_colonisation.4101.a
+		random_list = {
+			70 = { #he is caught
+				trigger_event = zz_valyria_colonisation.4102
+			}
+			30 = { #he escapes
+				hidden_effect = {
+					scope:cv_fake_targ = {
+						death = {
+							death_reason = death_vanished
+						}
+					}
+				}
+			}
+		}
+	}
+	option = { #antagonize
+		name = zz_valyria_colonisation.4101.c
+		effect = {
+			random_list = {
+				40 = { #he duels you
+					trigger_event = zz_valyria_colonisation.4102 
+				}
+				60 = { #he flees
+					hidden_effect = {
+						scope:cv_fake_targ = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+
+zz_valyria_colonisation.4102 = { #he gets jailed
+	type = character_event
+	title = zz_valyria_colonisation.4102.t
+	desc = zz_valyria_colonisation.4102.desc
+	theme = martial
+
+	left_portrait = {
+		character = root
+		animation = happiness
+	}
+
+	right_portrait = {
+		character = scope:cv_fake_targ
+		animation = prisondungeon
+	}
+
+	option = {
+		name = zz_valyria_colonisation.4102.a
+		hard_imprison_character_effect = { #imprisons him
+		TARGET = scope:cv_fake_targ
+		IMPRISONER = root
+		}
+	}
+}
+
+zz_valyria_colonisation.4103 = { #he wants to duel
+	type = character_event
+	title = zz_valyria_colonisation.4103.t
+	desc = zz_valyria_colonisation.4103.desc
+	theme = martial
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:cv_fake_targ
+		animation = aggressive_sword
+	}
+
+	option = { #duel #Zarat could you finish the duel pls pls pls 
+		name = zz_valyria_colonisation.4103.b
+		root = {
+			duel = {
+				skill = prowess
+				target = scope:cv_fake_targ
+			}
+		}
+	}
+	option = { #you flee
+		name = zz_valyria_colonisation.4103.c
+
+	}
+}

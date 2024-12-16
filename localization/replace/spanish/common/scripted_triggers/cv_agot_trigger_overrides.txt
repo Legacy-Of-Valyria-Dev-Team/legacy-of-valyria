@@ -1,0 +1,306 @@
+﻿agot_is_valid_dyn_coa_target = {
+	agot_is_member_of_nights_watch = no
+	agot_is_non_westerosi_kingdom_or_empire = no
+	any_held_title = {
+		NOR = {
+			is_holy_order = yes
+			is_mercenary_company = yes
+			is_head_of_faith = yes
+			this = title:d_the_silent_sisterhood
+			this = title:d_kingsguard
+			this = title:d_the_dragonknight_order
+		}
+	}
+}
+
+agot_can_be_paramour = {
+	is_married = no
+	is_betrothed = no
+	is_landed = no
+	NOR = {
+		any_relation = {
+			type = paramour
+		}
+		any_heir_title = {
+			exists = holder
+		}
+		has_trait = maester
+		has_trait = septon
+		has_trait = high_septon
+		has_trait = nightswatch
+		has_trait = nightswatch_temp
+		has_trait = kingsguard
+		has_trait = dragon
+		has_trait = dragonknight
+	}
+}
+
+agot_can_have_paramour = {
+	trigger_if = {
+		limit = {
+			OR = {
+				has_trait = nightswatch
+				has_trait = nightswatch_temp
+				has_trait = maester
+				has_trait = septon
+				has_trait = kingsguard
+				has_trait = dragon
+				has_trait = dragonknight
+			}
+		}
+		always = no
+	}
+	trigger_else_if = {
+		limit = {
+			is_married = yes
+			is_male = yes
+		}
+		is_adult = yes
+		has_dynasty = yes
+		dynasty = {
+			any_dynasty_member = {
+				highest_held_title_tier >= tier_county
+			}
+		}
+		culture = {
+			has_cultural_parameter = can_have_paramours
+		}
+		OR = {
+			patrilinear_marriage = yes
+			primary_spouse.culture = {
+				has_cultural_parameter = can_have_paramours
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			is_married = yes
+			is_female = yes
+		}
+		is_adult = yes
+		has_dynasty = yes
+		dynasty = {
+			any_dynasty_member = {
+				highest_held_title_tier >= tier_county
+			}
+		}
+		culture = {
+			has_cultural_parameter = can_have_paramours
+		}
+		OR = {
+			matrilinear_marriage = yes
+			primary_spouse.culture = {
+				has_cultural_parameter = can_have_paramours
+			}
+		}
+	}
+	trigger_else = {
+		is_adult = yes
+		has_dynasty = yes
+		dynasty = {
+			any_dynasty_member = {
+				highest_held_title_tier >= tier_county
+			}
+		}
+		culture = {
+			has_cultural_parameter = can_have_paramours
+		}
+	}
+}
+
+agot_is_valid_free_city_government_target = {
+	is_landed = yes
+	NOR = {
+		has_government = theocracy_government
+		has_government = ruins_government
+		has_government = republic_government
+		has_government = kingsguard_government
+		has_government = dragonknight_government
+	}
+	capital_province ?= {
+		OR = {
+			has_holding_type = city_holding
+			has_holding_type = castle_holding
+		}
+	}
+}
+
+agot_is_valid_lp_feudal_government_target = {
+	NOR = {
+		has_government = theocracy_government
+		has_government = ruins_government
+		has_government = republic_government
+		has_government = kingsguard_government
+		has_government = dragonknight_government
+		government_has_flag = government_is_administrative
+	}
+	capital_province ?= { has_holding_type = castle_holding }
+	OR = {
+		any_held_title = {
+			OR = {
+				has_variable = is_lord_paramount
+				has_variable = is_paramountcy_realm
+			}
+		}
+		AND = {
+			has_variable = pre_war_liege
+			OR = {
+				var:pre_war_liege.primary_title ?= {
+					OR = {
+						has_variable = is_paramountcy_realm
+						has_variable = is_lord_paramount
+					}
+				}
+				var:pre_war_liege.liege.primary_title ?= {
+					OR = {
+						has_variable = is_paramountcy_realm
+						has_variable = is_lord_paramount
+					}
+				}
+				AND = {
+					var:pre_war_liege ?= { has_variable = pre_war_liege }
+					var:pre_war_liege.var:pre_war_liege.primary_title ?= {
+						OR = {
+							has_variable = is_paramountcy_realm
+							has_variable = is_lord_paramount
+						}
+					}
+				}
+			}
+		}
+		any_liege_or_above = {
+			OR = {
+				any_held_title = {
+					OR = {
+						has_variable = is_lord_paramount
+						has_variable = is_paramountcy_realm
+					}
+				}
+				AND = {
+					has_variable = pre_war_liege
+					OR = {
+						var:pre_war_liege.primary_title ?= {
+							OR = {
+								has_variable = is_paramountcy_realm
+								has_variable = is_lord_paramount
+							}
+						}
+						var:pre_war_liege.liege.primary_title ?= {
+							OR = {
+								has_variable = is_paramountcy_realm
+								has_variable = is_lord_paramount
+							}
+						}
+						AND = {
+							var:pre_war_liege ?= { has_variable = pre_war_liege }
+							var:pre_war_liege.var:pre_war_liege.primary_title ?= {
+								OR = {
+									has_variable = is_paramountcy_realm
+									has_variable = is_lord_paramount
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+agot_is_valid_for_lp_feudal_govt_when_converting_from_admin = {
+	NOR = {
+		has_government = theocracy_government
+		has_government = ruins_government
+		has_government = republic_government
+		has_government = kingsguard_government
+		has_government = dragonknight_government
+	}
+	capital_province ?= { has_holding_type = castle_holding }
+	OR = {
+		any_held_title = {
+			OR = {
+				has_variable = is_lord_paramount
+				has_variable = is_paramountcy_realm
+			}
+		}
+		AND = {
+			has_variable = pre_war_liege
+			OR = {
+				var:pre_war_liege.primary_title ?= {
+					OR = {
+						has_variable = is_paramountcy_realm
+						has_variable = is_lord_paramount
+					}
+				}
+				var:pre_war_liege.liege.primary_title ?= {
+					OR = {
+						has_variable = is_paramountcy_realm
+						has_variable = is_lord_paramount
+					}
+				}
+				AND = {
+					var:pre_war_liege ?= { has_variable = pre_war_liege }
+					var:pre_war_liege.var:pre_war_liege.primary_title ?= {
+						OR = {
+							has_variable = is_paramountcy_realm
+							has_variable = is_lord_paramount
+						}
+					}
+				}
+			}
+		}
+		any_liege_or_above = {
+			OR = {
+				any_held_title = {
+					OR = {
+						has_variable = is_lord_paramount
+						has_variable = is_paramountcy_realm
+					}
+				}
+				AND = {
+					has_variable = pre_war_liege
+					OR = {
+						var:pre_war_liege.primary_title ?= {
+							OR = {
+								has_variable = is_paramountcy_realm
+								has_variable = is_lord_paramount
+							}
+						}
+						var:pre_war_liege.liege.primary_title ?= {
+							OR = {
+								has_variable = is_paramountcy_realm
+								has_variable = is_lord_paramount
+							}
+						}
+						AND = {
+							var:pre_war_liege ?= { has_variable = pre_war_liege }
+							var:pre_war_liege.var:pre_war_liege.primary_title ?= {
+								OR = {
+									has_variable = is_paramountcy_realm
+									has_variable = is_lord_paramount
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_is_valid_pirate_government_target = {
+	is_landed = yes
+	NOR = {
+		has_government = theocracy_government
+		has_government = ruins_government
+		has_government = republic_government
+		has_government = kingsguard_government
+		has_government = dragonknight_government
+		government_has_flag = government_is_administrative
+	}
+	capital_province ?= {
+		AND = {
+			geographical_region = world_stepstones
+			has_holding_type = pirate_den_holding
+		}
+	}
+}

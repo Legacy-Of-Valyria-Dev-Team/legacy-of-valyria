@@ -1,0 +1,171 @@
+﻿namespace = zz_valyria_settlement
+
+## Progress Event Intrigue - Smuggling
+zz_valyria_settlement.0400 = {
+	type = activity_event
+	title = zz_valyria_settlement.0400.t
+	desc = zz_valyria_settlement.0400.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		has_character_flag = settlement_foundation
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_settlement.0400.a
+		trigger = {
+		}
+		duel = {
+			skill = intrigue
+			value = high_skill_rating
+			30 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0400.a.crit_success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0400.a.crit_success.tt
+					left_icon = root
+					
+					custom_tooltip = zz_valyria_settlement.0400.a.tt
+					scope:activity = {
+						add_activity_log_entry = {
+							key = sic_et_non_log
+							score = 25
+							tags = { good learning activity }
+							character = root
+							hidden_effect = {
+								random_list = {
+									70 = {
+										agot_create_artifact_glass_candle_effect = { OWNER = scope:host  COLOR = purple }
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_artifact_valyrian_steel_armor_effect = { OWNER = scope:host } 
+									}
+									10 = {
+										agot_create_random_dragon_egg_artifact = { OWNER = scope:host }
+									}
+								}
+							}
+							#Effect
+							scope:host = {
+								add_character_flag = intrigue_building_flag
+							}
+							
+							custom_tooltip = zz_valyria_settlement_tt_positive_major
+							scope:activity = { activity_special_type_progression_major = yes }
+						}
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0400.a.success
+				send_interface_toast = {
+					title = zz_valyria_settlement.0400.a.success.tt
+					left_icon = root
+					custom_tooltip = zz_valyria_settlement_tt_positive_medium
+					scope:activity = { activity_special_type_progression_medium = yes }
+				}
+				stress_impact = {
+					base = minor_stress_impact_loss
+				}
+			}
+			35 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = zz_valyria_settlement.0400.a.failure
+				send_interface_toast = {
+					title = zz_valyria_settlement.0400.a.failure.tt
+					left_icon = root
+					hidden_effect = {
+						custom_tooltip = zz_valyria_settlement_tt_negative
+						scope:activity = { activity_special_type_progression_negative = yes }
+					}
+				}
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option C: opt-out
+	option = {
+		name = zz_valyria_settlement.0400.c
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}

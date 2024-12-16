@@ -1,0 +1,243 @@
+﻿
+
+convert_to_freehold_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 36
+
+	is_shown = {
+		#has_game_rule = debug_mode_on
+		NOT = { 
+			has_government = freehold_government
+		}
+		primary_title.tier >= tier_kingdom
+		default_location = { 
+			geographical_region = world_valyria
+		}
+		trigger_if = {
+			limit = { is_independent_ruler = no }
+			liege = { government_allows = administrative }
+		}
+		trigger_else = {
+			is_independent_ruler = yes
+		}
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+		prestige = {
+			value = 1000
+			if = {
+				limit = {
+					is_ai = no
+					primary_title.tier = tier_kingdom
+				}
+				multiply = 1.5
+			}
+			if = { # Much cheaper for vassals wanting to adopt their admin liege's government
+				limit = {
+					is_independent_ruler = no
+				}
+				multiply = 0.1
+			}
+		}
+		gold = {
+			value = 800
+			if = {
+				limit = { is_ai = no }
+				#Realm size
+				if = {
+					limit = { root.realm_size >= 300 }
+					multiply = 3.5
+				}
+				else_if = {
+					limit = { root.realm_size >= 250 }
+					multiply = 3
+				}
+				else_if = {
+					limit = { root.realm_size >= 200 }
+					multiply = 2.5
+				}
+				else_if = {
+					limit = { root.realm_size >= 150 }
+					multiply = 2
+				}
+				else_if = {
+					limit = { root.realm_size >= 100 }
+					multiply = 1.5
+				}
+			}
+			#Era
+			culture = {
+				if = {
+					limit = { has_cultural_era_or_later = culture_era_late_medieval }
+					multiply = 1.75
+				}
+				else_if = {
+					limit = { has_cultural_era_or_later = culture_era_high_medieval }
+					multiply = 1.25
+				}
+				else_if = {
+					limit = { has_cultural_era_or_later = culture_era_early_medieval }
+					multiply = 1
+				}
+				else = {
+					multiply = 0.75
+				}
+			}
+			#Income
+			if = {
+				limit = { root.monthly_character_income >= 100 }
+				multiply = 3
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 80 }
+				multiply = 2.5
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 60 }
+				multiply = 2
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 40 }
+				multiply = 1.5
+			}
+			else_if = {
+				limit = { root.monthly_character_income >= 20 }
+				multiply = 1.1
+			}
+
+			max = 3000
+			
+			if = { # Much cheaper for vassals wanting to adopt their admin liege's government
+				limit = {
+					is_independent_ruler = no
+				}
+				multiply = 0.1
+			}
+		}
+	}
+
+	effect = {
+		save_scope_as = actor
+		convert_to_freehold_from_feudel_effect = yes
+		trigger_event = zz_ep3_decisions_event.4060 #Also sends information event to human vassals
+	}
+
+	ai_potential = {
+		always = no 
+	}
+}
+
+
+
+restore_valyrian_freehold_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_decision_roman_restoration.dds"
+	}
+	desc = restore_roman_empire_decision_desc
+	selection_tooltip = restore_roman_empire_decision_tooltip
+	decision_group_type = zz_valyria_magic
+
+	ai_check_interval = 120
+
+	is_shown = {
+		has_game_rule = debug_mode_on
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_valyria
+		NOT = { primary_title = title:e_lands_of_long_summer }
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_valyrian_freehold
+			}
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_allows = administrative
+		}
+	}
+
+	is_valid = {
+		prestige_level >= max_prestige_level
+
+		#completely_controls = title:d_latium
+		#completely_controls = title:d_venice
+		#completely_controls = title:d_romagna
+		#completely_controls = title:d_sicily
+		#completely_controls = title:d_genoa
+		#completely_controls = title:d_capua
+		#completely_controls = title:d_apulia
+		#completely_controls = title:d_thrace
+		#completely_controls = title:d_antioch
+		#completely_controls = title:d_palestine
+		#completely_controls = title:d_alexandria
+		#completely_controls = title:d_athens
+		#completely_controls = title:d_tunis
+		#completely_controls = title:d_croatia
+		#completely_controls = title:d_thessalonika
+	}
+
+	is_valid_showing_failures_only = {
+		is_landed = yes
+		is_capable_adult = yes
+		is_imprisoned = no
+		is_independent_ruler = yes
+
+		OR = {
+			#religion = { is_in_family = rf_abrahamic }
+			#religion = religion:hellenism_religion
+			#culture = { has_cultural_pillar = heritage_latin }
+			#culture = { has_cultural_pillar = heritage_byzantine }
+		}
+	}
+
+	effect = {
+		custom_tooltip = restore_roman_empire_decision_effect_tooltip
+		show_as_tooltip = {
+			create_valyrian_freehold_scripted_effect = yes
+		}
+		if = {
+			limit = {
+				has_ep3_dlc_trigger = yes
+			}
+			#trigger_event = ep3_roman_restoration.0100
+		}
+		else = {
+			#trigger_event = roman_restoration.0001
+		}
+		hidden_effect = {
+			add_to_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_valyrian_freehold
+			}
+			set_global_variable = {
+				name = flag_restored_valyrian_freehold
+				value = root
+			}
+		}
+	}
+	
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 100
+	}
+}

@@ -1,0 +1,112 @@
+﻿namespace = zz_valyria_settlement
+
+# CONCLUSION EVENT
+zz_valyria_settlement.0009 = {
+	type = activity_event
+	title = zz_valyria_settlement.0009.t
+	desc = {
+		desc = zz_valyria_settlement.0009.desc
+		triggered_desc = {
+			trigger = {
+				scope:host = { 
+					has_character_flag = perfect_reward 
+				}
+			}
+			desc = zz_valyria_settlement.0009.desc_perfect_reward
+		}
+		triggered_desc = {
+			trigger = {
+				scope:host = { 
+					has_character_flag = high_reward 
+				}
+			}
+			desc = zz_valyria_settlement.0009.desc_high_reward
+		}
+		triggered_desc = {
+			trigger = {
+				scope:host = { 
+					has_character_flag = ok_reward 
+				}
+			}
+			desc = zz_valyria_settlement.0009.desc_ok_reward
+		}
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	immediate = {
+		#Reward effects
+		scope:activity.activity_location = { save_scope_as = location }
+		involved_activity ?= {
+			#Perfect settlement - 75-100
+			if = {
+				limit = { var:activity_special_type_progression >= 75 }
+				scope:host = {
+					add_character_flag = perfect_reward
+				}
+			}
+			#High-end settlement - 50-75
+			else_if = {
+				limit = { 
+					var:activity_special_type_progression < 75
+					var:activity_special_type_progression >= 50
+				} 
+				scope:host = {
+					add_character_flag = high_reward
+				}
+			}
+			#OK settlement - 25-50
+			else_if = {
+				limit = {
+					var:activity_special_type_progression < 50
+					var:activity_special_type_progression >= 25
+				}
+				scope:host = {
+					add_character_flag = ok_reward
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_settlement.0009.a
+		trigger = {
+			has_character_flag = perfect_reward
+		}
+		custom_tooltip = zz_valyria_settlement.0009.perfect_reward
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_settlement.0009.b
+		trigger = {
+			has_character_flag = high_reward
+		}
+		custom_tooltip = zz_valyria_settlement.0009.high_reward
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_settlement.0009.c
+		trigger = {
+			has_character_flag = ok_reward
+		}
+		add_gold = 300
+		ai_chance = {
+			base = 100
+		}
+	}
+	after = { 
+		remove_character_flag = perfect_reward
+		remove_character_flag = high_reward
+		remove_character_flag = ok_reward
+		
+		remove_character_flag = large_settlement_development_gain
+		remove_character_flag = med_settlement_development_gain
+	}
+}

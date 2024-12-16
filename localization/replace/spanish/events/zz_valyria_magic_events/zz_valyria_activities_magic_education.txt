@@ -1,0 +1,1807 @@
+﻿namespace = zz_valyria_magic_education
+
+
+# INVALIDATION - PRISON
+zz_valyria_magic_education.0005 = {
+	type = character_event
+	title = zz_valyria_magic_education.0005.t
+	desc = zz_valyria_magic_education.0005.desc
+	theme = prison
+
+	left_portrait = {
+		character = root
+		animation = prisonhouse
+	}
+
+	immediate = {
+		imprisoner ?= {
+			save_scope_as = jailor
+		}
+		create_character_memory = {
+			type = imprisoned_adult_education
+			participants = {
+				jailor = scope:jailor
+			}
+		}
+	}
+
+	option = {
+		name = zz_valyria_magic_education.0005.a
+	}
+}
+
+
+# CONCLUSION EVENT
+zz_valyria_magic_education.0009 = {
+	type = activity_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+		
+		
+		scope:activity = {
+		}
+	}
+	## Any Study, Increase Skill 
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+			OR = {
+				has_character_flag = perfect_reward
+				has_character_flag = high_reward
+			}
+		}
+		switch = {
+			trigger = has_character_flag
+			study_valyrian_secrets = { 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = secrets_of_the_higher_mysteries
+				}
+			}
+			study_blood_magic = { 
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = blood_magic
+				}
+			}
+			study_shadow_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = shadow_magic
+				}
+			}
+			study_dream_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = dream_magic
+				}
+			}
+			study_alchemy_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = alchemy_magic
+				}
+			}
+			study_fire_magic ={
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = fire_magic
+				}
+			}
+			study_air_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3 
+					XPTRACK = air_magic
+				}
+			}
+			study_water_magic = {
+				zz_valyria_gain_spell_experience = {
+					XPGAIN = 3
+					XPTRACK = water_magic
+				}
+			}
+		}
+	}
+	## Valyrian Studies, Random Spell 
+	option = {
+		name = zz_valyria_magic_education.0009.b 
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag  = study_valyrian_secrets
+		}
+		zz_random_gain_magic_spell = yes
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_blood_magic
+		}
+		trigger_event = zz_valyria_magic_education.00091
+	}
+
+	option = {
+		name = zz_valyria_magic_education.0009.shadow_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_shadow_magic
+		}
+		trigger_event = zz_valyria_magic_education.00092
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.dream_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_dream_magic
+		}
+		trigger_event = zz_valyria_magic_education.00093
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.alchemy_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_alchemy_magic
+		}
+		trigger_event = zz_valyria_magic_education.00094
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.fire_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_fire_magic
+		}
+		trigger_event = zz_valyria_magic_education.00095
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.air_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_air_magic
+		}
+		trigger_event = zz_valyria_magic_education.00096
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.water_magic
+		trigger = {
+			has_character_flag = perfect_reward
+			has_character_flag = study_water_magic
+		}
+		trigger_event = zz_valyria_magic_education.00097
+	}
+	
+	## Shadow Magic 
+
+	## Dream Magic 
+
+
+	## Alchemy Magic 
+
+
+	
+	## Fire Magic
+		
+	## Water Magic
+	
+
+	
+	## Air Magic
+	
+
+	## No Choice
+	option = {
+		trigger = {
+		}
+		name = zz_valyria_magic_education.0009.zz
+		ai_chance = {
+			base = 100
+		}
+	}
+	after = { 
+		remove_character_flag = perfect_reward
+		remove_character_flag = high_reward
+		remove_character_flag = ok_reward
+		remove_character_flag = study_valyrian_secrets
+		remove_character_flag = study_blood_magic
+		remove_character_flag = study_shadow_magic
+		remove_character_flag = study_dream_magic
+		remove_character_flag = study_alchemy_magic
+		remove_character_flag = study_fire_magic
+		remove_character_flag = study_water_magic
+		remove_character_flag = study_air_magic
+	}
+}
+
+zz_valyria_magic_education.00091 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3 
+			XPTRACK = blood_magic
+		}
+	}
+
+	## Learn Healing Spell
+	option = {
+		name = zz_valyria_magic_education.0009.blood.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
+		}
+	}
+	## Learn Genetic Manipulation Spell
+	option = {
+		name = zz_valyria_magic_education.0009.blood.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification
+		}
+	}
+	## Restore MAA
+	option = {
+		name = zz_valyria_magic_education.0009.blood.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_03_mysteries_of_regeneration
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_03_mysteries_of_regeneration
+		}
+	}
+	## Restore Army
+	option = {
+		name = zz_valyria_magic_education.0009.blood.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.05
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.06
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.07
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.08
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.09
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.10
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.11
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.12
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.13
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.14
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.15
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.16
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.17
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.18
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.19
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.20
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.blood.21
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
+		}
+	}
+}
+zz_valyria_magic_education.00092 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3 
+			XPTRACK = shadow_magic
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_02_mysteries_of_shadowy_daggers
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_02_mysteries_of_shadowy_daggers
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_03_mysteries_of_the_shadow_shield
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_03_mysteries_of_the_shadow_shield
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_04_mysteries_of_the_shadowy_cloak
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_04_mysteries_of_the_shadowy_cloak
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.05
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_05_mysteries_cloying_shadow
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_05_mysteries_cloying_shadow
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.06
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_06_mysteries_of_feeble_daggers
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_06_mysteries_of_feeble_daggers
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.07
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_07_mysteries_of_the_weakened_vigilience
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_07_mysteries_of_the_weakened_vigilience
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.shadow.08
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_shadow_magic_08_mysteries_of_the_revealed_shadows
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_shadow_magic_08_mysteries_of_the_revealed_shadows
+		}
+	}
+}
+zz_valyria_magic_education.00093 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3 
+			XPTRACK = dream_magic
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.dream.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_01_mysteries_mental_domination
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_01_mysteries_mental_domination
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.dream.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.dream.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_03_mysteries_of_dreams
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_03_mysteries_of_dreams
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.dream.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_04_mysteries_of_secrets
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_04_mysteries_of_secrets
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.dream.05
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.dream.06
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.dream.07
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_07_mysteries_of_dreaming_fascination
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_07_mysteries_of_dreaming_fascination
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.dream.09
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_09_mysteries_of_minor_scrying
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_09_mysteries_of_minor_scrying
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.dream.10
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power
+		}
+	}	
+}
+zz_valyria_magic_education.00094 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3 
+			XPTRACK = alchemy_magic
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.alchemy.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.alchemy.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.alchemy.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.alchemy.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.alchemy.05
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+		}
+	}	
+}
+zz_valyria_magic_education.00095 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3 
+			XPTRACK = fire_magic
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.fire_magic.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.fire_magic.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.fire_magic.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.fire_magic.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_04_mysteries_of_flaming_purification
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_fire_magic_04_mysteries_of_flaming_purification
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.fire_magic.05
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades
+		}
+	}
+}
+zz_valyria_magic_education.00096 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3 
+			XPTRACK = air_magic
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.air_magic.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.air_magic.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_air_magic_02_mysteries_of_the_tempestuous_winds
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_air_magic_02_mysteries_of_the_tempestuous_winds
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.air_magic.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_air_magic_03_mysteries_of_the_wall_of_the_wind
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_air_magic_03_mysteries_of_the_wall_of_the_wind
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.air_magic.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane
+		}
+	}	
+}
+zz_valyria_magic_education.00097 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_education.0009.t
+	desc = {
+		desc = zz_valyria_magic_education.0009.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = thinking
+	}
+
+
+	immediate = {
+		#Reward effects
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.a
+		trigger = {
+		}
+		zz_valyria_gain_spell_experience = {
+			XPGAIN = 3
+			XPTRACK = water_magic
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0009.water_magic.01
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.water_magic.02
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_02_mysteries_of_the_surging_torrent
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_water_magic_02_mysteries_of_the_surging_torrent
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.water_magic.03
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_03_mysteries_of_endurance
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_water_magic_03_mysteries_of_endurance
+		}
+	}	
+	option = {
+		name = zz_valyria_magic_education.0009.water_magic.04
+		trigger = {
+			NOT = { 
+				zz_valyria_knows_spell  = {
+					SPELL = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+				}
+			}
+		}
+		zz_magic_education_learn_spell_effect = { 
+			SPELL = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+		}
+	}	
+}
+## ARRIVAL EVENTS
+zz_valyria_magic_education.0010 = {
+	type = activity_event
+	title = zz_valyria_magic_education.0010.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					location = {
+						has_university_building_trigger = yes
+					}
+				}
+				desc = zz_valyria_magic_education.0010.desc_uni
+			}
+			desc = zz_valyria_magic_education.0010.desc
+		}
+		desc = zz_valyria_magic_education.0010.desc_end
+		triggered_desc = {
+			trigger = {
+				"scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive
+			}
+			desc = zz_valyria_magic_education.0010.desc_very_very_far
+		}
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
+	option = {
+		name = zz_valyria_magic_education.0010.a
+	}
+}
+
+### ADULT EDUCATION AT DESTINATION EVENTS ###
+
+## You find a a book of technical skill
+
+zz_valyria_magic_education.0100 = {
+	type = activity_event
+	title = zz_valyria_magic_education.0100.t
+	desc = zz_valyria_magic_education.0100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 6 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0100.a
+		custom_tooltip = zz_valyria_magic_education.0100.a.tt
+		trigger = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.0100.a
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0100.b
+		custom_tooltip = zz_valyria_magic_education.0100.b.tt
+		trigger = {
+
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.0100.b
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.0100.z
+		custom_tooltip = zz_valyria_magic_education.0100.z.tt
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+zz_valyria_magic_education.0200 = {
+	type = activity_event
+	title = zz_valyria_magic_education.0200.t
+	desc = zz_valyria_magic_education.0200.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 6 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.0200.a
+		trigger = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.0200.a
+		}		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.0200.b
+		trigger = {
+
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.0200.b
+		}	
+
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.0200.z
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## You have progressed your studies by a moderate amount. 
+
+zz_valyria_magic_education.1100  = {
+	type = activity_event
+	title = zz_valyria_magic_education.1100.t
+	desc = zz_valyria_magic_education.1100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 6 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.1100.a
+		trigger = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.1100.a
+		}		
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.1100.b
+		trigger = {
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.1100.b
+		}				
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.1100.z
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+## You have progressed your studies by a major amount. 
+zz_valyria_magic_education.1200 = {
+	type = activity_event
+	title = zz_valyria_magic_education.1200.t
+	desc = zz_valyria_magic_education.1200.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 6 }
+
+	trigger = {
+		always = yes
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.1200.a
+		trigger = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.1200.a
+		}		
+
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.1200.b
+		trigger = {
+		}
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.1200.b
+		}		
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.1200.z
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+### Learn Random Spell
+zz_valyria_magic_education.2100 = {
+	type = activity_event
+	title = zz_valyria_magic_education.2100.t
+	desc = zz_valyria_magic_education.2100.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 6 }
+
+	trigger = {
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.2100.a
+		trigger = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.2100.a
+		}		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.2100.b
+		trigger = {
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.2100.b
+		}			
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.2100.y
+		trigger = {
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.2100.y
+		}	
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.2100.z
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
+
+
+zz_valyria_magic_education.2200 = {
+	type = activity_event
+	title = zz_valyria_magic_education.2200.t
+	desc = zz_valyria_magic_education.2200.desc
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	cooldown = { months = 6 }
+
+	trigger = {
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			has_trait = theologian
+			add = 2
+		}
+		modifier = {
+			has_trait = scholar
+			add = 1
+		}
+	}
+
+	immediate = {
+		scope:activity = {
+			activity_location = { save_scope_as = location }
+		}
+		root = { save_scope_as = book_creator }
+	}
+
+	# Option A: Study hard intent: think and try to resolve the questions
+	option = {
+		name = zz_valyria_magic_education.2200.a
+		trigger = {
+			scope:activity = {
+				has_activity_option = {
+					category = adult_education_option_books
+					option = adult_education_books_good
+				}
+			}
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.2200.a
+		}	
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.2200.b
+		trigger = {
+		}
+
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.2200.b
+		}	
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_magic_education.2200.y
+		trigger = {
+		}
+		zz_valyria_magic_education_skill_test = {
+			SKILL = learning
+			ZZ_EVENT_OPTION_NAME = zz_valyria_magic_education.2200.y
+		}	
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+
+
+	# Option Z: opt-out
+	option = {
+		name = zz_valyria_magic_education.2200.z
+		stress_impact = {
+			base = medium_stress_impact_loss
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+}
