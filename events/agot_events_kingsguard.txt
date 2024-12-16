@@ -1,0 +1,5682 @@
+﻿namespace = agot_kingsguard
+
+################################
+# Kingsguard Maintenance and Appointment Events
+# 1000 - 1999
+# by Badger
+################################
+
+agot_kingsguard.1000 = { #Kingsguard Death Maintenance Event
+	hidden = yes
+
+	trigger = {
+		NOT = {
+			title:e_the_iron_throne = {
+				has_variable = kingslanding_exploding
+			}
+		}
+		OR = {
+			has_trait = kingsguard
+			is_kingsguard_trigger = yes
+		}
+		top_liege = {
+			any_held_title = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+		}
+		NOT = { #surpress the notification in specific events
+			top_liege = {
+				has_character_flag = replacing_kingsguard
+			}
+		}
+	}
+	immediate = {
+		save_scope_as = dead_kingsguard
+		agot_remove_kingsguard_effect =  { KINGSGUARD = scope:dead_kingsguard }
+	}
+}
+
+agot_kingsguard.1001 = { # Standard KG Member Death / Removal
+	type = character_event
+	title = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1001.t
+			}
+			desc = agot_kingsguard.1001.fallback.t
+		}
+	}
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1001.desc.intro
+			}
+			desc = agot_kingsguard.1001.fallback.desc.intro
+		}
+		first_valid = { # Comment on Prowess
+			triggered_desc = {
+				trigger = {
+					exists = scope:dead_kingsguard
+					scope:dead_kingsguard.prowess >= 35
+				}
+				desc = agot_kingsguard.1001.desc.talented
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:dead_kingsguard
+					scope:dead_kingsguard.prowess >= 20
+				}
+				desc = agot_kingsguard.1001.desc.suitable
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:dead_kingsguard
+					scope:dead_kingsguard.prowess >= 10
+				}
+				desc = agot_kingsguard.1001.desc.passing
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:dead_kingsguard
+					scope:dead_kingsguard.prowess < 10
+				}
+				desc = agot_kingsguard.1001.desc.unsuitable
+			}
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1001.desc.end
+			}
+			desc = agot_kingsguard.1001.fallback.desc.end
+		}
+	}
+	theme = court
+	override_background = {
+		trigger = { exists = scope:dead_kingsguard }
+		reference = temple
+	}
+	left_portrait = {
+		character = scope:king
+		triggered_animation = {
+			trigger = { exists = scope:dead_kingsguard }
+			animation = sadness
+		}
+		animation = personality_callous
+	}
+	right_portrait = {
+		character = scope:removed_kg
+		triggered_animation = {
+			trigger = { exists = scope:dead_kingsguard }
+			animation = personality_zealous
+		}
+		animation = personality_cynical
+	}
+	lower_center_portrait = {
+		character = scope:lord_commander
+		trigger = {
+			NOT = {
+				scope:lord_commander = scope:removed_kg
+			}
+		}
+	}
+	immediate = {
+		if = {
+			limit = { exists = scope:dead_kingsguard }
+			play_music_cue = mx_cue_death
+		}
+		root = {
+			save_scope_as = king
+		}
+		if = {
+			limit = {
+				exists = court_position:zz_kingsguard_lord_commander_court_position
+			}
+			court_position:zz_kingsguard_lord_commander_court_position = {
+				save_scope_as = lord_commander
+			}
+		}
+	}
+	option = { #Bring me the Greatest Knights in all the realm
+		name = agot_kingsguard.1001.a
+		trigger = {
+			custom_tooltip = {
+				text = agot_kingsguard.1001.a.tt # Avoid "consider using a custom_tooltip" warning
+				any_living_character = {
+					can_be_kingsguard_trigger = {
+						COURT_OWNER = scope:king
+					}
+					prowess >= 20
+					top_liege = root
+					faith = root.faith
+				}
+			}
+		}
+		trigger_event = {
+			id = agot_kingsguard.1002
+			days = { 10 20 }
+		}
+		custom_tooltip = agot_kingsguard.1001.a.tt
+	}
+	option = { #Bring me the Sons of Powerful Lords
+		name = agot_kingsguard.1001.b
+		trigger = {
+			custom_tooltip = {
+				text = agot_kingsguard.1001.b.tt # Avoid "consider using a custom_tooltip" warning
+				any_living_character = {
+					can_be_kingsguard_trigger = {
+						COURT_OWNER = scope:king
+					}
+					top_liege = root
+					highborn_kingsguard_candidate = yes
+				}
+			}
+		}
+		trigger_event = {
+			id = agot_kingsguard.1003
+			days = { 30 60 }
+		}
+		custom_tooltip = agot_kingsguard.1001.b.tt
+	}
+	option = {
+		name = agot_kingsguard.1001.c
+		custom_tooltip = agot_kingsguard.1001.c.tt
+	}
+}
+
+agot_kingsguard.1002 = {  # Greatest Knights
+	type = character_event
+	title = agot_kingsguard.1002.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1002.desc.intro
+			}
+			desc = agot_kingsguard.1002.fallback.desc.intro
+		}
+		desc = agot_kingsguard.1002.desc.end
+	}
+	theme = court
+	left_portrait = {
+		character = root
+		animation = personality_callous
+	}
+	right_portrait = {
+		character = scope:lord_commander
+		animation = personality_content
+	}
+	lower_left_portrait = scope:kingsguard_candidate_1
+	lower_center_portrait = scope:kingsguard_candidate_2
+	lower_right_portrait = scope:kingsguard_candidate_3
+	trigger = {
+		AND = {
+			can_employ_court_position_type = zz_kingsguard_court_position
+			any_living_kingsguard = {
+				#Check for the 7 to stop appointing to replace guys in prison
+				top_liege = root
+				count < 7
+			}
+		}
+		any_living_character = {
+			can_be_kingsguard_trigger = {
+				COURT_OWNER = scope:king
+			}
+			prowess >= 20
+			top_liege = root
+			faith = root.faith
+		}
+	}
+	immediate = {
+		add_character_flag = choosing_kingsguard
+		play_music_cue = mx_cue_positive_effect
+		court_position:zz_kingsguard_lord_commander_court_position = {
+			save_scope_as = lord_commander
+		}
+		every_living_character = {
+			limit = {
+				can_be_kingsguard_trigger = {
+					COURT_OWNER = scope:king
+				}
+				prowess >= 20
+				top_liege = root
+				faith = root.faith
+			}
+			add_to_list = potential_kingsguard
+		}
+		ordered_in_list = {
+			list = potential_kingsguard
+			position = 0
+			order_by = prowess
+			limit = {
+				NOR = {
+					has_character_flag = kingsguard_position_rejected
+					has_trait = kingsguard
+				}
+			}
+			save_scope_as = kingsguard_candidate_1
+		}
+		ordered_in_list = {
+			list = potential_kingsguard
+			position = 1
+			order_by = prowess
+			limit = {
+				NOR = {
+					has_character_flag = kingsguard_position_rejected
+					has_trait = kingsguard
+					this = scope:kingsguard_candidate_1
+				}
+			}
+			save_scope_as = kingsguard_candidate_2
+		}
+		ordered_in_list = {
+			list = potential_kingsguard
+			position = 2
+			order_by = prowess
+			limit = {
+				NOR = {
+					has_character_flag = kingsguard_position_rejected
+					has_trait = kingsguard
+					this = scope:kingsguard_candidate_1
+					this = scope:kingsguard_candidate_2
+				}
+			}
+			save_scope_as = kingsguard_candidate_3
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.a
+		trigger = {
+			exists = scope:kingsguard_candidate_1
+		}
+		scope:kingsguard_candidate_1 = {
+			trigger_event = agot_kingsguard.1004
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.b
+		trigger = {
+			exists = scope:kingsguard_candidate_2
+		}
+		scope:kingsguard_candidate_2 = {
+			trigger_event = agot_kingsguard.1004
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.c
+		trigger = {
+			exists = scope:kingsguard_candidate_3
+		}
+		scope:kingsguard_candidate_3 = {
+			trigger_event = agot_kingsguard.1004
+		}
+	}
+	option = {
+		#Never Mind
+		name = agot_kingsguard.1002.d
+		custom_tooltip = agot_kingsguard.1002.d.tt
+	}
+	after = {
+		remove_character_flag = choosing_kingsguard
+		every_in_list = {
+			list = potential_kingsguard
+			remove_from_list = potential_kingsguard
+		}
+	}
+}
+
+agot_kingsguard.1003 = { # Powerful Lordly Scions who will auto-accept
+	type = character_event
+	title = agot_kingsguard.1003.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1003.desc.intro
+			}
+			desc = agot_kingsguard.1003.fallback.desc.intro
+		}
+		desc = agot_kingsguard.1003.desc.end
+	}
+	theme = court
+	left_portrait = {
+		character = root
+		animation = personality_callous
+	}
+	right_portrait = {
+		character = scope:lord_commander
+		animation = personality_content
+	}
+	lower_left_portrait = scope:kingsguard_candidate_1
+	lower_center_portrait = scope:kingsguard_candidate_2
+	lower_right_portrait = scope:kingsguard_candidate_3
+	trigger = {
+		AND = {
+			can_employ_court_position_type = zz_kingsguard_court_position
+			any_living_kingsguard = {
+				#Check for the 7 to stop appointing to replace guys in prison
+				top_liege = root
+				count < 7
+			}
+		}
+		any_living_character = {
+			can_be_kingsguard_trigger = {
+				COURT_OWNER = scope:king
+			}
+			top_liege = root
+			highborn_kingsguard_candidate = yes
+		}
+	}
+	immediate = {
+		add_character_flag = choosing_kingsguard
+		play_music_cue = mx_cue_positive_effect
+		court_position:zz_kingsguard_lord_commander_court_position ?= {
+			save_scope_as = lord_commander
+		}
+		every_living_character = {
+			limit = {
+				can_be_kingsguard_trigger = {
+					COURT_OWNER = scope:king
+				}
+				top_liege = root
+				highborn_kingsguard_candidate = yes
+			}
+			add_to_list = potential_kingsguard
+		}
+		random_in_list = {
+			list = potential_kingsguard
+			limit = {
+				NOR = {
+					has_character_flag = kingsguard_position_rejected
+					has_trait = kingsguard
+				}
+			}
+			weight = {
+				base = 1
+				modifier = {
+					add = prowess
+				}
+				modifier = {
+					add = 500
+					has_character_modifier = training_for_kingsguard
+				}
+			}
+			save_scope_as = kingsguard_candidate_1
+		}
+		random_in_list = {
+			list = potential_kingsguard
+			limit = {
+				NOR = {
+					has_character_flag = kingsguard_position_rejected
+					has_trait = kingsguard
+					this = scope:kingsguard_candidate_1
+				}
+			}
+			weight = {
+				base = 1
+				modifier = {
+					add = prowess
+				}
+				modifier = {
+					add = 500
+					has_character_modifier = training_for_kingsguard
+				}
+			}
+			save_scope_as = kingsguard_candidate_2
+		}
+		random_in_list = {
+			list = potential_kingsguard
+			limit = {
+				NOR = {
+					has_character_flag = kingsguard_position_rejected
+					has_trait = kingsguard
+					this = scope:kingsguard_candidate_1
+					this = scope:kingsguard_candidate_2
+				}
+			}
+			weight = {
+				base = 1
+				modifier = {
+					add = prowess
+				}
+				modifier = {
+					add = 500
+					has_character_modifier = training_for_kingsguard
+				}
+			}
+			save_scope_as = kingsguard_candidate_3
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.a
+		trigger = {
+			exists = scope:kingsguard_candidate_1
+		}
+		scope:kingsguard_candidate_1 = {
+			trigger_event = agot_kingsguard.1006
+			save_scope_as = kingsguard_candidate
+		}
+		trigger_event = agot_kingsguard.1008
+		scope:kingsguard_candidate_2 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -10
+				}
+			}
+		}
+		scope:kingsguard_candidate_3 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -10
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.b
+		trigger = {
+			exists = scope:kingsguard_candidate_2
+		}
+		scope:kingsguard_candidate_2 = {
+			trigger_event = agot_kingsguard.1006
+			save_scope_as = kingsguard_candidate
+		}
+		trigger_event = agot_kingsguard.1008
+		scope:kingsguard_candidate_1 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -10
+				}
+			}
+		}
+		scope:kingsguard_candidate_3 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -10
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.c
+		trigger = {
+			exists = scope:kingsguard_candidate_3
+		}
+		scope:kingsguard_candidate_3 = {
+			trigger_event = agot_kingsguard.1006
+			save_scope_as = kingsguard_candidate
+		}
+		trigger_event = agot_kingsguard.1008
+		scope:kingsguard_candidate_1 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -10
+				}
+			}
+		}
+		scope:kingsguard_candidate_2 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -10
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.1002.d
+		scope:kingsguard_candidate_1 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -20
+				}
+			}
+		}
+		scope:kingsguard_candidate_2 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -20
+				}
+			}
+		}
+		scope:kingsguard_candidate_3 ?= {
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				add_opinion = {
+					modifier = disappointed_opinion
+					target = root
+					opinion = -20
+				}
+			}
+		}
+	}
+	after = {
+		remove_character_flag = choosing_kingsguard
+		every_in_list = {
+			list = potential_kingsguard
+			remove_from_list = potential_kingsguard
+		}
+	}
+}
+
+agot_kingsguard.1004 = { # interaction to determine KG acceptance
+	hidden = yes
+	immediate = {
+		root = {
+			save_scope_as = kingsguard_candidate
+		}
+	}
+	option = { #I accept
+		ai_chance = { # Personality Factor
+			base = 100
+			opinion_modifier = {  # Opinion Factor
+				who = this
+				opinion_target = scope:king
+				multiplier = 0.25
+			}
+			modifier = {
+				factor = 10
+				has_character_modifier = training_for_kingsguard
+			}
+			ai_value_modifier = {
+				ai_honor = 0.5
+				ai_boldness = 0.5
+				ai_greed = -0.5
+				ai_zeal = 0.5
+			}
+			modifier = { # big honour for a pleb
+				is_lowborn = yes
+				add = 50
+			}
+		}
+		scope:king = {
+			trigger_event = {
+				id = agot_kingsguard.1005
+				days = {
+					10
+					20
+				}
+			}
+		}
+	}
+	option = { #I refuse
+		ai_chance = {
+			base = 50
+			opinion_modifier = { # Opinion Factor
+				who = this
+				opinion_target = scope:king
+				multiplier = 0.25
+			}
+			ai_value_modifier = { # Personality Factor
+				ai_honor = -0.5
+				ai_boldness = -0.5
+				ai_greed = 0.5
+				ai_zeal = -0.5
+			}
+			modifier = { #Trained my whole life for this
+				factor = 0
+				has_character_modifier = training_for_kingsguard
+			}
+			modifier = { # Doesn't want to go celibate
+				add = 50
+				OR = {
+					has_trait = lustful
+					has_trait = lifestyle_reveler
+				}
+			}
+			modifier = { # Different Gods go away
+				add = 100
+				AND = {
+					NOT = {
+						faith = scope:king.faith
+					}
+					ai_zeal <= -30 # More cynical characters don't care
+				}
+			}
+			modifier = { # Heirs will almost never
+				add = 150
+				any_heir_title = {
+					exists = this
+					place_in_line_of_succession = {
+						target = root
+						value == 1
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_character_modifier = training_for_kingsguard
+			}
+		}
+		root = {
+			add_character_flag = kingsguard_position_rejected
+		}
+		scope:king = {
+			trigger_event = {
+				id = agot_kingsguard.1007
+				days = {
+					10
+					30
+				}
+			}
+		}
+	}
+}
+
+agot_kingsguard.1005 = { # Candidate Accepts Kingsguard Appointment
+	type = letter_event
+	opening = {
+		desc = agot_kingsguard.1005.opening
+	}
+	desc = agot_kingsguard.1005.opening_desc
+	sender = scope:kingsguard_candidate
+	immediate = {
+		if = {
+			limit = {
+				NOT = {	scope:kingsguard_candidate = { employer = root } } # Not already employed by root
+			}
+			add_courtier = scope:kingsguard_candidate
+		}
+		if = {
+			limit = {
+				scope:kingsguard_candidate = {
+					any_heir_title = {
+						exists = this
+						place_in_line_of_succession = {
+							target = prev
+							value == 1
+						}
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				add_character_flag = was_primary_heir
+			}
+		}
+	}
+	option = { 	#Welcome to the family son
+		name = agot_kingsguard.1005.a
+		scope:kingsguard_candidate = {
+			trigger_event = agot_kingsguard.1006
+		}
+		trigger_event = agot_kingsguard.1008
+	}
+}
+
+agot_kingsguard.1006 = { # Actually give that loser the KG - recurring event
+	hidden = yes
+	trigger = {
+		top_liege = {
+			any_held_title = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+		}
+	}
+	immediate = {
+		top_liege = {
+			save_scope_as = king
+		}
+		agot_join_kingsguard_effect = {
+			KINGSGUARD = root
+			KING = scope:king
+		}
+	}
+	option = { 	#Welcome to the family son
+		if = {
+			limit = {
+				root = {
+					is_councillor_of = scope:king
+				}
+			}
+			add_trait = kingsguard
+		}
+	}
+}
+
+agot_kingsguard.1007 = {  # Candidate Spurns Kingsguard Appointment
+	type = letter_event
+	opening = {
+		desc = agot_kingsguard.1007.opening
+	}
+	desc = {
+		desc = agot_kingsguard.1007.opening_desc
+		first_valid = { # rejections based on personality
+			triggered_desc = {
+				trigger = {
+					scope:kingsguard_candidate = {
+						NOT = {
+							faith = scope:king.faith
+						}
+					}
+				}
+				desc = agot_kingsguard.1007.faith
+			}
+			triggered_desc = {
+				trigger = {
+					scope:kingsguard_candidate = {
+						any_heir_title = {
+							place_in_line_of_succession = {
+								target = scope:kingsguard_candidate
+								value == 1
+							}
+						}
+					}
+				}
+				desc = agot_kingsguard.1007.claim
+			}
+			triggered_desc = {
+				trigger = {
+					scope:kingsguard_candidate = {
+						has_trait = lustful
+					}
+				}
+				desc = agot_kingsguard.1007.lustful
+			}
+			triggered_desc = {
+				trigger = {
+					scope:kingsguard_candidate = {
+						ai_greed > 50
+					}
+				}
+				desc = agot_kingsguard.1007.ambitious
+			}
+			triggered_desc = {
+				trigger = {
+					scope:kingsguard_candidate = {
+						opinion = {
+							target = scope:king
+							value < -30
+						}
+					}
+				}
+				desc = agot_kingsguard.1007.hate
+			}
+			desc = agot_kingsguard.1007.reject
+		}
+	}
+	sender = {
+		character = scope:kingsguard_candidate
+		animation = dismissal
+	}
+	option = {  #I shall look for another!
+		name = agot_kingsguard.1007.a
+		trigger = {
+			exists = scope:removed_kg
+		}
+		custom_tooltip = agot_kingsguard.1007.a.tt
+		trigger_event = {
+			id = agot_kingsguard.1003
+			days = {
+				20
+				50
+			}
+		}
+	}
+	option = { #Blast to this, I'll look later
+		name = agot_kingsguard.1007.b
+	}
+}
+
+agot_kingsguard.1008 = { # Bestowing Event
+	type = character_event
+	title = agot_kingsguard.1008.t
+	desc = agot_kingsguard.1008.desc
+	theme = court
+	override_background = {
+		reference = agot_iron_throne
+	}
+	immediate = {
+		if = { #Close Landed Family Take Priority
+			limit = {
+				scope:kingsguard_candidate = {
+					any_close_family_member = {
+						is_landed = yes
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				random_close_family_member = {
+					limit = {
+						is_landed = yes
+					}
+					save_scope_as = family_member
+				}
+			}
+		}
+		else_if = {
+			limit = { # Then Landed Extended Fam
+				scope:kingsguard_candidate = {
+					any_close_or_extended_family_member = {
+						is_landed = yes
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				random_close_or_extended_family_member = {
+					limit = {
+						is_landed = yes
+					}
+					save_scope_as = family_member
+				}
+			}
+		}
+		else_if = { # Then Unlanded General Family
+			limit = {
+				scope:kingsguard_candidate = {
+					any_close_family_member = {
+						exists = yes
+					}
+				}
+			}
+			scope:kingsguard_candidate = {
+				random_close_family_member = {
+					limit = {
+						exists = yes
+					}
+					save_scope_as = family_member
+				}
+			}
+		}
+	}
+	left_portrait = {
+		character = scope:kingsguard_candidate
+		animation = throne_room_bow_1
+	}
+	right_portrait = {
+		character = root
+		animation = personality_content
+	}
+	option = {
+		name = agot_kingsguard.1008.a
+		scope:kingsguard_candidate = {
+			hidden_effect = { add_trait = kingsguard }
+			agot_create_artifact_kingsguard_armour_effect = { OWNER = this }
+			agot_create_artifact_kingsguard_sword_effect = { OWNER = this }
+			trigger_event = {
+				id = agot_kingsguard.1012
+				days = 1
+			}
+		}
+		if = { 		#Family Reaction
+			limit = {
+				exists = scope:family_member
+				NOT = {
+					scope:family_member = root
+				}
+			}
+			trigger_event = agot_kingsguard.1009
+		}
+		# event for appointing foreigner
+		#event for appointing different religion
+	}
+	after = {
+		#Courtly Vassals Upset at Lowborn Appointment
+		if = {
+			limit = {
+				scope:kingsguard_candidate = {
+					is_lowborn = yes
+				}
+			}
+			every_vassal = {
+				limit = {
+					has_vassal_stance = courtly
+				}
+				add_opinion = {
+					target = root
+					modifier = courtly_lowborn_kingsguard_opinion
+					opinion = -20
+				}
+			}
+		}
+		#Zealot Vassals Upset at Heathen Appointment
+		if = {
+			limit = {
+				NOT = {
+					scope:kingsguard_candidate = {
+						faith = root.faith
+					}
+				}
+			}
+			every_zealot_vassal = {
+				limit = {
+					faith = root.faith
+				}
+				add_opinion = {
+					target = root
+					modifier = zealot_infidel_kingsguard_opinion
+					opinion = -35
+				}
+			}
+		}
+	}
+}
+
+agot_kingsguard.1009 = { # Relatives' Reaction
+	type = character_event
+	title = agot_kingsguard.1009.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:family_member = {
+						has_character_flag = family_mad
+					}
+				}
+				desc = agot_kingsguard.1009.desc.mad
+			}
+			triggered_desc = {
+				trigger = {
+					scope:family_member = {
+						has_character_flag = family_glad
+					}
+				}
+				desc = agot_kingsguard.1009.desc.glad
+			}
+		}
+		triggered_desc = {
+			trigger = {
+				scope:kingsguard_candidate = {
+					has_character_flag = was_primary_heir
+				}
+				scope:family_member = {
+					has_character_flag = family_mad
+				}
+			}
+			desc = agot_kingsguard.1009.desc.heir
+		}
+	}
+	theme = court
+	override_background = {
+		reference = agot_iron_throne
+	}
+	immediate = {
+		random_list = {
+			80 = {
+				#Bigger Weight towards happy due to prestige
+				modifier = {
+					factor = 2
+					scope:family_member = {
+						ai_greed >= low_positive_ai_value
+					}
+				}
+				modifier = {
+					factor = 2
+					scope:family_member = {
+						ai_honor >= low_positive_ai_value
+					}
+				}
+				modifier = {
+					factor = 2
+					scope:family_member = {
+						ai_boldness >= low_positive_ai_value
+					}
+				}
+				modifier = {
+					scope:family_member = {
+						opinion = {
+							target = scope:king
+							value >= medium_positive_opinion
+						}
+					}
+					factor = 2
+				}
+				#Happy Relative Flag
+				scope:family_member = {
+					add_character_flag = family_glad
+				}
+			}
+			20 = {
+				modifier = {
+					factor = 2
+					scope:family_member = {
+						ai_zeal <= medium_negative_zeal
+					}
+				}
+				modifier = {
+					factor = 2
+					scope:family_member = {
+						has_trait = paranoid
+					}
+				}
+				modifier = {
+					factor = 4
+					scope:family_member = {
+						NOT = {
+							faith = {
+								has_doctrine = tenet_knighthood
+							}
+						}
+					}
+				}
+				modifier = {
+					scope:family_member = {
+						opinion = {
+							target = scope:king
+							value <= medium_negative_opinion
+						}
+					}
+					factor = 2
+				}
+				modifier = {
+					scope:family_member = {
+						opinion = {
+							target = scope:king
+							value <= high_negative_opinion
+						}
+					}
+					factor = 2
+				}
+				modifier = {
+					#Probably very pissed you snagged their heir
+					scope:kingsguard_candidate = {
+						has_character_flag = was_primary_heir
+					}
+					factor = 5
+				}
+				#Mad Relative Flag
+				scope:family_member = {
+					add_character_flag = family_mad
+				}
+			}
+		}
+	}
+	left_portrait = {
+		character = scope:family_member
+		triggered_animation = {
+			trigger = {
+				scope:family_member = {
+					has_character_flag = family_mad
+				}
+			}
+			animation = rage
+		}
+		triggered_animation = {
+			trigger = {
+				scope:family_member = {
+					has_character_flag = family_glad
+				}
+			}
+			animation = love
+		}
+	}
+	right_portrait = {
+		character = root
+		triggered_animation = {
+			trigger = {
+				scope:family_member = {
+					has_character_flag = family_mad
+				}
+			}
+			animation = shock
+		}
+		triggered_animation = {
+			trigger = {
+				scope:family_member = {
+					has_character_flag = family_glad
+				}
+			}
+			animation = personality_forgiving
+		}
+	}
+	lower_center_portrait = {
+		character = scope:kingsguard_candidate
+	}
+	option = {
+		name = {
+			text = {
+				first_valid = {
+					triggered_desc = {
+						trigger = {
+							scope:family_member = {
+								has_character_flag = family_mad
+							}
+						}
+						desc = agot_kingsguard.1009.a.mad
+					}
+					triggered_desc = {
+						trigger = {
+							scope:family_member = {
+								has_character_flag = family_glad
+							}
+						}
+						desc = agot_kingsguard.1009.a.glad
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:family_member = {
+					has_character_flag = family_mad
+				}
+			}
+			set_relation_potential_rival = scope:family_member
+			reverse_add_opinion = {
+				modifier = insult_opinion
+				target = scope:family_member
+				opinion = -40
+			}
+		}
+		if = {
+			limit = {
+				scope:family_member = {
+					has_character_flag = family_glad
+				}
+			}
+			set_relation_potential_friend = scope:family_member
+			reverse_add_opinion = {
+				modifier = pleased_opinion
+				target = scope:family_member
+				opinion = 40
+			}
+		}
+	}
+}
+
+agot_kingsguard.1010 = { # Lord Commander Death / Removal
+	type = character_event
+	title = agot_kingsguard.1010.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1010.desc.intro
+			}
+			desc = agot_kingsguard.1010.fallback.desc.intro
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:kingsguard_successor }
+				desc = agot_kingsguard.1010.desc.end
+			}
+			desc = agot_kingsguard.1010.fallback.desc.end
+		}
+	}
+	theme = court
+	override_background = {
+		trigger = { exists = scope:dead_kingsguard }
+		reference = temple
+	}
+	left_portrait = {
+		character = scope:king
+		triggered_animation = {
+			trigger = { exists = scope:dead_kingsguard }
+			animation = sadness
+		}
+		animation = personality_callous
+	}
+	right_portrait = {
+		character = scope:kingsguard_successor
+		animation = personality_callous
+	}
+	lower_center_portrait = {
+		character = scope:removed_kg # The Lord Commander
+	}
+	immediate = {
+		if = {
+			limit = { exists = scope:dead_kingsguard }
+			play_music_cue = mx_cue_death
+		}
+		add_character_flag = choosing_lord_commander
+		root = {
+			save_scope_as = king
+		}
+		every_court_position_holder = {
+			type = zz_kingsguard_court_position
+			add_to_list = kingsguard_successor
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			save_scope_as = kingsguard_successor
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			position = 0
+			save_scope_as = kingsguard_1		
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			position = 1
+			save_scope_as = kingsguard_2		
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			position = 2
+			save_scope_as = kingsguard_3		
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			position = 3
+			save_scope_as = kingsguard_4		
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			position = 4
+			save_scope_as = kingsguard_5		
+		}
+		ordered_in_list = {
+			list = kingsguard_successor
+			limit = {
+				is_alive = yes
+			}
+			order_by = prowess
+			position = 5
+			save_scope_as = kingsguard_6
+		}
+		hidden_effect = {
+			title:d_dummy_kingsguard = {
+				copy_title_history = title:d_kingsguard
+			}
+			# destroy_title = title:d_kingsguard
+			# create_title_and_vassal_change = {
+			# 	type = granted
+			# 	save_scope_as = change
+			# }
+			# title:d_kingsguard = {
+			# 	change_title_holder = {
+			# 		holder = root
+			# 		change = scope:change
+			# 	}
+			# }
+			# resolve_title_and_vassal_change = scope:change
+		}
+	}
+	option = {
+		#Successor
+		name = agot_kingsguard.1010.a
+		trigger = {
+			#Add an opinion boost here
+			exists = scope:kingsguard_successor
+			scope:kingsguard_successor = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_successor
+			KING = scope:king
+		}
+		scope:kingsguard_successor = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		name = agot_kingsguard.1010.b
+		trigger = {
+			exists = scope:kingsguard_1
+			NOT = {
+				scope:kingsguard_1 = scope:kingsguard_successor
+			}
+			scope:kingsguard_1 = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_1
+			KING = scope:king
+		}
+		scope:kingsguard_1 = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}	
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		name = agot_kingsguard.1010.c
+		trigger = {
+			exists = scope:kingsguard_2
+			NOT = {
+				scope:kingsguard_2 = scope:kingsguard_successor
+			}
+			scope:kingsguard_2 = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_2
+			KING = scope:king
+		}
+		scope:kingsguard_2 = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		name = agot_kingsguard.1010.d
+		trigger = {
+			exists = scope:kingsguard_3
+			NOT = {
+				scope:kingsguard_3 = scope:kingsguard_successor
+			}
+			scope:kingsguard_3 = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_3
+			KING = scope:king
+		}
+		scope:kingsguard_3 = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		#Switch
+		name = agot_kingsguard.1010.e
+		trigger = {
+			OR = {
+				exists = scope:kingsguard_4
+				exists = scope:kingsguard_5
+				exists = scope:kingsguard_6
+			}
+		}
+		trigger_event = agot_kingsguard.1011
+		custom_tooltip = kingsguard_other_selections_available_tt
+	}
+	option = {
+		name = agot_kingsguard.1010.f
+		trigger = {
+			NOR = {
+				scope:kingsguard_1 ?= { is_alive = yes }
+				scope:kingsguard_2 ?= { is_alive = yes }
+				scope:kingsguard_3 ?= { is_alive = yes }
+				scope:kingsguard_4 ?= { is_alive = yes }
+				scope:kingsguard_5 ?= { is_alive = yes }
+				scope:kingsguard_6 ?= { is_alive = yes }
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_kingsguard.1011 = { # Lord Commander Death 2
+	type = character_event
+	title = agot_kingsguard.1010.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:dead_kingsguard }
+				desc = agot_kingsguard.1010.desc.intro
+			}
+			desc = agot_kingsguard.1010.fallback.desc.intro
+		}
+		desc = agot_kingsguard.1010.desc.end
+	}
+	theme = court
+	override_background = {
+		trigger = { exists = scope:dead_kingsguard }
+		reference = temple
+	}
+	left_portrait = {
+		character = scope:king
+		triggered_animation = {
+			trigger = { exists = scope:dead_kingsguard }
+			animation = sadness
+		}
+		animation = personality_callous
+	}
+	right_portrait = {
+		character = scope:kingsguard_successor
+		animation = personality_callous
+	}
+	lower_center_portrait = {
+		character = scope:removed_kg # The Lord Commander
+	}
+	immediate = {
+		if = {
+			limit = { exists = scope:dead_kingsguard }
+			play_music_cue = mx_cue_death
+		}
+		root = {
+			save_scope_as = king
+		}
+	}
+	option = {
+		name = agot_kingsguard.1011.a
+		trigger = {
+			exists = scope:kingsguard_4
+			NOT = {
+				scope:kingsguard_4 = scope:kingsguard_successor
+			}
+			scope:kingsguard_4 = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_1
+			KING = scope:king
+		}
+		scope:kingsguard_4 = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		name = agot_kingsguard.1011.b
+		trigger = {
+			exists = scope:kingsguard_5
+			NOT = {
+				scope:kingsguard_5 = scope:kingsguard_successor
+			}
+			scope:kingsguard_5 = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_5
+			KING = scope:king
+		}
+		scope:kingsguard_5 = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		name = agot_kingsguard.1011.c
+		trigger = {
+			exists = scope:kingsguard_6
+			NOT = {
+				scope:kingsguard_6 = scope:kingsguard_successor
+			}
+			scope:kingsguard_6 = { is_alive = yes }
+		}
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:kingsguard_6
+			KING = scope:king
+		}
+		scope:kingsguard_6 = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+	}
+	option = {
+		#Switch
+		name = agot_kingsguard.1010.e
+		trigger = {
+			OR = {
+				scope:kingsguard_1 ?= { is_alive = yes }
+				scope:kingsguard_2 ?= { is_alive = yes }
+				scope:kingsguard_3 ?= { is_alive = yes }
+				scope:kingsguard_4 ?= { is_alive = yes }
+				scope:kingsguard_5 ?= { is_alive = yes }
+				scope:kingsguard_6 ?= { is_alive = yes }
+			}
+		}
+		trigger_event = agot_kingsguard.1010
+		custom_tooltip = kingsguard_other_selections_available_tt
+	}
+	option = {
+		name = agot_kingsguard.1010.f
+		trigger = {
+			NOR = {
+				scope:kingsguard_1 ?= { is_alive = yes }
+				scope:kingsguard_2 ?= { is_alive = yes }
+				scope:kingsguard_3 ?= { is_alive = yes }
+				scope:kingsguard_4 ?= { is_alive = yes }
+				scope:kingsguard_5 ?= { is_alive = yes }
+				scope:kingsguard_6 ?= { is_alive = yes }
+			}
+		}
+		remove_character_flag = choosing_lord_commander
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_kingsguard.1012 = { #New Kingsguard Set-up. Memory, prestige, knighthood / celibacy
+	hidden = yes
+	immediate = {
+		add_prestige_level = 1
+		remove_trait = refusing_marriage
+		remove_character_modifier = training_for_kingsguard
+		if = {
+			limit = {
+				exists = dynasty
+			}
+			dynasty = {
+				add_dynasty_prestige = medium_dynasty_prestige_gain
+			}
+		}
+		create_character_memory = {
+			type = agot_kingsguard_memory
+			participants = {
+				king = scope:king
+			}
+		}
+		if = {
+			limit = {
+				is_agot_knight_trigger = no
+			}
+			random_list = {
+				95 = {
+					modifier = {
+						#Fuck your Sers
+						add = {
+							value = ai_zeal
+							multiply = -1
+						}
+					}
+					modifier = {
+						# Not Knights more likely to refuse
+						factor = 0.2
+						NOT = {
+							faith = {
+								has_doctrine = tenet_knighthood
+							}
+						}
+					}
+					agot_become_a_knight_effect = yes
+					# Remove the knight relation
+					if = {
+						limit = {
+							any_relation = {
+								type = agot_knight
+							}
+						}
+						random_relation = {
+							type = agot_knight
+							save_scope_as = my_knight
+						}
+						remove_relation_agot_knight = scope:my_knight
+					}
+					# Add prestige
+					agot_add_become_a_knight_prestige_effect = {
+						KNIGHT_MAKER = scope:king
+						KNIGHT_TO_BE = root
+					}
+					create_character_memory = {
+						type = agot_was_knighted
+						participants = {
+							knight = scope:king
+						}
+					}
+				}
+				5 = {
+					modifier = {
+						add = 30
+						NOT = {
+							faith = {
+								has_doctrine = tenet_knighthood
+							}
+						}
+					}
+					# Rejected Knighthood
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_trait = celibate
+				}
+			}
+			random_list = {
+				20 = {
+					modifier = {
+						add = {
+							value = ai_honor
+							multiply = 1
+						}
+					}
+					modifier = {
+						add = 40
+						has_trait = chaste
+					}
+					modifier = {
+						add = 30
+						has_sexuality = homosexual
+					}
+					modifier = {
+						factor = 0
+						has_trait = lustful
+					}
+					modifier = {
+						factor = 0
+						has_trait = lifestyle_reveler
+					}
+					add_trait = celibate
+				}
+				80 = {
+					#No celibacy
+					modifier = {
+						# I ain't banging anyway
+						factor = 0
+						has_trait = eunuch_1
+					}
+					modifier = {
+						add = {
+							value = ai_honor
+							multiply = -1
+						}
+					}
+				}
+			}
+		}
+	}
+	option = {
+		#Notify liege eventually
+	}
+}
+
+agot_kingsguard.1013 = { #On get title, remove training for kingsguard and refusing marriage
+	hidden = yes
+	trigger = {
+		has_trait = refusing_marriage
+		has_character_modifier = training_for_kingsguard
+	}
+	immediate = {
+		remove_trait = refusing_marriage
+		remove_character_modifier = training_for_kingsguard
+	}
+}
+
+agot_kingsguard.1014 = {
+	#16th Birthday Shit Kingsguard Realises His Dream is Dead
+	hidden = yes
+	trigger = {
+		has_trait = refusing_marriage
+		has_character_modifier = training_for_kingsguard
+		AND = {
+			prowess < 15			#Bad at swordies
+			NOT = {
+				has_trait = education_martial_prowess_2
+				has_trait = education_martial_prowess_3
+				has_trait = education_martial_prowess_4
+				has_trait = education_martial_prowess_5
+			}
+		}
+	}
+	immediate = {
+		save_scope_as = failed_kingsguard
+		if = {
+			limit = {
+				any_parent = {
+					is_landed = yes
+				}
+			}
+			random_parent = {
+				limit = {
+					is_landed = yes
+				}
+				save_scope_as = guardian
+			}
+		}
+		else_if = {
+			limit = {
+				any_close_family_member = {
+					is_landed = yes
+				}
+			}
+			random_close_family_member = {
+				limit = {
+					is_landed = yes
+				}
+				save_scope_as = guardian
+			}
+		}
+		else_if = {
+			limit = {
+				any_relation = {
+					type = guardian
+				}
+			}
+			random_relation = {
+				type = guardian
+				save_scope_as = guardian
+			}
+		}
+	}
+	option = {
+		if = {
+			limit = {
+				exists = scope:guardian
+			}
+			scope:guardian = {
+				trigger_event = agot_kingsguard.3012
+			}
+		}
+	}
+}
+
+################################
+# Kingsguard Councillor & Chain Events
+# 2000 - 2999
+# by Badger
+################################
+agot_kingsguard.2001 = {
+	title = agot_kingsguard.2001.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:target_character = root
+				}
+				desc = agot_kingsguard.2001.desc_own_court
+			}
+			desc = agot_kingsguard.2001.desc
+		}
+		triggered_desc = {
+			trigger = {
+				scope:target_character = { valid_kingsguard_bodyguard_target = yes }
+			}
+			desc = agot_kingsguard.2001.desc_bodyguard_courtowner
+		}
+	}
+	immediate = {
+		scope:target_character = {
+			every_courtier_or_guest = {
+				limit = {
+					valid_kingsguard_bodyguard_target = yes
+				}
+				root = {
+					add_to_variable_list = {
+						name = possible_characters
+						target = prev
+					}
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			set_variable = {
+				name = si_selecting_character
+				value = root
+			}
+			root = {
+				set_variable = {
+					name = si_selected_character
+					value = prev
+				}
+			}
+		}
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
+	}
+	theme = crown
+	left_portrait = {
+		character = scope:councillor
+		animation = marshal
+	}
+	right_portrait = scope:target_character
+	option = {
+		trigger = {
+			var:si_selected_character ?= {
+				valid_kingsguard_bodyguard_target = yes
+			}
+		}
+		name = agot_kingsguard.2001.a # Protect the designated target
+		var:si_selected_character = {
+			save_scope_as = selected_character
+		}
+		agot_start_bodyguarding = {
+			TARGET = scope:selected_character
+		}
+	}
+	option = {
+		trigger = {
+			scope:target_character = {
+				valid_kingsguard_bodyguard_target = yes
+			}
+		}
+		name = agot_kingsguard.2001.b # Protect target character
+		agot_start_bodyguarding = {
+			TARGET = scope:target_character
+		}
+	}
+	option = {
+		name = agot_kingsguard.2001.c # Nevermind
+		scope:councillor = {
+			start_default_task = yes
+		}
+	}
+	after = {
+		clear_variable_list = possible_characters
+		var:si_selected_character ?= {
+			remove_variable = si_selecting_character
+		}
+		remove_variable = si_selected_character
+	}
+}
+
+#Kingsguard Imprisonment Attempt - Barristan Flees the City
+agot_kingsguard.2002 = {
+	type = character_event
+	title = agot_kingsguard.2002.title
+	desc = agot_kingsguard.2002.desc
+	theme = prison
+	right_portrait = {
+		character = scope:recipient
+		animation = anger
+	}
+	left_portrait = scope:kingsguard
+	lower_center_portrait = scope:goldcloaks
+	immediate = {
+		show_as_tooltip = {
+			#Remove them as guardian for any child
+			if = {
+				limit = {
+					any_in_list = {
+						list = ward_children
+						count >= 1
+					}
+				}
+				every_in_list = {
+					list = ward_children
+					remove_relation_guardian = scope:recipient
+					if = {
+						limit = {
+							NOT = {
+								host = liege
+							}
+						}
+						return_to_court = yes
+					}
+					guardian_remove_opinion_effect = {
+						GUARDIAN = scope:recipient
+						WARD = this
+						WARD_LIEGE = scope:actor
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_court_position_holder = {
+					type = goldcloaks_court_position
+				}
+			}
+			random_court_position_holder = {
+				type = goldcloaks_court_position
+				save_scope_as = goldcloaks
+			}
+		}
+		random_councillor = {
+			limit = {
+				NOT = {
+					this = scope:recipient
+				}
+				is_kingsguard_trigger = yes
+			}
+			save_scope_as = kingsguard
+		}
+	}
+	option = {
+		#Send another KG after them
+		name = agot_kingsguard.2002.a
+		scope:kingsguard = {
+			duel = {
+				skill = prowess
+				target = scope:recipient
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = -49
+						max = 49
+					}
+					scope:kingsguard = {
+						death = {
+							death_reason = death_duel
+							killer = scope:recipient
+						}
+					}
+					desc = agot_kingsguard.2002.a.failure
+					hidden_effect = {
+						scope:recipient = {
+							agot_kingsguard_fled_effect = yes
+						}
+					}
+				}
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = -49
+						max = 49
+					}
+					scope:recipient = {
+						death = {
+							death_reason = death_duel
+							killer = scope:kingsguard
+						}
+					}
+					scope:kingsguard = {
+						add_prestige_level = 1
+					}
+				}
+			}
+		}
+	}
+	option = { #Send goldcloaks after them
+		name = agot_kingsguard.2002.b
+		trigger = {
+			any_court_position_holder = {
+				type = goldcloaks_court_position
+			}
+		}
+		random_list = {
+			50 = { #Gets away
+				modifier = {
+					add = scope:recipient.prowess
+				}
+				desc = agot_kingsguard.2002.a.failure
+				show_as_tooltip = {
+					scope:recipient = {
+						move_to_pool = yes
+					}
+				}
+				hidden_effect = {
+					scope:recipient = {
+						agot_kingsguard_fled_effect = yes
+					}
+				}
+			}
+			30 = { #Gets away and kills commander of the gold cloaks
+				modifier = {
+					add = scope:recipient.prowess
+				}
+				modifier = {
+					add = {
+						subtract = scope:goldcloaks.prowess
+					}
+				}
+				show_as_tooltip = {
+					scope:recipient = {
+						move_to_pool = yes
+					}
+				}
+				scope:goldcloaks = {
+					death = {
+						death_reason = death_duel
+						killer = scope:recipient
+					}
+				}
+				desc = agot_kingsguard.2002.a.failure
+				hidden_effect = {
+					scope:recipient = {
+						agot_kingsguard_fled_effect = yes
+					}
+				}
+			}
+			20 = { #You catch him
+				modifier = {
+					add = scope:goldcloaks.martial
+				}
+				modifier = {
+					add = scope:goldcloaks.intrigue
+				}
+				hard_imprison_character_effect = {
+					TARGET = scope:recipient
+					IMPRISONER = root
+				}
+			}
+		}
+	}
+	option = { #Leave them go
+		name = agot_kingsguard.2002.c
+		add_prestige = minor_prestige_loss
+		scope:recipient = {
+			agot_kingsguard_fled_effect = yes
+		}
+	}
+}
+
+agot_kingsguard.2003 = { 	#Fleeing Kingsguard relative helps them
+	type = character_event
+	title = agot_kingsguard.2003.title
+	desc = agot_kingsguard.2003.desc
+	theme = court
+	left_portrait = {
+		character = root
+		animation = worry
+	}
+	right_portrait = {
+		character = scope:fleeing_kingsguard
+		triggered_animation = {
+			trigger = {
+				OR = {
+					has_trait = wounded_1
+					has_trait = wounded_2
+					has_trait = wounded_3
+				}
+			}
+			animation = severelywounded
+		}
+		triggered_animation = {
+			trigger = {
+				OR = {
+					always = yes
+				}
+			}
+			animation = personality_vengeful
+		}
+	}
+	immediate = {
+		add_courtier ?= scope:recipient
+		random_list = { #Chance they were wounded fleeing the capital
+			50 = {
+				modifier = {
+					add = scope:fleeing_kingsguard.prowess
+				}
+			}
+			50 = {
+				modifier = {
+					add = {
+						subtract = scope:fleeing_kingsguard.prowess
+					}
+				}
+				add_trait = wounded_1
+			}
+			50 = {
+				modifier = {
+					add = {
+						subtract = scope:fleeing_kingsguard.prowess
+					}
+				}
+				add_trait = wounded_2
+			}
+		}
+	}
+	option = { #Stay at Court
+		name = agot_kingsguard.2003.a
+		add_prestige_level = -1
+		ai_chance = {
+			base = 90
+			modifier = {
+				scope:fleeing_kingsguard = {
+					is_primary_heir_of = root
+				}
+				factor = 10
+			}
+		}
+	}
+	option = { #Flee to the Wall
+		name = agot_kingsguard.2003.b
+		agot_send_to_nightswatch_effect = {
+			ACTOR = scope:fleeing_kingsguard
+			NIGHTSWATCH_CANDIDATE = scope:fleeing_kingsguard
+		}
+		ai_chance = {
+			base = 10
+			modifier = {
+				scope:fleeing_kingsguard = {
+					is_primary_heir_of = root
+				}
+				factor = 0
+			}
+		}
+	}
+	option = { #Flee to Essos
+		name = agot_kingsguard.2003.c
+		scope:fleeing_kingsguard = { trigger_event = agot_kingsguard.2004 }
+		ai_chance = {
+			base = 90
+		}
+	}
+	option = { #Hand him over to the crown
+		name = agot_kingsguard.2003.d
+		reverse_add_opinion = {
+			target = scope:crown
+			modifier = pleased_opinion
+			opinion = 50
+		}
+		hard_imprison_character_effect = {
+			TARGET = scope:fleeing_kingsguard
+			IMPRISONER = scope:crown
+		}
+		ai_chance = {
+			base = 25
+		}
+	}
+}
+
+agot_kingsguard.2004 = { # Flee to Essos, KG edition
+	hidden = yes
+	immediate = {
+		random_county_in_region = {
+			region = world_essos
+			limit = {
+				NOT = { holder = scope:crown }
+			}
+			title_province = {
+				save_scope_as = exile_title
+			}
+		}
+		scope:exile_title.county.holder = {
+			add_courtier = scope:fleeing_kingsguard
+		}
+	}
+}
+
+
+
+################################
+# Kingsguard Flavour Events
+# 3001 - 3999
+# by Badger
+################################
+##########
+# Child wishes to join Kingsguard
+# Badger
+#########
+scripted_trigger kingsguard_3001_candidate_trigger = {
+	age < 16
+	age > 6
+	is_available = yes
+	is_ruler = no
+	is_ai = yes
+	is_male = yes
+	has_been_promised_grand_wedding = no
+	#Appropriate personality
+	OR = {
+		childhood_loud_child_trigger = yes
+		childhood_mean_child_trigger = yes
+	}
+	#Good enough to get a fighter trait
+	prowess >= 7
+	#Not very likely to inherit a lot
+	trigger_if = {
+		limit = { is_child_of = root }
+		NOT = {
+			any_heir_title = {
+				exists = this
+				place_in_line_of_succession = {
+					target = prev
+					value < 2
+				}
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = { is_grandchild_of = root }
+		NOT = {
+			any_heir_title = {
+				exists = this
+				place_in_line_of_succession = {
+					target = prev
+					value < 3
+				}
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = { is_great_grandchild_of = root }
+		NOT = {
+			any_heir_title = {
+				exists = this
+				place_in_line_of_succession = {
+					target = prev
+					value < 4
+				}
+			}
+		}
+	}
+	trigger_else = {
+		NOT = {
+			any_heir_title = {
+				exists = this
+				place_in_line_of_succession = {
+					target = prev
+					value == 1
+				}
+			}
+		}
+	}
+	is_courtier_of = root
+	is_married = no
+	NOT = {
+		has_character_flag = kingsguard_ambition
+	}
+	OR = {
+		is_child_of = root #Either your child
+		NOT = {
+			any_parent = { #Or their parents are unlanded/dead
+				is_landed = yes
+				is_alive = yes
+			}
+		}
+	}
+	OR = {
+		can_be_combatant_based_on_gender_trigger = {
+			ARMY_OWNER = top_liege
+		}
+		can_be_warrior_trigger = {
+			ARMY_OWNER = top_liege
+		}
+	}
+	NOR = { #Physiically unsuited
+		has_trait = clubfooted
+		has_trait = physique_bad_3
+		has_trait = crippled
+	}
+	NAND = { #Zealots won't serve
+		NOT = { faith = top_liege.faith }
+		ai_zeal >= high_positive_ai_value
+	}
+	NOT = {
+		has_trait = maester
+		has_trait = septon
+		has_trait = nightswatch
+		has_trait = devoted
+	}
+}
+
+agot_kingsguard.3001 = {
+	type = character_event
+	title = agot_kingsguard.3001.t
+	desc = agot_kingsguard.3001.desc
+	left_portrait = scope:child
+	right_portrait = root
+	lower_right_portrait = scope:lord_commander
+	theme = war
+	override_background = {
+		reference = sitting_room
+	}
+	trigger = {
+		NOT = {
+			has_character_flag = had_event_kingsguard_3001
+		}
+		exists = top_liege
+		top_liege = {
+			any_held_title = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+		}
+		dynasty ?= {
+			any_dynasty_member = {
+				kingsguard_3001_candidate_trigger = yes
+			}
+		}
+	}
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			add = -0.5
+			any_child = {
+				count < 4
+			}
+		}
+		modifier = {
+			add = 0.5
+			any_child = {
+				kingsguard_3001_candidate_trigger = yes
+				has_trait = rowdy
+			}
+		}
+		modifier = {
+			#Less likely for wrong faith types
+			add = -0.8
+			top_liege = {
+				save_temporary_scope_as = king
+			}
+			NOT = {
+				root.faith = scope:king.faith
+			}
+		}
+	}
+	immediate = {
+		add_character_flag = {
+			flag = had_event_kingsguard_3001
+			years = 10
+		}
+		top_liege = {
+			save_scope_as = king
+		}
+		top_liege = {
+			court_position:zz_kingsguard_lord_commander_court_position = {
+				save_scope_as = lord_commander
+			}
+		}
+		dynasty = {
+			random_dynasty_member = {
+				limit = {
+					kingsguard_3001_candidate_trigger = yes
+				}
+				weight = {
+					base = 1
+					modifier = {
+						add = 10
+						is_child_of = root
+					}
+					modifier = {
+						add = 1
+						OR = {
+							NOT = {
+								is_heir_of = root
+							}
+							root.primary_title = {
+								place_in_line_of_succession = {
+									target = prev
+									value >= 4
+								}
+							}
+						}
+					}
+					modifier = {
+						add = 0.5
+						OR = {
+							NOT = {
+								is_heir_of = root
+							}
+							root.primary_title = {
+								place_in_line_of_succession = {
+									target = prev
+									value >= 5
+								}
+							}
+						}
+					}
+					modifier = {
+						add = 0.5
+						has_focus = education_martial
+					}
+					modifier = {
+						add = 0.5
+						has_trait = rowdy
+					}
+				}
+				save_scope_as = child
+			}
+		}
+	}
+	option = { #Yes, begin training
+		name = agot_kingsguard.3001.a
+		scope:child = {
+			add_trait = refusing_marriage
+			add_character_flag = kingsguard_ambition
+			add_prowess_skill = 1
+			add_character_modifier = training_for_kingsguard
+			if = {
+				limit = {
+					NOT = {
+						has_focus = education_martial
+					}
+				}
+				set_focus = education_martial
+			}
+			if = {
+				limit = {
+					exists = betrothed
+				}
+				if = {
+					limit = {
+						has_been_promised_grand_wedding = yes
+					}
+					break_grand_wedding_betrothal_effect = yes
+				}
+				else = {
+					break_betrothal = betrothed
+				}
+			}
+		}
+		ai_chance = {
+			base = 80
+		}
+	}
+	option = { 	#I have other plans for you
+		name = agot_kingsguard.3001.b
+		scope:child = {
+			add_opinion = {
+				target = root
+				modifier = refusal_opinion
+				opinion = -20
+			}
+		}
+		ai_chance = {
+			base = 20
+		}
+	}
+}
+
+##########
+# Honorable Kingsguard Gains Gallant
+# Badger
+#########
+scripted_trigger kingsguard_3002_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	OR = {
+		has_trait = education_martial_prowess_3
+		has_trait = education_martial_prowess_4
+		has_trait = education_martial_prowess_5
+	}
+	NOT = {
+		has_trait = gallant
+	}
+	ai_honor >= high_positive_honor	#50 Honor
+	prowess >= extremely_high_skill_rating	# ( v = 20 )
+}
+
+agot_kingsguard.3002 = {
+	type = character_event
+	title = agot_kingsguard.3002.t
+	desc = agot_kingsguard.3002.desc
+	theme = martial_chivalry_focus
+	override_background = {
+		reference = throne_room_west
+	}
+	left_portrait = {
+		character = scope:gallant_kingsguard
+		animation = personality_honorable
+	}
+	right_portrait = {
+		character = root
+		animation = personality_content
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3002_candidate_trigger = yes
+		}
+	}
+	weight_multiplier = {
+		base = 1
+		compare_modifier = {
+			target = scope:councillor
+			value = ai_honor
+			multiplier = 0.01 # At 100 honor, x3 as likely to be picked. At -50 greed, 0% chance of being picked.
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown	# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3002_candidate_trigger = yes
+			}
+			save_scope_as = gallant_kingsguard
+		}
+		scope:gallant_kingsguard = {
+			add_trait = gallant
+		}
+	}
+	option = {
+		name = agot_kingsguard.3002.a
+		scope:gallant_kingsguard = {
+			add_prestige_level = 1
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = agot_kingsguard.3002.b
+		add_prestige = medium_prestige_value
+		reverse_add_opinion = {
+			target = scope:gallant_kingsguard
+			modifier = insulted_opinion
+		}
+	}
+}
+
+##########
+# Kingsguard caught in an affair - Lucamore the Lusty
+# Badger
+#########
+scripted_trigger kingsguard_3003_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	NOR = {
+		#Can't get caught banging if you can't
+		has_trait = eunuch_1
+		has_trait = beardless_eunuch
+		has_trait = celibate
+	}
+	OR = {
+		has_trait = lustful
+		has_trait = rakish
+		any_secret = {
+			secret_type = secret_lover
+			NOT = {
+				is_known_by = root
+			}
+		}
+	}
+}
+
+agot_kingsguard.3003 = {
+	type = character_event
+	title = agot_kingsguard.3003.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					local_var:room = flag:bedroom
+				}
+				desc = agot_kingsguard.3003.desc_bedroom
+			}
+			triggered_desc = {
+				trigger = {
+					local_var:room = flag:brothel
+				}
+				desc = agot_kingsguard.3003.desc_brothel
+			}
+		}
+	}
+	theme = seduce_scheme
+	override_background = {
+		trigger = {
+			local_var:room = flag:bedroom
+		}
+		reference = sitting_room
+	}
+	override_background = {
+		trigger = {
+			local_var:room = flag:brothel
+		}
+		reference = tavern
+	}
+	left_portrait = {
+		character = scope:lusty_kingsguard
+		animation = shock
+		outfit_tags = {
+			no_clothes
+		}
+	}
+	right_portrait = {
+		character = scope:lusty_lover
+		animation = shame
+		outfit_tags = {
+			no_clothes
+		}
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3003_candidate_trigger = yes
+		}
+	}
+
+	weight_multiplier = {
+		base = 1
+		#Badger to do, this causes errors about unset scope
+		# compare_modifier = {
+		# 	target = scope:lusty_kingsguard
+		# 	value = intrigue
+		# 	multiplier = -0.05
+		# }
+	}
+
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = marshal_task_side_effect_cooldown # 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3003_candidate_trigger = yes
+			}
+			save_scope_as = lusty_kingsguard
+		}
+		if = {
+			limit = {
+				scope:lusty_kingsguard = {
+					any_relation = {
+						type = lover
+					}
+				}
+			}
+			scope:lusty_kingsguard = {
+				random_relation = {
+					type = lover
+					save_scope_as = lusty_lover
+				}
+			}
+			set_local_variable = {
+				name = room
+				value = flag:bedroom
+			}
+		}
+		else = {
+			create_character = {
+				location = root.capital_province
+				template = agot_succubus
+				dynasty = none
+				save_scope_as = lusty_lover
+				gender_female_chance = {
+					if = {
+						limit = {
+							scope:lusty_kingsguard = {
+								is_attracted_to_women = yes
+								is_attracted_to_men = no
+							}
+						}
+						add = 100
+					}
+					else_if = {
+						limit = {
+							scope:lusty_kingsguard = {
+								is_attracted_to_men = yes
+								is_attracted_to_women = no
+							}
+						}
+						add = 0
+					}
+					else = {
+						add = 50
+					}
+				}
+			}
+			set_local_variable = {
+				name = room
+				value = flag:brothel
+			}
+		}
+		scope:lusty_kingsguard = {
+			every_secret = {
+				limit = {
+					secret_type = secret_lover
+					secret_target = scope:lusty_lover
+				}
+				reveal_to = root
+			}
+		}
+	}
+	option = {
+		#Imprison them
+		name = agot_kingsguard.3003.a
+		imprison = {
+			target = scope:lusty_kingsguard
+			type = dungeon
+		}
+		show_as_tooltip = {
+			add_opinion = {
+				target = scope:lusty_kingsguard
+				modifier = broke_vows_opinion
+			}
+		}
+		hidden_effect = {
+			add_opinion = {
+				target = scope:lusty_kingsguard
+				modifier = broke_vows_opinion
+			}
+			if = {
+				limit = {
+					local_var:room = flag:brothel
+				}
+				scope:lusty_lover = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+	option = {
+		#Goodbye Nuts, hello North
+		name = agot_kingsguard.3003.b
+		scope:lusty_kingsguard = {
+			save_scope_as = recipient
+			add_character_flag = can_fire_kingsguard
+			agot_send_to_nightswatch_effect = {
+				ACTOR = root
+				NIGHTSWATCH_CANDIDATE = scope:lusty_kingsguard
+			}
+			add_trait = eunuch_1
+		}
+		save_scope_as = actor
+		add_dread = major_dread_gain
+		torture_blind_castrate_disfigure_opinion_effect = {
+			VERB = castrated
+		}
+		stress_impact = {
+			forgiving = major_stress_impact_gain
+			calm = major_stress_impact_gain
+			compassionate = massive_stress_impact_gain
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					local_var:room = flag:brothel
+				}
+				scope:lusty_lover = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_compassion = -1
+			}
+			modifier = {
+				has_trait = sadistic
+				add = 50
+			}
+			modifier = {
+				has_trait = torturer
+				add = 50
+			}
+		}
+	}
+	option = {
+		#Strip him of the Cloak
+		name = agot_kingsguard.3003.c
+		agot_remove_kingsguard_effect = { KINGSGUARD = scope:lusty_kingsguard }
+		scope:lusty_kingsguard = {
+			select_and_move_to_pool_effect = yes
+		}
+		hidden_effect = {
+			scope:lusty_kingsguard = {
+			}
+			if = {
+				limit = {
+					local_var:room = flag:brothel
+				}
+				scope:lusty_lover = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		#This guy fucks for sure
+		name = agot_kingsguard.3003.d
+		reverse_add_opinion = {
+			target = scope:lusty_kingsguard
+			modifier = grateful_opinion
+			opinion = 30
+		}
+		if = {
+			limit = {
+				can_add_hook = {
+					target = scope:lusty_kingsguard
+					type = loyalty_hook
+				}
+			}
+			add_hook = {
+				type = loyalty_hook
+				target = scope:lusty_kingsguard
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					local_var:room = flag:brothel
+				}
+				scope:lusty_kingsguard = {
+					set_relation_lover = scope:lusty_lover
+					add_secret = {
+						type = secret_lover
+						target = scope:lusty_lover
+					}
+					every_secret = {
+						limit = {
+							secret_type = secret_lover
+							secret_target = scope:lusty_lover
+						}
+						reveal_to = root
+					}
+				}
+				add_courtier ?= scope:lusty_lover
+			}
+		}
+	}
+	option = {
+		#lusty/artbitrary keep your white claok, but I'll have her
+		name = agot_kingsguard.3003.e
+		trigger = {
+			is_attracted_to_gender_of = scope:lusty_lover
+			OR = {
+				has_trait = lustful
+				has_trait = arbitrary
+				has_trait = rakish
+			}
+			local_var:room = flag:brothel
+		}
+		add_courtier ?= scope:lusty_lover
+		had_sex_with_effect = {
+			CHARACTER = scope:lusty_lover
+			PREGNANCY_CHANCE = pregnancy_chance
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				OR = {
+					has_trait = lustful
+					has_trait = rakish
+				}
+				add = 100
+			}
+		}
+	}
+	after = {
+		scope:lusty_kingsguard = {
+			remove_character_flag = can_fire_kingsguard
+		}
+	}
+}
+
+##########
+# MAKE WAY FOR THE KINGSGUARD !
+# Badger
+#########
+scripted_trigger kingsguard_3004_kingsguard_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	OR = {
+		ai_compassion <= high_negative_compassion		# -50
+		ai_honor <= high_negative_honor		# -50
+	}
+	save_temporary_scope_as = kingsguard_temp
+}
+
+scripted_trigger kingsguard_3004_child_candidate_trigger = {
+	OR = {
+		childhood_mean_child_trigger = yes
+		childhood_loud_child_trigger = yes
+	}
+	NOR = {
+		is_close_or_extended_family_of = scope:kingsguard_temp
+		#KG would be braindead to march down a prince/princess
+		is_close_or_extended_family_of = root
+		this = root
+	}
+	age < 15
+	age > 3
+	is_human = yes # No marching down dragons
+}
+
+agot_kingsguard.3004 = {
+	type = character_event
+	title = agot_kingsguard.3004.t
+	desc = agot_kingsguard.3004.desc
+	theme = martial_authority_focus
+	override_background = {
+		reference = throne_room_west
+	}
+	left_portrait = {
+		character = scope:marching_kingsguard
+		animation = personality_vengeful
+	}
+	right_portrait = {
+		character = scope:obstructing_brat
+		animation = lunatic
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3004_kingsguard_candidate_trigger = yes
+		}
+		any_courtier_or_guest = {
+			kingsguard_3004_child_candidate_trigger = yes
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3004_kingsguard_candidate_trigger = yes
+			}
+			save_scope_as = marching_kingsguard
+		}
+		random_courtier_or_guest = {
+			limit = {
+				kingsguard_3004_child_candidate_trigger = yes
+				NOT = {
+					is_close_or_extended_family_of = scope:marching_kingsguard
+				}
+			}
+			save_scope_as = obstructing_brat
+		}
+		scope:obstructing_brat = {
+			random_list = {
+				80 = {
+					add_trait = wounded_1
+				}
+				20 = {
+					add_trait = wounded_2
+				}
+				10 = {
+					add_trait = wounded_3
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3004.a
+		add_prestige = minor_prestige_value
+		scope:obstructing_brat = {
+			add_opinion = {
+				target = root
+				modifier = angry_opinion
+				opinion = -20
+			}
+			every_close_family_member = {
+				add_opinion = {
+					target = root
+					modifier = angry_opinion
+					opinion = -20
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3004.b
+		add_piety = minor_piety_value
+		scope:marching_kingsguard = {
+			add_opinion = {
+				target = root
+				modifier = overreaction_opinion
+				opinion = -20
+			}
+			if = {
+				limit = {
+					num_of_relation_ward < 2
+				}
+				set_relation_ward = scope:obstructing_brat
+			}
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_compassion = 0.5
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3004.c
+		trigger = {
+			court_physician_available_trigger = yes
+		}
+		save_court_physician_as_effect = {
+			SCOPE_NAME = physician
+		}
+		random_list = {
+			50 = {
+				modifier = {
+					factor = scope:physician.physician_safe_treatment_skill_factor
+				}
+				scope:obstructing_brat = {
+					wound_treatment_results_effect = {
+						TREATMENT = safe
+						OUTCOME = success
+					}
+				}
+				scope:obstructing_brat = {
+					add_opinion = {
+						target = root
+						modifier = grateful_opinion
+						opinion = 25
+					}
+					every_close_family_member = {
+						add_opinion = {
+							target = root
+							modifier = grateful_opinion
+							opinion = 25
+						}
+					}
+				}
+				hidden_effect = {
+					send_interface_toast = {
+						left_icon = scope:obstructing_brat
+						title = agot_kingsguard.3004.cure_toast
+						show_as_tooltip = {
+							scope:obstructing_brat = {
+								wound_treatment_results_effect = {
+									TREATMENT = safe
+									OUTCOME = success
+								}
+							}
+						}
+						show_as_tooltip = {
+							add_diplomacy_lifestyle_xp = medium_lifestyle_xp
+						}
+					}
+				}
+			}
+			50 = {
+				scope:obstructing_brat = {
+					add_opinion = {
+						target = root
+						modifier = angry_opinion
+						opinion = -25
+					}
+					every_close_family_member = {
+						add_opinion = {
+							target = root
+							modifier = angry_opinion
+							opinion = -20
+						}
+					}
+				}
+				hidden_effect = {
+					send_interface_toast = {
+						left_icon = scope:obstructing_brat
+						title = agot_kingsguard.3004.toast
+						custom_tooltip = agot_kingsguard.3004.toast_desc
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_compassion = 0.5
+			}
+		}
+	}
+}
+
+##########
+# Powerful Foreign Warrior Offers Service - Sandoq the Shadow
+# Badger
+#########
+agot_kingsguard.3005 = {
+	type = character_event
+	title = agot_kingsguard.3005.t
+	desc = agot_kingsguard.3005.desc
+	theme = martial_authority_focus
+	override_background = {
+		reference = throne_room_west
+	}
+	left_portrait = {
+		character = scope:essosi_warrior
+		animation = personality_vengeful
+	}
+	right_portrait = {
+		character = scope:sponsor
+		animation = personality_callous
+	}
+	trigger = {
+		#add in KG can be reassigned law when online
+		any_councillor = {
+			exists = yes
+		}
+		AND = {
+			can_employ_court_position_type = zz_kingsguard_court_position
+			any_living_kingsguard = {
+				#Check for the 7 to stop appointing to replace guys in prison
+				top_liege = root
+				count < 7
+			}
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		create_character = {
+			template = agot_essosi_warrior
+			location = root.capital_province
+			save_scope_as = essosi_warrior
+		}
+		random_councillor = {
+			save_scope_as = sponsor
+		}
+	}
+	option = {
+		name = agot_kingsguard.3005.a
+		custom_tooltip = agot_kingsguard.3005.agot_kingsguard.tt
+		trigger = {
+			can_employ_court_position_type = zz_kingsguard_court_position
+		}
+		add_courtier ?= scope:essosi_warrior
+		scope:essosi_warrior = {
+			save_scope_as = kingsguard_candidate
+			trigger_event = agot_kingsguard.1006
+		}
+		scope:sponsor = {
+			add_opinion = {
+				target = ROOT
+				modifier = pleased_opinion
+				opinion = 10
+			}
+			hidden_effect = {
+				add_hook = {
+					type = loyalty_hook
+					target = scope:essosi_warrior
+				}
+			}
+		}
+		trigger_event = agot_kingsguard.1008
+		ai_chance = {
+			#why not its cool
+			base = 100
+		}
+	}
+	option = {
+		#What about another position?
+		name = agot_kingsguard.3005.b
+		custom_tooltip = agot_kingsguard.3005.court_position.tt
+		add_courtier ?= scope:essosi_warrior
+		hidden_effect = {
+			random_list = {
+				5 = {
+					trigger = {
+						can_employ_court_position_type = household_guard_court_position
+						NOT = {
+							employs_court_position = household_guard_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = household_guard
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+				5 = {
+					trigger = {
+						can_employ_court_position_type = bodyguard_court_position
+						NOT = {
+							employs_court_position = bodyguard_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = bodyguard
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+				5 = {
+					trigger = {
+						can_employ_court_position_type = executioner_court_position
+						NOT = {
+							employs_court_position = executioner_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = executioner
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+				5 = {
+					trigger = {
+						can_employ_court_position_type = gaoler_court_position
+						NOT = {
+							employs_court_position = gaoler_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = gaoler
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+				5 = {
+					trigger = {
+						can_employ_court_position_type = master_of_horse_court_position
+						NOT = {
+							employs_court_position = master_of_horse_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = master_of_horse
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+				5 = {
+					trigger = {
+						can_employ_court_position_type = master_of_hunt_court_position
+						NOT = {
+							employs_court_position = master_of_hunt_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = master_of_hunt
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+				5 = {
+					trigger = {
+						can_employ_court_position_type = antiquarian_court_position
+						NOT = {
+							employs_court_position = antiquarian_court_position
+						}
+					}
+					court_position_grant_effect = {
+						POS = antiquarian
+						CANDIDATE = scope:essosi_warrior
+						EMPLOYER = root
+					}
+				}
+			}
+			scope:sponsor = {
+				add_hook = {
+					type = loyalty_hook
+					target = scope:essosi_warrior
+				}
+			}
+		}
+	}
+	option = {
+		#Piss off
+		name = agot_kingsguard.3005.c
+		scope:sponsor = {
+			add_opinion = {
+				target = ROOT
+				modifier = insulted_opinion
+				opinion = -10
+			}
+		}
+		scope:essosi_warrior = {
+			#Rare event so should be okay to have him wandering around? Revisit
+			select_and_move_to_pool_effect = yes
+			add_opinion = {
+				target = ROOT
+				modifier = insulted_opinion
+				opinion = -20
+			}
+		}
+	}
+}
+
+##########
+# Kingsguard Become Brothers in Arms
+# Badger
+#########
+scripted_trigger kingsguard_3006_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	ai_sociability >= low_positive_ai_value	#An Extrovert
+	save_temporary_scope_as = friendly_kingsguard_temp
+	top_liege = {
+		any_councillor = {
+			is_available_adult = yes
+			is_kingsguard_trigger = yes
+			NOT = {
+				this = scope:friendly_kingsguard_temp
+				has_relation_friend = scope:friendly_kingsguard_temp
+			}
+			#have some compatibility
+			opinion = {
+				target = scope:friendly_kingsguard_temp
+				value > 10
+			}
+			reverse_opinion = {
+				target = scope:friendly_kingsguard_temp
+				value > 0
+			}
+		}
+	}
+}
+
+agot_kingsguard.3006 = {
+	type = character_event
+	title = agot_kingsguard.3006.t
+	desc = agot_kingsguard.3006.desc
+	theme = martial_chivalry_focus
+
+	left_portrait = {
+		character = scope:friendly_kingsguard
+		animation = happiness
+	}
+	right_portrait = {
+		character = scope:kingsguard_friend
+		animation = admiration
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3006_candidate_trigger = yes
+		}
+	}
+	weight_multiplier = {
+		base = 1
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		save_scope_as = king
+		random_councillor = {
+			limit = {
+				kingsguard_3006_candidate_trigger = yes
+			}
+			save_scope_as = friendly_kingsguard
+		}
+		random_councillor = {
+			limit = {
+				is_available_adult = yes
+				is_kingsguard_trigger = yes
+				NOT = {
+					this = scope:friendly_kingsguard
+					has_relation_friend = scope:friendly_kingsguard
+				}
+				#have some compatibility
+				opinion = {
+					target = scope:friendly_kingsguard
+					value > 10
+				}
+				reverse_opinion = {
+					target = scope:friendly_kingsguard
+					value > 0
+				}
+			}
+			save_scope_as = kingsguard_friend
+		}
+	}
+	option = {
+		name = agot_kingsguard.3006.a
+		scope:friendly_kingsguard = {
+			set_relation_best_friend = { reason = best_friend_kingsguard copy_reason = friend target = scope:kingsguard_friend }
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:friendly_kingsguard = {
+						is_attracted_to_gender_of = scope:kingsguard_friend
+					}
+					scope:kingsguard_friend = {
+						is_attracted_to_gender_of = scope:friendly_kingsguard
+					}
+				}
+				random_list = {
+					50 = {}
+					50 = {
+						scope:friendly_kingsguard = {
+							set_relation_lover = scope:kingsguard_friend
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+##########
+# Kingsguard Improves Swordsmanship
+# Badger
+#########
+scripted_trigger kingsguard_3007_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	NOR = {
+		has_trait = education_martial_prowess_3
+		has_trait = education_martial_prowess_4
+		has_trait = education_martial_prowess_5
+	}
+	OR = {
+		ai_energy >= 0
+		ai_zeal >= 0
+		ai_honor >= 0
+	}
+}
+
+agot_kingsguard.3007 = {
+	type = character_event
+	hidden = yes
+	trigger = {
+		any_councillor = {
+			kingsguard_3007_candidate_trigger = yes
+		}
+	}
+	weight_multiplier = {
+		base = 1
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3007_candidate_trigger = yes
+			}
+			weight = {
+				base = 5
+				modifier = {
+					factor = 2
+					NOT = {
+						has_trait = education_martial_prowess
+					}
+				}
+				modifier = {
+					factor = 2
+					has_trait = education_martial_prowess_1
+				}
+				modifier = {
+					factor = 2
+					has_trait = lifestyle_blademaster
+				}
+			}
+			save_scope_as = improved_kingsguard
+		}
+		send_interface_message = {
+			type = msg_marshal_task_good
+			title = agot_kingsguard.3007.notification
+			desc = agot_kingsguard.3007.desc
+			tooltip = task_train_commanders_notification_tooltip
+			left_icon = scope:improved_kingsguard
+			scope:improved_kingsguard = {
+				agot_prowess_rank_up_effect = yes
+			}
+		}
+	}
+}
+
+##########
+# Training for KG asks to join and can hang out at court until there's a space - Balon Swann
+# Badger
+#########
+agot_kingsguard.3008 = {
+	type = character_event
+	title = agot_kingsguard.3008.t
+	desc = agot_kingsguard.3008.desc
+	theme = martial_authority_focus
+	override_background = {
+		reference = throne_room_west
+	}
+	left_portrait = {
+		character = scope:candidate
+		animation = personality_vengeful
+	}
+	right_portrait = {
+		character = scope:sponsor
+		animation = personality_callous
+	}
+	trigger = {
+		#add in KG can be reassigned law when online
+		any_councillor = {
+			exists = yes
+		}
+		any_living_character = {
+			is_available_ai_adult = yes
+			top_liege = root
+			has_trait = refusing_marriage
+			has_character_modifier = training_for_kingsguard
+			NOT = {
+				is_courtier_of = root
+			}
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_living_character = {
+			limit = {
+				is_available_ai_adult = yes
+				top_liege = root
+				has_trait = refusing_marriage
+				has_character_modifier = training_for_kingsguard
+				NOT = {
+					is_courtier_of = root
+				}
+			}
+			save_scope_as = candidate
+		}
+		random_councillor = {
+			save_scope_as = sponsor
+		}
+		hidden_effect = {
+			#Make him worth having
+			scope:candidate = {
+				agot_prowess_rank_up_effect = yes
+				if = {
+					limit = {
+						OR = {
+							has_trait = education_martial_prowess_3
+							has_trait = education_martial_prowess_4
+							has_trait = education_martial_prowess_5
+						}
+					}
+					blademaster_lifestyle_rank_up_effect = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3008.a
+		custom_tooltip = agot_kingsguard.3008.agot_kingsguard.tt
+		trigger = {
+			AND = {
+				can_employ_court_position_type = zz_kingsguard_court_position
+				any_living_kingsguard = {
+					#Check for the 7 to stop appointing to replace guys in prison
+					top_liege = root
+					count < 7
+				}
+			}
+		}
+		add_courtier ?= scope:candidate
+		add_hook = {
+			type = loyalty_hook
+			target = scope:candidate
+		}
+		scope:candidate = {
+			save_scope_as = kingsguard_candidate
+			trigger_event = agot_kingsguard.1006
+		}
+		scope:sponsor = {
+			add_opinion = {
+				target = root
+				modifier = pleased_opinion
+				opinion = 10
+			}
+			hidden_effect = {
+				add_hook = {
+					type = loyalty_hook
+					target = scope:candidate
+				}
+			}
+		}
+		trigger_event = agot_kingsguard.1008
+		ai_chance = {
+			#why not its cool
+			base = 100
+		}
+	}
+	option = {
+		#You may wait until a space opens up
+		name = agot_kingsguard.3005.b
+		custom_tooltip = agot_kingsguard.3008.b.tt
+		scope:candidate = {
+			#Rare event so should be okay to have him wandering around? Revisit
+			add_opinion = {
+				target = root
+				modifier = pleased_opinion
+				opinion = 20
+			}
+		}
+		add_courtier ?= scope:candidate
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		#Piss off
+		name = agot_kingsguard.3008.c
+		add_prestige = medium_prestige_gain		#get dunked on
+		scope:sponsor = {
+			add_opinion = {
+				target = ROOT
+				modifier = insulted_opinion
+				opinion = -20
+			}
+		}
+		scope:candidate = {
+			#Rare event so should be okay to have him wandering around? Revisit
+			add_opinion = {
+				target = ROOT
+				modifier = insulted_opinion
+				opinion = -50
+			}
+			remove_trait = refusing_marriage
+			remove_character_modifier = training_for_kingsguard
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+##########
+# Assassinated by a KG whose family you're at war with - Jaime Lannister
+# Badger
+#########
+# scripted_trigger kingsguard_3009_candidate_trigger = {
+# 	is_available_adult = yes
+# 	# any_close_or_extended_family_member = {
+# 	# 	is_at_war_with = root
+# 	# }
+#	is_kingsguard_trigger = yes
+# 	OR = {
+# 		ai_honor <= high_negative_honor #50
+# 		ai_compassion <= high_negative_compassion #40
+# 		ai_vengefulness >= high_positive_vengefulness #50
+# 	}
+# 	opinion = {
+# 		target = root
+# 		value <= medium_negative_opinion
+# 	}
+# }
+# agot_kingsguard.3009 = {
+# 	type = character_event
+# 	title = placeholder #agot_kingsguard.3009.t
+# 	desc = placeholder #agot_kingsguard.3009.desc
+# 	theme = death
+# 	override_background = {
+# 		reference = corridor_night
+# 	}
+# 	orphan = yes
+# 	left_portrait = {
+# 		character = root
+# 		animation = personality_vengeful
+# 	}
+# 	right_portrait = {
+# 		character = scope:traitor_kingsguard
+# 		animation = personality_callous
+# 	}
+# 	trigger = {
+# 		#add in KG can be reassigned law when online
+# 		any_councillor = {
+# 			kingsguard_3009_candidate_trigger = yes
+# 		}
+# 	}
+# 	immediate = {
+# 		set_variable = {
+# 			name = had_kingsguard_side_effect
+# 			value = yes
+# 			days = kingsguard_side_effect_cooldown # 365 days
+# 		}
+# 		random_councillor = {
+# 			limit = {
+# 				kingsguard_3009_candidate_trigger = yes
+# 			}
+# 			save_scope_as = traitor_kingsguard
+# 		}
+# 	}
+# 	option = {
+# 	}
+# }
+##########
+# Kinsgguard training hard gains strong/athletic
+# Badger
+#########
+scripted_trigger kingsguard_3010_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	NOR = {
+		has_trait = strong
+		has_trait = athletic
+		has_trait = gout_ridden
+		has_trait = clubfooted
+	}
+	ai_energy >= low_positive_energy	#15 No lazy bois
+}
+
+agot_kingsguard.3010 = {
+	type = character_event
+	title = agot_kingsguard.3010.t
+	desc = agot_kingsguard.3010.desc
+	theme = martial_authority_focus
+	override_background = {
+		reference = courtyard
+	}
+	left_portrait = {
+		character = scope:strong_kingsguard
+		animation = wrestling_victory
+	}
+	right_portrait = {
+		character = root
+		animation = throne_room_applaud_1
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3010_candidate_trigger = yes
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3010_candidate_trigger = yes
+			}
+			save_scope_as = strong_kingsguard
+			add_character_flag = single_combat_stripped_to_waist
+			random_list = {
+				60 = {
+					add_trait = strong
+				}
+				40 = {
+					add_trait = athletic
+				}
+			}
+			add_character_modifier = {
+				modifier = brawny_modifier
+				years = 5
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3010.a
+	}
+	after = {
+		scope:strong_kingsguard = {
+			remove_character_flag = single_combat_stripped_to_waist
+		}
+	}
+}
+
+##########
+# A Challenger approaches !
+# Badger
+#########
+scripted_trigger kingsguard_3011_kingsguard_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	NOT = { has_court_position = zz_kingsguard_lord_commander_court_position }
+	OR = {
+		has_trait = craven
+		has_trait = lazy
+		prowess < 20
+	}
+}
+
+scripted_trigger kingsguard_3011_challenger_candidate_trigger = {
+	top_liege = root
+	is_available_ai_adult = yes
+	has_character_modifier = training_for_kingsguard
+	prowess >= 20
+	OR = {
+		has_trait = education_martial_prowess_3
+		has_trait = education_martial_prowess_4
+		has_trait = education_martial_prowess_5
+	}
+	OR = {
+		ai_boldness >= medium_positive_boldness		#25
+		ai_rationality <= medium_negative_rationality		# -25
+		ai_vengefulness >= high_positive_vengefulness		#50
+	}
+}
+
+agot_kingsguard.3011 = {
+	type = character_event
+	title = agot_kingsguard.3011.t
+	desc = agot_kingsguard.3011.desc
+	theme = martial_chivalry_focus
+	override_background = {
+		reference = throne_room_west
+	}
+	left_portrait = {
+		character = scope:unworthy_kingsguard
+		animation = personality_dishonorable
+	}
+	right_portrait = {
+		character = scope:challenger
+		animation = anger
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3011_kingsguard_candidate_trigger = yes
+		}
+		any_living_character = {
+			kingsguard_3011_challenger_candidate_trigger = yes
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3011_kingsguard_candidate_trigger = yes
+			}
+			save_scope_as = unworthy_kingsguard
+		}
+		random_living_character = {
+			limit = {
+				kingsguard_3011_challenger_candidate_trigger = yes
+			}
+			save_scope_as = challenger
+			add_character_flag = single_combat_duel_armor
+		}
+		add_character_flag = replacing_kingsguard
+	}
+	option = {
+		name = agot_kingsguard.3011.a
+		scope:challenger = {
+			duel = {
+				target = scope:unworthy_kingsguard
+				skill = prowess
+				50 = {
+					#challenger wins
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 2.5
+						min = -49
+					}
+					scope:unworthy_kingsguard = {
+						death = {
+							death_reason = death_duel
+							killer = scope:challenger
+						}
+					}
+					root = {
+						save_scope_as = king
+					}
+					scope:challenger = {
+						save_scope_as = kingsguard_candidate
+					}
+					scope:king = {
+						add_courtier ?= scope:kingsguard_candidate
+						trigger_event = {
+							id = agot_kingsguard.1008
+							days = 1
+						}
+					}
+					scope:kingsguard_candidate = {
+						trigger_event = {
+							id = agot_kingsguard.1006
+						}
+					}
+					root = {
+						send_interface_toast = {
+							title = agot_kingsguard.3011.a.challenger.toast
+							left_icon = scope:challenger
+							right_icon = scope:unworthy_kingsguard
+							scope:challenger = {
+								add_prestige_level = 1
+							}
+						}
+					}
+				}
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -2.5
+						min = -49
+					}
+					scope:challenger = {
+						death = {
+							death_reason = death_duel
+							killer = scope:unworthy_kingsguard
+						}
+					}
+					root = {
+						send_interface_toast = {
+							title = agot_kingsguard.3011.a.unworthy_kingsguard.toast
+							left_icon = scope:unworthy_kingsguard
+							right_icon = scope:challenger
+							scope:unworthy_kingsguard = {
+								add_prestige_level = 1
+							}
+						}
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = agot_kingsguard.3011.b
+		if = {
+			limit = {
+				can_add_hook = {
+					target = scope:unworthy_kingsguard
+					type = loyalty_hook
+				}
+			}
+			add_hook = {
+				type = loyalty_hook
+				target = scope:unworthy_kingsguard
+			}
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_compassion = 0.5
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3011.c
+		add_prestige = medium_prestige_gain
+		imprison_character_effect = {
+			TARGET = scope:challenger
+			IMPRISONER = root
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_compassion = 0.5
+			}
+		}
+	}
+	after = {
+		if = {
+			limit = {
+				has_character_flag = replacing_kingsguard
+			}
+			remove_character_flag = replacing_kingsguard
+		}
+		scope:challenger = {
+			remove_character_flag = single_combat_duel_armor
+		}
+	}
+}
+
+##########
+# The Dream is Dead! Bad character training for KG is told to get a real job
+# Badger
+#########
+agot_kingsguard.3012 = {
+	type = character_event
+	title = agot_kingsguard.3012.t
+	desc = agot_kingsguard.3012.desc
+	theme = martial_chivalry_focus
+	override_background = {
+		reference = courtyard
+	}
+	left_portrait = {
+		character = root
+		animation = worry
+	}
+	right_portrait = {
+		character = scope:failed_kingsguard
+		animation = shame
+	}
+	trigger = {
+		scope:failed_kingsguard = {
+			AND = {
+				prowess < 15				#Bad at swordies
+				NOT = {
+					has_trait = education_martial_prowess_2
+					has_trait = education_martial_prowess_3
+					has_trait = education_martial_prowess_4
+					has_trait = education_martial_prowess_5
+				}
+			}
+		}
+	}
+	immediate = {
+		top_liege = { save_scope_as = ruler }
+	}
+	option = {
+		#Get a Real job!
+		name = agot_kingsguard.3012.a
+		reverse_add_opinion = {
+			target = scope:failed_kingsguard
+			modifier = hurt_opinion
+			opinion = -25
+		}
+		set_relation_potential_rival = scope:failed_kingsguard
+		scope:failed_kingsguard = {
+			remove_trait = refusing_marriage
+			remove_character_modifier = training_for_kingsguard
+			add_stress = medium_stress_gain
+			random_list = {
+				70 = {
+				}
+				30 = {
+					add_trait = depressed_1
+				}
+			}
+		}
+		ai_chance = {
+			base = 70
+		}
+	}
+	option = {
+		#How about a different order? - Send to Wall
+		name = agot_kingsguard.3012.b
+		trigger = {
+			scope:failed_kingsguard = {
+				is_male = yes
+			}
+		}
+		agot_send_to_nightswatch_effect = {
+			ACTOR = root
+			NIGHTSWATCH_CANDIDATE = scope:failed_kingsguard
+		}
+		ai_chance = {
+			base = 20
+		}
+	}
+	option = {
+		#I'm sure you'll get better!
+		name = agot_kingsguard.3012.c
+		reverse_add_opinion = {
+			target = scope:failed_kingsguard
+			modifier = kindness_opinion
+			opinion = 25
+		}
+		ai_chance = {
+			base = 10
+		}
+	}
+}
+
+##########
+# A Kingsguard is caught carousing especially hard!
+# Badger
+#########
+scripted_trigger kingsguard_3013_kingsguard_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	OR = {
+		has_trait = gluttonous
+		has_trait = drunkard
+		has_trait = gregarious
+		has_trait = lifestyle_reveler
+	}
+}
+
+agot_kingsguard.3013 = {
+	type = character_event
+	title = agot_kingsguard.3013.t
+	desc = agot_kingsguard.3013.desc
+	theme = martial_chivalry_focus
+	override_background = {
+		reference = tavern
+	}
+	left_portrait = {
+		character = scope:drunken_kingsguard
+		animation = toast_goblet
+	}
+	right_portrait = {
+		character = root
+		animation = worry
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3013_kingsguard_candidate_trigger = yes
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3013_kingsguard_candidate_trigger = yes
+			}
+			save_scope_as = drunken_kingsguard
+		}
+		scope:drunken_kingsguard = {
+			reveler_lifestyle_rank_up_check_effect = yes
+			random_list = {
+				50 = {
+				}
+				50 = {
+					add_trait = drunkard
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3013.a
+		if = {
+			limit = {
+				scope:drunken_kingsguard = {
+					has_trait = drunkard
+				}
+			}
+			scope:drunken_kingsguard = {
+				remove_trait = drunkard
+			}
+		}
+		add_prestige = medium_prestige_gain
+		add_piety = medium_piety_gain
+		reverse_add_opinion = {
+			target = scope:drunken_kingsguard
+			modifier = annoyed_opinion
+			opinion = -30
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0
+				OR = {
+					has_trait = gluttonous
+					has_trait = drunkard
+					has_trait = gregarious
+					has_trait = lifestyle_reveler
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3013.b
+		if = {
+			limit = {
+				can_add_hook = {
+					target = scope:drunken_kingsguard
+					type = loyalty_hook
+				}
+			}
+			add_hook = {
+				type = loyalty_hook
+				target = scope:drunken_kingsguard
+			}
+		}
+		scope:drunken_kingsguard = {
+			add_prestige_level = 1
+		}
+		reverse_add_opinion = {
+			target = scope:drunken_kingsguard
+			modifier = pleased_opinion
+			opinion = 15
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		name = agot_kingsguard.3013.c
+		trigger = {
+			OR = {
+				has_trait = gluttonous
+				has_trait = drunkard
+				has_trait = gregarious
+				has_trait = lifestyle_reveler
+			}
+		}
+		scope:drunken_kingsguard = {
+			add_prestige_level = 1
+		}
+		add_prestige = medium_prestige_gain
+		add_piety = medium_piety_loss
+		progress_towards_friend_effect = {
+			REASON = friend_drinking_buddies
+			CHARACTER = scope:drunken_kingsguard
+			OPINION = default_friend_opinion
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+}
+
+##########
+# Kingsguard Gains Blademaster
+# Badger
+#########
+scripted_trigger kingsguard_3014_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	OR = {
+		has_trait = education_martial_prowess_3
+		has_trait = education_martial_prowess_4
+		has_trait = education_martial_prowess_5
+	}
+	NOR = {
+		AND = {
+			has_trait = lifestyle_blademaster
+			has_trait_xp = {
+				trait = lifestyle_blademaster
+				value >= 100
+			}
+		}
+		AND = {
+			hunt_lifestyle_track_greater_equal_trigger = { TRACK = hunter GREATER_EQUAL = 100 }
+		}
+		AND = {
+			hunt_lifestyle_track_greater_equal_trigger = { TRACK = falconer GREATER_EQUAL = 100 }
+		}
+	}
+	ai_energy >= 0	#Has to be going out doing things
+}
+
+agot_kingsguard.3014 = {
+	type = character_event
+	title = agot_kingsguard.3014.t
+	desc = agot_kingsguard.3014.desc
+	theme = martial_chivalry_focus
+	override_background = army_camp
+
+	left_portrait = {
+		character = scope:lifestyle_kingsguard
+		animation = wooden_sword_coup_degrace
+	}
+	right_portrait = {
+		character = root
+		animation = personality_content
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3014_candidate_trigger = yes
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3014_candidate_trigger = yes
+			}
+			weight = {
+				base = 1
+				modifier = {
+					add = 100
+					culture = {
+						has_cultural_parameter = blademaster_traits_more_common
+					}
+				}
+			}
+			save_scope_as = lifestyle_kingsguard
+		}
+	}
+
+	option = {
+		name = agot_kingsguard.3014.a
+		scope:lifestyle_kingsguard = {
+			if = {
+				limit = {
+					NOT = {
+						has_trait = lifestyle_blademaster
+					}
+				}
+				add_trait = lifestyle_blademaster
+			}
+			add_trait_xp = {
+				trait = lifestyle_blademaster
+				value = {
+					integer_range = {
+						min = medium_lifestyle_random_xp_low
+						max = medium_lifestyle_random_xp_high
+					}
+				}
+			}
+		}
+	}
+}
+
+##########
+# Kingsguard Gains Hunter
+# Badger
+#########
+agot_kingsguard.3015 = {
+	type = character_event
+	title = agot_kingsguard.3015.t
+	desc = agot_kingsguard.3015.desc
+	theme = martial_chivalry_focus
+	override_background = {
+		reference = wilderness_forest
+	}
+	left_portrait = {
+		character = scope:lifestyle_kingsguard
+		animation = hunting_longbow_aim_arrow_default
+	}
+	right_portrait = {
+		character = root
+		animation = personality_content
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3014_candidate_trigger = yes
+		}
+	}
+	weight_multiplier = {
+		base = 1
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3014_candidate_trigger = yes
+			}
+			weight = {
+				base = 1
+				modifier = {
+					add = 100
+					culture = {
+						has_cultural_parameter = hunting_traits_more_common
+					}
+				}
+			}
+			save_scope_as = lifestyle_kingsguard
+		}
+	}
+	option = {
+		name = agot_kingsguard.3015.a
+		scope:lifestyle_kingsguard = {
+			if = {
+				limit = {
+					NOT = {
+						has_trait = lifestyle_hunter
+					}
+				}
+				add_trait = lifestyle_hunter
+			}
+			add_random_tiered_trait_track_xp_effect = {
+				TRAIT = lifestyle_hunter
+				TRACK = hunter
+				LEVEL_1 = yes
+				LEVEL_3 = yes
+			}
+		}
+	}
+}
+
+##########
+# Kingsguard Gains Falconer
+# Badger
+#########
+agot_kingsguard.3016 = {
+	type = character_event
+	title = agot_kingsguard.3016.t
+	desc = agot_kingsguard.3016.desc
+	theme = martial_chivalry_focus
+	override_background = wilderness_forest
+	right_portrait = {
+		character = scope:lifestyle_kingsguard
+		animation = hunting_falcon
+	}
+	left_portrait = {
+		character = root
+		animation = personality_content
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3014_candidate_trigger = yes
+		}
+	}
+	weight_multiplier = {
+		base = 1
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3014_candidate_trigger = yes
+			}
+			save_scope_as = lifestyle_kingsguard
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3014_candidate_trigger = yes
+			}
+			weight = {
+				base = 1
+				modifier = {
+					add = 100
+					culture = {
+						has_cultural_parameter = hunting_traits_more_common
+					}
+				}
+			}
+			save_scope_as = lifestyle_kingsguard
+		}
+	}
+	option = {
+		name = agot_kingsguard.3016.a
+		scope:lifestyle_kingsguard = {
+			if = {
+				limit = {
+					NOT = {
+						has_trait = lifestyle_hunter
+					}
+				}
+				add_trait = lifestyle_hunter
+			}
+			add_random_tiered_trait_track_xp_effect = {
+				TRAIT = lifestyle_hunter
+				TRACK = falconer
+				LEVEL_1 = yes
+				LEVEL_3 = yes
+			}
+		}
+	}
+}
+
+################################
+# AI Kingsguard Maintenance Events
+# 9001 - 9999
+# by Badger
+################################
+agot_kingsguard.9000 = {
+	#Big Maintenance Check
+	hidden = yes
+	trigger = {
+		any_held_title = {
+			tier = tier_empire
+			has_variable = kingsguard
+		}
+		any_living_kingsguard = {
+			#Check for the 7 to stop appointing to replace guys in prison
+			top_liege = root
+			count < 7
+		}
+		OR = {
+			NOT = {
+				exists = court_position:zz_kingsguard_lord_commander_court_position
+			}
+			can_employ_court_position_type = zz_kingsguard_court_position
+		}
+	}
+	immediate = {
+		if = {
+			limit = {
+				can_employ_court_position_type = zz_kingsguard_court_position
+			}
+			trigger_event = agot_kingsguard.9002
+		}
+		else_if = {
+			limit = {
+				NOT = {
+					exists = court_position:zz_kingsguard_lord_commander_court_position
+				}
+			}
+			trigger_event = agot_kingsguard.9001
+		}
+	}
+}
+
+agot_kingsguard.9001 = {
+	# AI Dead Lord Commander
+	hidden = yes
+	immediate = {
+		every_court_position_holder = {
+			type = zz_kingsguard_court_position
+			add_to_list = lord_commander_candidates
+		}
+		ordered_in_list = {
+			list = lord_commander_candidates
+			order_by = {
+				value = 0
+				max = 1
+				add = {
+					value = prowess
+					multiply = 2
+				}
+				if = {
+					#Extra for important lordly fams
+					limit = {
+						any_close_or_extended_family_member = {
+							is_landed = yes
+							highest_held_title_tier >= tier_duchy
+						}
+					}
+					add = 20
+				}
+				# More Likely to pick a Lord Commander they like
+				if = {
+					limit = {
+						opinion = {
+							target = root
+							value >= 80
+						}
+					}
+					add = 40
+				}
+				else_if = {
+					limit = {
+						opinion = {
+							target = root
+							value >= 50
+						}
+					}
+					add = 30
+				}
+				else_if = {
+					limit = {
+						opinion = {
+							target = root
+							value >= 30
+						}
+					}
+					add = 15
+				}
+			}
+			save_scope_as = new_lord_commander
+		}
+	}
+	option = {
+		scope:new_lord_commander = {
+			add_character_flag = can_fire_kingsguard
+		}
+		fire_councillor = scope:new_lord_commander
+		save_scope_as = king
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:new_lord_commander
+			KING = scope:king
+		}
+		scope:new_lord_commander = {
+			add_opinion = {
+				target = ROOT
+				modifier = grateful_opinion
+				opinion = 20
+			}
+			remove_character_flag = can_fire_kingsguard
+		}
+	}
+}
+
+agot_kingsguard.9002 = {
+	# Dead Kingsguard Member AI
+	hidden = yes
+	trigger = {
+		can_employ_court_position_type = zz_kingsguard_court_position
+	}
+	immediate = {
+		save_scope_as = king
+		every_living_character = {
+			limit = {
+				can_be_kingsguard_trigger = {
+					COURT_OWNER = scope:king
+				}
+				top_liege = root
+				prowess >= 15 # don't assign complete shitters
+				has_trait = education_martial_prowess # somebody with a sword trait for fuck sake
+				NOR = {
+					has_trait = kingsguard
+					AND = {
+						any_heir_title = { #AI don't use primary heirs
+							exists = this
+							place_in_line_of_succession = {
+								target = prev
+								value == 1
+							}
+						}
+						NOT = { #Unless they're specifically training for the Kingsguard
+							has_character_modifier = training_for_kingsguard
+						}
+					}
+				}
+			}
+			add_to_list = potential_kingsguard
+		}
+		random_in_list = {
+			list = potential_kingsguard
+			limit = {
+				can_be_kingsguard_trigger = {
+					COURT_OWNER = scope:king
+				}
+			}
+			weight = {
+				base = 1
+				modifier = {
+					#Being good at swords
+					add = {
+						value = prowess
+						multiply = 2
+					}
+				}
+				modifier = {
+					#Grab cool traits plz
+					OR = {
+						has_trait = education_martial_prowess_3
+						has_trait = education_martial_prowess_4
+						has_trait = education_martial_prowess_5
+						has_trait = lifestyle_blademaster
+					}
+					add = 50
+				}
+				modifier = { #Appoint your relatives who are training
+					any_close_or_extended_family_member = {
+						this = root
+					}
+					has_character_modifier = training_for_kingsguard
+					add = 300
+				}
+				modifier = { #Appoint your spouse's relatives who are training
+					trigger = { exists = root.primary_spouse }
+					any_close_or_extended_family_member = {
+						this = root.primary_spouse
+					}
+					has_character_modifier = training_for_kingsguard
+					add = 300
+				}
+				modifier = {
+					#Important Lordly relatives is a huge plus to grab notable characters
+					any_close_or_extended_family_member = {
+						is_landed = yes
+						primary_title.tier = tier_kingdom
+					}
+					add = 150
+				}
+				modifier = {
+					#Important Lordly relatives is a huge plus to grab notable characters
+					any_close_or_extended_family_member = {
+						is_landed = yes
+						primary_title.tier = tier_duchy
+					}
+					add = 100
+				}
+				modifier = {
+					#Important Lordly relatives is a huge plus to grab notable characters
+					any_close_or_extended_family_member = {
+						is_landed = yes
+						primary_title.tier = tier_county
+					}
+					add = 50
+				}
+				opinion_modifier = {
+					# More likely to pick someone they like
+					opinion_target = root
+					multiplier = 2
+				}
+				modifier = {
+					#dont pick people you hate
+					OR = {
+						has_relation_rival = root
+						has_relation_nemesis = root
+						has_relation_potential_rival = root
+					}
+					factor = 0.1
+				}
+				modifier = {
+					#Less chance of appointing heathens
+					factor = 0.2
+					NOT = {
+						faith = root.faith
+					}
+				}
+				modifier = {
+					#Prejudice against Lowborn - AI should prefer nobles
+					factor = 0.2
+					is_lowborn = yes
+				}
+				modifier = {
+					# Dont appoint randoms when there's a trainee available
+					factor = 0
+					any_in_list = {
+						list = potential_kingsguard
+						has_character_modifier = training_for_kingsguard
+					}
+					NOT = {
+						has_character_modifier = training_for_kingsguard
+					}
+				}
+				modifier = {
+					#if they can't be KG don't try and assign them stupid ass AI
+					factor = 0
+					NOT = {
+						can_be_kingsguard_trigger = {
+							COURT_OWNER = scope:king
+						}
+					}
+				}
+			}
+			save_scope_as = kingsguard_candidate
+		}
+	}
+	option = {
+		scope:king = {
+			add_courtier ?= scope:kingsguard_candidate
+			trigger_event = agot_kingsguard.1008
+		}
+		scope:kingsguard_candidate = {
+			trigger_event = agot_kingsguard.1006
+		}
+	}
+}
+
+agot_kingsguard.9003 = {
+	# Stop moronic KG leaving
+	hidden = yes
+	trigger = {
+		has_trait = kingsguard
+		scope:old_employer = {
+			is_landed = yes
+			this = top_liege
+			any_held_title = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+		}
+		NOT = {
+			has_character_flag = coming_home
+		}
+		NOT = { is_ruler = yes }
+	}
+	immediate = {
+		scope:old_employer = {
+			save_scope_as = king
+		}
+		root = {
+			save_scope_as = kingsguard_candidate
+		}
+		scope:old_employer = {
+			root = {
+				add_character_flag = coming_home
+			}
+			add_courtier ?= root
+			root = {
+				remove_character_flag = coming_home
+			}
+		}
+	}
+	option = {
+		scope:kingsguard_candidate = {
+			trigger_event = agot_kingsguard.1006
+		}
+	}
+}
+
+agot_kingsguard.9004 = {
+	# Remove KG variables to prevent them rising from the grave if title is recreated
+	hidden = yes
+	trigger = {
+		scope:landed_title = {
+			has_variable = kingsguard
+		}
+	}
+	immediate = {
+		scope:landed_title = {
+			if = {
+				limit = {
+					exists = var:kingsguard_lord_commander
+				}
+				remove_variable = kingsguard_lord_commander
+			}
+			if = {
+				limit = {
+					exists = var:kingsguard_1
+				}
+				remove_variable = kingsguard_1
+			}
+			if = {
+				limit = {
+					exists = var:kingsguard_2
+				}
+				remove_variable = kingsguard_2
+			}
+			if = {
+				limit = {
+					exists = var:kingsguard_3
+				}
+				remove_variable = kingsguard_3
+			}
+			if = {
+				limit = {
+					exists = var:kingsguard_4
+				}
+				remove_variable = kingsguard_4
+			}
+			if = {
+				limit = {
+					exists = var:kingsguard_5
+				}
+				remove_variable = kingsguard_5
+			}
+			if = {
+				limit = {
+					exists = var:kingsguard_6
+				}
+				remove_variable = kingsguard_6
+			}
+		}
+		every_councillor = {
+			limit = {
+				is_kingsguard_trigger = yes
+				has_trait = kingsguard
+			}
+			remove_trait = kingsguard
+			agot_kingsguard_destroy_artifacts = yes
+		}
+		if = {
+			limit = {
+				scope:landed_title = title:e_the_iron_throne
+				exists = title:d_kingsguard.holder
+			}
+			title:d_kingsguard.holder = {
+				destroy_title = title:d_kingsguard
+			}
+		}
+	}
+}
+
+agot_kingsguard.9005 = {
+	# Kingsguard on parole now get a job :)
+	hidden = yes
+	trigger = {
+		has_trait = kingsguard
+		top_liege = {
+			any_held_title = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+		}
+	}
+	immediate = {
+		top_liege = {
+			save_scope_as = king
+		}
+		root = {
+			save_scope_as = kingsguard_candidate
+		}
+	}
+	option = {
+		scope:kingsguard_candidate = {
+			trigger_event = agot_kingsguard.1006
+		}
+	}
+}
+
+#RIP spawn_activity
+# agot_kingsguard.9006 = {
+# 	# Kingsguard go back to liege's capital after bodyguard
+# 	hidden = yes
+# 	immediate = {
+# 		title:e_the_iron_throne.holder.location.barony.title_province = {
+# 			spawn_activity = {
+# 				owner = scope:councillor
+# 				type = activity_kinguard_bodyguard
+# 			}
+# 		}
+# 		scope:councillor.activity = {
+# 			complete_activity = yes
+# 		}
+# 		scope:councillor = {
+# 			remove_variable = kingsguard_protection_activity_var
+# 		}
+# 	}
+# }
+
+agot_kingsguard.9007 = {
+	#Grab lost kingsguard send them home
+	hidden = yes
+	trigger = {
+		any_held_title = {
+			tier = tier_empire
+			has_variable = kingsguard
+		}
+	}
+	immediate = {
+		random_held_title = {
+			limit = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+			save_scope_as = kingsguard_title
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_lord_commander
+				}
+				scope:kingsguard_title.var:kingsguard_lord_commander = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_lord_commander = {
+						NOT = {
+							employer ?= root
+							is_ruler = yes
+						}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_lord_commander
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_lord_commander = {
+							has_court_position = zz_kingsguard_lord_commander_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position =  kingsguard_lord_commander
+					recipient = scope:kingsguard_title.var:kingsguard_lord_commander
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_1
+				}
+				scope:kingsguard_title.var:kingsguard_1 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_1 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_1
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_1 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_1
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_2
+				}
+				scope:kingsguard_title.var:kingsguard_2 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_2 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_2
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_2 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_3
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_3
+				}
+				scope:kingsguard_title.var:kingsguard_3 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_3 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_3
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_3 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_3
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_4
+				}
+				scope:kingsguard_title.var:kingsguard_4 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_4 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_4
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_4 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_4
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_5
+				}
+				scope:kingsguard_title.var:kingsguard_5 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_5 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_5
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_5 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_5
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_6
+				}
+				scope:kingsguard_title.var:kingsguard_6 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_6 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_6
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_6 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_6
+				}
+			}
+		}
+		title:d_kingsguard.holder ?= {
+			if = {
+				limit = { NOT = { has_government = kingsguard_government } }
+				change_government = kingsguard_government
+			}
+		}
+		#Succession Display
+		if = {
+			limit = {
+				exists = court_position:zz_kingsguard_lord_commander_court_position
+				court_position:zz_kingsguard_lord_commander_court_position = {
+					scope:kingsguard_title = title:d_kingsguard
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title = {
+						exists = var:kingsguard_1
+					}
+					scope:kingsguard_title.var:kingsguard_1 = {
+						is_alive = yes
+					}
+				}
+				scope:kingsguard_title.var:kingsguard_1 = {
+					add_to_list = kingsguard_successor
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title = {
+						exists = var:kingsguard_2
+					}
+					scope:kingsguard_title.var:kingsguard_2 = {
+						is_alive = yes
+					}
+				}
+				scope:kingsguard_title.var:kingsguard_2 = {
+					add_to_list = kingsguard_successor
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title = {
+						exists = var:kingsguard_3
+					}
+					scope:kingsguard_title.var:kingsguard_3 = {
+						is_alive = yes
+					}
+				}
+				scope:kingsguard_title.var:kingsguard_3 = {
+					add_to_list = kingsguard_successor
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title = {
+						exists = var:kingsguard_4
+					}
+					scope:kingsguard_title.var:kingsguard_4 = {
+						is_alive = yes
+					}
+				}
+				scope:kingsguard_title.var:kingsguard_4 = {
+					add_to_list = kingsguard_successor
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title = {
+						exists = var:kingsguard_5
+					}
+					scope:kingsguard_title.var:kingsguard_5 = {
+						is_alive = yes
+					}
+				}
+				scope:kingsguard_title.var:kingsguard_5 = {
+					add_to_list = kingsguard_successor
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title = {
+						exists = var:kingsguard_6
+					}
+					scope:kingsguard_title.var:kingsguard_6 = {
+						is_alive = yes
+					}
+				}
+				scope:kingsguard_title.var:kingsguard_6 = {
+					add_to_list = kingsguard_successor
+				}
+			}
+			ordered_in_list  = {
+				list = kingsguard_successor
+				order_by = prowess
+				max = 1
+				save_scope_as = kingsguard_successor
+			}
+			court_position:zz_kingsguard_lord_commander_court_position = {
+				set_designated_heir_unsafe = scope:kingsguard_successor
+			}
+		}
+	}
+}
+
+agot_kingsguard.9008 = {
+	# agot_on_title_gain_kingsguard = { # This only works if the previous owner has a title to fall back on, and thus, has a court
+	hidden = yes
+
+	trigger = {
+		any_held_title = {
+			tier = tier_empire
+			has_variable = kingsguard
+		}
+	}
+
+	immediate = {
+		random_held_title = {
+			limit = {
+				tier = tier_empire
+				has_variable = kingsguard
+			}
+			save_scope_as = kingsguard_title
+		}
+		if = { #Ensure Kingsguard title is a vassal
+			limit = {
+				has_title = title:e_the_iron_throne
+				NOT = { has_title = title:d_kingsguard }
+				exists = title:d_kingsguard.holder
+			}
+			create_title_and_vassal_change = {
+				type = swear_fealty
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			title:d_kingsguard.holder = {
+				change_liege = {
+					liege = root
+					change = scope:change
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_lord_commander
+				}
+				scope:kingsguard_title.var:kingsguard_lord_commander = {
+					is_alive = yes
+				}
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_lord_commander = {
+						NOT = { employer ?= root}
+						is_ruler = no
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_lord_commander
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_lord_commander = {
+							has_court_position = zz_kingsguard_lord_commander_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = kingsguard_lord_commander
+					recipient = scope:kingsguard_title.var:kingsguard_lord_commander
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_1
+				}
+				scope:kingsguard_title.var:kingsguard_1 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_1 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_1
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_1 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					target = scope:kingsguard_title.var:kingsguard_1
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_2
+				}
+				scope:kingsguard_title.var:kingsguard_2 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_2 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_2
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_2 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					target = scope:kingsguard_title.var:kingsguard_2
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_3
+				}
+				scope:kingsguard_title.var:kingsguard_3 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_3 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_3
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_3 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					target = scope:kingsguard_title.var:kingsguard_3
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_4
+				}
+				scope:kingsguard_title.var:kingsguard_4 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_4 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_4
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_4 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					target = scope:kingsguard_title.var:kingsguard_4
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_5
+				}
+				scope:kingsguard_title.var:kingsguard_5 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_5 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_5
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_5 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					target = scope:kingsguard_title.var:kingsguard_5
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:kingsguard_title = {
+					exists = var:kingsguard_6
+				}
+				scope:kingsguard_title.var:kingsguard_6 = {
+					is_alive = yes
+				}
+
+			}
+			if = {
+				limit = {
+					scope:kingsguard_title.var:kingsguard_6 = {
+						NOT = { employer ?= root}
+					}
+				}
+				add_courtier ?= scope:kingsguard_title.var:kingsguard_6
+			}
+			if = {
+				limit = {
+					NOT = {
+						scope:kingsguard_title.var:kingsguard_6 = {
+							has_court_position = zz_kingsguard_court_position
+						}
+					}
+				}
+				appoint_court_position  = {
+					court_position = zz_kingsguard_court_position
+					recipient = scope:kingsguard_title.var:kingsguard_6
+				}
+			}
+		}
+	}
+}
+
+##########
+# A Kingsguard is found dead outside a brothel! - Owen Bush
+# Badger
+#########
+scripted_trigger kingsguard_3017_kingsguard_candidate_trigger = {
+	is_available_adult = yes
+	is_kingsguard_trigger = yes
+	is_male = yes #Can't cut off a penis that ain't there
+	OR = { #Would visit a brothel
+		has_trait = lustful
+		has_trait = drunkard
+		has_trait = arbitrary
+		has_trait = sadistic
+		has_trait = lifestyle_reveler
+	}
+	NOT = {
+		has_trait = celibate
+		has_trait = chaste
+		has_trait = eunuch
+		has_trait = beardless_eunuch
+	}
+	ai_compassion <= high_negative_compassion #Cruel
+}
+
+agot_kingsguard.3017 = {
+	type = character_event
+	title = agot_kingsguard.3017.t
+	desc = agot_kingsguard.3017.desc
+	theme = martial_chivalry_focus
+	override_background = {
+		reference = tavern
+	}
+	left_portrait = {
+		character = scope:eunuch_kingsguard
+		animation = poison
+		outfit_tags = { no_clothes }
+	}
+	right_portrait = {
+		character = root
+		animation = worry
+	}
+	trigger = {
+		any_councillor = {
+			kingsguard_3017_kingsguard_candidate_trigger = yes
+		}
+	}
+	immediate = {
+		set_variable = {
+			name = had_kingsguard_side_effect
+			value = yes
+			days = kingsguard_side_effect_cooldown			# 365 days
+		}
+		random_councillor = {
+			limit = {
+				kingsguard_3017_kingsguard_candidate_trigger = yes
+			}
+			save_scope_as = eunuch_kingsguard
+		}
+		scope:eunuch_kingsguard = {
+			add_trait = eunuch_1
+			death = {
+				death_reason = death_suffocate_on_cock
+			}
+		}
+	}
+	option = {
+		name = agot_kingsguard.3017.a
+		if = {
+			limit = {
+				capital_county.culture = { has_cultural_tradition = tradition_city_keepers }
+			}
+			capital_county = {
+				add_county_modifier = {
+					modifier = high_investment_in_revolt_modifier
+					years = 15
+				}
+			}
+		}
+		else = {
+			capital_county = {
+				add_county_modifier = {
+					modifier = medium_investment_in_revolt_modifier
+					years = 15
+				}
+			}
+		}
+	}
+}

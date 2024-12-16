@@ -1,0 +1,217 @@
+﻿window = {
+	name = "zz_kingsguard_protection"
+	layer = top
+	using = Window_Background
+	size = { 1500 800 }
+	datacontext = "[GetScriptedGui('zz_kingsguard_protection')]"
+	visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+
+	state = {
+		name = _show
+		on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+	}
+	margin_widget = {
+		size = { 100% 100% }
+		margin = { 0 26 }
+		margin_right = 13
+
+		widget = {
+			size = { 100% 100% }
+
+			vbox = {
+				using = Window_Margins
+
+				header_pattern = {
+					layoutpolicy_horizontal = expanding
+
+					blockoverride "header_text"
+					{
+						raw_text = "Kingsguard Protection"
+					}
+
+					blockoverride "button_close"
+					{
+						onclick = "[GetScriptedGui('zz_kingsguard_protection_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+					}
+				}
+				hbox = { 
+					layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+					
+					datacontext = "[GetPlayer.MakeScope]"
+					vbox = {
+						layoutpolicy_vertical = expanding
+						layoutpolicy_horizontal = expanding
+						max_width = 300
+						spacer = { size = { 0 30 } }
+						text_single = {
+							raw_text = "Kingsguard"
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 00 30 } }
+						scrollbox = {
+							name = "protectors_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = growing
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[Scope.GetList('protector_list')]"
+								
+									item = {
+										button_standard = {
+											size = { 200 120 }
+											align = left
+											datacontext = "[Scope.GetCharacter]"
+											layoutpolicy_vertical = expanding
+											layoutpolicy_horizontal = growing
+											
+											onclick = "[GetScriptedGui('zz_kingsguard_protector').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_protect_protector', Character.MakeScope ).End )]"
+											down = "[GetScriptedGui('zz_kingsguard_protector').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_protect_protector', Character.MakeScope ).End )]"
+											vbox = {
+												layoutpolicy_horizontal = expanding
+												layoutpolicy_vertical = expanding
+												margin_right = 4
+												spacing = 5
+												portrait_head_small = {}
+												text_single = {
+													text = "[Character.GetNameNoTooltip]"
+												}
+												spacer = { size = { 00 15 } }
+											}
+										}								 
+									}
+								}
+							}
+						}
+						expand = {}
+					}
+					vbox = {
+						layoutpolicy_horizontal = growing 
+						layoutpolicy_vertical = expanding
+						size = {40% 90%}
+						spacer = { size = { 00 30 } }
+						text_single = {
+							raw_text = "Protection Status"
+							fontsize = 24
+							align = top
+						}
+						hbox = {
+							layoutpolicy_horizontal = growing 
+							layoutpolicy_vertical = growing
+							datacontext = "[GetPlayer.MakeScope.Var('zz_protect_protector').Char]"
+							vbox = {
+								layoutpolicy_horizontal = growing 
+								layoutpolicy_vertical = growing
+								text_single = {
+									raw_text = "Protector"
+									fontsize = 18
+									align = left
+								}
+								spacer = { size = { 00 15 } }
+								vbox = {
+									size = { 200 120 }
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									margin_right = 4
+									spacing = 5
+									datacontext = "[GetPlayer.MakeScope.Var('zz_protect_protector').Char]"
+									portrait_head_small = {}
+									text_single = {
+										align = left
+										text = "[Character.GetNameNoTooltip]"
+									}
+									spacer = { size = { 00 10 } }
+									expand = {}
+								}
+								spacer = { size = { 00 15 } }
+								button_standard = {
+									text_single = {
+										align =	center
+										raw_text = "Cancel Protection"
+									}
+									onclick = "[GetScriptedGui('zz_kingsguard_protection_clear').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+								}	
+								expand = {}					
+							}
+							vbox = {
+								layoutpolicy_horizontal = growing 
+								layoutpolicy_vertical = growing
+								text_single = {
+									raw_text = "Protected"
+									fontsize = 18
+									align = left
+								}
+								spacer = { size = { 00 15 } }
+								vbox = {
+									size = { 200 120 }
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									margin_right = 4
+									spacing = 5
+									datacontext = "[GetPlayer.MakeScope.Var('zz_protect_protector').Var('zz_protect_protected').Char]"
+									portrait_head_small = {}
+									text_single = {
+										align = left
+										text = "[Character.GetNameNoTooltip]"
+									}
+									spacer = { size = { 00 10 } }
+									expand = {}
+								}
+								expand = {}
+							}
+						}
+					}
+					vbox = {
+						layoutpolicy_vertical = expanding
+						layoutpolicy_horizontal = expanding
+						max_width = 300
+						spacer = { size = { 0 30 } }
+						text_single = {
+							raw_text = "Family Member"
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 00 30 } }
+						scrollbox = {
+							name = "family_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = growing
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[Scope.GetList('protectee_list')]"
+								
+									item = {
+										button_standard = {
+											size = { 200 120 }
+											align = left
+											datacontext = "[Scope.GetCharacter]"
+											layoutpolicy_vertical = expanding
+											layoutpolicy_horizontal = growing
+											
+											onclick = "[GetScriptedGui('zz_kingsguard_protectee').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_protect_protected', Character.MakeScope ).End )]"
+											down = "[GetScriptedGui('zz_kingsguard_protectee').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_protect_protected', Character.MakeScope ).End )]"
+											vbox = {
+												layoutpolicy_horizontal = expanding
+												layoutpolicy_vertical = expanding
+												margin_right = 4
+												spacing = 5
+												portrait_head_small = {}
+												text_single = {
+													text = "[Character.GetNameNoTooltip]"
+												}
+												spacer = { size = { 00 15 } }
+											}
+										}								 
+									}
+								}
+							}
+						}
+						expand = {}
+					}
+				}
+			}
+		}
+	}
+}
