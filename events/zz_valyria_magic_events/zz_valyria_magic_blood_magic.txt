@@ -312,6 +312,7 @@ zz_valyria_magic_blood_magic_spells.003 = {
 
 	immediate = {
 		clear_variable_list = possible_regiments
+		remove_variable = selected_regiment
 		scope:recipient = {
 			every_maa_regiment = {
 				limit = {
@@ -322,13 +323,11 @@ zz_valyria_magic_blood_magic_spells.003 = {
 						name = possible_regiments
 						target = prev
 					}
-					ordered_in_list = {
-						variable = possible_regiments
-						position = 0
-						set_variable = {
-							name = selected_regiment
-							value = this
+					if = {
+						limit = {
+							NOT = { has_variable = selected_regiment }
 						}
+						set_variable = { name = selected_regiment value = prev }
 					}
 				}
 			}
@@ -357,7 +356,7 @@ zz_valyria_magic_blood_magic_spells.003 = {
 			}
 
 		}
-		var:selected_regiment = { 
+		var:selected_regiment ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -383,6 +382,7 @@ zz_valyria_magic_blood_magic_spells.004 = {
 
 	immediate = {
 		clear_variable_list = possible_armies
+		remove_variable = selected_army
 		scope:recipient = {
 			every_army = {
 				root = {
@@ -390,13 +390,11 @@ zz_valyria_magic_blood_magic_spells.004 = {
 						name = possible_armies
 						target = prev
 					}
-					ordered_in_list = {
-						variable = possible_armies
-						position = 0
-						set_variable = {
-							name = selected_army
-							value = this
+					if = {
+						limit = {
+							NOT = { has_variable = selected_army }
 						}
+						set_variable = { name = selected_army value = prev }
 					}
 				}
 			}
@@ -419,7 +417,7 @@ zz_valyria_magic_blood_magic_spells.004 = {
 				has_raised_armies = yes
 			}
 		}
-		var:selected_army = { 
+		var:selected_army ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -444,6 +442,7 @@ zz_valyria_magic_blood_magic_spells.005 = {
 
 	immediate = {
 		clear_variable_list = possible_artifacts
+		remove_variable = selected_artifact
 		every_character_artifact = {
 			limit = {
 				has_variable = dragon_egg
@@ -455,6 +454,12 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				add_to_variable_list = {
 					name = possible_artifacts
 					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_artifact }
+					}
+					set_variable = { name = selected_artifact value = prev }
 				}
 			}
 		}
@@ -476,7 +481,7 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				}
 			}
 		}
-		var:selected_artifact = { 
+		var:selected_artifact ?= { 
 			save_scope_as = target
 		}
 		set_variable = { 
@@ -499,7 +504,7 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				}
 			}
 		}
-		var:selected_artifact = { 
+		var:selected_artifact ?= { 
 			save_scope_as = target
 		}
 		set_variable = { 
@@ -522,7 +527,7 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				}
 			}
 		}
-		var:selected_artifact = { 
+		var:selected_artifact ?= { 
 			save_scope_as = target
 		}
 		set_variable = { 
@@ -550,7 +555,8 @@ zz_valyria_magic_blood_magic_spells.006 = {
 	right_portrait = scope:recipient
 
 	immediate = {
-		possible_artifacts = possible_artifacts 
+		clear_variable_list = possible_artifacts
+		remove_variable = selected_artifact
 		scope:recipient = {
 			every_character_artifact = {
 				limit = {
@@ -563,6 +569,12 @@ zz_valyria_magic_blood_magic_spells.006 = {
 					add_to_variable_list = {
 						name = possible_artifacts
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_artifact }
+						}
+						set_variable = { name = selected_artifact value = prev }
 					}
 				}
 			}
@@ -589,7 +601,7 @@ zz_valyria_magic_blood_magic_spells.006 = {
 				}
 			}
 		}
-		var:selected_artifact = { 
+		var:selected_artifact ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -854,12 +866,19 @@ zz_valyria_magic_blood_magic_spells.016 = {
 	right_portrait = scope:recipient
 	immediate = {
 		clear_variable_list = possible_armies
+		remove_variable = selected_army
 		scope:recipient = {
 			every_army = {
 				root = {
 					add_to_variable_list = {
 						name = possible_armies
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_army }
+						}
+						set_variable = { name = selected_army value = prev }
 					}
 				}
 			}
@@ -1415,11 +1434,18 @@ zz_valyria_magic_dream_magic_spells.002 = {
 	right_portrait = scope:recipient
 	immediate = {
 		clear_variable_list = possible_traits
+		remove_variable = selected_trait
 		trait:lifestyle_blademaster = {
 			root = {
 				add_to_variable_list = {
 					name = possible_traits
 					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_trait }
+					}
+					set_variable = { name = selected_trait value = prev }
 				}
 			}
 		}
@@ -1490,7 +1516,7 @@ zz_valyria_magic_dream_magic_spells.002 = {
 
 	option = {
 		name = zz_valyria_magic_dream_magic_spells.002.opt.a
-		var:selected_trait = {
+		var:selected_trait ?= {
 			save_scope_as = trait 
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -1654,6 +1680,7 @@ zz_valyria_magic_dream_magic_spells.005 = {
 	right_portrait = scope:recipient
 	immediate = {
 		clear_variable_list = possible_traits
+		remove_variable = selected_trait
 		every_trait_in_category = {
 			limit = { 
 				NOR = {
@@ -1680,6 +1707,12 @@ zz_valyria_magic_dream_magic_spells.005 = {
 					name = possible_traits
 					target = prev
 				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_trait }
+					}
+					set_variable = { name = selected_trait value = prev }
+				}
 			}
 		}
 	}
@@ -1691,7 +1724,7 @@ zz_valyria_magic_dream_magic_spells.005 = {
 	}
 	option = {
 		name = zz_valyria_magic_dream_magic_spells.005.opt.a
-		var:selected_trait = {
+		var:selected_trait ?= {
 			save_scope_as = trait 
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -1716,11 +1749,18 @@ zz_valyria_magic_dream_magic_spells.006 = {
 	right_portrait = scope:recipient
 	immediate = {
 		clear_variable_list = possible_traits
+		remove_variable = selected_trait
 		trait:education_learning_1 = {
 			root = {
 				add_to_variable_list = {
 					name = possible_traits
 					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_trait }
+					}
+					set_variable = { name = selected_trait value = prev }
 				}
 			}
 		}
@@ -1766,7 +1806,7 @@ zz_valyria_magic_dream_magic_spells.006 = {
 	}
 	option = {
 		name = zz_valyria_magic_dream_magic_spells.006.opt.a
-		var:selected_trait = {
+		var:selected_trait ?= {
 			save_scope_as = trait 
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -1881,6 +1921,7 @@ zz_valyria_magic_alchemy_magic_spells.001 = {
 
 	immediate = {
 		clear_variable_list = possible_provinces
+		remove_variable = selected_province
 		scope:recipient = {
 			every_realm_province = {
 				root = {
@@ -1888,9 +1929,16 @@ zz_valyria_magic_alchemy_magic_spells.001 = {
 						name = possible_provinces
 						target = prev
 					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_province }
+						}
+						set_variable = { name = selected_province value = prev }
+					}
 				}
 			}
 		}
+
 	}
 
 	widget = {
@@ -1902,7 +1950,7 @@ zz_valyria_magic_alchemy_magic_spells.001 = {
 	}
 	option = {
 		name = zz_valyria_magic_alchemy_magic_spells.001.opt.a
-		var:selected_province = { 
+		var:selected_province ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -1927,12 +1975,19 @@ zz_valyria_magic_alchemy_magic_spells.002 = {
 
 	immediate = {
 		clear_variable_list = possible_provinces
+		remove_variable = selected_province
 		scope:recipient = {
 			every_realm_province = {
 				root = {
 					add_to_variable_list = {
 						name = possible_provinces
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_province }
+						}
+						set_variable = { name = selected_province value = prev }
 					}
 				}
 			}
@@ -1948,7 +2003,7 @@ zz_valyria_magic_alchemy_magic_spells.002 = {
 	}
 	option = {
 		name = zz_valyria_magic_alchemy_magic_spells.002.opt.a
-		var:selected_province = { 
+		var:selected_province ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2223,12 +2278,19 @@ zz_valyria_magic_fire_magic_spells.002 = {
 
 	immediate = {
 		clear_variable_list = possible_armies
+		remove_variable = selected_army
 		scope:recipient = {
 			every_army = {
 				root = {
 					add_to_variable_list = {
 						name = possible_armies
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_army }
+						}
+						set_variable = { name = selected_army value = prev }
 					}
 				}
 			}
@@ -2244,7 +2306,7 @@ zz_valyria_magic_fire_magic_spells.002 = {
 	}
 	option = {
 		name = zz_valyria_magic_fire_magic_spells.002.opt.a
-		var:selected_army = { 
+		var:selected_army ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2269,12 +2331,19 @@ zz_valyria_magic_fire_magic_spells.003 = {
 
 	immediate = {
 		clear_variable_list = possible_armies
+		remove_variable = selected_army
 		scope:recipient = {
 			every_army = {
 				root = {
 					add_to_variable_list = {
 						name = possible_armies
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_army }
+						}
+						set_variable = { name = selected_army value = prev }
 					}
 				}
 			}
@@ -2290,7 +2359,7 @@ zz_valyria_magic_fire_magic_spells.003 = {
 	}
 	option = {
 		name = zz_valyria_magic_fire_magic_spells.003.opt.a
-		var:selected_army = { 
+		var:selected_army ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2417,6 +2486,7 @@ zz_valyria_magic_air_magic_spells.002 = {
 
 	immediate = {
 		clear_variable_list = possible_regiments
+		remove_variable = selected_regiment
 		scope:recipient = {
 			every_maa_regiment = {
 				limit = {
@@ -2427,10 +2497,15 @@ zz_valyria_magic_air_magic_spells.002 = {
 						name = possible_regiments
 						target = prev
 					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_regiment }
+						}
+						set_variable = { name = selected_regiment value = prev }
+					}
 				}
 			}
 		}
-
 	}
 	widget = {
 		is_shown = {
@@ -2451,7 +2526,7 @@ zz_valyria_magic_air_magic_spells.002 = {
 			}
 
 		}
-		var:selected_regiment = { 
+		var:selected_regiment ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2502,12 +2577,19 @@ zz_valyria_magic_air_magic_spells.004 = {
 
 	immediate = {
 		clear_variable_list = possible_provinces
+		remove_variable = selected_province
 		scope:recipient = {
 			every_realm_province = {
 				root = {
 					add_to_variable_list = {
 						name = possible_provinces
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_province }
+						}
+						set_variable = { name = selected_province value = prev }
 					}
 				}
 			}
@@ -2523,7 +2605,7 @@ zz_valyria_magic_air_magic_spells.004 = {
 	}
 	option = {
 		name = zz_valyria_magic_air_magic_spells.004.opt.a
-		var:selected_province = { 
+		var:selected_province ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2600,12 +2682,19 @@ zz_valyria_magic_water_magic_spells.002 = {
 
 	immediate = {
 		clear_variable_list = possible_armies
+		remove_variable = selected_army
 		scope:recipient = {
 			every_army = {
 				root = {
 					add_to_variable_list = {
 						name = possible_armies
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_army }
+						}
+						set_variable = { name = selected_army value = prev }
 					}
 				}
 			}
@@ -2621,7 +2710,7 @@ zz_valyria_magic_water_magic_spells.002 = {
 	}
 	option = {
 		name = zz_valyria_magic_water_magic_spells.002.opt.a
-		var:selected_army = { 
+		var:selected_army ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2646,12 +2735,19 @@ zz_valyria_magic_water_magic_spells.003 = {
 
 	immediate = {
 		clear_variable_list = possible_armies
+		remove_variable = selected_army
 		scope:recipient = {
 			every_army = {
 				root = {
 					add_to_variable_list = {
 						name = possible_armies
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_army }
+						}
+						set_variable = { name = selected_army value = prev }
 					}
 				}
 			}
@@ -2667,7 +2763,7 @@ zz_valyria_magic_water_magic_spells.003 = {
 	}
 	option = {
 		name = zz_valyria_magic_water_magic_spells.003.opt.a
-		var:selected_army = { 
+		var:selected_army ?= { 
 			save_scope_as = target
 		}
 		zz_valyria_magic_cast_effect = { 
@@ -2693,11 +2789,18 @@ zz_valyria_magic_water_magic_spells.004 = {
 
 	immediate = {
 		clear_variable_list = possible_epidemics
+		remove_variable = selected_epidemic
 		every_epidemic_type = {
 			root = {
 				add_to_variable_list = {
 					name = possible_epidemics
 					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_epidemic }
+					}
+					set_variable = { name = selected_epidemic value = prev }
 				}
 			}
 		}
@@ -2716,10 +2819,10 @@ zz_valyria_magic_water_magic_spells.004 = {
 			scope:recipient = {			
 			}
 		}
-		var:selected_epidemic = { 
+		var:selected_epidemic ?= { 
 			save_scope_as = epidemic
 		}
-		trigger_event = zz_valyria_magic_water_magic_spells.004a
+		trigger_event = zz_valyria_magic_water_magic_spells.00401
 	}
 
 
@@ -2730,7 +2833,7 @@ zz_valyria_magic_water_magic_spells.004 = {
 }
 
 
-zz_valyria_magic_water_magic_spells.004a = {
+zz_valyria_magic_water_magic_spells.00401 = {
 	type = character_event
 	window = zz_valyria_magic_character_event
 	title = zz_valyria_magic_water_magic_spells.004.t
@@ -2741,12 +2844,19 @@ zz_valyria_magic_water_magic_spells.004a = {
 
 	immediate = {
 		clear_variable_list = possible_provinces
+		remove_variable = selected_province
 		scope:recipient = {
 			every_realm_province = {
 				root = {
 					add_to_variable_list = {
 						name = possible_provinces
 						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_province }
+						}
+						set_variable = { name = selected_province value = prev }
 					}
 				}
 			}
@@ -2772,7 +2882,7 @@ zz_valyria_magic_water_magic_spells.004a = {
 				}
 			}
 		}
-		var:selected_province = { 
+		var:selected_province ?= { 
 			save_scope_as = target
 		}
 		set_variable = { 
@@ -2797,7 +2907,7 @@ zz_valyria_magic_water_magic_spells.004a = {
 				}
 			}
 		}
-		var:selected_province = { 
+		var:selected_province ?= { 
 			save_scope_as = target
 		}
 		set_variable = { 
@@ -2822,7 +2932,7 @@ zz_valyria_magic_water_magic_spells.004a = {
 				}
 			}
 		}
-		var:selected_province = { 
+		var:selected_province ?= { 
 			save_scope_as = target
 		}
 		set_variable = { 
