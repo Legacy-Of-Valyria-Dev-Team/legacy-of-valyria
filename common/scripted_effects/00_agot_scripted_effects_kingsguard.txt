@@ -1,4 +1,134 @@
-﻿agot_join_kingsguard_effect = {
+﻿agot_add_become_a_knight_prestige_effect = {
+	add_prestige = {
+		value = 50
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					exists = $KNIGHT_MAKER$.dynasty
+					$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 3 } #Noteworthy
+				}
+			}
+			add = 25
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					exists = $KNIGHT_MAKER$.dynasty
+					OR = {
+						$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 4 } #Reputatbable
+						$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 5 } #Well-known
+					}
+				}
+			}
+			add = 50
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					exists = $KNIGHT_MAKER$.dynasty
+					OR = {
+						$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 6 } #Significant
+						$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 7 } #Famous
+					}
+				}
+			}
+			add = 100
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					exists = $KNIGHT_MAKER$.dynasty
+					OR = {
+						$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 8 } #Glorious
+						$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 9 } #Fabled
+					}
+				}
+			}
+			add = 150
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					exists = $KNIGHT_MAKER$.dynasty
+					$KNIGHT_MAKER$.dynasty = { dynasty_prestige_level = 10 } #Legendary
+				}
+			}
+			add = 175
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					prestige_level >= 4
+				}
+			}
+			add = 100
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					has_court_position = zz_kingsguard_court_position
+				}
+			}
+			add = 25
+		}
+		if = {
+			limit = {
+				$KNIGHT_MAKER$ = {
+					has_court_position = zz_kingsguard_lord_commander_court_position
+				}
+			}
+			add = 50
+		}
+		if = {
+			limit = {
+				$KNIGHT_TO_BE$ = {
+					is_close_family_of = $KNIGHT_MAKER$
+				}
+			}
+			add = -25 #AGOT REVIEW - Too harsh?
+		}
+		if = { #If they are an immediate heir to an EMPIRE tier realm
+			limit = {
+				$KNIGHT_TO_BE$ = {
+					any_heir_title = {
+						tier >= tier_empire
+						place_in_line_of_succession = {
+							target = prev
+							value <= 3
+						}
+					}
+				}
+			}
+			add = 30 #Prestigious to knight the immediate royal family
+		}
+		if = {
+			limit = {
+				$KNIGHT_TO_BE$ = {
+					any_heir_title = {
+						tier = tier_kingdom
+						place_in_line_of_succession = {
+							target = prev
+							value <= 3
+						}
+					}
+				}
+			}
+			add = 25 #Prestigious to knight the heirs of the lord paramounticies
+		}
+		if = {
+			limit = {
+				$KNIGHT_TO_BE$ = {
+					is_landed = yes
+					highest_held_title_tier > tier_barony
+				}
+			}
+			add = 5 #Knighting a lord will be prestigious to the knight maker, but not very
+		}
+	}
+
+}
+
+agot_join_kingsguard_effect = {
 	$KINGSGUARD$ = {
 		add_trait = kingsguard
 		add_character_flag = { flag = blocked_from_leaving }
