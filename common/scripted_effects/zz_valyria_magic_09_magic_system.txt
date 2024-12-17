@@ -753,7 +753,9 @@ zz_valyria_magic_cast_effect = {
 		limit = {
 			NOT = {
 				any_equipped_character_artifact = { 
-					exists = var:$SPELL$
+					exists = var:item_type
+					exists = var:spell
+					var:spell = $SPELL$
 				}
 			}
 		}
@@ -777,50 +779,44 @@ zz_valyria_magic_cast_effect = {
 			}
 		}
 	}
-	else_if = {
-		limit = {
-			any_equipped_character_artifact = { 
-				has_variable = $SPELL$
-			}
-		}
+	else = {
 		if = { 
 			limit = {
 				any_equipped_character_artifact = { 
-					has_variable = scroll
+					exists = var:item_type
 				}
 			}
 			random_equipped_character_artifact = {
-				limit = {
-					has_variable = scroll
+				if = {
+					limit = {
+						var:item_type = scroll
+					}
+					save_scope_as = item
+					scope:secondary_recipient = {
+						set_variable = {
+							name = casttype 
+							value = flag:scroll
+						}
+					}
+					$SPELL$_effect = yes
 				}
-				save_scope_as = item
-				scope:secondary_recipient = {
-					set_variable = {
-						name = casttype 
-						value = flag:scroll
+				if = {
+					limit = {
+						var:item_type = potion
+					}
+					save_scope_as = item
+					scope:secondary_recipient = {
+						set_variable = {
+							name = casttype 
+							value = flag:potion
+						}
 					}
 				}
 				$SPELL$_effect = yes
 			}
 		}
-		else = {
-			random_equipped_character_artifact = {
-				limit = {
-					has_variable = potion
-				}
-				save_scope_as = item
-				scope:secondary_recipient = {
-					set_variable = {
-						name = casttype 
-						value = flag:potion
-					}
-				}
-			}
-			$SPELL$_effect = yes
-		}
 	}
-}
-
+}				
 zz_valyria_populate_mage_list = { 
 	if = { 
 		limit = {
