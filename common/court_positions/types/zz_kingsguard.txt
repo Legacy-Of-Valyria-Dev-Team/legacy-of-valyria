@@ -127,6 +127,10 @@
 			exists = scope:liege
 			can_be_kingsguard_trigger = { COURT_OWNER = scope:liege }
 			has_trait = kingsguard
+			trigger_if = {
+				limit = { NOT = { has_court_position = zz_kingsguard_lord_commander_court_position } }
+				court_position_does_not_already_have_a_job_trigger = yes # This positions is considered a job, and cannot be held at the same tims as another similar position
+			}
 		}
 	}
 
@@ -408,12 +412,19 @@ zz_kingsguard_court_position = {
 	valid_position = {
 		can_have_kingsguard = yes
 	}
-	
+
 	valid_character = {
 		scope:employee = {
 			exists = scope:liege
 			can_be_kingsguard_trigger = { COURT_OWNER = scope:liege }
 			has_trait = kingsguard
+			trigger_if = {
+				limit = { NOT = { has_court_position = zz_kingsguard_court_position } }
+				court_position_does_not_already_have_a_job_trigger = yes # This positions is considered a job, and cannot be held at the same tims as another similar position
+			}
+			not = {
+				has_court_position = zz_kingsguard_lord_commander_court_position
+			}
 		}
 	}
 
