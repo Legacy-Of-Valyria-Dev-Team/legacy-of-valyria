@@ -1,0 +1,1330 @@
+﻿namespace = agot_knighthood_maintenance
+
+#############################################################################################
+## Event Chain that Handles the Acquisition of Traits or Relations that Prevent Knighthood ##
+#############################################################################################
+
+# Maintenance event that fires on a quarterly pulse to check if you, as a squire, have gained traits preventing knighthood
+agot_knighthood_maintenance.0001 = {
+	type = character_event
+	hidden = yes
+
+	trigger = {
+		agot_is_squire_with_knight = yes
+		NOT = { has_character_flag = agot_knighthood_maintenance_disqualified_from_squirehood_flag }
+		agot_has_traits_preventing_knighthood_trigger = yes
+	}
+
+	immediate = {
+		add_character_flag = agot_knighthood_maintenance_disqualified_from_squirehood_flag
+		random_relation = {
+			type = agot_knight
+			save_scope_as = my_knight
+		}
+		scope:my_knight = {
+			trigger_event = {
+				id = agot_knighthood_maintenance.0005 #Trigger a notification event that your squire has become incompatible with squirehood
+			}
+		}
+		trigger_event = {
+			id = agot_knighthood_maintenance.0006 #Notify the player via event that they can no longer be a squire
+		}
+	}
+}
+
+# The Knight's Perspective Event - It removes the squire relation.
+agot_knighthood_maintenance.0005 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0005.t
+	desc = agot_knighthood_maintenance.0005.desc
+
+	theme = healthcare
+
+	override_background = {
+		reference = courtyard
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:my_squire
+		animation = idle
+	}
+
+	immediate = {
+		random_relation = {
+			type = agot_squire
+			limit = {
+				agot_has_traits_preventing_knighthood_trigger = yes
+			}
+			save_scope_as = my_squire
+		}
+	}
+
+	#This is disapponting.
+	option = {
+		name = agot_knighthood_maintenance.0005.a
+		custom_tooltip = agot_knighthood_maintenance.0005.a.tt
+		remove_relation_agot_squire = scope:my_squire
+	}
+}
+
+# The Squire's Perspective Event - It removes the knight relation.
+agot_knighthood_maintenance.0006 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0006.t
+	desc = agot_knighthood_maintenance.0006.desc
+
+	theme = healthcare
+
+	override_background = {
+		reference = courtyard
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:my_knight
+		animation = idle
+	}
+
+	immediate = {
+		random_relation = {
+			type = agot_knight
+			save_scope_as = my_knight #For scoping
+		}
+		random_owned_story = {
+			limit = {
+				story_type = story_agot_squire_ongoing
+			}
+			end_story = yes
+		}
+		remove_relation_agot_knight = scope:my_knight
+		remove_trait = squire
+	}
+
+	#This is disapponting.
+	option = {
+		name = agot_knighthood_maintenance.0006.a
+		show_as_tooltip = {
+			remove_relation_agot_knight = scope:my_knight
+			remove_trait = squire
+		}
+	}
+}
+
+# If certain relationships or states of war develop, the knight-squire relation will be cancelled.
+agot_knighthood_maintenance.0007 = {
+	type = character_event
+	hidden = yes
+
+	trigger = {
+		agot_is_squire_with_knight = yes
+		OR = {
+			has_relation_nemesis = scope:my_knight # They have become your nemesis
+			has_relation_rival = scope:my_knight # They have become your rival
+			is_at_war_with = scope:my_knight # You are at war with them
+			liege = {
+				is_at_war_with = scope:my_knight # Your liege is at war with them
+			}
+			liege = {
+				is_at_war_with = scope:my_knight.liege # Your liege is at war with their liege
+			}
+		}
+	}
+
+	immediate = {
+		save_scope_as = my_squire
+		scope:my_knight = {
+			trigger_event = {
+				id = agot_knighthood_maintenance.0008 #Trigger a notification event that your squire has become incompatible with squirehood
+			}
+		}
+		trigger_event = {
+			id = agot_knighthood_maintenance.0009 #Notify the player via event that they can no longer be a squire
+		}
+	}
+}
+
+# The Knight's Perspective Event - It removes the squire relation.
+agot_knighthood_maintenance.0008 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0008.t
+	desc = agot_knighthood_maintenance.0008.desc
+
+	theme = healthcare
+
+	override_background = {
+		reference = courtyard
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:my_squire
+		animation = idle
+	}
+
+	immediate = {}
+
+	#This is disapponting.
+	option = {
+		name = agot_knighthood_maintenance.0008.a
+		custom_tooltip = agot_knighthood_maintenance.0008.a.tt
+		remove_relation_agot_squire = scope:my_squire
+	}
+}
+
+# The Squire's Perspective Event - It removes the knight relation.
+agot_knighthood_maintenance.0009 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0009.t
+	desc = agot_knighthood_maintenance.0009.desc
+
+	theme = healthcare
+
+	override_background = {
+		reference = courtyard
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:my_knight
+		animation = idle
+	}
+
+	immediate = {
+		random_relation = {
+			type = agot_knight
+			save_scope_as = my_knight #For scoping
+		}
+		random_owned_story = {
+			limit = {
+				story_type = story_agot_squire_ongoing
+			}
+			end_story = yes
+		}
+		remove_relation_agot_knight = scope:my_knight
+		remove_trait = squire
+	}
+
+	#This is disapponting.
+	option = {
+		name = agot_knighthood_maintenance.0009.a
+		custom_tooltip = agot_knighthood_maintenance.0009.a.tt
+		show_as_tooltip = {
+			remove_relation_agot_knight = scope:my_knight
+			remove_trait = squire
+		}
+	}
+}
+
+
+######################################################
+## Event Chain that Handles a Squire's Knight Dying ##
+######################################################
+
+# Maintenance Event that fires if a squire's knight dies
+# This fires from agot_knight_relations_on_actions on_death_relation_agot_knight
+agot_knighthood_maintenance.0010 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0010.t
+	desc = agot_knighthood_maintenance.0010.desc
+
+	theme = martial
+
+	override_background = {
+		reference = courtyard
+	}
+
+	left_portrait = {
+		character = root
+		animation = grief
+	}
+
+	right_portrait = {
+		character = scope:dead_knight
+		animation = idle
+	}
+
+	immediate = {
+		save_scope_as = knightless_squire
+	}
+
+	#This is disapponting, but I need to mourn right now.
+	option = {
+		name = agot_knighthood_maintenance.0010.a
+		custom_tooltip = agot_knighthood_maintenance.0010.a.tt
+		add_character_flag = agot_knighthood_knightless_squire_flag # We will use localization to change the description of the squire trait to highlight the lack of knight
+		ai_chance = {
+			base = 10
+			modifier = {
+				has_trait = content
+				add = 33
+			}
+			modifier = {
+				has_trait = fickle
+				add = 10
+			}
+			modifier = {
+				has_trait = lazy
+				add = 33
+			}
+			modifier = {
+				has_trait = stubborn
+				add = 10
+			}
+		}
+	}
+
+	#This is disapponting, but I would like to ask a knight to continue my progress.
+	option = {
+		name = agot_knighthood_maintenance.0010.b
+		custom_tooltip = agot_knighthood_maintenance.0010.b.tt
+		trigger = {
+			is_agot_knight_trigger = no
+		}
+		if = {
+			limit = { #If your close or extended family can take you as a squire
+				any_close_or_extended_family_member = {
+					agot_can_take_squire_trigger = yes # You are able to take on a squire
+					OR = { #OR so this could also trigger for non-ruler relations in the same court
+						is_in_the_same_court_as = root #In the same court as you
+						liege = root #You are their liege
+						root.liege = this
+					}
+					NOT = { has_any_bad_relationship_with_character_trigger = { CHARACTER = root } }
+				}
+			}
+			random_close_or_extended_family_member = {
+				limit = {
+					agot_can_take_squire_trigger = yes # You are able to take on a squire
+					OR = { #OR so this could also trigger for non-ruler relations in the same court
+						is_in_the_same_court_as = root #In the same court as you
+						liege = root #You are their liege
+						root.liege = this
+					}
+					NOT = { has_any_bad_relationship_with_character_trigger = { CHARACTER = root } }
+				}
+				save_scope_as = nearby_knight
+			}
+			scope:nearby_knight = {
+				trigger_event = agot_knighthood_maintenance.0011
+			}
+		}
+		else_if = {
+			limit = { #If you are not a ruler, search courtiers in the same court
+				is_ruler = no
+				is_eligible_for_agot_squirehood_trigger = yes #Eligible for squirehood
+				exists = root.liege #You need to have a liege to be in a court
+				root.liege = { #Scope to ROOT's liege since they'll be a fellow courtier
+					any_courtier = {
+						agot_can_take_squire_trigger = yes #Can they take a squire?
+					}
+				}
+			}
+			root.liege = {
+				random_courtier = { #This will exclude the liege from the search, but that's intended. Potential Squire doesn't want to bother the important lord fella.
+					limit = {
+						agot_can_take_squire_trigger = yes
+					}
+					save_scope_as = nearby_knight
+				}
+			}
+			scope:nearby_knight = {
+				trigger_event = agot_knighthood_maintenance.0011
+			}
+		}
+		else = {
+			add_character_flag = agot_knighthood_knightless_squire_flag
+			# A year later, if they have no knight, it's time to call it quits...
+			if = {
+				limit = {
+					is_ai = yes
+				}
+				trigger_event = {
+					id = agot_knighthood_maintenance.0300
+					months = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_ai = no
+				}
+				trigger_event = {
+					id = agot_knighthood_maintenance.0300
+					years = 1
+				}
+			}
+		}
+		ai_chance = {
+			base = 85
+			modifier = {
+				has_trait = ambitious
+				add = 25
+			}
+			modifier = {
+				has_trait = diligent
+				add = 25
+			}
+			modifier = {
+				has_trait = rude
+				add = 1
+			}
+			modifier = {
+				has_trait = gregarious
+				add = 10
+			}
+		}
+	}
+}
+
+# A knight is asked to take you on as their squire after your own knight has died (triggered from 0010)
+agot_knighthood_maintenance.0011 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0011.t
+	desc =  agot_knighthood_maintenance.0011.desc
+
+	theme = faith
+
+	override_background = {
+		reference = army_camp
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:knightless_squire
+		animation = beg
+	}
+
+	#Yes, i'll take you as my squire!
+	option = {
+		name = agot_knighthood_maintenance.0011.a
+		set_relation_agot_squire = scope:knightless_squire
+		add_prestige = minor_prestige_gain
+		save_scope_as = my_knight
+		create_character_memory = {
+			type = agot_got_squire
+			participants = {
+				squire = scope:knightless_squire
+			}
+		}
+		hidden_effect = {
+			scope:knightless_squire = {
+				send_interface_toast = {
+					title = agot_knighthood.0021.a_toast #Reuse the loc from earlier
+					left_icon = scope:nearby_knight
+					right_icon = scope:knightless_squire
+					custom_tooltip = agot_knighthood.0021.a_toast.tt
+				}
+				create_character_memory = {
+					type = agot_became_squire
+					participants = {
+						knight = root
+					}
+				}
+				random_owned_story = {
+					limit = {
+						story_type = story_agot_squire_ongoing
+					}
+					set_variable = {
+						name = my_knight
+						value = scope:my_knight
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 65
+			modifier = {
+				scope:knightless_squire = {
+					has_trait = ambitious
+				}
+				add = 15
+			}
+			modifier = {
+				scope:knightless_squire = {
+					has_trait = charming
+				}
+				add = 25
+			}
+			modifier = {
+				has_trait = ambitious
+				add = 25
+			}
+			modifier = {
+				has_trait = generous
+				add = 50
+			}
+			modifier = {
+				has_trait = gregarious
+				add = 25
+			}
+			modifier = {
+				has_trait = compassionate
+				add = 25
+			}
+			modifier = {
+				ai_compassion >= medium_positive_compassion
+				add = 25
+			}
+			modifier = {
+				ai_energy >= low_positive_energy
+				add = 15
+			}
+			modifier = {
+				ai_honor >= low_positive_honor
+				add = 10
+			}
+		}
+	}
+
+	#No, screw off.
+	option = {
+		name = agot_knighthood_maintenance.0011.b
+		custom_tooltip = agot_knighthood_maintenance.0011.b.tt
+		hidden_effect = {
+			scope:knightless_squire = {
+				send_interface_toast = {
+					title = agot_knighthood.0021.b_toast
+					left_icon = scope:nearby_knight
+					right_icon = scope:knightless_squire
+					custom_tooltip = agot_knighthood.0021.b_toast.tt
+					add_prestige = miniscule_prestige_loss
+				}
+				add_character_flag = agot_knighthood_knightless_squire_flag
+				trigger_event = {
+					id = agot_knighthood_maintenance.0300
+					years = 1
+				}
+			}
+		}
+		ai_chance = {
+			base = 35
+			modifier = {
+				has_trait = lazy
+				add = 50
+			}
+			modifier = {
+				has_trait = content
+				add = 50
+			}
+			modifier = {
+				has_trait = shy
+				add = 35
+			}
+			modifier = {
+				has_trait = callous
+				add = 25
+			}
+			modifier = {
+				has_trait = fickle
+				add = 15
+			}
+			modifier = {
+				ai_boldness <= medium_negative_boldness
+				add = 15
+			}
+			modifier = {
+				ai_energy <= low_negative_energy
+				add = 25
+			}
+			modifier = {
+				ai_honor <= low_negative_honor
+				add = 15
+			}
+		}
+	}
+}
+
+# You are granted knighthood on death by your knight
+agot_knighthood_maintenance.0012 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0012.t
+	desc =  agot_knighthood_maintenance.0012.desc
+
+	theme = faith
+
+	override_background = {
+		reference = army_camp
+	}
+
+	trigger = {
+		has_trait_xp = {
+			trait = squire
+			track = knight
+			value >= 51
+		}
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:dead_knight
+		animation = admiration
+	}
+
+	#WOW!
+	option = {
+		name = agot_knighthood_maintenance.0012.a
+		custom_tooltip = agot_knighthood_maintenance.0012.a.tt
+
+		agot_become_a_knight_effect = yes
+
+		agot_add_become_a_knight_prestige_effect = {
+			KNIGHT_MAKER = scope:dead_knight
+			KNIGHT_TO_BE = root
+		}
+		if = {
+			limit = {
+				faith = {
+					has_doctrine = tenet_knighthood
+				}
+			}
+			add_piety = 75
+		}
+		create_character_memory = {
+				type = agot_was_knighted
+				participants = {
+					knight = scope:dead_knight
+				}
+			}
+	}
+}
+
+##################################################################
+## Events Ending Your Squire Journey After Your Knight Has Died ##
+##################################################################
+
+agot_knighthood_maintenance.0300 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0300.t
+	desc =  agot_knighthood_maintenance.0300.desc
+
+	theme = faith
+
+	override_background = {
+		reference = army_camp
+	}
+
+	trigger = {
+		num_of_relation_agot_knight = 0 # You have no knight
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	right_portrait = {
+		character = scope:dead_knight
+		animation = admiration
+	}
+
+	# I call it quits on being a squire.
+	option = {
+		name = agot_knighthood_maintenance.0300.a
+		custom_tooltip = agot_knighthood_maintenance.0300.a.tt
+		remove_trait = squire
+		random_owned_story = {
+			limit = {
+				story_type = story_agot_squire_ongoing
+			}
+			end_story = yes
+		}
+		add_prestige = miniscule_prestige_loss
+		stress_impact = {
+			base = minor_stress_impact_gain
+			content = major_stress_impact_loss
+			lazy = major_stress_impact_loss
+			diligent = major_stress_impact_gain
+			ambitious = major_stress_impact_gain
+		}
+		ai_chance = {
+			base = 25
+			modifier = {
+				has_trait = content
+				add = 25
+			}
+			modifier = {
+				has_trait = lazy
+				add = 50
+			}
+			modifier = {
+				age < 16
+				add = 25
+			}
+			modifier = {
+				age > 22
+				add = 200
+			}
+		}
+	}
+
+	# While my time as a squire is clearly over, perhaps I can buy knighthood? How cunning!
+	option = {
+		name = agot_knighthood_maintenance.0300.b
+		custom_tooltip = agot_knighthood_maintenance.0300.b.tt
+		trigger = {
+			NOT = {
+				has_trait = just
+			}
+			gold >= major_gold_value
+			age >= 16 # Is an adult
+		}
+
+		agot_become_a_knight_effect = yes
+
+		add_prestige = minor_prestige_gain
+		remove_short_term_gold = major_gold_value
+
+		stress_impact = {
+			base = minor_stress_impact_gain
+			deceitful = major_stress_impact_loss
+			paranoid = major_stress_impact_gain
+		}
+		ai_chance = {
+			base = 10
+			modifier = {
+				has_trait = greedy
+				add = 50
+			}
+			modifier = {
+				has_trait = ambitious
+				add = 25
+			}
+			modifier = {
+				has_trait = deceitful
+				add = 100
+			}
+			modifier = {
+				AND = {
+					has_trait = zealous
+					faith = {
+						has_doctrine = tenet_knighthood
+					}
+				}
+				add = -200
+			}
+		}
+	}
+
+	# I've given up on my journey to knighthood, but I love being a squire.
+	option = {
+		name = agot_knighthood_maintenance.0300.c
+		custom_tooltip = agot_knighthood_maintenance.0300.c.tt
+		trigger = {
+			# Being heir to any title will disqualify this
+			NOT = {
+				OR = {
+					any_heir_title = {
+						tier >= tier_county
+					}
+					is_landed = yes
+				}
+			}
+		}
+		remove_character_flag = agot_knighthood_knightless_squire_flag
+		add_character_flag = agot_favors_being_a_squire_flag
+		add_prestige = miniscule_prestige_gain
+		stress_impact = {
+			base = minor_stress_impact_gain
+			content = major_stress_impact_loss
+			lazy = major_stress_impact_loss
+			diligent = major_stress_impact_gain
+			ambitious = major_stress_impact_gain
+		}
+		ai_chance = {
+			base = -50
+			modifier = {
+				AND = {
+					NOT = {
+						any_heir_title = {} # Not heir to anything
+					}
+					is_landed = no
+				}
+				add = 25
+			}
+			modifier = {
+				is_lowborn = yes
+				add = 25
+			}
+		}
+	}
+}
+
+################################################################
+## Events Ending Your Squire Journey If You Have Terrible PTK ##
+################################################################
+
+agot_knighthood_maintenance.0400 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0400.t
+	desc =  agot_knighthood_maintenance.0400.desc
+
+	theme = faith
+
+	override_background = {
+		reference = army_camp
+	}
+
+	left_portrait = {
+		character = root
+		animation = disbelief
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_relation = {
+					type = agot_knight
+				}
+			}
+			random_relation = {
+				type = agot_knight
+				save_scope_as = my_knight
+			}
+		}
+		random_owned_story = {
+			limit = {
+				story_type = story_agot_squire_ongoing
+			}
+			end_story = yes
+		}
+	}
+
+	option = {
+		name = agot_knighthood_maintenance.0400.a
+		remove_trait = squire
+		add_prestige = minor_prestige_loss
+		if = {
+			limit = {
+				any_relation = {
+					type = agot_knight
+				}
+			}
+			remove_relation_agot_knight = scope:my_knight
+		}
+		stress_impact = {
+			base = minor_stress_impact_gain
+			content = major_stress_impact_loss
+			lazy = major_stress_impact_loss
+			diligent = major_stress_impact_gain
+			ambitious = major_stress_impact_gain
+		}
+	}
+}
+
+###################################################################################
+## Event that knights you if you are a squire, but have inherited a landed title ##
+###################################################################################
+
+agot_knighthood_maintenance.0500 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0500.t
+	desc =  agot_knighthood_maintenance.0500.desc
+
+	theme = faith
+
+	override_background = {
+		reference = army_camp
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_vassal = {
+					highest_held_title_tier >= tier_county # They are count or better
+					is_agot_knight_trigger = yes
+				}
+			}
+			random_vassal = {
+				limit = {
+					highest_held_title_tier >= tier_county # They are count or better
+					is_agot_knight_trigger = yes
+				}
+				save_scope_as = my_vassal
+			}
+		}
+		if = {
+			limit = {
+				primary_title = { has_variable = kingsguard }
+				any_court_position_holder = {
+					is_agot_knight_trigger = yes
+					is_kingsguard_trigger = yes
+				}
+			}
+			random_court_position_holder = {
+				limit = {
+					is_agot_knight_trigger = yes
+					is_kingsguard_trigger = yes
+				}
+				save_scope_as = my_kingsguard
+			}
+		}
+		if = {
+			limit = {
+				any_courtier_or_guest = {
+					is_agot_knight_trigger = yes
+				}
+			}
+			random_courtier_or_guest = {
+				limit = {
+					is_agot_knight_trigger = yes
+				}
+				save_scope_as = my_courtier
+			}
+		}
+		if = {
+			limit = {
+				any_relation = {
+					type = agot_knight
+				}
+			}
+			random_relation = {
+				type = agot_knight
+				save_scope_as = my_relation_knight
+			}
+		}
+	}
+
+	# I Can No Longer be a Squire Forever. I will Command my knight to make me a knight!
+	option = {
+		name = agot_knighthood_maintenance.0500.a
+		trigger = {
+			exists = scope:my_relation_knight
+		}
+		#Add Prestige
+		agot_add_become_a_knight_prestige_effect = {
+			KNIGHT_MAKER = scope:my_relation_knight
+			KNIGHT_TO_BE = root
+		}
+		#Notify them that they've been made a knight
+		send_interface_toast = {
+			title = agot_knighthood_youve_been_made_a_knight_toast
+			left_icon = scope:my_relation_knight
+			right_icon = root
+			custom_tooltip = agot_knighthood_youve_been_made_a_knight_toast.tt
+		}
+		#Create a memory
+		create_character_memory = {
+			type = agot_was_knighted
+			participants = {
+				knight = scope:my_relation_knight
+			}
+		}
+		#Improve opinion
+		add_opinion = {
+			target = scope:my_relation_knight
+			modifier = knighted_me_opinion
+			opinion = 25
+		}
+		scope:my_relation_knight = {
+			if = {
+				limit = {
+					has_relation_agot_squire = root
+					OR = {
+						is_foreign_court_guest_of = root
+						is_foreign_court_guest_of = root.host
+						is_foreign_court_guest_of = root.liege
+					}
+				}
+				return_to_court = yes
+			}
+		}
+		remove_relation_agot_knight = scope:my_relation_knight
+
+		agot_become_a_knight_effect = yes
+
+		scope:my_relation_knight = {
+			trigger_event = agot_knighthood_maintenance.0501
+			create_character_memory = {
+				type = agot_knighted_someone
+				participants = {
+					squire = scope:my_relation
+				}
+			}
+		}
+		ai_chance = {
+			base = 33
+		}
+	}
+
+	# I will command a vassal to knight me.
+	option = {
+		name = agot_knighthood_maintenance.0500.b
+		trigger = {
+			exists = scope:my_vassal
+		}
+		#Add Prestige
+		agot_add_become_a_knight_prestige_effect = {
+			KNIGHT_MAKER = scope:my_vassal
+			KNIGHT_TO_BE = root
+		}
+		#Notify them that they've been made a knight
+		send_interface_toast = {
+			title = agot_knighthood_youve_been_made_a_knight_toast
+			left_icon = scope:my_vassal
+			right_icon = root
+			custom_tooltip = agot_knighthood_youve_been_made_a_knight_toast.tt
+		}
+		#Create a memory
+		create_character_memory = {
+			type = agot_was_knighted
+			participants = {
+				knight = scope:my_vassal
+			}
+		}
+		#Improve opinion
+		add_opinion = {
+			target = scope:my_vassal
+			modifier = knighted_me_opinion
+			opinion = 25
+		}
+
+		agot_become_a_knight_effect = yes
+
+		scope:my_vassal = {
+			trigger_event = agot_knighthood_maintenance.0501
+			create_character_memory = {
+				type = agot_knighted_someone
+				participants = {
+					squire = scope:my_relation
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:my_relation_knight
+			}
+			remove_relation_agot_knight = scope:my_relation_knight
+		}
+		ai_chance = {
+			base = 25
+			modifier = {
+				add = -25
+				has_trait = paranoid
+			}
+		}
+	}
+
+	# I will command a kingsguard to knight me.
+	option = {
+		name = agot_knighthood_maintenance.0500.c
+		trigger = {
+			exists = scope:my_kingsguard
+		}
+		#Add Prestige
+		agot_add_become_a_knight_prestige_effect = {
+			KNIGHT_MAKER = scope:my_kingsguard
+			KNIGHT_TO_BE = root
+		}
+		#Notify them that they've been made a knight
+		send_interface_toast = {
+			title = agot_knighthood_youve_been_made_a_knight_toast
+			left_icon = scope:my_kingsguard
+			right_icon = root
+			custom_tooltip = agot_knighthood_youve_been_made_a_knight_toast.tt
+		}
+		#Create a memory
+		create_character_memory = {
+			type = agot_was_knighted
+			participants = {
+				knight = scope:my_kingsguard
+			}
+		}
+		#Improve opinion
+		add_opinion = {
+			target = scope:my_kingsguard
+			modifier = knighted_me_opinion
+			opinion = 25
+		}
+
+		agot_become_a_knight_effect = yes
+
+		scope:my_kingsguard = {
+			trigger_event = agot_knighthood_maintenance.0501
+			create_character_memory = {
+				type = agot_knighted_someone
+				participants = {
+					squire = scope:my_relation
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:my_relation_knight
+			}
+			remove_relation_agot_knight = scope:my_relation_knight
+		}
+
+		ai_chance = {
+			base = 50
+		}
+	}
+
+	# I will command a knight in my court to knight me.
+	option = {
+		name = agot_knighthood_maintenance.0500.d
+		trigger = {
+			exists = scope:my_courtier
+		}
+		#Add Prestige
+		agot_add_become_a_knight_prestige_effect = {
+			KNIGHT_MAKER = scope:my_courtier
+			KNIGHT_TO_BE = root
+		}
+		#Notify them that they've been made a knight
+		send_interface_toast = {
+			title = agot_knighthood_youve_been_made_a_knight_toast
+			left_icon = scope:my_courtier
+			right_icon = root
+			custom_tooltip = agot_knighthood_youve_been_made_a_knight_toast.tt
+		}
+		#Create a memory
+		create_character_memory = {
+			type = agot_was_knighted
+			participants = {
+				knight = scope:my_courtier
+			}
+		}
+		#Improve opinion
+		add_opinion = {
+			target = scope:my_courtier
+			modifier = knighted_me_opinion
+			opinion = 25
+		}
+		agot_become_a_knight_effect = yes
+		scope:my_courtier = {
+			trigger_event = agot_knighthood_maintenance.0501
+			create_character_memory = {
+				type = agot_knighted_someone
+				participants = {
+					squire = scope:my_relation
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:my_relation_knight
+			}
+			remove_relation_agot_knight = scope:my_relation_knight
+		}
+
+
+		ai_chance = {
+			base = 10
+			modifier = {
+				add = -25
+				highest_held_title_tier >= tier_kingdom
+			}
+		}
+	}
+
+	# I will buy my knighthood! (Fallback option)
+	option = {
+		name = agot_knighthood_maintenance.0500.e
+		trigger = {
+			NOT = {
+				exists = scope:my_knight
+				exists = scope:my_vassal
+				exists = scope:my_courtier
+				exists = scope:my_kingsguard
+			}
+		}
+		#Notify them that they've been made a knight
+		send_interface_toast = {
+			title = agot_knighthood_youve_been_made_a_knight_toast
+			#left_icon = scope:my_kingsguard
+			right_icon = root
+			custom_tooltip = agot_knighthood_youve_been_made_a_knight_toast.tt
+		}
+		#Create a memory
+		create_character_memory = {
+			type = agot_bought_knighthood
+			participants = {
+				purchaser = root
+			}
+		}
+		agot_become_a_knight_effect = yes
+		remove_short_term_gold = 250
+
+		if = {
+			limit = {
+				exists = scope:my_relation_knight
+			}
+			remove_relation_agot_knight = scope:my_relation_knight
+		}
+
+		ai_chance = {
+			base = 5
+			modifier = {
+				add = 15
+				OR = {
+					has_trait = impatient
+					has_trait = ambitious
+				}
+			}
+			modifier = {
+				add = -33
+				OR = {
+					has_trait = greedy
+					gold < 250
+				}
+			}
+		}
+	}
+
+
+	# Actually, I will not pursue knighthood anymore.
+	option = {
+		name = agot_knighthood_maintenance.0500.f
+		remove_trait = squire
+		# End the squire ongoing story
+		random_owned_story = {
+			limit = {
+				story_type = story_agot_squire_ongoing
+			}
+			end_story = yes
+		}
+
+		if = {
+			limit = {
+				exists = scope:my_relation_knight
+			}
+			remove_relation_agot_knight = scope:my_relation_knight
+		}
+
+		ai_chance = {
+			base = 1
+			modifier = {
+				add = -50
+				OR = {
+					has_trait = ambitious
+					has_trait = patient
+					has_trait = stubborn
+				}
+			}
+			modifier = {
+				add = 25
+				OR = {
+					has_trait = fickle
+					has_trait = impatient
+					has_trait = lazy
+					has_trait = craven
+				}
+			}
+		}
+	}
+}
+
+agot_knighthood_maintenance.0501 = {
+	type = letter_event
+	opening = agot_knighthood_maintenance.0501.opening
+	desc = agot_knighthood_maintenance.0501.desc
+	sender = scope:my_relation # reused the scope from above
+
+	#Well, that is one way to flex your new lordship...
+	option = {
+		name = agot_knighthood_maintenance.0501.a
+		stress_impact = {
+			base = minor_stress_impact_gain
+			loyal = minor_stress_impact_loss
+			just = minor_stress_impact_gain
+		}
+	}
+}
+
+## Remove Child's Knight Event
+
+agot_knighthood_maintenance.0550 = {
+	type = character_event
+	title = agot_knighthood_maintenance.0550.t
+	desc =  agot_knighthood_maintenance.0550.desc
+
+	theme = martial
+
+	override_background = {
+		reference = army_camp
+	}
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	lower_left_portrait = scope:childs_knight
+
+	right_portrait = {
+		character = scope:cancelled_squire_child
+		animation = idle
+	}
+
+	# They will stop being a squire, for now.
+	option = {
+		name = agot_knighthood_maintenance.0550.a
+		scope:cancelled_squire_child = {
+			remove_trait = squire
+			# End the squire ongoing story
+			random_owned_story = {
+				limit = {
+					story_type = story_agot_squire_ongoing
+				}
+				end_story = yes
+			}
+		}
+	}
+}
+
+## Notification to the Knight
+
+agot_knighthood_maintenance.0551 = {
+	type = letter_event
+	opening = agot_knighthood_maintenance.0551.opening
+	desc = agot_knighthood_maintenance.0551.desc
+	sender = scope:actor # reused the scope from above
+
+	#Well, that is one way to flex your new lordship...
+	option = {
+		name = agot_knighthood_maintenance.0551.a
+		stress_impact = {
+			base = minor_stress_impact_gain
+			arrogant = minor_stress_impact_gain
+		}
+		show_as_tooltip = {
+			add_opinion = {
+				target = scope:actor
+				modifier = removed_my_squire_opinion
+				opinion = -50
+			}
+		}
+	}
+}

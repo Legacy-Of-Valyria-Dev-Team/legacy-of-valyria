@@ -1,0 +1,6006 @@
+﻿namespace = agot_dragon
+
+# This file is for events that are contextually called that relate to dragons. e.g.
+# the death of the rider, the death of the dragon, etc.
+#
+# Events that should be called on standard ticks (i.e. yearly chance) should be in
+# agot_filler/00_agot_filler_events_dragon.txt
+
+# Dragon death handler
+agot_dragon.0001 = {
+	hidden = yes
+
+	trigger = { has_trait = dragon }
+
+	immediate = {
+		save_scope_as = dead_dragon
+		if = { # Is ridden dragon
+			limit = {
+				exists = var:current_rider
+			}
+		
+			var:current_rider = {
+				if = {
+					limit = {
+						is_alive = yes
+					}
+					# Remove flags from the rider
+					remove_character_flag = conducting_terror_campaign
+					# Remove modifiers from rider
+					remove_character_modifier = agot_contributing_to_dragonlore
+					remove_character_modifier = agot_clearing_woods_with_dragonfire
+					# Add character memory
+					create_character_memory = {
+						type = agot_dragon_died
+						participants = { dead_dragon = root }
+					}
+					# Set up event to ensure dragonrider outlived dragon
+					trigger_event = {
+						id = agot_dragon_death.0001
+						days = 1
+					}
+				}
+			}
+
+			add_to_variable_list = {
+				name = past_riders
+				target = var:current_rider
+			}
+
+			if = {
+				limit = { has_variable = rebind_count}
+				remove_variable = rebind_count
+			}
+		}
+		else_if = { # Is owned dragon
+			limit = {
+				any_relation = {
+					type = agot_dragon
+					is_alive = yes
+				}
+			}
+			random_relation = {
+				type = agot_dragon
+				save_scope_as = bonded_human
+			}
+			scope:bonded_human = {
+				# Add character memory
+				create_character_memory = {
+					type = agot_dragon_died
+					participants = { dead_dragon = root }
+				}
+				# Set up event to ensure dragonrider outlived dragon
+				trigger_event = {
+					id = agot_dragon_death.0001
+					days = 1
+				}
+			}
+		}
+		else = { # Is wild dragon
+
+		}
+
+		# Remove worshiping if applicable
+		var:lair ?= {
+			county =  { remove_county_modifier = agot_worshiping_dragon }
+			if = {
+				limit = { # Only if they don't need the variable anymore
+					NOT = { county = { has_county_modifier = agot_dragon_cult_gone_wrong } }
+				}
+				remove_local_variable = worshiped_dragon
+			}
+		}
+	}
+}
+
+# Dragonrider death handler - called on death of character with current_dragon var. The event fires on their dragon however because disease deaths' order of operations break on_actions.
+agot_dragon.0002 = {
+	hidden = yes
+	immediate = {
+		# Manage rider list
+		if = {
+			limit = {
+				is_alive = yes
+				exists = var:current_rider
+			}
+			add_to_variable_list = {
+				name = past_riders
+				target = var:current_rider
+			}
+			remove_variable = current_rider
+			clear_variable_list = current_rider_list
+		}
+		# Check if should flee to Valyria / Sothoryos to cull population
+		if = {
+			limit = {
+				is_alive = yes
+				NOT = { has_character_flag = in_dragonpit }
+				age > 80
+				location = { # Don't kill last dragon of a location
+					any_character_in_location = {
+						has_trait = dragon
+						NOT = { this = root }
+						has_character_flag = owned_dragon
+					}
+				}
+				any_living_dragon = {
+					count > agot_dragon_cull_limit
+				}
+			}
+
+			random_list = {
+				70 = {}
+				25 = { death = { death_reason = death_flew_away_to_valyria } }
+				5 = { death = { death_reason = death_flew_away_to_sothoryos } }
+			}
+
+		}
+		# Check if should become wild
+		if = {
+			limit = {
+				is_alive = yes
+				NOR = {
+					has_character_flag = in_dragonpit
+					has_variable = travelling_from_pit
+				}
+			}
+			save_scope_as = now_wild_dragon
+			# Remove return variable if exists
+			if = {
+				limit = {
+					exists = var:return_pitted_dragon_location
+				}
+				remove_variable = return_pitted_dragon_location
+			}
+			# Set up notify owner / would-be owner
+			if = {
+				limit = {
+					court_owner = scope:dead_rider
+					exists = scope:dead_rider.primary_title.current_heir
+				}
+				scope:dead_rider.primary_title.current_heir = {
+					trigger_event = {
+						id = agot_dragon.0020
+						days = 1
+					}
+				}
+			}
+			else = {
+				court_owner = {
+					trigger_event = {
+						id = agot_dragon.0020
+						days = 1
+					}
+				}
+			}
+			# Becomes wild and leaves
+			agot_dragon_flees_province = yes
+		}
+	}
+}
+
+# Wild dragon movement
+agot_dragon.0003 = {
+	trigger = {
+		NOT = { has_character_flag = owned_dragon } # We only want wild dragons
+	}
+	hidden = yes
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			add = 10
+			location ?= {
+				OR = {
+					geographical_region = world_westeros_the_wall_only
+					geographical_region = world_westeros_beyond_the_wall
+					geographical_region = world_ruins
+				}
+			}
+		}
+	}
+	immediate = {
+		save_scope_as = dragon
+		# If it doesn't have a lair, this is now it's lair
+		if = {
+			limit = {
+				NOT = { exists = root.var:lair }
+				location ?= {
+					NOR = { # Don't go north of the wall
+						geographical_region = world_westeros_the_wall_only
+						geographical_region = world_westeros_beyond_the_wall
+						geographical_region = world_ruins
+					}
+				}
+			}
+			set_variable = {
+				name = lair
+				value = location
+			}
+		}
+		# If lair is STILL not defined it's for some reason in the north, so set it to dragonstone
+		if = {
+			limit = {
+				NOT = { exists = root.var:lair }
+			}
+			set_variable = {
+				name = lair
+				value = title:c_dragonstone.title_province
+			}
+		}
+		# If it doesn't have a last visited location, this is now it's last visited location
+		if = {
+			limit = {
+				NOT = { exists = root.var:last_visited_location }
+			}
+			set_variable = {
+				name = last_visited_location
+				value = location
+			}
+		}
+		scope:dragon.var:lair = {
+			save_scope_as = lair
+		}
+		random_list = {
+			85 = { # Dragon wants to explore
+				location.county = { # First try neighboring counties
+					every_title_to_title_neighboring_and_across_water_county = {
+						limit = {
+							NOT = { scope:lair.county = this } # Don't go back to your lair
+							NOT = { scope:dragon.var:last_visited_location.county = this } # Don't go back to where you just were
+							title_province = {
+								NOR = { # Don't go north of the wall
+									geographical_region = world_westeros_the_wall_only
+									geographical_region = world_westeros_beyond_the_wall
+									geographical_region = world_ruins
+								}
+							}
+						}
+						add_to_list = "possible_destinations"
+					}
+					if = {
+						limit = { NOT = { any_in_list = { list = "possible_destinations" count > 0 } } } # If there are no neighboring counties, try neighboring counties at the duchy level
+						duchy = {
+							every_title_to_title_neighboring_and_across_water_county = {
+								limit = {
+									NOT = { scope:lair.county = this } # Don't go back to your lair
+									NOT = { scope:dragon.var:last_visited_location.county = this } # Don't go back to where you just were
+									title_province = {
+										NOR = { # Don't go north of the wall
+											geographical_region = world_westeros_the_wall_only
+											geographical_region = world_westeros_beyond_the_wall
+											geographical_region = world_ruins
+										}
+									}
+								}
+								add_to_list = "possible_destinations"
+							}
+						}
+					}
+					random_in_list = { # Pick a random destination - could add weights to this down the line
+						list = "possible_destinations"
+						save_scope_as = destination
+					}
+					if = { # If it can leave, go there
+						limit = { exists = scope:destination }
+						# Notifications
+						if = { # Send left lair if is leaving lair, or general leaving message if not
+							limit = { scope:dragon.location.county.holder = scope:lair.county.holder }
+							scope:dragon.location.county.holder = {
+								send_interface_message = {
+									type = dragon_roaming_messages
+									title = wild_dragon_left_lair.t
+									desc = wild_dragon_left_lair.desc
+									left_icon = scope:dragon
+								}
+							}
+							if = { # If the dragon is leaving a duchy and they've not already been notified, send a message to the duchy holder
+								limit = {
+									exists = scope:dragon.location.duchy.holder
+									NOT = { scope:dragon.location.duchy.holder = scope:dragon.location.county.holder }
+								}
+								scope:dragon.location.duchy.holder = {
+									send_interface_message = {
+										type = dragon_roaming_messages
+										title = wild_dragon_left_lair.t
+										desc = wild_dragon_left_lair.desc
+										left_icon = scope:dragon
+									}
+								}
+							}
+						}
+						else = {
+							scope:dragon.location.county.holder = {
+								send_interface_message = {
+									type = dragon_roaming_messages
+									title = wild_dragon_left.t
+									desc = wild_dragon_left.desc
+									left_icon = scope:dragon
+								}
+							}
+							if = { # If the dragon is leaving a duchy and they've not already been notified, send a message to the duchy holder
+								limit = {
+									exists = scope:dragon.location.duchy.holder
+									NOT = { scope:dragon.location.duchy.holder = scope:dragon.location.county.holder } # If the dragon is leaving a duchy, send a message to the duchy holder
+								}
+								scope:dragon.location.duchy.holder = {
+									send_interface_message = {
+										type = dragon_roaming_messages
+										title = wild_dragon_left.t
+										desc = wild_dragon_left.desc
+										left_icon = scope:dragon
+									}
+								}
+							}
+						}
+						scope:destination.county.holder = { # Let the new county know the dragon is coming
+							if = { limit = { NOT = { root.employer = this } }
+								add_courtier = scope:dragon
+							}
+							send_interface_message = {
+								type = dragon_roaming_messages
+								title = wild_dragon_travelling_arrived.t
+								desc = wild_dragon_travelling_arrived.desc
+
+								left_icon = scope:dragon
+							}
+						}
+						if = { # If the dragon is arriving at duchy and they've not already been notified, send a message to the duchy holder
+							limit = {
+								exists = scope:destination.duchy.holder
+								NOT = { scope:destination.duchy.holder = scope:dragon.location.duchy.holder }
+								NOT = { scope:destination.duchy.holder = scope:destination.county.holder }
+							}
+							scope:dragon.location.duchy.holder = {
+								send_interface_message = {
+									type = dragon_roaming_messages
+									title = wild_dragon_travelling_arrived.t
+									desc = wild_dragon_travelling_arrived.desc
+									left_icon = scope:dragon
+								}
+							}
+						}
+						scope:dragon = { # Set up a new event to move the dragon again soon
+							trigger_event = {
+								id = agot_dragon.0003
+								days = { 14 62 } # Two weeks to two months
+							}
+							random_list = { # Might do something bad while here
+								5 = {
+									trigger_event = {
+										id = agot_filler_dragon.0095
+										days = { 2 14 }
+									}
+								}
+								95 = {}
+							}
+						}
+					}
+					else = { # If it can't leave, go home
+						if = {
+							limit = { NOT = { scope:dragon.location.county.holder = scope:lair.county.holder } } # If it's not already home
+							scope:dragon.location.county.holder = {
+								send_interface_message = {
+									type = dragon_roaming_messages
+									title = wild_dragon_returned_home_from.t
+									desc = wild_dragon_returned_home_from.desc
+
+									left_icon = scope:dragon
+								}
+							}
+							scope:lair.county.holder = {
+								if = { limit = { NOT = { root.employer = this } }
+									add_courtier = scope:dragon
+								}
+								send_interface_message = {
+									type = dragon_roaming_messages
+									title = wild_dragon_returned_home.t
+									desc = wild_dragon_returned_home.desc
+
+									left_icon = scope:dragon
+								}
+							}
+						}
+						if = { # If the dragon is arriving at duchy and they've not already been notified, send a message to the duchy holder
+							limit = {
+								exists = scope:location.duchy.holder
+								NOT = { scope:location.duchy.holder = scope:lair.county.holder } # If the dragon is arriving in a duchy, send a message to the duchy holder
+							}
+							scope:dragon.location.duchy.holder = {
+								send_interface_message = {
+									type = dragon_roaming_messages
+									title = wild_dragon_returned_home.t
+									desc = wild_dragon_returned_home.desc
+
+									left_icon = scope:dragon
+								}
+							}
+						}
+					}
+					# Remove variables in possible_destinations for next iteration
+					every_in_list = {
+						list = "possible_destinations"
+						remove_from_list = "possible_destinations"
+					}
+				}
+				# Dragon scope
+				set_variable = {
+					name = last_visited_location
+					value = scope:dragon.location # Set new last visited location
+				}
+			}
+			15 = { # Dragon wants to go home
+				if = {
+					limit = { NOT = { location = scope:lair } } # If they're already home no point in messaages
+					location.county.holder = {
+						send_interface_message = {
+							type = dragon_roaming_messages
+							title = wild_dragon_returned_home_from.t
+							desc = wild_dragon_returned_home_from.desc
+
+							left_icon = scope:dragon
+						}
+					}
+					scope:lair.county.holder = {
+						if = { limit = { NOT = { root.employer = this } }
+							add_courtier = root
+							send_interface_message = {
+								type = dragon_roaming_messages
+								title = wild_dragon_returned_home.t
+								desc = wild_dragon_returned_home.desc
+
+								left_icon = scope:dragon
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# Executed! (Player by AI)
+agot_dragon.0004 = {
+	type = character_event
+	title = agot_dragon.0004.t
+	desc = agot_dragon.0004.desc
+	theme = dragon
+
+
+	left_portrait = {
+		character = scope:actor
+		triggered_animation = {
+			trigger = {
+				scope:execution_devour = yes
+			}
+			animation = ecstasy
+		}
+		triggered_animation = {
+			trigger = {
+				NOT = { scope:execution_devour = yes }
+			}
+			animation = schadenfreude
+		}
+	}
+	right_portrait = {
+		trigger = {
+			exists = scope:executioner
+		}
+		character = scope:executioner
+		animation = schadenfreude
+	}
+
+	immediate = {
+		play_music_cue = mx_cue_stress
+		random_court_position_holder = {
+			type = executioner_court_position
+			limit = { is_physically_able = yes }
+			save_scope_as = executioner
+		}
+	}
+
+	option = {
+		name = {
+			trigger = {
+				culture = { has_cultural_tradition = tradition_life_is_just_a_joke }
+			}
+			text = char_interaction.0170.life_is_just_a_joke.a
+		}
+		name = char_interaction.0170.a
+		if = {
+			limit = {
+				culture = { has_cultural_tradition = tradition_life_is_just_a_joke }
+			}
+			stress_impact = {
+				base = massive_stress_loss
+			}
+		}
+		execute_dragon_prisoner_effect = {
+			VICTIM = scope:recipient
+			EXECUTIONER = scope:actor
+			REASON = death_fed_to_dragon
+		}
+	}
+}
+
+# Executed!
+agot_dragon.0005 = {
+	type = character_event
+	title = agot_dragon.0004.t
+	desc = agot_dragon.0004.desc
+
+	left_portrait = scope:actor
+	theme = dragon
+
+	immediate = {
+		play_music_cue = mx_cue_stress
+	}
+
+	option = {
+		name = {
+			trigger = {
+				culture = { has_cultural_tradition = tradition_life_is_just_a_joke }
+			}
+			text = char_interaction.0170.life_is_just_a_joke.a
+		}
+		name = char_interaction.0170.a
+		if = {
+			limit = {
+				culture = { has_cultural_tradition = tradition_life_is_just_a_joke }
+			}
+			stress_impact = {
+				base = massive_stress_loss
+			}
+		}
+		show_as_tooltip = {
+			execute_dragon_prisoner_effect = {
+				VICTIM = scope:recipient
+				EXECUTIONER = scope:actor
+				REASON = death_fed_to_dragon
+			}
+		}
+	}
+}
+
+agot_dragon.0007 = { # Terror campaign
+	hidden = yes
+	immediate = {
+		if = {
+			limit = {
+				var:current_rider ?= {
+					has_character_flag = conducting_terror_campaign
+				}
+			}
+			var:current_rider = {
+				save_scope_as = terror_dragonrider
+			}
+			scope:terror_dragonrider.location ?= {
+				if = {
+					limit = {
+						exists = county.holder.top_liege # Don't try to burn the sea
+						exists = root.top_liege # Don't freak out if you're not in a realm
+						county.holder.top_liege = { is_at_war_with = root.top_liege } # Burn enemy holdings
+						county_controller.top_liege = { is_at_war_with = root.top_liege } # Don't burn occupied holdings
+					}
+					# We're now damaging an enemy, so trigger guilt event if relevant
+					scope:terror_dragonrider = {
+						if = {
+							limit = {
+								NOT = { has_character_flag = terror_campaign_nightmares }
+								NOT = { has_trait = callous }
+								NOT = { has_trait = sadistic }
+							}
+							random_list = {
+								95 = {}
+								5 = {
+									add_character_flag = {
+										flag = terror_campaign_nightmares
+										years = 5
+									}
+									trigger_event = {
+										id = agot_dragon.0013
+										years = { 1 4 }
+									}
+								}
+							}
+						}
+					}
+					# Opinion effect
+					# Firstly, owner of county + liege
+					if = {
+						limit = {
+							county.holder = county.holder.top_liege # Is independent
+						}
+						county.holder = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_holding
+							}
+						}
+					}
+					else_if = {
+						limit = {
+							county.holder.liege = county.holder.top_liege # Has one direct liege
+						}
+						county.holder = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_holding
+							}
+						}
+						county.holder.liege = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_vassals_holding
+							}
+						}
+					}
+					else_if = {
+						limit = {
+							county.holder.liege.liege = county.holder.top_liege # Has two direct lieges
+						}
+						county.holder = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_holding
+							}
+						}
+						county.holder.liege = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_vassals_holding
+							}
+						}
+						county.holder.liege.liege = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_vassals_holding
+							}
+						}
+					}
+					else = { # has three direct lieges - thus is count and can't go lower
+						county.holder = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_holding
+							}
+						}
+						county.holder.liege = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_vassals_holding
+							}
+						}
+						county.holder.liege.liege = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_vassals_holding
+							}
+						}
+						county.holder.liege.liege.liege = {
+							add_opinion = {
+								target = scope:terror_dragonrider
+								modifier = burned_my_vassals_holding
+							}
+						}
+					}
+					# Have done province owner, now do baron owners
+					county = {
+						every_county_province = {
+							limit = {
+								exists = barony.holder
+								NOT = { this = scope:terror_dragonrider.location }
+							}
+							barony.holder = {
+								if = {
+									limit = {
+										primary_title = { tier = tier_barony }
+									}
+									add_opinion = {
+										target = scope:terror_dragonrider
+										modifier = burned_my_holding
+									}
+								}
+							}
+						}
+					}
+					# Now do everyone relevant to the rider if its in the same realm - foreign realms they don't care about (see: Daemon in the stepstones)
+					if = {
+						limit = { county = { target_is_de_jure_liege_or_above = scope:terror_dragonrider.top_liege.primary_title } }
+						scope:terror_dragonrider = {
+							every_close_or_extended_family_member = { # Family doesn't respect it
+								limit = {
+									NOT = { has_trait = callous }
+									NOT = { has_trait = sadistic }
+									NOT = { has_trait = vengeful }
+								}
+								add_opinion = {
+									target = scope:terror_dragonrider
+									modifier = ran_terror_campaign
+								}
+							}
+							every_close_or_extended_family_member = { # Stack again for honorable and compassionate
+								limit = {
+									OR = {
+										has_trait = just
+										has_trait = compassionate
+									}
+									NOT = { has_trait = callous }
+									NOT = { has_trait = sadistic }
+									NOT = { has_trait = vengeful }
+								}
+								add_opinion = {
+									target = scope:terror_dragonrider
+									modifier = ran_terror_campaign
+								}
+							}
+							# The my court
+							every_courtier_or_guest = {
+								limit = {
+									NOT = { has_trait = callous }
+									NOT = { has_trait = sadistic }
+									NOT = { has_trait = vengeful }
+								}
+								add_opinion = {
+									target = scope:terror_dragonrider
+									modifier = ran_terror_campaign
+								}
+							}
+							# Then the realm
+							top_liege = {
+									every_vassal_or_below = {
+									limit = {
+										NOT = { has_trait = callous }
+										NOT = { has_trait = sadistic }
+										NOT = { has_trait = vengeful }
+									}
+									add_opinion = {
+										target = scope:terror_dragonrider
+										modifier = ran_terror_campaign
+									}
+								}
+							}
+						}
+					}
+					# Damage effect
+					county = {
+						agot_dragon_damage_county_effect = yes
+					}
+				}
+			}
+			# Give experience
+			var:current_rider ?= {
+				agot_add_dragon_training_xp = { VALUE = 1 } # 100 weeks of terror to max level - seems fair
+			}
+			# If instructed, add instructor opinion
+			if = {
+				limit = {
+					scope:terror_dragonrider = { has_character_flag = instructed_terror_campaign }
+				}
+				scope:terror_dragonrider.location = {
+					if = {
+						limit = {
+							exists = county.holder.top_liege # Don't try to burn the sea
+							county.holder.top_liege = { is_at_war_with = root.top_liege } # Burn enemy holdings
+							county_controller.top_liege = { is_at_war_with = root.top_liege } # Don't burn occupied holdings
+						}
+						# Opinion effect
+						# Firstly, owner of county + liege
+						if = {
+							limit = {
+								county.holder = county.holder.top_liege # Is independent
+							}
+							county.holder = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_holding
+								}
+							}
+						}
+						else_if = {
+							limit = {
+								county.holder.liege = county.holder.top_liege # Has one direct liege
+							}
+							county.holder = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_holding
+								}
+							}
+							county.holder.liege = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_vassals_holding
+								}
+							}
+						}
+						else_if = {
+							limit = {
+								county.holder.liege.liege = county.holder.top_liege # Has two direct lieges
+							}
+							county.holder = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_holding
+								}
+							}
+							county.holder.liege = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_vassals_holding
+								}
+							}
+							county.holder.liege.liege = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_vassals_holding
+								}
+							}
+						}
+						else = { # has three direct lieges - thus is count and can't go lower
+							county.holder = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_holding
+								}
+							}
+							county.holder.liege = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_vassals_holding
+								}
+							}
+							county.holder.liege.liege = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_vassals_holding
+								}
+							}
+							county.holder.liege.liege.liege = {
+								add_opinion = {
+									target = scope:terror_dragonrider.var:terror_campaign_instructor
+									modifier = instructed_burned_my_vassals_holding
+								}
+							}
+						}
+						# Have done province owner, now do baron owners
+						county = {
+							every_county_province = {
+								limit = {
+									exists = barony.holder
+									NOT = { this = scope:terror_dragonrider.location }
+								}
+								barony.holder = {
+									if = {
+										limit = {
+											primary_title = { tier = tier_barony }
+										}
+										add_opinion = {
+											target = scope:terror_dragonrider.var:terror_campaign_instructor
+											modifier = instructed_burned_my_holding
+										}
+									}
+								}
+							}
+						}
+						# Now do everyone relevant to the rider if its in the same realm - foreign realms they don't care about (see: Daemon in the stepstones)
+						if = {
+							limit = { county = { target_is_de_jure_liege_or_above = scope:terror_dragonrider.top_liege.primary_title } }
+							scope:terror_dragonrider = {
+								every_close_or_extended_family_member = { # Family doesn't respect it
+									limit = {
+										NOT = { has_trait = callous }
+										NOT = { has_trait = sadistic }
+										NOT = { has_trait = vengeful }
+									}
+									add_opinion = {
+										target = scope:terror_dragonrider.var:terror_campaign_instructor
+										modifier = ran_terror_campaign
+									}
+								}
+								every_close_or_extended_family_member = { # Stack again for honorable and compassionate
+									limit = {
+										OR = {
+											has_trait = just
+											has_trait = compassionate
+										}
+										NOT = { has_trait = callous }
+										NOT = { has_trait = sadistic }
+										NOT = { has_trait = vengeful }
+									}
+									add_opinion = {
+										target = scope:terror_dragonrider.var:terror_campaign_instructor
+										modifier = ran_terror_campaign
+									}
+								}
+								# The my court
+								every_courtier_or_guest = {
+									limit = {
+										NOT = { has_trait = callous }
+										NOT = { has_trait = sadistic }
+										NOT = { has_trait = vengeful }
+									}
+									add_opinion = {
+										target = scope:terror_dragonrider.var:terror_campaign_instructor
+										modifier = ran_terror_campaign
+									}
+								}
+								# Then the realm
+								top_liege = {
+									every_vassal_or_below = {
+										limit = {
+											NOT = { has_trait = callous }
+											NOT = { has_trait = sadistic }
+											NOT = { has_trait = vengeful }
+										}
+										add_opinion = {
+											target = scope:terror_dragonrider.var:terror_campaign_instructor
+											modifier = ran_terror_campaign
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			# Tick again
+			trigger_event = { # Weekly tick
+				id = agot_dragon.0007
+				days = 7
+			}
+		}
+		else = { # Terror campaign over
+			remove_character_flag = part_of_terror_campaign
+		}
+	}
+}
+
+agot_dragon.0008 = { # Asked to take up terror campaign event
+	type = character_event
+	title = agot_dragon.0008.t
+	desc = {
+		desc = agot_dragon.0008.desc_intro
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					has_trait = callous
+					has_trait = sadistic
+					has_trait = vengeful
+					has_trait = wrathful
+				}
+				desc = agot_dragon.0008.desc_keen
+			}
+			desc = agot_dragon.0008.desc_not_keen
+		}
+		desc = agot_dragon.0008.desc_finish
+	}
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+	left_portrait = {
+		character = scope:recipient
+	}
+	right_portrait = {
+		character = scope:actor
+	}
+
+	option = { # Yes
+		name = agot_dragon.0008.a
+		flavor = agot_dragon.0008.a.f
+		custom_tooltip = {
+			text = conduct_terror_campaign_effect
+			add_character_flag = conducting_terror_campaign
+			add_character_flag = instructed_terror_campaign
+			set_variable = {
+				name = terror_campaign_instructor
+				value = scope:actor
+			}
+			if = {
+				limit = {
+					var:current_dragon = { NOT = { has_character_flag = part_of_terror_campaign } }
+				}
+				var:current_dragon = {
+					add_character_flag = part_of_terror_campaign # To prevent stacking by re-taking decision
+					trigger_event = agot_dragon.0007
+				}
+			}
+		}
+		scope:actor = {
+			add_opinion = {
+				modifier = grateful_opinion
+				opinion = 30
+				target = scope:recipient
+			}
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = agot_dragon.0008.accept.t
+				desc = agot_dragon.0008.accept.desc
+				left_icon = scope:recipient
+				right_icon = scope:recipient.var:current_dragon
+			}
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_vengefulness = 0.5
+				ai_boldness = 0.5
+			}
+		}
+	}
+
+	option = { # No
+		name = agot_dragon.0008.b
+		flavor = agot_dragon.0008.b.f
+		add_character_flag = {
+			flag = rejecting_terror_campaign
+			years = 2
+		}
+		scope:actor = {
+			add_opinion = {
+				modifier = rejected_terror_campaign
+				target = scope:recipient
+			}
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = agot_dragon.0008.refuse.t
+				desc = agot_dragon.0008.refuse.desc
+				left_icon = scope:recipient
+				right_icon = scope:recipient.var:current_dragon
+			}
+		}
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_compassion = 1.5
+				ai_honor = 1
+			}
+		}
+	}
+}
+
+agot_dragon.0009 = { # Asked to stop terror campaign event
+	type = character_event
+	title = agot_dragon.0009.t
+	desc = {
+		desc = agot_dragon.0009.desc_intro
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					has_trait = callous
+					has_trait = sadistic
+					has_trait = vengeful
+					has_trait = wrathful
+				}
+				desc = agot_dragon.0009.desc_keen
+			}
+			desc = agot_dragon.0009.desc_not_keen
+		}
+		desc = agot_dragon.0009.desc_finish
+	}
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+	left_portrait = {
+		character = scope:recipient
+	}
+	right_portrait = {
+		character = scope:actor
+	}
+
+	option = { # Yes
+		name = agot_dragon.0009.a
+		custom_tooltip = {
+			text = stop_terror_campaign_tooltip
+			remove_character_flag = conducting_terror_campaign
+			remove_character_flag = instructed_terror_campaign
+			remove_variable = terror_campaign_instructor
+		}
+		scope:actor = {
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = agot_dragon.0009.accept.t
+				desc = agot_dragon.0009.accept.desc
+				left_icon = scope:recipient
+				right_icon = scope:recipient.var:current_dragon
+			}
+		}
+		ai_chance = {
+			base = 90
+			ai_value_modifier = {
+				ai_compassion = 2
+				ai_honor = 1
+				ai_rationality = 1
+				ai_zeal = -1
+				ai_vengefulness = -1
+			}
+		}
+	}
+
+	option = { # No
+		name = agot_dragon.0009.b
+		flavor = agot_dragon.0009.b.f
+		scope:actor = {
+			add_opinion = {
+				modifier = treachery_opinion
+				target = scope:recipient
+			}
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = agot_dragon.0009.refuse.t
+				desc = agot_dragon.0009.refuse.desc
+				left_icon = scope:recipient
+				right_icon = scope:recipient.var:current_dragon
+			}
+		}
+		scope:recipient = {
+			add_character_flag = refusing_to_stop_terror_campaign
+		}
+		ai_chance = {
+			base = 10
+			ai_value_modifier = {
+				ai_honor = -0.5
+				ai_rationality = -0.5
+				ai_zeal = 1
+				ai_vengefulness = 1
+			}
+		}
+	}
+}
+
+agot_dragon.0010 = { # Ride Your Dragon (Normal Outcome)
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0010.t
+	desc = {
+		desc = bright_text
+		first_valid = {
+			triggered_desc = {
+				trigger = { has_character_flag = dragon_night_ride }
+				desc = agot_dragon.0010.night
+			}
+			desc = {
+				random_valid = {
+					desc = agot_dragon.0010.sili
+					desc = agot_dragon.0010.lord
+					desc = agot_dragon.0010.greeny
+					desc = agot_dragon.0010.troof
+					desc = agot_dragon.0010.tukha
+					triggered_desc = {
+						trigger = {
+							capital_county = title:c_kings_landing
+							game_start_date > 8000.1.1
+							culture = {
+								has_cultural_pillar = heritage_valyrian
+							}
+						}
+						desc = agot_dragon.0010.aemmly
+					}
+					triggered_desc = {
+						trigger = { capital_county = title:c_harrenhal }
+						desc = agot_dragon.0010.harrenhal
+					}
+					triggered_desc = {
+						trigger = { capital_county = title:c_oldtown }
+						desc = agot_dragon.0010.oldtown
+					}
+					triggered_desc = {
+						trigger = {
+							any_realm_county = { is_coastal_county = yes }
+							NOT = {
+								capital_county.title_province = { geographical_region = world_westeros_beyond_the_wall }
+								capital_county.title_province = { geographical_region = world_westeros_the_north }
+							}
+						}
+						desc = agot_dragon.0010.coastal
+					}
+					triggered_desc = {
+						trigger = {
+							any_realm_province = { agot_is_cloudforest_terrain = yes }
+						}
+						desc = agot_dragon.0010.cloudforest
+					}
+					triggered_desc = {
+						trigger = {
+							any_realm_province = {
+								OR = {
+									agot_is_frozen_flats_terrain = yes
+									agot_is_glacier_terrain = yes
+								}
+							}
+						}
+						desc = agot_dragon.0010.frozenflats
+					}
+					triggered_desc = {
+						trigger = {
+							any_realm_province = { agot_is_urban_terrain = yes }
+						}
+						desc = {
+							random_valid = {
+								desc = agot_dragon.0010.urban1a
+								desc = agot_dragon.0010.urban1b
+							}
+							random_valid = {
+								desc = agot_dragon.0010.urban2a
+								desc = agot_dragon.0010.urban2b
+							}
+							first_valid = {
+								triggered_desc = {
+									trigger = {
+										OR = {
+											has_trait = arrogant
+											has_trait = greedy
+										}
+									}
+									desc = agot_dragon.0010.urban3a
+								}
+								triggered_desc = {
+									trigger = {
+										OR = {
+											has_trait = humble
+											has_trait = generous
+										}
+									}
+									desc = agot_dragon.0010.urban3b
+								}
+								desc = agot_dragon.0010.urban3c
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	theme = dragon
+	override_background = {
+		trigger = { has_character_flag = dragon_night_ride }
+		reference = agot_night_sky_video
+	}
+	override_background = {
+		trigger = { NOT = { has_character_flag = dragon_night_ride } }
+		reference = agot_open_sky_video
+	}
+	left_portrait = {
+		character = root
+		camera = camera_dragonrider_ride_dragon_decision
+		animation = dragon_main
+
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder
+		add_character_flag = currently_riding_dragon
+		agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = YES }
+		var:current_dragon = {
+			save_scope_as = ridden_dragon
+		}
+	}
+
+	option = { # Just relax
+		name = {
+			trigger = {
+				NOT = { has_trait = arrogant }
+			}
+			text = agot_dragon.0010.a
+		}
+		name = {
+			trigger = {
+				has_trait = arrogant
+			}
+			text = agot_dragon.0010.a.arrogant
+		}
+		flavor = agot_dragon.0010.a.f
+		add_stress = medium_stress_loss
+		add_trait_xp = {
+			trait = dragonrider
+			track = dragon_bond
+			value = 2
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 100
+				stress_level >= 1
+			}
+			modifier = {
+				add = 50
+				has_trait = content
+			}
+			modifier = {
+				add = -50
+				NOT = { stress_level > 1 }
+				has_trait = diligent
+			}
+		}
+	}
+
+	option = { # Spend time with dragon
+		name = agot_dragon.0010.b
+		flavor = agot_dragon.0010.b.f
+		add_stress = minor_stress_loss
+		add_trait_xp = {
+			trait = dragonrider
+			track = dragon_bond
+			value = 10
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+
+	option = { # Practice combat
+		name = agot_dragon.0010.c
+		flavor = agot_dragon.0010.c.f
+		trigger = {
+			OR = {
+				has_education_martial_trigger = yes
+				dynasty ?= { has_dynasty_perk = dragonrider_dynasty_legacy_4 }
+			}
+		}
+		agot_add_dragon_training_xp = { VALUE = 10 }
+		add_trait_xp = {
+			trait = dragonrider
+			track = dragon_bond
+			value = 2
+		}
+		ai_chance = {
+			base = 50
+			modifier = {
+				add = 50
+				has_education_martial_trigger = yes
+			}
+			modifier = {
+				add = 50
+				OR = {
+					has_trait = wrathful
+					has_trait = brave
+					has_trait = ambitious
+				}
+			}
+		}
+	}
+
+	after = {
+		remove_character_flag = currently_riding_dragon
+		if = {
+			limit = { has_character_flag = dragon_night_ride }
+			remove_character_flag = dragon_night_ride
+		}
+		agot_clear_dragon_animation_flags = yes
+	}
+}
+
+agot_dragon.0011 = { # Ride dragon decision - drunkard embarrassed outcome
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0011.t
+	desc = agot_dragon.0011.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+		animation = drink_goblet
+	}
+	right_portrait = {
+		character = var:current_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder
+	}
+
+	option = {
+		name = agot_dragon.0011.a
+		flavor = agot_dragon.0011.a.f
+	}
+}
+
+agot_dragon.0012 = { # Ride dragon decision - drunkard fall outcome
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0012.t
+	desc = agot_dragon.0012.desc
+	theme = dragon
+	override_background = {
+		trigger = { has_character_flag = dragon_night_ride }
+		reference = agot_night_sky_video
+	}
+	override_background = {
+		trigger = { NOT = { has_character_flag = dragon_night_ride } }
+		reference = agot_open_sky_video
+	}
+	left_portrait = {
+		character = root
+		camera = camera_dragonrider_ride_dragon_decision
+		animation = dragon_main
+
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	immediate = {
+		add_character_flag = currently_riding_dragon
+		agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = YES }
+	}
+
+	option = {
+		name = agot_dragon.0012.a
+		flavor = agot_dragon.0012.a.f
+		death = {
+			death_reason = death_fell_from_dragon
+		}
+	}
+}
+
+agot_dragon.0013 = { # Regrets terror campaign
+	type = character_event
+	title = agot_dragon.0013.t
+	desc = agot_dragon.0013.desc
+	theme = dragon
+	override_background = {
+		reference = bedchamber
+	}
+	right_portrait = {
+		character = root
+		animation = stress
+	}
+
+	option = {
+		name = agot_dragon.0013.a
+		add_stress = major_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.b
+		trigger = {
+			has_trait = drunkard
+		}
+		add_stress = medium_stress_gain
+		add_prestige = medium_prestige_loss
+	}
+
+	option = {
+		name = agot_dragon.0013.c
+		trigger = {
+			has_trait = rakish
+		}
+		remove_short_term_gold = minor_gold_value
+		# Note - this code stolen on 6/11/23 from vanilla rakish_brothel_night_effect without stress loss line
+		# Warn the character about possible negative consequences.
+		custom_tooltip = stress_threshold.1011.rakish.tt
+
+		# Negative consequences of the night.
+		random_list = {
+			50 = {
+				trigger = {
+					is_attracted_to_men = yes
+				}
+				set_variable = {
+					name = had_recent_sex
+					value = flag:male
+				}
+				give_homosexual_secret_or_nothing_with_target_effect = { CHARACTER = dummy_male }
+			}
+			50 = {
+				trigger = {
+					is_attracted_to_women = yes
+				}
+				set_variable = {
+					name = had_recent_sex
+					value = flag:female
+				}
+			}
+		}
+		hidden_effect = {
+			#Adultery suspicion
+			random = {
+				chance = 5
+				random_spouse = {
+					limit = { is_ai = no }
+					alternative_limit = { always = yes }
+					trigger_event = adultery.0001
+				}
+			}
+
+			# Possible STD transmission
+			random_list = {
+				75 = {
+					#Nothing
+				}
+				20 = {
+					contract_disease_notify_effect = { DISEASE = lovers_pox }
+				}
+				5 = {
+					contract_disease_notify_effect = { DISEASE = great_pox }
+				}
+			}
+
+			#Possibility to start peasant story cycle
+			random = {
+				chance = 5
+				if = {
+					limit = {
+						NOT = { has_character_flag = had_story_cycle_peasant_affair }
+						is_ruler = yes
+					}
+					create_character = {
+						location = root.capital_province
+						template = beautiful_peasant_character
+						gender_female_chance = root_attraction_based_female_chance
+						faith = root.faith
+						culture = root.culture
+						save_scope_as = beautiful_peasant
+					}
+					scope:beautiful_peasant = {
+						set_sexuality = bisexual
+					}
+					if = {
+						limit = {
+							is_male = yes
+							exists = scope:beautiful_peasant
+							scope:beautiful_peasant = {
+								age < define:NChildbirth|MAX_FEMALE_REPRODUCTION_AGE
+							}
+						}
+						random = {
+							chance = pregnancy_chance
+							add_character_flag = {
+								flag = peasant_is_pregnant
+								days = 560
+							}
+						}
+					}
+					set_variable = {
+						name = story_peasant_affair_target
+						value = scope:beautiful_peasant
+					}
+					set_variable = { #To save how you met
+						name = rakish_night
+						value = 0
+					}
+					create_story = story_peasant_affair
+				}
+			}
+		}
+		# End of stolen code
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.d
+		trigger = {
+			has_trait = reclusive
+		}
+		add_prestige = medium_prestige_loss
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.e
+		trigger = {
+			has_trait = flagellant
+		}
+		increase_wounds_effect = { REASON = whipping }
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.f
+		flavor = agot_dragon.0013.f.f
+		trigger = {
+			has_trait = profligate
+		}
+		remove_short_term_gold = medium_gold_value
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.g
+		trigger = {
+			OR = {
+				has_trait = kinslayer_1
+				has_trait = kinslayer_2
+				has_trait = kinslayer_3
+			}
+		}
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.h
+		trigger = {
+			has_trait = comfort_eater
+		}
+		remove_short_term_gold = medium_gold_value
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.i
+		trigger = {
+			has_trait = inappetetic
+		}
+		inappetetic_advance_starvation_effect = yes
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.j
+		trigger = {
+			has_trait = journaller
+		}
+		add_character_modifier = {
+			modifier = stress_busy_writing
+			years = 1
+		}
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.k
+		trigger = {
+			has_trait = athletic
+		}
+		add_character_modifier = {
+			modifier = stress_smelling_of_sweat
+			years = 1
+		}
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.l
+		trigger = {
+			has_trait = improvident
+		}
+		remove_short_term_gold = medium_gold_value
+		add_stress = medium_stress_gain
+	}
+
+	option = {
+		name = agot_dragon.0013.m
+		trigger = {
+			OR = {
+				has_trait = intellect_bad_2
+				has_trait = intellect_bad_3
+			}
+		}
+		add_stress = medium_stress_gain
+	}
+}
+
+agot_dragon.0014 = { # Dragon subjugation surrender option event
+	type = character_event
+	title = agot_dragon.0014.t
+	desc = agot_dragon.0014.desc
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+	left_portrait = {
+		character = root
+		animation = war_defender
+	}
+	right_portrait = {
+		character = scope:attacker
+		animation = war_attacker
+	}
+
+	immediate = { # Scoping needed for script values from interaction base
+		scope:attacker = {
+			save_scope_as = actor
+		}
+		scope:defender = {
+			save_scope_as = recipient
+		}
+	}
+
+	option = { # Yes I surrender
+		name = agot_dragon.0014.a
+		custom_tooltip = agot_dragon.0014.a.tt
+		ai_chance = {
+			base = 50
+			ai_value_modifier = {
+				ai_boldness = -0.5
+			}
+			modifier = { # Is the Rightful Liege of recipient
+				trigger = {
+					scope:attacker = { is_rightful_liege_of = scope:defender }
+				}
+				add = 20
+			}
+			modifier = { #Is not the Rightful Liege of recipient
+				trigger = {
+					NOT = {
+						scope:attacker = { is_rightful_liege_of = scope:defender }
+					}
+				}
+				add = -20
+			}
+			modifier = { #Ageism modifier vs kids.
+				trigger = {
+					scope:attacker = {
+						age < 12
+					}
+					scope:defender = {
+						age > 16
+					}
+				}
+				add = -5
+			}
+			modifier = { #Illegitimacy modifier.
+				trigger = {
+					OR = {
+						AND = {
+							scope:attacker = {
+								has_trait = bastard
+							}
+							scope:defender = {
+								faith = { NOT = { has_doctrine = doctrine_bastardry_none } }
+							}
+						}
+						has_trait = denounced
+						has_trait = disinherited
+					}
+				}
+				add = -10
+			}
+			modifier = {
+				add = intimidated_external_reason_value
+				scope:defender = {
+					has_dread_level_towards = {
+						target = scope:attacker
+						level = 1
+					}
+				}
+			}
+			modifier = {
+				add = cowed_external_reason_value
+				scope:defender = {
+					has_dread_level_towards = {
+						target = scope:attacker
+						level = 2
+					}
+				}
+			}
+			opinion_modifier = { #Compare Opinion modifier - Clans care more about opinion
+				trigger = {
+					scope:attacker = {
+						government_has_flag = government_is_clan
+					}
+					scope:defender = {
+						government_has_flag = government_is_clan
+					}
+				}
+				who = scope:defender
+				opinion_target = scope:attacker
+				multiplier = 0.7
+			}
+			opinion_modifier = { #Compare Opinion modifier.
+				trigger = {
+					OR = {
+						scope:attacker = {
+							NOT = { government_has_flag = government_is_clan }
+						}
+						scope:defender = {
+							NOT = { government_has_flag = government_is_clan }
+						}
+					}
+				}
+				who = scope:defender
+				opinion_target = scope:attacker
+				multiplier = 0.35
+			}
+			modifier = { # Cultural Acceptance
+				add = offer_vassalage_acceptance_value
+				trigger = {
+					scope:attacker = {
+						NOT = { has_same_culture_as = scope:defender }
+						culture = {
+							cultural_acceptance = { target = scope:defender.culture value <= 90 }
+						}
+					}
+				}
+			}
+			modifier = { #Different faith, no pluralism.
+				trigger = {
+					scope:defender = {
+						NOR = { #Of two different faiths AND the potential vassal's faith is not pluralistic.
+							faith = scope:attacker.faith
+							faith = { has_doctrine = doctrine_pluralism_pluralistic }
+						}
+					}
+				}
+				add = {
+					value = -40
+					if = {
+						limit = {
+							scope:defender.faith = {
+								faith_hostility_level = {
+									target = scope:attacker.faith
+									value >= faith_hostile_level
+								}
+							}
+						}
+						add = -40
+					}
+					if = {
+						limit = {
+							scope:defender.faith = {
+								faith_hostility_level = {
+									target = scope:attacker.faith
+									value >= faith_evil_level
+								}
+							}
+						}
+						add = -40
+					}
+				}
+			}
+			modifier = { #Different faith, pluralism.
+				trigger = {
+					scope:defender = {
+						NOT = {
+							faith = scope:attacker.faith
+						}
+						NOT = {
+							scope:attacker.faith = { has_doctrine = doctrine_pluralism_pluralistic }
+						}
+						faith = { has_doctrine = doctrine_pluralism_pluralistic }
+					}
+				}
+				add = {
+					value = -20
+					if = {
+						limit = {
+							scope:defender.faith = {
+								faith_hostility_level = {
+									target = scope:attacker.faith
+									value >= faith_hostile_level
+								}
+							}
+						}
+						add = -20
+					}
+					if = {
+						limit = {
+							scope:defender.faith = {
+								faith_hostility_level = {
+									target = scope:attacker.faith
+									value >= faith_evil_level
+								}
+							}
+						}
+						add = -20
+					}
+				}
+			}
+			modifier = { #Different faith, both have pluralism.
+				trigger = {
+					scope:defender = {
+						NOT = {
+							faith = scope:attacker.faith
+						}
+						scope:attacker.faith = { has_doctrine = doctrine_pluralism_pluralistic }
+						faith = { has_doctrine = doctrine_pluralism_pluralistic }
+					}
+				}
+				add = {
+					value = -10
+					if = {
+						limit = {
+							scope:defender.faith = {
+								faith_hostility_level = {
+									target = scope:attacker.faith
+									value >= faith_hostile_level
+								}
+							}
+						}
+						add = -10
+					}
+					if = {
+						limit = {
+							scope:defender.faith = {
+								faith_hostility_level = {
+									target = scope:attacker.faith
+									value >= faith_evil_level
+								}
+							}
+						}
+						add = -10
+					}
+				}
+			}
+			modifier = { #Greater title tier
+				trigger = {
+					scope:defender = { highest_held_title_tier > scope:attacker.highest_held_title_tier }
+				}
+				add = {
+					value = -50
+					if = {
+						limit = {
+							scope:defender = {
+								OR = {
+									government_has_flag = government_is_republic
+									government_has_flag = government_is_theocracy
+								}
+							}
+						}
+						add = -50
+					}
+					if = {
+						limit = {
+							scope:defender.sub_realm_size >= 5
+						}
+						add = -50
+					}
+					if = {
+						limit = {
+							scope:defender.sub_realm_size >= 10
+						}
+						add = -100
+					}
+				}
+			}
+		}
+		stress_impact = {
+			arrogant = major_stress_gain
+			brave = medium_stress_gain
+			greedy = medium_stress_gain
+			humble = minor_stress_loss
+			compassionate = minor_stress_loss
+		}
+
+		every_character_war = {
+			limit = {
+				primary_attacker = scope:attacker
+				primary_defender = root
+			}
+			end_war = attacker
+		}
+
+		scope:attacker = {
+			add_opinion = {
+				modifier = agreed_to_dragon_conquest
+				target = root
+			}
+			trigger_event = {
+				id = agot_dragon.0015
+			}
+		}
+	}
+
+	option = { # No I will fight
+		name = {
+			trigger = {
+				NOT = {
+					any_courtier = {
+						has_trait = dragon
+						has_character_flag = owned_dragon
+					}
+				}
+			}
+			text = agot_dragon.0014.b.no_dragon
+		}
+		name = {
+			trigger = {
+				any_courtier = {
+					has_trait = dragon
+					has_character_flag = owned_dragon
+				}
+			}
+			text = agot_dragon.0014.b.dragon
+		}
+		custom_tooltip = agot_dragon.0014.b.tt
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 2
+				OR = {
+					is_current_dragonrider = yes # I am a dragonrider
+					any_knight = { # I have a dragon
+						has_trait = dragon
+					}
+					any_knight = { # I have a dragonrider
+						is_current_dragonrider = yes
+					}
+					any_vassal = { # Or I could get one
+						is_current_dragonrider = yes
+					}
+				}
+			}
+		}
+		stress_impact = {
+			arrogant = minor_stress_loss
+			brave = major_stress_loss
+			greedy = minor_stress_loss
+			humble = medium_stress_gain
+			compassionate = medium_stress_gain
+		}
+	}
+}
+
+agot_dragon.0015 = { # Dragon subjugation surrender outcome event
+	type = letter_event
+	opening = {
+		desc = agot_dragon.0015.opening
+	}
+	desc = agot_dragon.0015.desc
+	sender = {
+		character = scope:defender
+	}
+
+	option = {
+		name = {
+			trigger = {
+				has_trait = sadistic
+			}
+			text = agot_dragon.0015.a
+		}
+		name = {
+			trigger = {
+				NOT = { has_trait = sadistic }
+			}
+			text = agot_dragon.0015.a.sadistic
+		}
+		show_as_tooltip = {
+			add_opinion = {
+				modifier = agreed_to_dragon_conquest
+				target = scope:defender
+			}
+		}
+	}
+}
+
+agot_dragon.0016 = { # Generic dragon gender reveal
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0016.t
+	desc = {
+		desc = agot_dragon.0016.desc.start
+		first_valid = {
+			triggered_desc = { # My dragon
+				trigger = {
+					exists = var:current_dragon
+					var:current_dragon = scope:dragon
+				}
+				desc = agot_dragon.0016.desc.my_dragon
+			}
+			triggered_desc = { # Not my dragon
+				trigger = {
+					exists = scope:dragon.var:current_rider
+				}
+				desc = agot_dragon.0016.desc.others_dragon
+			}
+			triggered_desc = { # My owned dragon but not tamed
+				trigger = {
+					exists = scope:revealing
+					scope:dragon = {
+						has_character_flag = owned_dragon
+						employer = root
+					}
+				}
+				desc = agot_dragon.0016.desc.owned_dragon_revealing
+			}
+			triggered_desc = { # My owned dragon but not tamed
+				trigger = {
+					scope:dragon = {
+						has_character_flag = owned_dragon
+						employer = root
+					}
+				}
+				desc = agot_dragon.0016.desc.owned_dragon
+			}
+			triggered_desc = { # Wild dragon
+				trigger = {
+					scope:dragon = {
+						NOT = { has_character_flag = owned_dragon }
+					}
+				}
+				desc = agot_dragon.0016.desc.wild_dragon
+			}
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:dragon = { is_male = yes } }
+				desc = agot_dragon.0016.desc.confirm
+			}
+			triggered_desc = {
+				trigger = { scope:dragon = { is_female = yes } }
+				desc = agot_dragon.0016.desc.actually
+			}
+		}
+	}
+	theme = dragon
+	right_portrait = root
+	left_portrait = {
+		character = scope:revealing
+	}
+	lower_left_portrait = {
+		character = scope:dragon
+	}
+	override_background = {
+		reference = council_chamber
+	}
+
+	trigger = {
+		OR = {
+			employs_court_position = head_dragonkeeper_court_position
+			employs_court_position = maester_court_position
+			employs_court_position = court_physician_court_position
+		}
+	}
+	immediate = {
+		scope:dragon = {
+			agot_reveal_dragon_gender_effect = yes
+			var:current_rider ?= {
+				save_scope_as = dragonrider
+			}
+		}
+		if = {
+			limit = {
+				employs_court_position = head_dragonkeeper_court_position
+			}
+			court_position:head_dragonkeeper_court_position = {
+				save_scope_as = revealing
+			}
+		}
+		else_if = {
+			limit = {
+				employs_court_position = maester_court_position
+			}
+			court_position:maester_court_position = {
+				save_scope_as = revealing
+			}
+		}
+		else_if = {
+			limit = {
+				employs_court_position = court_physician_court_position
+			}
+			court_position:court_physician_court_position = {
+				save_scope_as = revealing
+			}
+		}
+	}
+
+	option = {
+		name = agot_dragon.0016.a
+		trigger = {
+			scope:dragon.age <= 10
+		}
+	}
+
+	option = {
+		name = agot_dragon.0016.b
+		trigger = {
+			scope:dragon.age > 10
+		}
+	}
+}
+
+agot_dragon.0017 = { # Choose capital of Three Daughters conquest
+	type = character_event
+	title = agot_dragon.0017.t
+	desc = agot_dragon.0017.desc
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	lower_left_portrait = {
+		character = scope:target_title_1.holder
+	}
+	lower_center_portrait = {
+		character = scope:target_title_2.holder
+	}
+	lower_right_portrait = {
+		character = scope:target_title_3.holder
+	}
+
+	trigger = {
+		primary_title = title:e_three_daughters
+	}
+
+	immediate = {
+		every_realm_county = { # Grab possible titles within realm
+			if = {
+				limit = {
+					OR = {
+						this = title:c_lys
+						this = title:c_tyrosh
+						this = title:c_myr
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:target_title_1
+					}
+					if = {
+						limit = {
+							exists = scope:target_title_2
+						}
+						save_scope_as = target_title_3
+					}
+					else = {
+						save_scope_as = target_title_2
+					}
+				}
+				else = {
+					save_scope_as = target_title_1
+				}
+			}
+		}
+		capital_county = { save_scope_as = current_capital }
+	}
+
+	option = { # I shall move my capital to 1
+		name = agot_dragon.0017.a
+		flavor = agot_dragon.0017.a.f
+		trigger = {
+			exists = scope:target_title_1
+		}
+		ai_chance = {
+			base = 25
+			modifier = { # Don't unilaterally take player holdings
+				factor = 0
+				scope:target_title_1.holder = {
+					is_ai = no
+				}
+			}
+		}
+		create_title_and_vassal_change = {
+			type = revoked
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
+		scope:target_title_1 = {
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		every_sub_realm_barony = {
+			limit = {
+				county = scope:target_title_1
+			}
+			holder = {
+				add_opinion = {
+					target = root
+					modifier = revoked_title
+				}
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		every_sub_realm_duchy = {
+			limit = {
+				title_capital_county = scope:target_title_1
+			}
+			holder = {
+				if = {
+					limit = { # Prevent double up
+						NOT = {
+							any_held_title = {
+								tier = tier_barony
+								county = scope:target_title_1
+							}
+						}
+						NOT = {
+							any_held_title = {
+								tier = tier_county
+								this = scope:target_title_1
+							}
+						}
+					}
+					add_opinion = {
+						target = root
+						modifier = revoked_title
+					}
+				}
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		set_realm_capital = scope:target_title_1
+		primary_title = {
+			custom_tooltip = {
+				text = agot_dragon.0017.a.tt
+				set_capital_county = scope:target_title_1
+			}
+		}
+	}
+
+	option = { # I shall move my capital to 2
+		name = agot_dragon.0017.b
+		flavor = agot_dragon.0017.b.f
+		trigger = {
+			exists = scope:target_title_2
+		}
+		ai_chance = {
+			base = 25
+			modifier = { # Don't unilaterally take player holdings
+				factor = 0
+				scope:target_title_2.holder = {
+					is_ai = no
+				}
+			}
+		}
+		create_title_and_vassal_change = {
+			type = revoked
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
+		scope:target_title_2 = {
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		every_sub_realm_barony = {
+			limit = {
+				county = scope:target_title_2
+			}
+			holder = {
+				add_opinion = {
+					target = root
+					modifier = revoked_title
+				}
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		every_sub_realm_duchy = {
+			limit = {
+				title_capital_county = scope:target_title_2
+			}
+			holder = {
+				if = {
+					limit = { # Prevent double up
+						NOT = {
+							any_held_title = {
+								tier = tier_barony
+								county = scope:target_title_2
+							}
+						}
+						NOT = {
+							any_held_title = {
+								tier = tier_county
+								this = scope:target_title_2
+							}
+						}
+					}
+					add_opinion = {
+						target = root
+						modifier = revoked_title
+					}
+				}
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		set_realm_capital = scope:target_title_2
+		primary_title = {
+			custom_tooltip = {
+				text = agot_dragon.0017.b.tt
+				set_capital_county = scope:target_title_2
+			}
+		}
+	}
+
+	option = { # I shall move my capital to 3
+		name = agot_dragon.0017.c
+		flavor = agot_dragon.0017.c.f
+		trigger = {
+			exists = scope:target_title_3
+		}
+		ai_chance = {
+			base = 25
+			modifier = { # Don't unilaterally take player holdings
+				factor = 0
+				scope:target_title_3.holder = {
+					is_ai = no
+				}
+			}
+		}
+		create_title_and_vassal_change = {
+			type = revoked
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
+		scope:target_title_3 = {
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		every_sub_realm_barony = {
+			limit = {
+				county = scope:target_title_3
+			}
+			holder = {
+				add_opinion = {
+					target = root
+					modifier = revoked_title
+				}
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		every_sub_realm_duchy = {
+			limit = {
+				title_capital_county = scope:target_title_3
+			}
+			holder = {
+				if = {
+					limit = { # Prevent double up
+						NOT = {
+							any_held_title = {
+								tier = tier_barony
+								county = scope:target_title_3
+							}
+						}
+						NOT = {
+							any_held_title = {
+								tier = tier_county
+								this = scope:target_title_3
+							}
+						}
+					}
+					add_opinion = {
+						target = root
+						modifier = revoked_title
+					}
+				}
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		set_realm_capital = scope:target_title_3
+		primary_title = {
+			custom_tooltip = {
+				text = agot_dragon.0017.c.tt
+				set_capital_county = scope:target_title_3
+			}
+		}
+	}
+
+	option = { # I shall keep my capital
+		name = agot_dragon.0017.d
+		flavor = agot_dragon.0017.d.f
+		trigger = {
+			exists = scope:target_title_1 # So that event doesn't trigger if no titles
+		}
+		ai_chance = {
+			base = 25
+		}
+		if = {
+			limit = {
+				scope:current_capital = {
+					empire = title:e_three_daughters
+				}
+			}
+			primary_title = {
+				custom_tooltip = {
+					text = agot_dragon.0017.d.tt
+					set_capital_county = scope:current_capital
+				}
+			}
+		}
+	}
+}
+
+# Dragons have mates notification
+agot_dragon.0019 = {
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0019.t
+	desc = agot_dragon.0019.desc
+	theme = dragon
+	right_portrait = {
+		character = root
+		animation = chancellor
+	}
+	lower_left_portrait = {
+		character = scope:dragon_male
+		camera = camera_dragon_small
+		animation = dragon_head
+	}
+	lower_center_portrait = {
+		character = scope:dragon_female
+		camera = camera_dragon_small
+		animation = dragon_head
+	}
+
+	option = {
+		name = {
+			trigger = {
+				has_trait = compassionate
+			}
+			text = agot_dragon.0019.a.compassionate
+		}
+		name = {
+			trigger = {
+				has_trait = sadistic
+			}
+			text = agot_dragon.0019.a.sadistic
+		}
+		name = {
+			trigger = {
+				has_trait = lustful
+			}
+			text = agot_dragon.0019.a.lustful
+		}
+		name = {
+			trigger = {
+				has_trait = cynical
+			}
+			text = agot_dragon.0019.a.cynical
+		}
+		name = {
+			trigger = {
+				NOT = {
+					OR = {
+						has_trait = compassionate
+						has_trait = sadistic
+						has_trait = lustful
+						has_trait = cynical
+					}
+				}
+			}
+			text = agot_dragon.0019.a
+		}
+		custom_tooltip = agot_dragon.0019.tt
+	}
+}
+
+agot_dragon.0020 = { # Tamed dragon has gone wild
+	type = character_event
+	title = agot_dragon.0020.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:human_who_became_dragon }
+				desc = agot_dragon.0020.wild_fire_desc
+			}
+			triggered_desc = {
+				trigger = { exists = scope:dead_rider }
+				desc = agot_dragon.0020.desc
+			}
+		}
+	}
+	
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+
+	right_portrait = {
+		character = root
+		animation = personality_rational
+	}
+	lower_left_portrait = {
+		character = scope:now_wild_dragon
+	}
+
+	option = {
+		name = agot_dragon.0020.a
+		flavor = agot_dragon.0020.a.f
+
+		custom_tooltip = agot_dragon.0020.a.tt
+	}
+}
+
+agot_dragon.0021 = { # Killing myself with dragon - success
+	type = character_event
+	title = health.6001.t
+	desc = agot_dragon.0021.desc
+	theme = death
+	left_portrait = {
+		character = root
+		animation = sick
+	}
+	right_portrait = {
+		character = scope:helping_dragon
+	}
+
+	immediate = {
+		committed_suicide_effect = yes
+	}
+
+	option = {
+		name = {
+			trigger = { knows_language = language_valyrian }
+			text = agot_dragon.0021.a.valyrian
+		}
+		name = {
+			trigger = { NOT = { knows_language = language_valyrian } }
+			text = agot_dragon.0021.a
+		}
+	}
+}
+
+agot_dragon.0022 = { # Killing myself with dragon - failure
+	type = character_event
+	title = health.6001.t
+	desc = {
+		desc = agot_dragon.0022.desc
+		desc = agot_dragon.0022.desc_ending
+	}
+	theme = death
+	left_portrait = {
+		character = root
+		animation = sick
+	}
+	lower_center_portrait = {
+		character = scope:helping_dragon
+	}
+	right_portrait = {
+		character = scope:friendly_person
+		animation = shock
+	}
+
+	immediate = {
+		attempted_suicide_effect = yes
+	}
+
+	option = {
+		name = agot_dragon.0022.a
+		flavor = agot_dragon.0022.a.f
+		hidden_effect = {
+			if = {
+				limit = {
+					exists = scope:friendly_person
+				}
+				random = { #Check up event
+					chance = 50
+					trigger_event = {
+						id = health.6100
+						days = { 365 730 }
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_dragon.0023 = { # I get chased by a giant cannibal dragon!
+	type = character_event
+	title = agot_dragon.0023.t
+	window = dragon_character_event
+	desc = {
+		desc = bright_text
+		random_valid = {
+			desc = agot_dragon.0023.sili
+			desc = agot_dragon.0023.lord
+			desc = agot_dragon.0023.greeny
+			desc = agot_dragon.0023.tukha
+			triggered_desc = {
+				trigger = {
+					capital_county = title:c_kings_landing
+					game_start_date > 8000.1.1
+					culture = {
+						has_cultural_pillar = heritage_valyrian
+					}
+				}
+				desc = agot_dragon.0023.aemmly
+			}
+		}
+		desc = agot_dragon.0023.cont
+	}
+	theme = dragon
+	override_background = {
+		trigger = { has_character_flag = dragon_night_ride }
+		reference = agot_night_sky_video
+	}
+	override_background = {
+		trigger = { NOT = { has_character_flag = dragon_night_ride } }
+		reference = agot_open_sky_video
+	}
+
+	right_portrait = {
+		character = root
+		camera = camera_dragonrider_ride_dragon_decision
+		animation = dragon_main
+
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	left_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_dragon_divebombing_distant_facing_camera
+		animation = dragon_main
+		#outfit_tags = { dragonrider }
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		add_character_flag = {
+			flag = attacked_by_cannibal
+			years = 50
+		}
+		add_character_flag = currently_riding_dragon
+		agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = YES }
+		var:current_dragon = {
+			save_scope_as = ridden_dragon
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = NO } }
+	}
+
+	option = {
+		name = {
+			trigger = {
+				knows_language = language_valyrian
+			}
+			text = agot_dragon.0023.a.valyrian
+		}
+		name = {
+			trigger = {
+				NOT = { knows_language = language_valyrian }
+			}
+			text = agot_dragon.0023.a
+		}
+		flavor = agot_dragon.0023.a.f
+		random_list = {
+			20 = {
+				modifier = {
+					add = 30
+					has_game_rule = agot_silly_mode
+				}
+				modifier = {
+					add = {
+						value = 20
+						if = {
+							limit = {
+								has_game_rule = agot_silly_mode
+							}
+							add = 5
+						}
+					}
+					OR = {
+						scope:ridden_dragon = { has_trait = dragon_slow }
+						scope:cannibal_dragon = { has_trait = dragon_swift }
+					}
+				}
+				modifier = {
+					add = 60
+					NOT = { has_game_rule = agot_silly_mode }
+					scope:ridden_dragon = { dragon_combat_effectiveness >= level_three_dragon_combat }
+				}
+				scope:ridden_dragon = {
+					death = {
+						death_reason = death_dragon_ate
+						killer = scope:cannibal_dragon
+					}
+				}
+				death = {
+					death_reason = death_dragon_ate
+					killer = scope:cannibal_dragon
+				}
+				hidden_effect = {
+					scope:cannibal_dragon = {
+						change_dragon_size = {
+							VALUE = 1
+						}
+					}
+				}
+			}
+			80 = {
+				modifier = {
+					add = -30
+					has_game_rule = agot_silly_mode
+				}
+				modifier = {
+					add = {
+						value = 20
+						if = {
+							limit = {
+								has_game_rule = agot_silly_mode
+							}
+							add = 5
+						}
+					}
+					OR = {
+						scope:ridden_dragon = { has_trait = dragon_swift }
+						scope:cannibal_dragon = { has_trait = dragon_slow }
+					}
+				}
+				send_interface_toast = {
+					title = agot_dragon.0023.escape_t
+					custom_tooltip = agot_dragon.0023.escape_tt
+					left_icon = scope:ridden_dragon
+					right_icon = scope:cannibal_dragon
+					add_prestige = medium_prestige_gain
+					stress_impact = {
+						base = minor_stress_gain
+						paranoid = minor_stress_gain
+						craven = major_stress_gain
+						brave = minor_stress_loss
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		if = {
+			limit = { is_alive = yes }
+			remove_character_flag = currently_riding_dragon
+			agot_clear_dragon_animation_flags = yes
+		}
+		scope:cannibal_dragon = {
+			if = {
+				limit = {
+					is_alive = yes
+				}
+				agot_clear_dragon_animation_flags = yes
+			}
+		}
+	}
+}
+
+agot_dragon.0024 = { # Ride Your Dragon (Lifestyle Focused)
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0024.t
+	desc = {
+		desc = bright_text
+		first_valid = {
+			triggered_desc = {
+				trigger = { has_lifestyle = martial_lifestyle }
+				desc = agot_dragon.0024.martial
+			}
+			triggered_desc = {
+				trigger = { has_lifestyle = learning_lifestyle }
+				desc = agot_dragon.0024.learning
+			}
+			triggered_desc = {
+				trigger = { has_lifestyle = intrigue_lifestyle }
+				desc = agot_dragon.0024.intrigue
+			}
+			triggered_desc = {
+				trigger = { has_lifestyle = diplomacy_lifestyle }
+				desc = agot_dragon.0024.diplomacy
+			}
+			triggered_desc = {
+				trigger = { has_lifestyle = stewardship_lifestyle }
+				desc = agot_dragon.0024.stewardship
+			}
+			desc = agot_dragon.0024.fallback
+		}
+	}
+	theme = dragon
+	override_background = {
+		trigger = { has_character_flag = dragon_night_ride }
+		reference = agot_night_sky_video
+	}
+	override_background = {
+		trigger = { NOT = { has_character_flag = dragon_night_ride } }
+		reference = agot_open_sky_video
+	}
+	left_portrait = {
+		character = root
+		camera = camera_dragonrider_ride_dragon_decision
+		animation = dragon_main
+
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				root.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	immediate = {
+		add_character_flag = currently_riding_dragon
+		agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = YES }
+		var:current_dragon = {
+			save_scope_as = ridden_dragon
+		}
+	}
+
+	option = { # Cool
+		name = {
+			trigger = { has_lifestyle = martial_lifestyle }
+			text = agot_dragon.0024.m
+		}
+		name = {
+			trigger = { has_lifestyle = learning_lifestyle }
+			text = agot_dragon.0024.l
+		}
+		name = {
+			trigger = { has_lifestyle = intrigue_lifestyle }
+			text = agot_dragon.0024.i
+		}
+		name = {
+			trigger = { has_lifestyle = diplomacy_lifestyle }
+			text = agot_dragon.0024.d
+		}
+		name = {
+			trigger = { has_lifestyle = stewardship_lifestyle }
+			text = agot_dragon.0024.s
+		}
+		name = {
+			trigger = { has_any_lifestyle_focus_trigger = no }
+			text = agot_dragon.0024.oops
+		}
+		flavor = agot_dragon.0024.flavor
+		add_stress = minor_stress_loss
+		add_trait_xp = {
+			trait = dragonrider
+			track = dragon_bond
+			value = 4
+		}
+		if = {
+			limit = { has_lifestyle = martial_lifestyle }
+			add_martial_lifestyle_xp = minor_lifestyle_xp
+		}
+		else_if = {
+			limit = { has_lifestyle = learning_lifestyle }
+			add_learning_lifestyle_xp = minor_lifestyle_xp
+		}
+		else_if = {
+			limit = { has_lifestyle = intrigue_lifestyle }
+			add_intrigue_lifestyle_xp = minor_lifestyle_xp
+		}
+		else_if = {
+			limit = { has_lifestyle = diplomacy_lifestyle }
+			add_diplomacy_lifestyle_xp = minor_lifestyle_xp
+		}
+		else_if = {
+			limit = { has_lifestyle = stewardship_lifestyle }
+			add_stewardship_lifestyle_xp = minor_lifestyle_xp
+		}
+		else = { add_stress = minor_stress_loss }
+	}
+
+	after = {
+		remove_character_flag = currently_riding_dragon
+		if = {
+			limit = { has_character_flag = dragon_night_ride }
+			remove_character_flag = dragon_night_ride
+		}
+		agot_clear_dragon_animation_flags = yes
+	}
+}
+
+# Putting this here to avoid conflicts with others
+agot_dragon.0030 = { # Child reveals bonded dragon's gender
+	# It's pretty much the same as 16, but with more dedicated loc to the child
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0030.t
+	desc = agot_dragon.0030.desc
+	theme = dragon
+	override_background = {
+		reference = council_chamber
+	}
+
+	left_portrait = {
+		character = root
+		animation = surprise
+	}
+
+	right_portrait = {
+		character = scope:child
+		animation = anger
+	}
+
+	lower_left_portrait = {
+		character = scope:revealing
+	}
+
+	lower_center_portrait = {
+		character = scope:dragon
+	}
+
+	trigger = {
+		OR = {
+			employs_court_position = head_dragonkeeper_court_position
+			employs_court_position = maester_court_position
+			employs_court_position = court_physician_court_position
+		}
+		exists = scope:child
+		exists = scope:dragon
+	}
+
+	immediate = {
+		scope:dragon = {
+			agot_reveal_dragon_gender_effect = yes
+		}
+		if = {
+			limit = {
+				employs_court_position = head_dragonkeeper_court_position
+			}
+			court_position:head_dragonkeeper_court_position = {
+				save_scope_as = revealing
+			}
+		}
+		else_if = {
+			limit = {
+				employs_court_position = maester_court_position
+			}
+			court_position:maester_court_position = {
+				save_scope_as = revealing
+			}
+		}
+		else_if = {
+			limit = {
+				employs_court_position = court_physician_court_position
+			}
+			court_position:court_physician_court_position = {
+				save_scope_as = revealing
+			}
+		}
+	}
+
+	option = {
+		name = agot_dragon.0030.a
+	}
+}
+
+# Child reveals dragon flame color
+agot_dragon.0040 = {
+	type = character_event
+	window = dragon_character_event
+	title = agot_dragon.0040.t
+	desc = {
+		desc = agot_dragon.0040.desc.intro
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:child = { knows_language = language_valyrian }
+				}
+				desc = agot_dragon.0040.desc.fire_valyrian
+			}
+			desc = agot_dragon.0040.desc.fire_common
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					has_trait = craven
+				}
+				desc = agor_dragon.0040.desc.fire_breath_craven
+			}
+			desc = agor_dragon.0040.desc.fire_breath
+		}
+	}
+	theme = dragon
+	override_background = {
+		reference = council_chamber
+	}
+
+	left_portrait = {
+		character = scope:child
+		animation = happiness
+	}
+
+	right_portrait = {
+		character = scope:dragon
+		animation = dragon_main
+	}
+
+	trigger = {
+		NOT = { scope:dragon = { has_character_flag = in_dragonpit } }
+	}
+	immediate = {
+		scope:dragon = { add_character_flag = { flag = agot_dragon.0040 years = 5 } } # 5 years should be more than long enough
+	}
+
+	option = {
+		name = agot_dragon.0040.a
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = {
+		trigger = {
+			agot_has_an_active_dragonpit = yes
+		}
+		name = agot_dragon.0040.b
+		agot_change_dragonpit_status_ai = { OWNER = root DRAGON_REC = scope:dragon }
+		if = {
+			limit = { # ai has no choice, should reduce
+				is_ai = yes
+			}
+			reverse_add_opinion = {
+				target = scope:child
+				 modifier = angry_opinion
+				 opinion = -25
+			}
+		}
+		else = {
+			reverse_add_opinion = {
+				target = scope:child
+				 modifier = angry_opinion
+				 opinion = -50
+			}
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+}
+
+# # Dragon breathes fire for the first time, color is revealed
+# agot_dragon.0041 = {
+
+# }
+###############################
+# Drink Wildfire
+###############################
+
+agot_dragon.0101 = {
+	type = character_event
+	title = agot_dragon.0101.t
+	desc = {
+		first_valid = {
+			triggered_desc = { # Is Aerion Brightflame dead?
+				trigger = {
+					exists = character:Targaryen_119
+					character:Targaryen_119 = {
+						is_alive = no
+						death_reason = death_drinking_wildfire
+					}
+				}
+				desc = agot_dragon.0101.aerion.desc
+			}
+			triggered_desc = { #
+				trigger = {
+					always = yes
+				}
+				desc = agot_dragon.0101.desc
+			}
+		}
+	}
+	theme = dragon
+
+	right_portrait = {
+		character = root
+		animation = ecstasy
+	}
+
+	left_portrait = {
+		character = scope:worried_physician
+		animation = disbelief
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				employs_court_position = maester_court_position
+			}
+			court_position:maester_court_position = {
+				save_scope_as = worried_physician
+			}
+		}
+		else_if = {
+			limit = {
+				employs_court_position = court_physician_court_position
+			}
+			court_position:court_physician_court_position = {
+				save_scope_as = worried_physician
+			}
+		}
+		else = {
+			random_close_family_member = {
+				save_scope_as = worried_physician
+			}
+		}
+		if = {
+			limit = {
+				exists = character:Targaryen_119
+				character:Targaryen_119 = { is_alive = no }
+			}
+			character:Targaryen_119 = {
+				save_scope_as = aerion_brightflame
+			}
+		}
+	}
+
+	option = { # Drink the wildfire
+		name = agot_dragon.0101.a
+
+		hidden_effect = {
+			random_list = {
+				97 = { # Yeah, you die
+					drank_wildfire_died_effect = yes
+				}
+				2 = { # My tummy hurt
+					drank_wildfire_lived_effect = yes
+					add_character_modifier = {
+						modifier = agot_drank_wildfire_health
+					}
+					add_trait = burned
+					add_trait_xp = {
+						trait = burned
+						value = {
+							integer_range = {
+								min = 50
+								max = 100
+							}
+						}
+					}
+				}
+				1 = {
+					agot_become_the_dragon = yes
+				}
+			}
+		}
+
+	}
+	option = { # Reconsider
+		name = agot_dragon.0101.b
+	}
+}
+
+#########################
+# Dragon In Territory	#
+#########################
+
+agot_dragon.0200 = { # Opener for dealing with dragon in territory
+	type = character_event
+	title = agot_dragon.0200.t
+	desc = agot_dragon.0200.desc
+	theme = dragon
+
+	cooldown = { years = 5 }
+	override_background = {
+		reference = throne_room
+	}
+	left_portrait = {
+		character = scope:chancellor
+		animation = idle
+	}
+	right_portrait = {
+		character = root
+		animation = worry
+	}
+	lower_left_portrait = {
+		character = scope:wild_dragon
+	}
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:court_combatant
+		}
+	}
+
+	trigger = {
+		NOR = {
+			has_character_flag = recently_fought_dragon
+			has_character_flag = ds_cooldown
+			has_character_flag = in_dragon_combat
+			scope:wild_dragon ?= { has_character_flag = in_dragon_combat }
+		}
+
+		any_councillor = {
+			has_council_position = councillor_chancellor
+			is_ai = yes
+		}
+		trigger_if = {
+			limit = {
+				exists = scope:wild_dragon
+			}
+			scope:wild_dragon = {
+				is_alive = yes
+				NOT = { has_character_flag = owned_dragon }
+			}
+		}
+		trigger_else = {
+			always = no
+		}
+
+		any_realm_province = {
+			scope:wild_dragon.location = this
+		}
+
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				title:e_the_iron_throne.holder ?= root
+				any_courtier = {
+					has_council_position = kingsguard_lord_commander
+				}
+			}
+			random_courtier = {
+				limit = {
+					has_council_position = kingsguard_lord_commander
+				}
+				save_scope_as = court_combatant
+			}
+		}
+		else_if = {
+			limit = {
+				any_councillor = {
+					has_council_position = councillor_marshal
+					is_ai = yes
+				}
+			}
+
+			random_councillor = {
+				limit = {
+					has_council_position = councillor_marshal
+					is_ai = yes
+				}
+				save_scope_as = court_combatant
+			}
+		}
+		else_if = {
+			limit = {
+				any_courtier = {
+					has_court_position = master_of_hunt_court_position
+					is_ai = yes
+				}
+			}
+
+			random_courtier = {
+				limit = {
+					has_court_position = master_of_hunt_court_position
+					is_ai = yes
+				}
+				save_scope_as = court_combatant
+			}
+		}
+
+		random_councillor = {
+			limit = {
+				has_council_position = councillor_chancellor
+			}
+			save_scope_as = chancellor
+		}
+
+		scope:wild_dragon.location = {
+			save_scope_as = wild_dragon_location
+		}
+	}
+
+	option = { # I will deal with it myself (brave)
+		trigger = { has_trait = brave }
+		name = agot_dragon.0200.a
+		save_scope_as = dragon_fighter
+		ai_chance = {
+			base = 1
+			modifier = {
+				add = {
+					value = ai_boldness
+					multiply = 0.5
+				}
+				add = {
+					value = ai_compassion
+					multiply = -0.25
+				}
+				add = {
+					value = ai_rationality
+					multiply = -0.2
+				}
+			}
+		}
+		add_prestige = major_prestige_gain
+	}
+
+	option = { # Send out a call for killers
+		trigger = {
+			NOT = { has_character_flag = rejected_dragon_mercs }
+			short_term_gold >= medium_gold_value
+		}
+		name = agot_dragon.0200.b
+		trigger_event = agot_dragon.0201
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Send Master at Arms to deal with it
+		trigger = {
+			exists = scope:court_combatant
+		}
+		name = agot_dragon.0200.c
+		scope:court_combatant = {
+			save_scope_as = dragon_fighter
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # I will deal with it myself (not brave)
+		trigger = {
+			NOT = {
+				has_trait = brave
+			}
+		}
+		name = agot_dragon.0200.d
+		save_scope_as = dragon_fighter
+		add_prestige = minor_prestige_gain
+		if = {
+			limit = { has_trait = craven }
+			add_stress = massive_stress_gain
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Leave it be
+		name = agot_dragon.0200.e
+		if = {
+			limit = { has_trait = brave }
+			add_stress = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 100
+		}
+	}
+
+	after = {
+		if = {
+			limit = {
+				exists = scope:dragon_fighter
+			}
+
+			if = {
+				limit = {
+					NOT = { scope:dragon_fighter = root }
+				}
+				save_scope_as = ds_court_owner
+			}
+
+			scope:wild_dragon = { save_scope_as = dragon }
+			scope:dragon_fighter = {
+				save_scope_as = human
+				trigger_event = agot_dragon_slaying_events.0001
+			}
+
+		}
+	}
+}
+
+# Call for mercineries or pick a courtier to deal with the dragon
+# Not available for ai
+agot_dragon.0201 = {
+	type = character_event
+	title = agot_dragon.0201.t
+	desc = {
+		desc = agot_dragon.0201.desc
+		triggered_desc = {
+			trigger = {
+				exists = scope:candidate_child
+			}
+			desc = agot_dragon.0201.desc_child
+		}
+	}
+
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+
+	left_portrait = {
+		character = scope:chancellor
+		animation = idle
+	}
+	right_portrait = {
+		character = root
+		animation = idle
+	}
+
+	lower_left_portrait = {
+		trigger = {
+			exists = scope:candidate_personal_knight
+		}
+		character = scope:candidate_personal_knight
+	}
+	lower_center_portrait = {
+		character = scope:candidate_merc
+	}
+	lower_right_portrait = {
+		character = scope:candidate_knight
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_child = {
+					age >= 18
+					can_be_combatant_based_on_gender_trigger = { ARMY_OWNER = this }
+					NOT = { has_trait = craven }
+					prowess >= 20
+					is_imprisoned = no
+					is_incapable = no
+					is_ai = yes
+				}
+			}
+			random_child = {
+				limit = {
+					age >= 18
+					can_be_combatant_based_on_gender_trigger = { ARMY_OWNER = this }
+					NOT = { has_trait = craven }
+					prowess >= 20
+					is_imprisoned = no
+					is_incapable = no
+					is_ai = yes
+				}
+				save_scope_as = candidate_child
+			}
+		}
+
+		random_knight = {
+			limit = {
+				NOT = { has_trait = craven }
+				prowess >= 20
+				is_imprisoned = no
+				is_incapable = no
+				NOT = { scope:candidate_child ?= this }
+				is_ai = yes
+			}
+			save_scope_as = candidate_personal_knight
+		}
+
+		create_character = {
+			template = mercenary
+			dynasty = none
+			location = root.location
+			culture = root.location.culture
+			faith = root.location.faith
+			gender_female_chance = root_soldier_female_chance
+			prowess >= 30
+			save_scope_as = candidate_merc
+		}
+
+		create_character = {
+			template = knight
+			dynasty = none
+			location = root.location
+			culture = root.location.culture
+			faith = root.location.faith
+			gender_female_chance = root_soldier_female_chance
+			prowess >= 20
+			save_scope_as = candidate_knight
+		}
+
+		if = {
+			limit = {
+				any_councillor = {
+					has_council_position = councillor_chancellor
+					NOR = {
+						scope:candidate_child ?= this
+						scope:candidate_personal_knight ?= this
+					}
+				}
+			}
+			random_councillor = {
+				limit = {
+					has_council_position = councillor_chancellor
+					NOR = {
+						scope:candidate_child ?= this
+						scope:candidate_personal_knight ?= this
+					}
+				}
+				save_scope_as = chancellor
+			}
+		}
+	}
+
+	option = { # Send a trained killer
+		name = agot_dragon.0201.a
+		pay_short_term_gold = {
+			target = scope:candidate_merc
+			gold = 250
+		}
+		scope:candidate_merc = {
+			save_scope_as = dragon_fighter
+		}
+	}
+
+	option = { # Send a knight
+		name = agot_dragon.0201.b
+		pay_short_term_gold = {
+			target = scope:candidate_knight
+			gold = 100
+		}
+		scope:candidate_knight = {
+			save_scope_as = dragon_fighter
+		}
+	}
+
+	option = { # Send a personal knight
+		name = agot_dragon.0201.personal_knight
+		scope:candidate_personal_knight = {
+			save_scope_as = dragon_fighter
+		}
+	}
+
+	option = { # Your Child?
+		trigger = {
+			exists = scope:candidate_child
+		}
+		name = agot_dragon.0201.c
+		scope:candidate_child = {
+			save_scope_as = dragon_fighter
+			add_prestige = major_prestige_gain
+		}
+	}
+
+	option = { # Too expensive
+		name = agot_dragon.0201.d
+
+		add_character_flag = {
+			flag = rejected_dragon_mercs
+			days = 1
+		}
+		trigger_event = agot_dragon.0200
+	}
+
+	option = { # On second thought
+		name = agot_dragon.0201.e
+	}
+
+	after = {
+		if = {
+			limit = {
+				exists = scope:dragon_fighter
+			}
+			hidden_effect = {
+				switch = {
+					trigger = scope:dragon_fighter
+					scope:candidate_merc = {
+						scope:candidate_knight = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+					}
+					scope:candidate_knight = {
+						scope:candidate_merc = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+					}
+					fallback = {
+						scope:candidate_merc = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+						scope:candidate_knight = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+					}
+				}
+			}
+
+			if = {
+				limit = {
+					NOT = { scope:dragon_fighter = root }
+				}
+				save_scope_as = ds_court_owner
+			}
+
+			scope:wild_dragon = { save_scope_as = dragon }
+			scope:dragon_fighter = {
+				save_scope_as = human
+				trigger_event = agot_dragon_slaying_events.0001
+			}
+
+		}
+		else = {
+			hidden_effect = {
+				scope:candidate_merc = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+				scope:candidate_knight = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+
+# The dragon has been slain
+agot_dragon.0202 = {
+	type = character_event
+	title = agot_dragon.0202.t
+	desc = agot_dragon.0202.desc
+	theme = dragon
+
+	trigger = {
+		scope:dragon = { is_alive = no }
+	}
+	override_background = {
+		reference = throne_room
+	}
+
+	lower_center_portrait = {
+		character = scope:wild_dragon
+	}
+	left_portrait = {
+		character = scope:dragon_fighter
+		animation = idle
+	}
+	right_portrait = {
+		character = root
+		animation = idle
+	}
+
+	option = {
+		name = agot_dragon.0202.a
+		custom_tooltip = agot_dragon.0202.a.tt
+	}
+}
+
+# The dragon has slain your knight
+agot_dragon.0203 = {
+	type = character_event
+	title = agot_dragon.0203.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:dragon_fighter = { is_alive = yes } }
+				desc = agot_dragon.0203.desc_run
+			}
+			desc = agot_dragon.0203.desc_dead
+		}
+	}
+
+	trigger = {
+		scope:dragon = { is_alive = yes }
+	}
+
+	theme = dragon
+	override_background = {
+		reference = throne_room
+	}
+
+	lower_center_portrait = {
+		character = scope:wild_dragon
+	}
+	left_portrait = {
+		character = scope:dragon_fighter
+		animation = idle
+	}
+	right_portrait = {
+		character = root
+		animation = idle
+	}
+
+	option = {
+		name = agot_dragon.0203.a
+	}
+}
+
+scripted_trigger valid_dragonseed_trigger = {
+	age >= 14
+	is_ruler = no
+	is_human = yes
+	OR = {
+		NOT = { exists = dynasty }
+		has_trait = bastard
+		AND = {
+			OR = {
+				has_trait = ambitious
+				has_trait = brave
+				has_trait = arrogant
+			}
+			NOT = { dynasty ?= root.dynasty }
+		}
+	}
+	NOR = {
+		has_trait = nightswatch
+		has_trait = kingsguard
+		has_trait = septon
+		has_trait = maester
+		has_trait = silent_sister
+	}
+	in_diplomatic_range = root
+	NOT = { any_heir_title = {} }
+	agot_has_dragonblood_heritage = yes
+	NOT = {
+		any_relation = {
+			type = agot_dragon
+		}
+	}
+	NOT = {
+		any_character_artifact = {
+			has_variable = cradled_egg
+		}
+	}
+	NOT = { has_trait = dragonwidowed }
+}
+
+#Dragonseed start
+agot_dragon.1000 = {
+	hidden = yes
+
+	immediate = {
+		#spawn characters
+		create_character = {
+			template = agot_local_dragonseed_template
+			location = root.capital_province
+			save_scope_as = dragonseed
+		}
+		scope:dragonseed = { add_to_list = final_dragonseeds }
+		create_character = {
+			template = agot_valyrian_dragonseed_template
+			location = root.capital_province
+			save_scope_as = dragonseed
+		}
+		scope:dragonseed = { add_to_list = final_dragonseeds }
+		random = {
+			chance = 50
+			create_character = {
+				template = agot_local_dragonseed_template
+				location = root.capital_province
+				save_scope_as = dragonseed
+			}
+			scope:dragonseed = { add_to_list = final_dragonseeds }
+		}
+		random = {
+			chance = 50
+			create_character = {
+				template = agot_valyrian_dragonseed_template
+				location = root.capital_province
+				save_scope_as = dragonseed
+			}
+			scope:dragonseed = { add_to_list = final_dragonseeds }
+		}
+		# Easter Egg Dragonseeds.. slot in more than one easter egg character template when they exist, ideally in a random_list within this block.
+		random = {
+			chance = 10
+			if = {
+				limit = {
+					NOR = {
+						exists = character:Scaly_1
+						any_living_character = {
+							has_character_flag = is_scaly_allard
+						}
+					}
+				}
+				create_character = {
+					template = agot_scaly_dragonseed_template
+					location = root.capital_province
+					save_scope_as = dragonseed
+				}
+				scope:dragonseed = { add_to_list = final_dragonseeds }
+			}
+		}
+
+		every_living_character = {
+			limit = {
+				valid_dragonseed_trigger = yes
+			}
+			add_to_list = potential_dragonseeds
+		}
+
+		# If there is a false dragonseed, add them and keep them
+		if = {
+			limit = {
+				var:false_seed ?= {
+					is_alive = yes
+					any_character_artifact = {
+						artifact_type = dragon_horn
+					}
+				}
+			}
+			var:false_seed ?= {
+				save_scope_as = false_seed
+				add_to_list = final_dragonseeds
+
+				random_character_artifact = {
+					limit = {
+						artifact_type = dragon_horn
+					}
+					save_scope_as = dragon_horn
+				}
+			}
+			remove_variable = false_seed
+		}
+
+		if = {
+			limit = {
+				list_size:potential_dragonseeds < 10
+			}
+			every_in_list = {
+				list = potential_dragonseeds
+				add_to_list = final_dragonseeds
+			}
+		}
+		else_if = {
+			limit = { list_size:potential_dragonseeds >= 10 }
+			while = {
+				count < 11
+				random_in_list = {
+					list = potential_dragonseeds
+					limit = {
+						NOT = { is_in_list = final_dragonseeds }
+					}
+					add_to_list = final_dragonseeds
+				}
+			}
+		}
+
+		every_courtier = {
+			limit = {
+				has_trait = dragon
+				NOT = {
+					any_relation = {
+						type = agot_dragon
+					}
+				}
+			}
+			add_to_list = possible_dragons
+		}
+
+		every_living_dragon = {
+			limit = {
+				NOT = { has_character_flag = owned_dragon }
+				exists = var:lair
+				var:lair.county.holder = root
+			}
+			add_to_list = possible_dragons
+		}
+
+		trigger_event = agot_dragon.1001
+	}
+}
+
+agot_dragon.1001 = {
+	type = character_event
+	title = agot_dragon.1001.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { house = dynasty:dynn_Targaryen.dynasty_founder.house }
+				desc = agot_dragon.1001.targ
+			}
+			desc = agot_dragon.1001.desc
+		}
+	}
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	right_portrait = {
+		character = scope:random_dragonseed
+		animation = personality_bold
+	}
+
+	immediate = {
+		every_in_list = {
+			list = final_dragonseeds
+			if = {
+				limit = {
+					NOT = { employer = root }
+				}
+				root = { add_courtier ?= prev }
+			}
+			save_scope_as = random_dragonseed
+		}
+	}
+
+	option = {
+		name = agot_dragon.1001.a
+		trigger_event = agot_dragon.1002
+
+		ai_chance = { base = 100 }
+	}
+
+	option = {
+		name = agot_dragon.1001.b
+		custom_tooltip = agot_dragon.1001.b_tt
+		every_in_list = {
+			list = final_dragonseeds
+			add_opinion = {
+				target = root
+				modifier = disappointed_opinion
+				opinion = -25
+			}
+			move_to_pool = yes
+		}
+
+		ai_chance = { base = 0 }
+
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:false_seed_sower ?= { is_alive = yes }
+					scope:false_seed ?= { is_alive = yes }
+				}
+				scope:dragon_horn ?= {
+					set_owner = {
+						target = scope:false_seed_sower
+						generate_history = no
+					}
+				}
+				scope:false_seed = {
+					if = {
+						limit = {
+							NOT = { employer = scope:false_seed_sower }
+						}
+						root = { add_courtier ?= scope:false_seed_sower }
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_dragon.1002 = {
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = {
+				scope:false_seed ?= {
+					is_alive = yes
+				}
+			}
+
+			if = {
+				limit = {
+					exists = scope:dragon_horn.var:binder
+					scope:dragon_horn.var:binder = { is_alive = yes }
+					NOR = {
+						AND = {
+							scope:dragon_horn.var:binder.capital_province ?= {
+								geographical_region = world_westeros_beyond_the_wall
+							}
+							NOT = {
+								capital_province ?= {
+									geographical_region = world_westeros_beyond_the_wall
+								}
+							}
+						}
+						AND = {
+							NOT = {
+								scope:dragon_horn.var:binder.capital_province ?= {
+									geographical_region = world_westeros_beyond_the_wall
+								}
+							}
+							location ?= {
+								geographical_region = world_westeros_beyond_the_wall
+							}
+						}
+					}
+				}
+				trigger_event = agot_dragon.1004 # Someone gets a dragon
+			}
+			else = {
+				trigger_event = agot_dragon.1008 # The blower just dies horrendously
+			}
+		}
+		else = {
+			save_scope_as = dragonseed_caller
+			every_in_list = {
+				list = final_dragonseeds
+				save_scope_as = tamer
+				random_in_list = {
+					list = possible_dragons
+					limit = {
+						NOR = {
+							has_variable = current_rider # No rider, no bonder
+							any_relation = {
+								type = agot_dragon
+							}
+						}
+						dragon_size >= dragon_taming_minimum_size
+					}
+					weight = {
+						base = 1
+						modifier = {
+							add = {
+								save_temporary_scope_as = dragon
+								value = dragon_traits_in_common
+								multiply = dragon_scheme_base_common_traits_value
+							}
+						}
+						modifier = {
+							add = scope:dragon.taming_chance
+						}
+					}
+					save_scope_as = dragon
+					agot_try_tame_dragon_effect = {
+						TAMER = scope:tamer
+						DRAGON = scope:dragon
+					}
+				}
+			}
+
+			trigger_event = agot_dragon.1003
+		}
+	}
+}
+
+agot_dragon.1003 = {
+	type = character_event
+	title = agot_dragon.1003.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					exists = scope:tamer_4
+				}
+				desc = agot_dragon.1003.desc_more
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:tamer_3
+				}
+				desc = agot_dragon.1003.desc_three
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:tamer_2
+				}
+				desc = agot_dragon.1003.desc_two
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:tamer_1
+				}
+				desc = agot_dragon.1003.desc_one
+			}
+			desc = {
+				desc = agot_dragon.1003.desc_none_intro
+				random_valid = {
+					desc = agot_dragon.1003.desc_none_llama
+					desc = agot_dragon.1003.desc_none_aith
+				}
+			}
+		}
+		triggered_desc = {
+			trigger = {
+				exists = scope:tamer_1
+			}
+			desc = agot_dragon.1003.desc_success
+		}
+	}
+	theme = dragon
+
+	left_portrait = {
+		character = scope:tamer_1
+		animation = personality_bold
+	}
+
+	right_portrait = {
+		character = scope:dragon_1
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		every_in_list = {
+			list = final_dragonseeds
+			save_scope_as = tamer
+			if = {
+				limit = { is_alive = no }
+				show_as_tooltip = {
+					death = {
+						killer = killer
+						death_reason = death_dragon_ate_failed_tamed
+					}
+				}
+			}
+			else_if = {
+				limit = { has_variable = dragonseed_burned }
+				var:dragonseed_burned = { save_scope_as = dragon }
+				custom_tooltip = dragon_burns_during_taming_tt
+			}
+			else_if = {
+				limit = { has_variable = dragonseed_wounded }
+				var:dragonseed_wounded = { save_scope_as = dragon }
+				custom_tooltip = dragon_wounds_during_taming_tt
+			}
+			else_if = {
+				limit = { has_variable = dragonseed_fled }
+				var:dragonseed_fled = { save_scope_as = dragon }
+				custom_tooltip = dragonseed_flees_during_taming_tt
+			}
+			else_if = {
+				limit = { has_trait = dragonrider }
+				var:current_dragon = { save_scope_as = dragon }
+				custom_tooltip = dragon_success_taming_tt
+			}
+		}
+
+		random_in_list = {
+			list = final_dragonseeds
+			limit = {
+				has_trait = dragonrider
+			}
+			save_scope_as = tamer_1
+			var:current_dragon = { save_scope_as = dragon_1 }
+		}
+
+		random_in_list = {
+			list = final_dragonseeds
+			limit = {
+				has_trait = dragonrider
+				NOT = { this = scope:tamer_1 }
+			}
+			save_scope_as = tamer_2
+			var:current_dragon = { save_scope_as = dragon_2 }
+		}
+
+		random_in_list = {
+			list = final_dragonseeds
+			limit = {
+				has_trait = dragonrider
+				NOT = { this = scope:tamer_1 }
+				NOT = { this = scope:tamer_2 }
+			}
+			save_scope_as = tamer_3
+			var:current_dragon = { save_scope_as = dragon_3 }
+		}
+
+		random_in_list = {
+			list = final_dragonseeds
+			limit = {
+				has_trait = dragonrider
+				NOT = { this = scope:tamer_1 }
+				NOT = { this = scope:tamer_2 }
+				NOT = { this = scope:tamer_3 }
+			}
+			save_scope_as = tamer_4
+			var:current_dragon = { save_scope_as = dragon_4 }
+		}
+	}
+
+	option = {
+		name = agot_dragon.1003.a
+
+		trigger = { exists = scope:tamer_1 }
+
+		every_in_list = {
+			list = potential_dragonseeds
+			limit = {
+				has_trait = dragonrider
+			}
+
+			save_scope_as = recipient
+			root = {
+				if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = loyalty_hook
+						}
+						scope:recipient = {
+							ai_honor >= 50
+						}
+					}
+					add_hook = {
+						type = loyalty_hook
+						target = scope:recipient
+					}
+				}
+				else_if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = favor_hook
+						}
+						scope:recipient = {
+							ai_honor >= 0
+						}
+					}
+					add_hook = {
+						type = favor_hook
+						target = scope:recipient
+					}
+				}
+				pay_short_term_gold = {
+					target = prev
+					gold = medium_gold_value
+				}
+			}
+		}
+
+		ai_chance = { base = 50 }
+	}
+
+	option = {
+		name = agot_dragon.1003.b
+
+		trigger = { exists = scope:tamer_1 }
+
+		every_in_list = {
+			list = potential_dragonseeds
+			limit = {
+				has_trait = dragonrider
+			}
+			save_scope_as = recipient
+			root = {
+				if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = loyalty_hook
+						}
+						scope:recipient = {
+							ai_honor >= 50
+						}
+					}
+					add_hook = {
+						type = loyalty_hook
+						target = scope:recipient
+					}
+				}
+				else_if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = favor_hook
+						}
+						scope:recipient = {
+							ai_honor >= 0
+						}
+					}
+					add_hook = {
+						type = favor_hook
+						target = scope:recipient
+					}
+				}
+			}
+			scope:recipient = {
+				if = {
+					limit = {
+						exists = house
+						has_trait = bastard
+						root = { is_allowed_to_legitimize_children_trigger = yes }
+					}
+					root = {
+						trigger_event = agot_dragon.1010
+					}
+					custom_tooltip = agot_dragon.1003.bastard_tt
+				}
+				else_if = {
+					limit = {
+						exists = house
+						has_trait = bastard
+						root = { is_allowed_to_legitimize_children_trigger = no }							
+					}
+					hidden_effect = { create_cadet_branch = yes }
+					custom_tooltip = agot_dragon.1010.b_tt
+					remove_trait = bastard
+					add_trait = bastard_founder
+				}
+				else_if = {
+					limit = {
+						is_lowborn = yes
+					}
+					raise_to_nobility_effect = { ACTOR = root RECIPIENT = scope:recipient }
+				}
+			}
+		}
+
+		ai_chance = { base = 50 }
+	}
+
+	option = {
+		name = agot_dragon.1003.c
+
+		trigger = { exists = scope:tamer_1 }
+
+		every_in_list = {
+			list = potential_dragonseeds
+			limit = {
+				has_trait = dragonrider
+			}
+			save_scope_as = recipient
+			root = {
+				if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = loyalty_hook
+						}
+						scope:recipient = {
+							ai_honor >= 0
+						}
+					}
+					add_hook = {
+						type = loyalty_hook
+						target = scope:recipient
+					}
+				}
+				else_if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = favor_hook
+						}
+					}
+					add_hook = {
+						type = favor_hook
+						target = scope:recipient
+					}
+				}
+				scope:recipient = {
+					if = {
+						limit = {
+							exists = house
+							has_trait = bastard
+							root = { is_allowed_to_legitimize_children_trigger = yes }
+						}
+						root = {
+							trigger_event = agot_dragon.1010
+						}
+						custom_tooltip = agot_dragon.1003.bastard_tt
+					}
+					else_if = {
+						limit = {
+							exists = house
+							has_trait = bastard
+							root = { is_allowed_to_legitimize_children_trigger = no }							
+						}
+						hidden_effect = { create_cadet_branch = yes }
+						custom_tooltip = agot_dragon.1010.b_tt
+						remove_trait = bastard
+						add_trait = bastard_founder
+					}
+					else_if = {
+						limit = {
+							is_lowborn = yes
+						}
+						raise_to_nobility_effect = { ACTOR = root RECIPIENT = scope:recipient }
+					}
+				}
+				pay_short_term_gold = {
+					target = prev
+					gold = medium_gold_value
+				}
+			}
+		}
+
+		ai_chance = { base = 50 }
+	}
+
+	option = {
+		name = agot_dragon.1003.d
+
+		trigger = { exists = scope:tamer_1 }
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				has_trait = greedy
+				add = 50
+			}
+		}
+	}
+
+	option = {
+		name = agot_dragon.1003.e
+
+		trigger = {
+			NOT = { exists = scope:tamer_1 }
+		}
+	}
+}
+
+agot_dragon.1004 = { # Someone has blown the horn and succeeded
+	type = character_event
+	title = agot_dragon.1004.t
+	desc = {
+		desc = agot_dragon.1004.desc.intro
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					any_in_list = {
+						list = bound_dragons
+						count > 1
+					}
+				}
+				desc = agot_dragon.1004.desc.multiple_dragons
+			}
+			desc = agot_dragon.1004.desc.single_dragons
+		}
+		desc = agot_dragon.1004.desc.outro
+	}
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+
+	right_portrait = {
+		character = scope:dragon_horn.var:binder
+		animation = personality_bold
+	}
+
+	lower_left_portrait = {
+		trigger = {
+			exists = scope:candidate_one
+		}
+		character = scope:candidate_one
+	}
+
+	lower_center_portrait = {
+		character = scope:false_seed
+	}
+
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:dragon_one
+		}
+		character = scope:dragon_one
+		animation = dragon_head
+	}
+
+	immediate = {
+
+		scope:dragon_horn = {
+			set_owner = {
+				target = root
+				history = {
+					type = stolen
+					recipient = root
+				}
+			}
+		}
+
+		random_in_list = { # First set a random dragon to be bound
+			list = possible_dragons
+			limit = {
+				NOR = {
+					has_variable = current_rider
+					any_relation = {
+						type = agot_dragon
+					}
+				}
+				dragon_size >= dragon_taming_minimum_size
+			}
+			add_to_list = bound_dragons
+			save_scope_as = dragon_one
+		}
+
+		every_in_list = {
+			list = possible_dragons
+			limit = {
+				NOR = {
+					has_variable = current_rider
+					any_relation = {
+						type = agot_dragon
+					}
+				}
+				dragon_size >= dragon_taming_minimum_size
+				NOT = { is_in_list = bound_dragons }
+			}
+			# Low possibility of more than one being tamed
+			if = {
+				limit = { # Always at least one
+					any_in_list = {
+						list = bound_dragons
+						count = 1
+					}
+				}
+				save_scope_as = dragon_two
+				random = {
+					chance = 5
+					add_to_list = bound_dragons
+				}
+			}
+			else = {
+				random = {
+					chance = 1
+					add_to_list = bound_dragons
+				}
+			}
+		}
+
+		# Use bound dragons from here on
+		every_in_list = {
+			list = bound_dragons
+
+			save_scope_as = freed_dragon
+			hidden_effect = {
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:freed_dragon
+						DRAGONPIT_COUNTY = scope:freed_dragon.location
+					}
+				}
+				# if = {
+				# 	limit = {
+				# 		exists = scope:freed_dragon.var:pitted_dragon_location
+				# 	}
+				# 	agot_remove_from_dragonpit_no_event = {
+				# 		DRAGON = scope:freed_dragon
+				# 		DRAGONPIT_COUNTY = scope:freed_dragon.var:pitted_dragon_location
+				# 	}
+				# }
+				agot_free_dragon = yes
+			}
+			agot_set_as_owned_dragon = {
+				OWNER = scope:dragon_horn.var:binder
+				DRAGON = scope:freed_dragon
+			}
+		}
+
+		random_in_list = {
+			list = final_dragonseeds
+			limit = { NOT = { this = scope:false_seed } }
+			save_scope_as = candidate_one
+		}
+
+		show_as_tooltip = {
+			every_in_list = {
+				list = final_dragonseeds
+				limit = { NOT = { this = scope:false_seed } }
+				add_trait = burned
+			}
+		}
+		hidden_effect = {
+			every_in_list = {
+				list = final_dragonseeds
+				limit = { NOT = { this = scope:false_seed } }
+				agot_burn_effect = { MIN = 0 MAX = 100}
+			}
+		}
+
+		show_as_tooltip = {
+			scope:false_seed = {
+				death = { death_reason = death_horn_blow killer = scope:dragon_horn.var:binder }
+			}
+		}
+		hidden_effect = {
+			scope:false_seed = {
+				agot_burn_effect = { MIN = 100 MAX = 100 }
+				death = { death_reason = death_horn_blow killer = scope:dragon_horn.var:binder }
+			}
+		}
+
+		if = {
+			limit = {
+				scope:false_seed_sower = scope:dragon_horn.var:binder
+				NOT = { has_relation_nemesis = scope:dragon_horn.var:binder }
+			}
+
+			if = {
+				limit = {
+					any_in_list = {
+						list = bound_dragons
+						count > 1
+					}
+				}
+				set_relation_nemesis = {
+					target = scope:dragon_horn.var:binder
+					reason = stole_dragons
+				}
+			}
+			else = {
+				set_relation_nemesis = {
+					target = scope:dragon_horn.var:binder
+					reason = stole_dragon
+				}
+			}
+		}
+
+	}
+
+	option = {
+		name = agot_dragon.1004.a
+		if = {
+			limit = {
+				scope:dragon_horn.var:binder = scope:false_seed_sower
+			}
+			scope:dragon_horn.var:binder = {
+				trigger_event = {
+					id = agot_dragon.1005
+					days = 1
+				}
+			}
+		}
+		else = {
+			scope:dragon_horn.var:binder = {
+				trigger_event = {
+					id = agot_dragon.1006
+					days = 1
+				}
+			}
+			scope:false_seed_sower = {
+				trigger_event = {
+					id = agot_dragon.1007
+					days = 2
+				}
+			}
+		}
+
+		random = {
+			chance = 50
+
+			show_as_tooltip = {
+				add_trait = burned
+			}
+			hidden_effect = {
+				agot_burn_effect = { MIN = 0 MAX = 100 }
+			}
+		}
+	}
+}
+
+agot_dragon.1005 = { # Dragons from false seed event arrive
+	type = character_event
+	title = agot_dragon.1005.t
+	theme = dragon
+	desc = {
+		desc = agot_dragon.1005.desc.intro
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					any_in_list = {
+						list = bound_dragons
+						count > 1
+					}
+				}
+				desc = agot_dragon.1005.desc.multiple_dragons
+			}
+			desc = agot_dragon.1005.desc.single_dragons
+		}
+	}
+
+	left_portrait = {
+		character = scope:dragon_horn.var:binder
+		animation = personality_bold
+	}
+
+	right_portrait = {
+		character = scope:dragon_keeper
+		animation = anger
+	}
+
+	lower_left_portrait = {
+		trigger = {
+			exists = scope:dragon_two
+		}
+		character = scope:dragon_two
+		animation = dragon_head
+	}
+
+	lower_center_portrait = {
+		character = scope:false_seed
+	}
+
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:dragon_one
+		}
+		character = scope:dragon_one
+		animation = dragon_head
+	}
+
+	immediate = {
+
+		if = {
+			limit = {
+				capital_county = { agot_title_is_an_active_dragonpit = yes }
+			}
+			capital_county = { save_scope_as = dragonpit_county }
+		}
+		else_if = {
+			limit = {
+				any_held_title = { agot_title_is_an_active_dragonpit = yes }
+			}
+			random_held_title = {
+				limit = {
+					agot_title_is_an_active_dragonpit = yes
+				}
+				save_scope_as = dragonpit_county
+			}
+		}
+
+	}
+
+	option = {
+		trigger = {
+			exists = scope:dragon_two
+			NOT = {
+				has_trait = dragonrider
+			}
+		}
+		name = agot_dragon.1005.a
+		flavor = other_dragons_wild_or_pitted.tt
+
+		agot_tame_dragon = {
+			TAMER = root
+			DRAGON = scope:dragon_two
+		}
+		add_character_flag = dragon_by_horn
+		if = {
+			limit = {
+				exists = scope:dragon_horn
+			}
+
+			scope:dragon_two = {
+				set_variable = {
+					name = horn_binder
+					value = root
+				}
+
+				set_variable = {
+					name = binding_strength
+					value = scope:dragon_horn.var:binding_strength
+				}
+			}
+
+			scope:dragon_horn = {
+				add_to_variable_list = {
+					name = tamed_dragons
+					target = scope:dragon_two
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:dragonpit_county
+			}
+
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_two } }
+				list = bound_dragons
+				save_scope_as = pitted_dragon
+				agot_send_to_dragonpit_no_event = { DRAGON = scope:pitted_dragon DRAGONPIT_COUNTY = scope:dragonpit_county }
+			}
+		}
+		else = {
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_two } }
+				list = bound_dragons
+				save_temporary_scope_as = dragon_to_free
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:dragon_to_free
+						DRAGONPIT_COUNTY = scope:dragon_to_free.location
+					}
+				}
+				agot_free_dragon = yes
+			}
+		}
+
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = {
+		trigger = {
+			NOT = {
+				has_trait = dragonrider
+			}
+		}
+		name = {
+			trigger = {
+				exists = scope:dragon_two
+			}
+			text = agot_dragon.1005.b
+		}
+		name = {
+			trigger = { # Then there's one dragon here
+				NOT = { exists = scope:dragon_two }
+			}
+			text = agot_dragon.1005.c
+		}
+		flavor = other_dragons_wild_or_pitted.tt
+
+		agot_tame_dragon = {
+			TAMER = root
+			DRAGON = scope:dragon_one
+		}
+		add_character_flag = dragon_by_horn
+		if = {
+			limit = {
+				exists = scope:dragon_horn
+			}
+
+			scope:dragon_one = {
+				set_variable = {
+					name = horn_binder
+					value = root
+				}
+
+				set_variable = {
+					name = binding_strength
+					value = scope:dragon_horn.var:binding_strength
+				}
+			}
+
+			scope:dragon_horn = {
+				add_to_variable_list = {
+					name = tamed_dragons
+					target = scope:dragon_one
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:dragonpit_county
+			}
+
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_one } }
+				list = bound_dragons
+				save_scope_as = pitted_dragon
+				agot_send_to_dragonpit_no_event = { DRAGON = scope:pitted_dragon DRAGONPIT_COUNTY = scope:dragonpit_county }
+			}
+		}
+		else = {
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_one } }
+				list = bound_dragons
+				save_temporary_scope_as = dragon_to_free
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:dragon_to_free
+						DRAGONPIT_COUNTY = scope:dragon_to_free.location
+					}
+				}
+				agot_free_dragon = yes
+			}
+		}
+
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = {
+		trigger = {
+			NOT = {
+				has_trait = dragonrider
+			}
+			any_in_list = {
+				list = bound_dragons
+				count > 2
+			}
+		}
+		name = agot_dragon.1005.d
+		every_in_list = {
+			list = bound_dragons
+			root = {
+				add_to_variable_list = {
+					name = candidate_dragons
+					target = prev
+				}
+			}
+		}
+		trigger_event = dragon_taming_events.0307
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = {
+		name = {
+			trigger = { # Should never happen unless they tame a dragon in 30 days
+				has_trait = dragonrider
+				any_held_title = {
+					agot_title_is_an_active_dragonpit = yes
+				}
+			}
+			text = agot_dragon.1005.e
+		}
+		name = {
+			trigger = {
+				NOT = {
+					has_trait = dragonrider
+				}
+				exists = scope:dragon_two
+			}
+			text = agot_dragon.1005.f
+		}
+		name = {
+			trigger = {
+				NOT = {
+					has_trait = dragonrider
+				}
+			}
+			text = agot_dragon.1005.g
+		}
+		flavor = each_dragon_wild_or_pitted.tt
+
+		if = {
+			limit = {
+				exists = scope:dragonpit_county
+			}
+
+			every_in_list = {
+				list = bound_dragons
+				save_scope_as = pitted_dragon
+				agot_send_to_dragonpit_no_event = { DRAGON = scope:pitted_dragon DRAGONPIT_COUNTY = scope:dragonpit_county }
+			}
+		}
+		else = {
+			every_in_list = {
+				list = bound_dragons
+				save_temporary_scope_as = dragon_to_free
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:dragon_to_free
+						DRAGONPIT_COUNTY = scope:dragon_to_free.location
+					}
+				}
+				agot_free_dragon = yes
+			}
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon.1006 = { # Someone else used false seed and you were the true binder
+	type = character_event
+	title = agot_dragon.1006.t
+	theme = dragon
+	desc = {
+		desc = agot_dragon.1006.desc
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					any_in_list = {
+						list = bound_dragons
+						count > 2
+					}
+				}
+				desc = agot_dragon.1006.desc.multiple_dragons
+			}
+			triggered_desc = {
+				trigger = {
+					any_in_list = {
+						list = bound_dragons
+						count = 2
+					}
+				}
+				desc = agot_dragon.1006.desc.two_dragons
+			}
+			desc = agot_dragon.1006.desc.one_dragon
+		}
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+
+	right_portrait = {
+		character = scope:dragon_keeper
+		animation = anger
+	}
+
+	lower_left_portrait = {
+		trigger = {
+			exists = scope:dragon_two
+		}
+		character = scope:dragon_two
+		animation = dragon_head
+	}
+
+	lower_center_portrait = {
+		character = scope:false_seed
+	}
+
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:dragon_one
+		}
+		character = scope:dragon_one
+		animation = dragon_head
+	}
+
+	immediate = {
+
+		scope:dragon_keeper.location = {
+			save_scope_as = keeper_location
+		}
+
+		if = {
+			limit = {
+				capital_county = { agot_title_is_an_active_dragonpit = yes }
+			}
+			capital_county = { save_scope_as = dragonpit_county }
+		}
+		else_if = {
+			limit = {
+				any_held_title = { agot_title_is_an_active_dragonpit = yes }
+			}
+			random_held_title = {
+				limit = {
+					agot_title_is_an_active_dragonpit = yes
+				}
+				save_scope_as = dragonpit_county
+			}
+		}
+	}
+
+	option = {
+		trigger = {
+			exists = scope:dragon_two
+			NOT = {
+				has_trait = dragonrider
+			}
+		}
+		name = agot_dragon.1006.a
+		flavor = other_dragons_wild_or_pitted.tt
+
+		agot_tame_dragon = {
+			TAMER = root
+			DRAGON = scope:dragon_two
+		}
+		add_character_flag = dragon_by_horn
+		if = {
+			limit = {
+				exists = scope:dragon_horn
+			}
+
+			scope:dragon_two = {
+				set_variable = {
+					name = horn_binder
+					value = root
+				}
+
+				set_variable = {
+					name = binding_strength
+					value = scope:dragon_horn.var:binding_strength
+				}
+			}
+
+			scope:dragon_horn = {
+				add_to_variable_list = {
+					name = tamed_dragons
+					target = scope:dragon_two
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:dragonpit_county
+			}
+
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_two } }
+				list = bound_dragons
+				save_scope_as = pitted_dragon
+				agot_send_to_dragonpit_no_event = { DRAGON = scope:pitted_dragon DRAGONPIT_COUNTY = scope:dragonpit_county }
+			}
+		}
+		else = {
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_two } }
+				list = bound_dragons
+				save_temporary_scope_as = dragon_to_free
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:dragon_to_free
+						DRAGONPIT_COUNTY = scope:dragon_to_free.location
+					}
+				}
+				agot_free_dragon = yes
+			}
+		}
+
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = {
+		trigger = {
+			NOT = {
+				has_trait = dragonrider
+			}
+		}
+		name = {
+			trigger = {
+				exists = scope:dragon_two
+			}
+			text = agot_dragon.1006.b
+		}
+		name = {
+			trigger = { # Then there's one dragon here
+				NOT = { exists = scope:dragon_two }
+			}
+			text = agot_dragon.1006.c
+		}
+		flavor = other_dragons_wild_or_pitted.tt
+
+		agot_tame_dragon = {
+			TAMER = root
+			DRAGON = scope:dragon_one
+		}
+		add_character_flag = dragon_by_horn
+		if = {
+			limit = {
+				exists = scope:dragon_horn
+			}
+
+			scope:dragon_one = {
+				set_variable = {
+					name = horn_binder
+					value = root
+				}
+
+				set_variable = {
+					name = binding_strength
+					value = scope:dragon_horn.var:binding_strength
+				}
+			}
+
+			scope:dragon_horn = {
+				add_to_variable_list = {
+					name = tamed_dragons
+					target = scope:dragon_one
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = scope:dragonpit_county
+			}
+
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_one } }
+				list = bound_dragons
+				save_scope_as = pitted_dragon
+				agot_send_to_dragonpit_no_event = { DRAGON = scope:pitted_dragon DRAGONPIT_COUNTY = scope:dragonpit_county }
+			}
+		}
+		else = {
+			every_in_list = {
+				limit = { NOT = { this = scope:dragon_one } }
+				list = bound_dragons
+				save_temporary_scope_as = dragon_to_free
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:dragon_to_free
+						DRAGONPIT_COUNTY = scope:dragon_to_free.location
+					}
+				}
+				agot_free_dragon = yes
+			}
+		}
+
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = {
+		trigger = {
+			NOT = {
+				has_trait = dragonrider
+			}
+			any_in_list = {
+				list = bound_dragons
+				count > 2
+			}
+		}
+		name = agot_dragon.1006.d
+		every_in_list = {
+			list = bound_dragons
+			root = {
+				add_to_variable_list = {
+					name = candidate_dragons
+					target = prev
+				}
+			}
+		}
+		trigger_event = dragon_taming_events.0307
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = {
+		name = {
+			trigger = { # Should never happen unless they tame a dragon in 30 days
+				has_trait = dragonrider
+				any_held_title = {
+					agot_title_is_an_active_dragonpit = yes
+				}
+			}
+			text = agot_dragon.1006.e
+		}
+		name = {
+			trigger = {
+				NOT = {
+					has_trait = dragonrider
+				}
+				exists = scope:dragon_two
+			}
+			text = agot_dragon.1006.f
+		}
+		name = {
+			trigger = {
+				NOT = {
+					has_trait = dragonrider
+				}
+			}
+			text = agot_dragon.1006.g
+		}
+		flavor = each_dragon_wild_or_pitted.tt
+
+		if = {
+			limit = {
+				exists = scope:dragonpit_county
+			}
+
+			every_in_list = {
+				list = bound_dragons
+				save_scope_as = pitted_dragon
+				agot_send_to_dragonpit_no_event = { DRAGON = scope:pitted_dragon DRAGONPIT_COUNTY = scope:dragonpit_county }
+			}
+		}
+		else = {
+			every_in_list = {
+				list = bound_dragons
+				save_temporary_scope_as = dragon_to_free
+				if = {
+					limit = {
+						has_variable = in_dragonpit
+					}
+					agot_remove_from_dragonpit_no_event = {
+						DRAGON = scope:dragon_to_free
+						DRAGONPIT_COUNTY = scope:dragon_to_free.location
+					}
+				}
+				agot_free_dragon = yes
+			}
+		}
+
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon.1007 = { # Falseseed: The horn gave dragons to someone else, you're angy
+	type = character_event
+	title = agot_dragon.1007.t
+	theme = dragon
+	desc = agot_dragon.1007.desc
+
+	left_portrait = {
+		character = root
+		animation = angry
+	}
+
+	lower_left_portrait = {
+		character = scope:dragon_keeper
+	}
+
+	lower_center_portrait = {
+		character = scope:false_seed
+	}
+
+	lower_right_portrait = {
+		character = scope:dragon_one
+	}
+
+	right_portrait = {
+		character = scope:true_binder
+		animation = idle
+	}
+
+	immediate = {
+		scope:dragon_horn.var:binder = {
+			save_scope_as = true_binder
+		}
+	}
+
+
+	option = {
+		name = agot_dragon.1007.a
+	}
+}
+
+agot_dragon.1008 = { # False seed blew the horn and it failed
+	type = character_event
+	title = agot_dragon.1008.t
+	theme = dragon
+	desc = agot_dragon.1008.desc
+
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:candidate_one
+		}
+		character = scope:candidate_one
+	}
+
+	lower_center_portrait = {
+		character = scope:false_seed
+	}
+
+	immediate = {
+
+		# Dragon horn blower dies
+		scope:dragon_horn = {
+			set_owner = {
+				target = root
+				history = {
+					type = stolen
+					recipient = root
+				}
+			}
+		}
+
+		show_as_tooltip = {
+			scope:false_seed = {
+				death = { death_reason = death_horn_blow killer = scope:false_seed_sower }
+			}
+		}
+		hidden_effect = {
+			scope:false_seed = {
+				agot_burn_effect = { MIN = 100 MAX = 100 }
+				death = { death_reason = death_horn_blow killer = scope:false_seed_sower }
+			}
+		}
+
+		scope:false_seed = {
+			remove_from_list = final_dragonseeds
+		}
+
+		show_as_tooltip = {
+			if = {
+				limit = {
+					NOR = {
+						has_relation_rival = scope:false_seed_sower
+						has_relation_nemesis = scope:false_seed_sower
+					}
+				}
+				set_relation_rival = { reason = steal_dragon_attempt target = scope:false_seed_sower }
+			}
+			else_if = {
+				limit = {
+					NOT = { has_relation_nemesis = scope:false_seed_sower }
+				}
+				set_relation_nemesis = { reason = steal_dragon_attempt target = scope:false_seed_sower }
+			}
+		}
+
+		random_in_list = {
+			list = final_dragonseeds
+			save_scope_as = candidate_one
+		}
+	}
+
+	option = {
+		name = agot_dragon.1008.a
+		trigger_event = agot_dragon.1002 # The false seed is dead, we can safely use 1002
+		scope:false_seed_sower = {
+			trigger_event = agot_dragon.1009
+		}
+		ai_chance = { base = 100 }
+	}
+
+	option = {
+		name = agot_dragon.1008.b
+		custom_tooltip = agot_dragon.1008.b_tt
+		every_in_list = {
+			list = final_dragonseeds
+			add_opinion = {
+				target = root
+				modifier = disappointed_opinion
+				opinion = -25
+			}
+			move_to_pool = yes
+		}
+
+		ai_chance = { base = 0 }
+	}
+}
+
+agot_dragon.1009 = { # Your false seed failed
+	type = character_event
+	title = agot_dragon.1009.t
+	theme = dragon
+	desc = agot_dragon.1009.desc
+
+	left_portrait = {
+		character = root
+		animation = angry
+	}
+
+	lower_center_portrait = {
+		character = scope:false_seed
+	}
+
+	right_portrait = {
+		character = scope:dragon_keeper
+		animation = idle
+	}
+
+	immediate = {
+		show_as_tooltip = {
+			scope:dragon_horn = {
+				set_owner = {
+					target = root
+					history = {
+						type = stolen
+						recipient = root
+					}
+				}
+			}
+		}
+
+		show_as_tooltip = {
+			scope:false_seed = {
+				death = { death_reason = death_horn_blow killer = scope:dragon_horn.var:binder }
+			}
+		}
+
+		scope:dragon_keeper = {
+			if = {
+				limit = {
+					NOR = {
+						has_relation_rival = scope:false_seed_sower
+						has_relation_nemesis = scope:false_seed_sower
+					}
+				}
+				set_relation_rival = { reason = steal_dragon_attempt target = scope:false_seed_sower }
+			}
+			else_if = {
+				limit = {
+					NOT = { has_relation_nemesis = scope:false_seed_sower }
+				}
+				set_relation_nemesis = { reason = steal_dragon_attempt target = scope:false_seed_sower }
+			}
+		}
+	}
+
+	option = {
+		name = agot_dragon.1009.a
+	}
+}
+
+agot_dragon.1010 = {
+	type = character_event
+	title = agot_dragon.1010.t
+	desc = 	agot_dragon.1010.desc
+
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	right_portrait = {
+		character = scope:recipient
+		animation = personality_bold
+	}
+
+	immediate = {
+
+	}
+
+	# Legitimize
+	option = {
+		name = agot_dragon.1010.a
+		legitimize_bastard_interaction_opinions_effect = {
+			BASTARD = scope:recipient
+			HOUSE_HEAD = scope:recipient.house.house_head
+			LEGITIMIZER = root
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				NOT = {
+					scope:recipient.house.house_head = {
+						is_close_family_of = scope:recipient
+					}
+				}
+			}
+		}
+	}
+
+	# Grant Bastard Branch
+	option = {
+		name = agot_dragon.1010.b
+		custom_tooltip = agot_dragon.1010.b_tt
+		hidden_effect = {
+			scope:recipient = {
+				create_cadet_branch = yes
+			}			
+		}
+		scope:recipient = {
+			remove_trait = bastard
+			add_trait = bastard_founder
+		}
+		ai_chance = {
+			base = 40
+		}
+	}
+
+	# Offer more gold (if root has it, or strong hook)
+	option = {
+		name = agot_dragon.1010.c
+		
+		if = {
+			limit = {
+				scope:recipient = {
+					can_add_hook = {
+						target = root
+						type = favor_hook
+					}
+				}
+			}
+			scope:recipient = {
+				add_hook = {
+					type = favor_hook
+					target = root
+				}
+			}
+			pay_short_term_gold = {
+				target = scope:recipient
+				gold = minor_gold_value
+			}
+		}
+		else = {
+			pay_short_term_gold = {
+				target = scope:recipient
+				gold = medium_gold_value
+			}
+		}
+		scope:recipient = {
+			add_opinion = {
+				target = root
+				modifier = disappointed_opinion
+				opinion = -30
+			}
+		}		
+		ai_chance = {
+			base = 60
+		}
+	}
+}
+
+#Hidden Events
+agot_dragon.9000 = {
+	hidden = yes
+
+	immediate = {
+		death = { death_reason = death_sickly }
+	}
+}
