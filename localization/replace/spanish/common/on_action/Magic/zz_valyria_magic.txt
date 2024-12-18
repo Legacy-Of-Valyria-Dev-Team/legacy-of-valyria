@@ -1,0 +1,199 @@
+﻿on_game_start_after_lobby = {
+	on_actions = {
+		zz_valyria_on_game_start_after_lobby
+	}
+}
+
+
+zz_valyria_on_game_start_after_lobby = {
+	effect = { 
+		dynasty:dynn_Nezdareon = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+		set_global_variable = {
+			name = CV_is_loaded
+			value = yes 
+		}
+	}
+	events = {
+		zz_valyria_magic.1
+	}
+}
+
+
+
+quarterly_playable_pulse = {
+	on_actions = {
+		zz_valyria_mana_gain_on_actions
+	}
+}
+
+
+random_yearly_everyone_pulse = {
+	on_actions = {
+		zz_valyria_magic_dragon_life_extension
+		zz_valyria_magic_dragon_life_extension_lost 
+		zz_valyria_mana_gain_on_actions
+	}
+}
+
+zz_valyria_mana_gain_on_actions = {
+	on_actions = {
+		zz_valyria_mana_gain_nick_the_mage_on_action
+		zz_valyria_mana_gain_red_comet_on_action
+		zz_valyria_mana_gain_items_on_action
+		zz_valyria_mana_modifier_action
+	}
+}
+
+zz_valyria_magic_dragon_life_extension = { 
+	trigger = {
+		has_trait = dragon 
+	
+		liege_or_court_owner.capital_province ?= { 
+			geographical_region = world_valyria
+		}
+		
+		NOT = { 
+			has_trait = immortal 
+		}
+	}
+	effect = { 
+		add_trait_force_tooltip = immortal 
+	}
+}
+zz_valyria_magic_dragon_life_extension_lost = {
+	trigger = {
+		has_trait = dragon 
+		has_trait = immortal 
+		NOT = { 
+			liege_or_court_owner.capital_province ?= { 
+				geographical_region = world_valyria
+			}
+		}
+	}
+	effect = { 
+		remove_trait  = immortal 
+	}
+}
+
+zz_valyria_mana_gain_red_comet_on_action = {
+	trigger = {
+		has_trait = born_under_a_red_comet
+	}
+	effect = {
+		zz_valyria_mana_gain = {
+			MANAGAIN = 1
+		}
+	}
+}
+
+zz_valyria_mana_gain_nick_the_mage_on_action = {
+	trigger = {
+		has_nickname = nick_the_mage
+	}
+	effect = {
+		zz_valyria_mana_gain = {
+			MANAGAIN = 1
+		}
+	}
+}
+
+zz_valyria_mana_gain_items_on_action = {
+	trigger = {
+		any_equipped_character_artifact = {
+			has_artifact_modifier = zz_valyria_magic_xp_gain_passive_modifier
+		}
+	}
+	effect = {
+		set_variable = { name = managain value = 0 days = 1 }
+		every_equipped_character_artifact = {			
+			limit = {
+				has_artifact_modifier = zz_valyria_magic_xp_gain_passive_modifier
+			}
+			change_variable = { name = managain add = 0.5 }
+		}
+		zz_valyria_mana_gain = {
+			MANAGAIN = var:managain
+		}
+	}
+}
+zz_valyria_mana_modifier_action = {
+	trigger = {
+		has_character_modifier = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power_modifier
+	}
+	effect = {
+		set_variable = { name = managain value = 1 days = 1 }
+		zz_valyria_mana_gain = {
+			MANAGAIN = var:managain
+		}
+	}
+}
+
+zz_valyria_magic_grant_spells = {
+	trigger = {
+		has_trait = zz_magister
+	}
+	effect = {
+		if = { 
+			limit = { 
+				has_trait = born_under_a_red_comet
+			}
+			add_trait_xp = {
+				trait = born_under_a_red_comet
+				track = chosen_of_the_heavens
+				value = 100
+			}
+		}
+		zz_random_gain_magic_spell = yes 
+		zz_random_gain_magic_spell = yes 
+
+	}
+}
+
+
+
+on_building_completed = {
+	on_actions = {
+		zz_valyria_on_building_completed
+	}
+}
+
+zz_valyria_on_building_completed = { 
+	effect = { 
+		if = { 
+			limit = {  
+				has_building_with_flag = { flag = travel_point_of_interest_magic }
+				NOT = { has_travel_point_of_interest = poi_valyria_magic }
+			}
+			add_travel_point_of_interest = poi_valyria_magic
+		}
+	}
+}
+
+on_birthday = {
+	on_actions = {
+		on_enchanted_blood_birthday
+	}
+}
+on_enchanted_blood_birthday = {
+	trigger = {
+		has_character_flag = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood_effect_flag
+	}
+	events = {
+		zz_valyria_magic_blood_magic.0001 # Gain a random skill point
+	}
+}
+
+on_dragon_birthday = {
+	on_actions = {
+		on_draconic_enhancment_yearly
+	}
+}
+ 
+on_draconic_enhancment_yearly = {
+	trigger = {
+		has_character_flag = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_flag
+	}
+	events = {
+		zz_valyria_magic_blood_magic.0002 # Gain a random skill point
+	}
+}

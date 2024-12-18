@@ -1,0 +1,488 @@
+﻿zz_become_landed_transfer_no_ennobled_modifier_effect = {
+	destroy_laamp_effect = { ADVENTURER = $TITLE_RECEIVER$ }
+	$TITLE_RECEIVER$ = {
+		set_variable = {
+			name = ascended_throne_reason
+			value = $REASON$
+			weeks = 1
+		}
+	}
+	create_title_and_vassal_change = {
+		type = $TYPE$
+		add_claim_on_loss = yes
+		save_scope_as = title_change
+	}
+	ordered_in_list = {
+		list = $TITLE_LIST$
+		limit = {
+			is_landless_type_title = no
+			is_noble_family_title = no
+		}
+		order_by = tier
+		save_scope_as = new_primary_title
+	}
+	every_in_list = {
+		list = $TITLE_LIST$
+		limit = {
+			is_leased_out = no
+			is_landless_type_title = no
+			is_head_of_faith = no
+		}
+		change_title_holder_include_vassals = {
+			holder = $TITLE_RECEIVER$
+			change = scope:title_change
+			take_baronies = yes
+		}
+	}
+	ordered_in_list = {
+		list = $TITLE_LIST$
+		order_by = tier
+		save_scope_as = new_primary_title
+	}
+	resolve_title_and_vassal_change = scope:title_change
+	
+	$TITLE_RECEIVER$ = {
+		change_government = feudal_government 
+	}
+}
+
+convert_to_freehold_from_feudel_effect = {
+	save_scope_as = administrative_liege
+
+	change_to_freehold_effect = yes
+
+	save_scope_as = administrative_liege
+
+	#Direct Vassals who fulfill the ep3_vassal_will_become_admin criteria are converted. Vassals above 25 opinion always accept
+	#Vassals are converted as a hierarchy. If a king is converted we convert all who are valid below that king (so his dukes, their counts, and their barons) are all converted.
+	#If a vassal does not convert (because of not accepting or because they are outside of the de jure empire, etc) then the vassals below them are _not_ converted either.
+
+	#Human vassals are given a choice to convert or not in the ping event, even if powerful or having very good relation.
+
+	hidden_effect = { 
+		save_scope_as = actor
+		every_powerful_vassal = { #All valid powerful vassals auto convert - their support was required to take the decision.
+			limit = {
+				ep3_vassal_will_become_admin = yes
+				is_ai = yes
+			}
+			save_scope_as = recipient
+			change_to_freehold_effect = yes	
+			every_vassal = { #Everyone below also converts
+				limit = {
+					ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+					is_ai = yes
+				}
+				save_scope_as = recipient	
+				change_to_freehold_effect = yes
+				every_vassal = { #Everyone below also converts (could be Counts, could be Barons)
+					limit = {
+						ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+						is_ai = yes
+					}
+					save_scope_as = recipient	
+					change_to_freehold_effect = yes
+					every_vassal = { #Everyone below also converts could be Barons)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}
+						save_scope_as = recipient
+						change_to_freehold_effect = yes
+					}
+				}
+			}
+		}
+		every_vassal = {
+			limit = {
+				ep3_vassal_will_become_admin = yes
+				trigger_if = { #Dukes and above can say no
+					limit = {
+						primary_title.tier >= tier_duchy
+						is_ai = yes
+					}
+					opinion = {
+						target = scope:administrative_liege
+						value > 25
+					}
+				}
+			}
+			save_scope_as = recipient
+			change_to_freehold_effect = yes
+			every_vassal = { #Everyone below also converts (could be Counts, could be Dukes)
+				limit = {
+					ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+					is_ai = yes
+				}
+				save_scope_as = recipient	
+				change_to_freehold_effect = yes
+				every_vassal = { #Everyone below also converts (Could be Counts, could be Barons)
+					limit = {
+						ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+						is_ai = yes
+					}
+					save_scope_as = recipient	
+					change_to_freehold_effect = yes
+					every_vassal = { #Everyone below also converts (could be Barons)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}
+						save_scope_as = recipient
+						change_to_freehold_effect = yes
+					}
+				}
+			}
+		}
+		every_vassal = {
+			limit = {
+				ep3_vassal_will_become_admin = yes
+				trigger_if = { #Dukes and above can say no
+					limit = {
+						primary_title.tier >= tier_duchy
+						is_ai = yes
+					}
+					opinion = {
+						target = scope:administrative_liege
+						value > 0
+					}
+				}
+			}
+			random_list = {
+				10 = { } #10% of the vassals that like us less than 25 but more than 0 still convert.
+				90 = {
+					save_scope_as = recipient
+					change_to_freehold_effect = yes
+					every_vassal = { #Everyone below also converts (could be Counts, could be Dukes)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}
+						save_scope_as = recipient	
+						change_to_freehold_effect = yes
+						every_vassal = { #Everyone below also converts (Could be Counts, could be Barons)
+							limit = {
+								ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+								is_ai = yes
+							}
+							save_scope_as = recipient	
+							change_to_freehold_effect = yes
+							every_vassal = { #Everyone below also converts (could be Barons)
+								limit = {
+									ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+									is_ai = yes
+								}
+								save_scope_as = recipient	
+								change_to_freehold_effect = yes
+							}
+						}
+					}
+				}
+			}
+		}
+		every_vassal = {
+			limit = {
+				highest_held_title_tier >= tier_duchy
+				house.house_head ?= this
+				government_has_flag = government_is_administrative
+				NOT = {
+					any_held_title = { is_noble_family_title = yes }
+				}
+			}
+			create_noble_family_effect = yes
+		}
+	}
+
+	if = {
+		limit = {
+			NOT = {
+				has_character_flag = latin_emp_force_admin_flag
+			}
+			is_independent_ruler = yes
+		}
+		add_character_modifier = {
+			modifier = first_admin_emperor
+		}
+	}
+	
+	change_influence = admin_convert_influence_value
+	if = {
+		limit = {
+			is_independent_ruler = yes
+		}
+		add_legitimacy_effect = { LEGITIMACY = admin_convert_legitimacy_value } #One Time Legitimacy Boost
+	}
+
+	custom_description_no_bullet = {
+		text = vassals_can_become_administrative
+	}
+	custom_tooltip = powerful_vassals_become_administrative
+	custom_tooltip = vassals_become_administrative
+	custom_tooltip = vassals_who_may_switch_to_administrative
+
+}
+
+create_noble_family_dragonrider_effect = {
+	debug_log = create_noble_family_title
+
+	save_scope_as = new_noble_family_holder
+	hidden_effect = { # NF can only be held by house heads
+		house ?= {
+			if = {
+				limit = { house_head != scope:new_noble_family_holder }
+				set_house_head = scope:new_noble_family_holder
+			}
+		}
+	}
+	give_noble_family_title = {
+		name = noble_family_name
+		article = DEFAULT_TITLE_NAME_ARTICLE
+		save_scope_as = new_title
+	}
+	scope:new_title = {
+		holder = {
+			save_scope_as = noble_family_head
+			change_government = freehold_government
+		}
+		set_coa = scope:noble_family_head.house
+	}
+	custom_description = {
+		text = create_noble_family_tt
+	}
+
+	#Notifications
+	top_liege ?= {
+		every_vassal = {
+			limit = {
+				is_ai = no
+				NOT = { this = scope:new_noble_family_holder }
+			}
+			trigger_event = {
+				id = ep3_emperor_yearly.2410
+				days = 1
+			}
+		}
+	}
+
+	debug_log_scopes = yes
+}
+
+change_to_freehold_effect = {
+	save_scope_as = governor
+	if = {
+		limit = {
+			NOT = { government_has_flag = government_is_freehold }
+		}
+		change_government = freehold_government
+		save_scope_as = new_admin
+	}
+	if = {
+		limit = {
+			primary_title.tier >= tier_duchy
+			house.house_head = {
+				NOT = {
+					any_held_title = { is_noble_family_title = yes }
+				}
+			}
+		}
+		create_noble_family_dragonrider_effect = yes
+	}
+
+	hidden_effect = {
+		if = {
+			limit = {
+				is_governor = yes
+				NOT = { has_trait = governor }
+			}
+			add_trait = governor
+		}
+	}
+	if = {
+		limit = { exists = scope:new_admin }
+		domicile ?= {
+			#set_up_domicile_estate_effect = yes
+		}
+	}
+}
+
+
+create_valyrian_freehold_scripted_effect = {
+	add_trait = augustus
+	if = {
+		limit = { has_dlc_feature = legends }
+		create_legend_seed = {
+			type = legitimizing
+			quality = illustrious
+			chronicle = new_title
+			properties = {
+				title = title:e_valyrian_freehold
+				founder = root
+			}
+		}
+	}
+	#Create Roman Empire, shift dejure/history/laws, destroy e_byzantium.
+
+	if = {
+		limit = { capital_county = { this = title:c_valyria } }
+		title:e_valyrian_freehold = { 
+			set_capital_county = title:c_valyria
+		}
+	}
+
+	hidden_effect = {
+		every_held_title = { #Should shift all dejure of all Empires owned at the time.
+			limit = {
+				tier = tier_empire
+			}
+			every_in_de_jure_hierarchy = {
+				limit = {
+					tier = tier_kingdom
+				}
+				set_de_jure_liege_title = title:e_valyrian_freehold
+				
+			}
+		}
+		every_held_title = { #Completely Controlled Kingdoms as well.
+			limit = {
+				tier = tier_kingdom
+				root = { completely_controls = prev }
+			}
+			set_de_jure_liege_title = title:e_valyrian_freehold
+		}
+	}
+	
+	create_title_and_vassal_change = {
+		type = created
+		save_scope_as = change
+		add_claim_on_loss = no
+	}
+	title:e_valyrian_freehold = {
+		change_title_holder = {
+			holder = root
+			change = scope:change
+		}
+		copy_title_history = title:e_valyria
+	}
+	resolve_title_and_vassal_change = scope:change
+	if = { # Move your Title MaAs to your new title if you have any
+		limit = {
+			government_allows = administrative
+			primary_title = {
+				any_title_maa_regiment = { count >= 1 }
+			}
+		}
+		hidden_effect = {
+			primary_title = { transfer_title_maa_ownership = title:e_valyrian_freehold }
+		}
+	}
+	if = { # If you have founded the Varangian Guard, you get to keep the benefits
+		limit = {
+			primary_title = { has_variable = founded_varangian_guard }
+		}
+		hidden_effect = {
+			#title:e_roman_empire = { set_variable = founded_varangian_guard }
+		}
+	}
+	hidden_effect = { set_primary_title_to = title:e_valyrian_freehold }
+	every_held_title = { #Should destroy all other Empires owned at the time.
+		limit = {
+				tier = tier_empire
+			NOT = { this = title:e_valyrian_freehold }
+		}
+		root = { destroy_title = prev }
+	}
+	if = { #Automatically move capital to Constantinople, unless it's been set to Rome.
+		limit = {
+			NOT = { capital_county = { this = title:c_ilvonys } }
+			NOT = { capital_county = { this = title:c_valyria } }
+			NOT = { capital_county = { this = title:c_kastaryia } }
+			#culture = { has_cultural_pillar = heritage_byzantine }
+		}
+		hidden_effect = {
+			if = { #Usurp if not held personally.
+				limit = {
+					NOT = { this = title:c_valyria.holder }
+				}
+				create_title_and_vassal_change = {
+					type = returned
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				title:c_kastaryia = {
+					change_title_holder = {
+						holder = root
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+			}
+		}
+		root = { set_realm_capital = title:c_valyria }
+	}
+	else_if = {
+		limit = {
+			NOT = { capital_county = { this = title:c_ilvonys } }
+			NOT = { capital_county = { this = title:c_valyria } }
+			NOT = { capital_county = { this = title:c_kastaryia } }
+			
+			#NOT = { culture = { has_cultural_pillar = heritage_byzantine } }
+			exists = title:e_valyrian_freehold.holder
+		}
+		hidden_effect = {
+			if = { #Usurp if not held personally.
+				limit = {
+					NOT = { this = title:c_ilvonys.holder }
+				}
+				create_title_and_vassal_change = {
+					type = returned
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				title:c_valyria = {
+					change_title_holder = {
+						holder = root
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+			}
+		}
+		root = { set_realm_capital = title:c_ilvonys }
+	}
+	else_if = {
+		limit = {
+			NOT = { capital_county = { this = title:c_ilvonys } }
+			NOT = { capital_county = { this = title:c_valyria } }
+			NOT = { capital_county = { this = title:c_kastaryia } }
+			
+			#NOT = { culture = { has_cultural_pillar = heritage_byzantine } }
+			exists = title:e_valyrian_freehold.holder
+		}
+		hidden_effect = {
+			if = { #Usurp if not held personally.
+				limit = {
+					NOT = { this = title:c_kastaryia.holder }
+				}
+				create_title_and_vassal_change = {
+					type = returned
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				title:c_valyria = {
+					change_title_holder = {
+						holder = root
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+			}
+		}
+		root = { set_realm_capital = title:c_kastaryia }
+	}
+	hidden_effect = {
+		add_character_flag = flag_restorer_of_the_valyrian_freehold  #used for Eulogy.
+		title:e_valyrian_freehold = {
+			set_variable = valyrian_freehold_restored
+		}
+	}
+}

@@ -1,0 +1,330 @@
+﻿
+namespace = lunatic_cook_dragon_egg
+
+
+############################
+## Cook Dragon Egg
+############################
+lunatic_cook_dragon_egg.0001 = {
+	type = character_event
+	theme = party
+	title = lunatic_cook_dragon_egg.001.t
+	
+	desc = {
+		desc = lunatic_cook_dragon_egg.001.intro
+		first_valid = {
+			triggered_desc = { # Gluttonous Chars will think about taste
+				trigger = { 
+					has_trait = gluttonous
+				}
+				desc = lunatic_cook_dragon_egg.001.gluttonous.desc
+			}
+			triggered_desc = { # Dragonslayer chars will think about the time they slew a dragon
+				trigger = { 
+					has_trait = dragonslayer
+				}
+				desc = lunatic_cook_dragon_egg.001.dragonslayer.desc
+			}
+			triggered_desc = { # Dragonslayer chars will think about the time they slew a dragon
+				trigger = { 
+					NOT = {
+						has_trait = gluttonous
+						has_trait = dragonslayer
+					}
+				}
+				desc = lunatic_cook_dragon_egg.001.just_lunatic.desc
+			}
+		}
+		desc = lunatic_cook_dragon_egg.001.end
+	}
+	
+	immediate = {
+		random_courtier = {
+			limit = {
+				NOT = {
+					has_trait = lunatic_1
+					has_trait = lunatic_genetic
+				}
+			}
+			save_scope_as = protesting_courtier
+		}
+	}
+	
+	left_portrait = {
+		character = root
+		animation = ecstasy
+	}
+	
+	right_portrait = {
+		character = scope:protesting_courtier
+		animation = shock
+	}
+	
+	option = { # cook egg
+		name = lunatic_cook_dragon_egg.001.a
+		stress_impact = {
+			base = major_stress_impact_loss
+		}
+		hidden_effect = {
+			random_list = {
+				10 = { # Dragon Hatch
+					trigger_event = lunatic_cook_dragon_egg.0003
+				}
+				
+				80 = { # Bad Event
+					trigger_event = lunatic_cook_dragon_egg.0002
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+	option = { # don't cook
+		name = lunatic_cook_dragon_egg.001.b
+		ai_chance = {
+			base = 50
+		}
+	}
+	
+}
+
+lunatic_cook_dragon_egg.0002 = { # Bad Event
+	type = character_event
+	theme = party
+	title = lunatic_cook_dragon_egg.002.t
+	desc = {
+		desc = lunatic_cook_dragon_egg.002.intro
+	} 
+	
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+	
+	right_portrait = {
+		character = scope:protesting_courtier
+		animation = shock
+	}
+	
+	immediate = {
+		root.location = { save_scope_as = location }
+		random_character_artifact = {
+			limit = {
+				has_variable = dragon_egg
+			}
+			save_scope_as = egg
+		}
+	}
+	
+	option = {
+		name = lunatic_cook_dragon_egg.0002.a
+		destroy_artifact = scope:egg
+		random_list = {
+			20 = { # Death of Yourself + Courtier, Province ruined
+				root = {
+					death = {
+						death_reason = death_accident
+					}
+				}
+				hidden_effect = {
+					scope:location.barony = { agot_ruin_province_effect = yes } 
+					every_courtier_or_guest = {
+						limit = {
+							is_at_same_location = root
+						}
+						death = {
+							death_reason = death_accident
+						}
+					}
+				}
+				custom_tooltip = mass_coutier_death
+			}
+			20 = { # Death of Yourself + Courtier
+				root = {
+					death = {
+						death_reason = death_accident
+					}
+				}
+				scope:protesting_courtier = {
+					death = {
+						death_reason = death_accident
+					}
+				}
+			}
+			20 = { # Death of Yourself + Courtier maimed
+				death = {
+					death_reason = death_accident
+				}
+				scope:protesting_courtier = {
+					add_trait = maimed
+				}
+			}
+			20 = { # Maiming of yourself + courtier
+				add_trait = maimed
+				scope:protesting_courtier = {
+					add_trait = maimed
+				}
+			}
+			20 = { # Maiming of yourself + courtier wounded
+				add_trait = maimed
+				scope:protesting_courtier = {
+					add_trait = wounded_1
+				}
+			}
+		}
+	}
+}
+
+lunatic_cook_dragon_egg.0003 = { # Dragon Hatch
+	type = character_event
+	theme = party
+	title = lunatic_cook_dragon_egg.003.t
+	desc = lunatic_cook_dragon_egg.003.desc
+	
+	immediate = {
+		random_character_artifact = {
+			limit = {
+				has_variable = dragon_egg
+			}
+			save_scope_as = egg
+		}
+		hidden_effect = { agot_spawn_bonded_hatchling_from_egg_effect = { OWNER = root EGG = scope:egg } }
+		
+		if = {
+			limit = {
+				NAND = {
+					has_game_rule = agot_canon_dragons_enabled
+					agot_has_canon_cradle_egg = yes
+					NOT = { has_character_flag = hatched_canon_dragon }
+				}
+				is_ai = yes
+				age <= 10
+				age >= 3
+			}
+			random = {
+				chance = {
+					value = 10
+					if = {
+						limit = {
+							has_game_rule = agot_silly_mode
+						}
+						add = 90
+					}
+				}
+				save_scope_as = child
+				agot_generate_dragon_baby_name = yes
+			}
+		}
+
+		send_interface_toast = {
+			type = event_generic_neutral
+			title = hatched_dragon_via_cooking_notification
+			left_icon = root
+			right_icon = scope:dragon
+		}
+	}
+	
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+	
+	right_portrait = {
+		character = scope:protesting_courtier
+		animation = shock
+	}
+	
+	option = {
+		name = lunatic_cook_dragon_egg.0003.a
+		if = {
+			limit = {
+				exists = scope:dragon_baby_reference
+			}
+
+			if = { # First check if a parent is real
+				limit = {
+					is_landed = no
+				}
+				employer ?= { trigger_event = agot_dragon_egg_cradling_birth.0010 }
+			}
+			else = {
+				# Should consider regency, but for now leave it and kill baby reference
+				scope:dragon_baby_reference = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+
+				agot_inform_dragon_egg_hatched_effect = yes
+				hidden_effect = {
+					dragon_gender_reveal_calc = yes
+				}
+			}
+		}
+		else = {
+			trigger_event = lunatic_cook_dragon_egg.0004
+		}
+	}
+}
+
+# Dragon hatches from cooking egg
+lunatic_cook_dragon_egg.0004 = {
+	type = character_event
+	window = dragon_character_event
+	theme = dragon
+	title = lunatic_cook_dragon_egg.0004.t
+	desc = lunatic_cook_dragon_egg.0004.desc
+
+	#NAMING WIDGET
+	widget = {
+		is_shown = {
+			is_ai = no
+			is_landed = yes
+		}
+		gui = "event_window_widget_name_child"
+		container = "dynamic_birth_name"
+		controller = name_character
+		setup_scope = { scope:dragon = { save_scope_as = name_character_target } }
+	}
+
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+
+	right_portrait = {
+		character = scope:dragon
+		animation = dragon_head
+		camera = camera_dragon_event_standing_baby
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		remove_trait = dragonslayer
+	}
+
+	option = {
+		name = agot_dragon_egg_cradling_birth.0002.a
+		custom_tooltip = agot_dragon_egg_cradling_birth.0002.a_tt_dragon_born
+		custom_tooltip = agot_dragon_egg_cradling_birth.0002.a_tt_egg_destroyed
+		if = {
+			limit = {
+				is_landed = no
+				is_ai = no
+				exists = employer
+			}
+			employer = { trigger_event = agot_dragon_egg_cradling_birth.0003 }
+		}
+		else = {
+			agot_inform_dragon_egg_hatched_effect = yes
+			hidden_effect = {
+				dragon_gender_reveal_calc = yes
+			}
+		}
+	}
+}

@@ -1,0 +1,270 @@
+﻿
+# Governorship Granted
+# This also includes a change_government effect in case you grant it to someone that doesn't have an estate yet and it has to be generated
+namespace = char_interaction 
+char_interaction.0111 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0030.opening
+	}
+	desc = char_interaction.0111.desc
+		
+	sender = scope:actor
+
+	immediate = {
+		switch = {
+			trigger = government_has_flag 
+			government_is_freehold = {
+				change_to_freehold_effect  = yes
+			}
+			fallback = {
+				change_to_administrative_effect = yes
+			}
+		}
+		
+	}
+
+	option = {
+		name = char_interaction.0110.a
+	}
+}
+namespace = zz_char_interaction
+
+zz_char_interaction.0111 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0030.opening
+	}
+	desc = char_interaction.0111.desc
+		
+	sender = scope:actor
+
+	immediate = {
+		change_to_freehold_effect  = yes
+	}
+
+	option = {
+		name = char_interaction.0110.a
+	}
+}
+
+namespace = zz_ep3_decisions_event
+
+zz_ep3_decisions_event.4060 = {
+	type = character_event
+	title = ep3_decisions_event.4060.t
+	desc = {
+		desc = ep3_decisions_event.4060.desc
+		first_valid = { #We talk a bit about the biggest non coverted vassal if there is one.
+			triggered_desc = {
+				trigger = {
+					exists = scope:obstinate_vassal
+					trigger_if = {
+						limit = { exists = scope:non_de_jure_vassal }
+						scope:obstinate_vassal.sub_realm_size >= scope:non_de_jure_vassal.sub_realm_size
+					}
+					trigger_if = {
+						limit = { exists = scope:non_state_faith_vassal }
+						scope:obstinate_vassal.sub_realm_size >= scope:non_state_faith_vassal.sub_realm_size
+					}
+				}
+				desc = ep3_decisions_event.4060.resistance.desc
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:non_state_faith_vassal
+					trigger_if = {
+						limit = { exists = scope:non_de_jure_vassal }
+						scope:non_state_faith_vassal.sub_realm_size >= scope:non_de_jure_vassal.sub_realm_size
+					}
+					trigger_if = {
+						limit = { exists = scope:obstinate_vassal }
+						scope:non_state_faith_vassal.sub_realm_size >= scope:obstinate_vassal.sub_realm_size
+					}
+				}
+				desc = ep3_decisions_event.4060.state_faith.desc
+			}
+			triggered_desc = {
+				trigger = {
+					exists = scope:non_de_jure_vassal
+					trigger_if = {
+						limit = { exists = scope:non_state_faith_vassal }
+						scope:non_de_jure_vassal.sub_realm_size >= scope:non_state_faith_vassal.sub_realm_size
+					}
+					trigger_if = {
+						limit = { exists = scope:obstinate_vassal }
+						scope:non_de_jure_vassal.sub_realm_size >= scope:obstinate_vassal.sub_realm_size
+					}
+				}
+				desc = ep3_decisions_event.4060.de_jure.desc
+			}
+		}
+		desc = ep3_decisions_event.4060.outro.desc
+	}
+	theme = emperor
+	override_background = { reference = throne_room }
+	left_portrait = {
+		character = root
+		animation = scepter
+	}
+	lower_right_portrait = {
+		character = scope:obstinate_vassal
+	}
+	lower_center_portrait = {
+		character = scope:non_state_faith_vassal
+	}
+	lower_left_portrait = {
+		character = scope:non_de_jure_vassal
+	}
+
+
+	immediate = {
+		show_as_tooltip = {
+			change_government = freehold_government
+			if = {
+				limit = {
+					#AGOT Disabled
+					#NOT = { has_character_flag = latin_emp_force_admin_flag }
+					is_independent_ruler = yes
+				}
+				add_character_modifier = { modifier = first_admin_emperor }
+			}
+		}
+		hidden_effect = {
+			ordered_vassal = {
+				limit = {
+					NOR = {
+						government_has_flag = government_is_theocracy 
+						government_has_flag = government_is_republic
+						government_has_flag = government_is_landless_adventurer
+						government_has_flag = government_is_tribal
+						government_has_flag = government_is_administrative
+						government_has_flag = government_is_freehold
+					}
+					primary_title = {
+						target_is_de_jure_liege_or_above = scope:administrative_liege.primary_title #We only auto convert de jure vassals
+					}
+				}
+				order_by = sub_realm_size
+				save_scope_as = non_de_jure_vassal
+			}
+			ordered_vassal = {
+				limit = {
+					NOR = {
+						government_has_flag = government_is_theocracy 
+						government_has_flag = government_is_republic
+						government_has_flag = government_is_landless_adventurer
+						government_has_flag = government_is_tribal
+						government_has_flag = government_is_administrative
+						government_has_flag = government_is_freehold
+						primary_title = {
+							target_is_de_jure_liege_or_above = scope:administrative_liege.primary_title #We only auto convert de jure vassals
+						}
+					}
+					faith = scope:administrative_liege.faith #The future state faith
+				}
+				order_by = sub_realm_size
+				position = 0
+				save_scope_as = non_state_faith_vassal
+			}
+			ordered_vassal = {
+				limit = {
+					NOR = {
+						government_has_flag = government_is_theocracy 
+						government_has_flag = government_is_republic
+						government_has_flag = government_is_landless_adventurer
+						government_has_flag = government_is_tribal
+						government_has_flag = government_is_administrative
+						government_has_flag = government_is_freehold
+						primary_title = {
+							target_is_de_jure_liege_or_above = scope:administrative_liege.primary_title #We only auto convert de jure vassals
+						}
+						faith = scope:administrative_liege.faith #The future state faith
+					}
+				}
+				order_by = sub_realm_size
+				save_scope_as = obstinate_vassal
+			}
+			every_vassal_or_below = {
+				limit = {
+					is_ai = no
+				}
+				trigger_event = {
+					id = zz_ep3_decisions_event.4065
+				}
+			}
+		}
+	}
+	#Finally some Law and Order
+	option = {
+		name = ep3_decisions_event.4060.a
+		if = {
+			limit = {
+				OR = {
+					exists = scope:non_de_jure_vassal
+					exists = scope:obstinate_vassal
+					exists = scope:non_state_faith_vassal
+				}
+			}
+			custom_tooltip = vassal_did_not_become_administrative
+		}
+	}
+}
+zz_ep3_decisions_event.4065 = {
+	type = letter_event
+	opening = ep3_decisions_event.4065.opening
+	desc = ep3_decisions_event.4065.desc
+	sender = {
+		character = scope:actor
+		animation = scepter
+	}
+	option = {
+		name = ep3_decisions_event.4065.a
+		trigger = {
+			ep3_vassal_will_become_admin = yes
+		}
+		change_government = freehold_government
+		hidden_effect = { #This again only converts subvassals if they are AI - this event should also have triggered for other humans down the chain.
+			every_vassal = { #Everyone below also converts (could be Counts, could be Dukes)
+				limit = {
+					ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+					is_ai = yes
+				}	
+				change_to_freehold_effect  = yes
+				every_vassal = { #Everyone below also converts (Could be Counts, could be Barons)
+						limit = {
+							ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+							is_ai = yes
+						}	
+						change_to_freehold_effect = yes
+						every_vassal = { #Everyone below also converts (could be Barons)
+							limit = {
+								ep3_vassal_will_become_admin = yes #We still don't want mayors and bishops
+								is_ai = yes
+							}	
+							change_to_freehold_effect = yes
+						}
+					}
+			}
+		}
+	}
+	option = {
+		name = ep3_decisions_event.4065.b
+		trigger = {
+			ep3_vassal_will_become_admin = yes
+		}
+		scope:actor = {
+			add_opinion = {
+				modifier = annoyed_opinion
+				opinion = -20
+				target = root
+			}
+		}
+	}
+	option = {
+		name = ep3_decisions_event.4065.c
+		trigger = {
+			ep3_vassal_will_become_admin = no
+		}
+	}
+}

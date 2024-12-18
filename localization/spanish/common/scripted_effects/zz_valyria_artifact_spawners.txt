@@ -1,0 +1,243 @@
+﻿agot_create_artifact_book_of_dragonlore = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = book_of_dragonlore_name
+		visuals = book
+		description = book_dragonlore_desc
+		type = miscellaneous
+		book_subject = flag:martial
+		wealth = scope:wealth
+		quality = scope:quality
+		template = marco_polo_book
+		history = {
+			type = created_before_history
+		}
+		modifier = dragonlore_book_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		set_variable = {
+			name = historical_unique_artifact
+			value = yes
+		}
+	}
+}
+
+agot_create_artifact_book_of_life = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = book_of_life_name
+		visuals = book
+		description = book_life_desc
+		type = miscellaneous
+		wealth = scope:wealth
+		quality = scope:quality
+		template = marco_polo_book
+		history = {
+			type = created_before_history
+		}
+		modifier = valyrian_life_book_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		set_variable = {
+			name = historical_unique_artifact
+			value = yes
+		}
+	}
+}
+
+cv_agot_create_artifact_the_dragons_book_effect = {
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = the_dragons_book
+		visuals = book
+		description = the_dragons_book_desc
+		type = miscellaneous
+		wealth = scope:wealth
+		quality = scope:quality
+		template = marco_polo_book
+		modifier = the_dragons_book_modifier
+		save_scope_as = dragons_book_created
+		decaying = no
+	}
+	scope:dragons_book_created ?= {
+		set_variable = {
+			name = historical_unique_artifact
+			value = yes
+		}
+		set_variable = {
+			name = dragons_book
+			value = yes
+		}
+	}
+}
+
+cv_agot_create_artifact_dragonknight_armour_effect = {
+	# Get the character the artifact is being made for.
+	$OWNER$ = { save_scope_as = owner }
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = dragonknight_armour_name
+		description = dragonknight_armour_description
+		type = armor_plate
+		visuals = valyrian_steel_armor_visuals
+		wealth = scope:wealth
+		quality = scope:quality
+		template = valyrian_steel_armor_template
+		modifier = valyrian_steel_armor_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+
+	scope:newly_created_artifact ?= {
+		save_scope_as = epic #for loc
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
+		set_variable = { name = valyrian_steel value = yes }
+		set_variable = { name = dragonknight_artifact value = yes }
+		equip_artifact_to_owner_replace = yes
+	}
+}
+
+cv_agot_create_artifact_dragonknight_sword_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = dragonknight_sword_name
+		description = dragonknight_sword_description
+		visuals = vs_valyrian_longsword_silver_visuals
+		type = sword
+		wealth = scope:wealth
+		quality = scope:quality
+		template = vs_generic_valyrian_template
+		modifier = vs_generic_valyrian_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		save_scope_value_as = {name = valyrian_steel value = yes }
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = valyrian_longsword_silver_artifact value = yes }
+		set_variable = { name = valyrian_steel value = yes }
+		set_variable = { name = dragonknight_artifact value = yes }
+		equip_artifact_to_owner_replace = yes
+	}
+}
+
+cv_create_artifact_dragon_saddle_effect = {
+	$OWNER$ = { save_scope_as = owner }
+
+	save_scope_value_as = {
+		name = saddle_type
+		value = flag:$TYPE$
+	}
+
+	set_artifact_rarity_illustrious = yes
+
+	create_artifact = {
+		name = dragon_saddle_name
+		description = placeholder
+		visuals = dragon_saddle
+		type = dragon_saddle
+		template = dragon_saddle_template
+		modifier = dragon_saddle_modifier
+		save_scope_as = newly_created_artifact
+		wealth = scope:wealth
+		quality = scope:quality
+		decaying = no
+	}
+	hidden_effect_new_object = {
+		scope:newly_created_artifact ?= {
+			set_variable = { name = dragon_saddle value = yes }
+			set_variable = { name = historical_unique_artifact value = yes }
+
+			equip_artifact_to_owner_replace = yes
+
+			set_artifact_feature_group = dragon_saddle_type
+			set_artifact_description = dragon_saddle_desc
+
+			if = {
+				limit = {
+					scope:saddle_type = flag:brown_common
+				}
+				set_artifact_rarity_common = yes
+			}
+			if = {
+				limit = {
+					scope:saddle_type = flag:brown_masterwork
+				}
+				set_artifact_rarity_masterwork = yes
+			}
+			if = {
+				limit = {
+					scope:saddle_type = flag:black_famed
+				}
+				set_artifact_rarity_famed = yes
+			}
+		}
+	}
+}
+
+cv_create_artifact_vs_torment_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = vs_torment_name
+		description = vs_torment_description
+		visuals = vs_torment_visuals
+		type = sword
+		wealth = scope:wealth
+		quality = scope:quality
+		template = vs_torment_template
+		modifier = vs_torment_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		save_scope_value_as = { name = valyrian_steel value = yes }
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = vs_torment_artifact value = yes }
+		set_variable = { name = valyrian_steel value = yes }
+		equip_artifact_to_owner_replace = yes
+	}
+}
+
+cv_agot_create_artifact_dragon_halberd_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = vs_dragon_halberd_name
+		description = vs_dragon_halberd_description
+		visuals = vs_dragon_halberd_visuals
+		type = spear
+		wealth = scope:wealth
+		quality = scope:quality
+		template = vs_dragon_halberd_template
+		modifier = vs_dragon_halberd_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		save_scope_value_as = {name = valyrian_steel value = yes }
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = vs_dragon_halberd_artifact value = yes }
+		set_variable = { name = valyrian_steel value = yes }
+		set_variable = { name = dragonknight_artifact value = yes }
+		equip_artifact_to_owner_replace = yes
+	}
+}

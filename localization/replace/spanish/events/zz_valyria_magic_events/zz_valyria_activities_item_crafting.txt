@@ -1,0 +1,616 @@
+﻿namespace = zz_valyria_item_crafting
+
+
+# INVALIDATION - PRISON
+zz_valyria_item_crafting.0005 = {
+	type = character_event
+	title = zz_valyria_item_crafting.0005.t
+	desc = zz_valyria_item_crafting.0005.desc
+	theme = prison
+	override_background = { event_background = valyria_forging }
+
+	left_portrait = {
+		character = root
+		animation = prisonhouse
+	}
+
+	immediate = {
+		imprisoner ?= {
+			save_scope_as = jailor
+		}
+		create_character_memory = {
+			type = imprisoned_adult_education
+			participants = {
+				jailor = scope:jailor
+			}
+		}
+	}
+
+	option = {
+		name = zz_valyria_item_crafting.0005.a
+	}
+}
+
+# CONCLUSION EVENT
+zz_valyria_item_crafting.0009 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0009.t
+	override_background = { event_background = valyria_forging }
+	desc = {
+		desc = zz_valyria_item_crafting.0009.desc
+		triggered_desc = {
+			trigger = {
+				scope:host = { 
+					has_character_flag = crafting_failure_reward_event 
+				}
+			}
+			desc = zz_valyria_item_crafting.0009.desc_perfect_reward
+		}
+		triggered_desc = {
+			trigger = {
+				scope:host = { 
+					has_character_flag = crafting_failure_reward_event 
+				}
+			}
+			desc = zz_valyria_item_crafting.0009.desc_failure
+		}
+	}
+	theme = dragon
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+	immediate = {
+		#Reward effects
+		scope:activity.activity_location = { save_scope_as = location }
+		involved_activity ?= {
+			#Perfect settlement - 65-100
+			if = {
+				limit = { var:activity_special_type_progression >= 65 }
+				scope:host = {
+					add_character_flag = crafting_successs_reward_event
+				}
+			}
+			#crafting failure
+			else = {
+				scope:host = {
+					add_character_flag = crafting_failure_reward_event
+				}
+			}
+		}
+	}
+		
+	option = {
+		name = zz_valyria_item_crafting.0009.a
+		trigger = {
+			has_character_flag = crafting_successs_reward_event
+		}
+		custom_tooltip = zz_valyria_item_crafting.0009.crafting_successs_reward
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0009.b
+		trigger = {
+			has_character_flag = crafting_failure_reward_event
+		}
+		custom_tooltip = zz_valyria_item_crafting.0009.crafting_failure_reward
+		ai_chance = {
+			base = 100
+		}
+	}
+	after = { 
+		remove_character_flag = crafting_successs_reward_event
+		remove_character_flag = crafting_failure_reward_event
+		
+	}
+}
+
+## ARRIVAL EVENTS
+### You have arrived at the volcano, it is time now for you to select the type of item you wish to craft. 
+zz_valyria_item_crafting.0010 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0010.t
+	override_background = { event_background = valyria_forging }
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					"scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive
+				}
+				desc = zz_valyria_item_crafting.0010.arrival.desc_very_very_far
+			}
+			triggered_desc = {
+				trigger = {
+					"scope:host.capital_province.squared_distance(scope:location)" >= 0
+				}
+				desc = zz_valyria_item_crafting.0010.arrival.desc_same_province
+			}
+			triggered_desc = {
+				trigger = {
+					NOT = { "scope:host.capital_province.squared_distance(scope:location)" >= squared_distance_massive }
+				}
+				desc = zz_valyria_item_crafting.0010.arrival.desc
+			}
+		}
+	}
+	theme = dragon
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
+	## valyrian steel, one handed, silver 
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_weapon_01
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_weapon_sword
+		}
+		
+		add_character_flag = { flag = craft_weapon_01 months  = 3 }
+	}
+	## valyrian steel, bastard, silver
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_weapon_02
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_weapon_sword
+		}
+		
+		add_character_flag = { flag = craft_weapon_02 months = 3 }
+	}
+	## valyrian steel, one handed, gold
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_weapon_03
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_weapon_sword
+		}
+		
+		add_character_flag = { flag = craft_weapon_03 months = 3 }
+	}
+	## valyrian steel, bastard, gold
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_weapon_04
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_weapon_sword
+		}
+		
+		add_character_flag = { flag = craft_weapon_04 months = 3 }
+	}
+	## DragonBone Bow
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_weapon_05
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_weapon_sword
+		}
+
+		add_character_flag = { flag = craft_weapon_05 months = 3 } 
+	}
+	## valyrian steel armour
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_armour_01
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_armour
+		}
+		
+		add_character_flag = { flag = craft_armour_01 months = 3 } 
+	}
+	### magic_ring
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_trinket_01
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		add_character_flag = { flag = craft_trinket_01 months = 3 } 
+		trigger_event = {
+			id = zz_valyria_item_crafting.0101
+		 }
+	}
+	## Craft Dragon Saddle
+	option = {
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		name = zz_valyria_item_crafting.0010.craft_trinket_02
+		add_character_flag = { flag = craft_trinket_02 months = 3 } 
+		trigger_event = {
+			id = zz_valyria_item_crafting.0102
+		 }
+	}
+	## Craft Dragon Horn
+	option = {
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		name = zz_valyria_item_crafting.0010.craft_trinket_03
+		add_character_flag = { flag = craft_trinket_03 months = 3 } 
+	}
+	### Dragon Horn
+	option = {
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+			always = no
+		}
+		name = zz_valyria_item_crafting.0010.craft_trinket_04
+		add_character_flag = { flag = craft_trinket_04 months = 3 } 
+	}
+
+	### glass candle 
+	option = {
+		name = zz_valyria_item_crafting.0010.craft_trinket_05
+		add_character_flag = { flag = craft_trinket_05 months = 3 } 
+	}
+}
+
+## Choose the type of magical ring you want
+zz_valyria_item_crafting.0101 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0101.t
+	desc =  zz_valyria_item_crafting.0101.desc
+	theme = dragon
+	override_background = { event_background = valyria_forging }
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.a
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_blood_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.b
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_shadow_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.c
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_dream_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.d
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_alchemy_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.e
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_fire_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.f
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_air_magic months = 3}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0101.g
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = magic_ring_type value = flag:ring_water_magic months = 3}
+	}
+}
+
+## Choose your dragon saddle
+zz_valyria_item_crafting.0102 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0102.t
+	desc =  zz_valyria_item_crafting.0102.desc
+	theme = dragon
+	override_background = { event_background = valyria_forging }
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0102.a
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = dragon_saddle_type value = flag:brown_common months = 3}
+		
+	}
+	option = {
+		name = zz_valyria_item_crafting.0102.b
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = dragon_saddle_type value = flag:brown_masterwork months = 3}
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -15 }  }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0102.c
+		trigger = { 
+			has_activity_intent = zz_valyria_craft_trinket
+		}
+		set_variable = { name = dragon_saddle_type value = flag:black_famed months = 3}
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -30 }  }
+			
+	}
+}
+
+
+
+### add a modifier at the expense of your progress 
+zz_valyria_item_crafting.0200 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0200.t
+	desc =  zz_valyria_item_crafting.0200.desc
+	theme = dragon
+	override_background = { event_background = valyria_forging }
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
+	### Mana Gain Multiplier
+	option = {
+		name = zz_valyria_item_crafting.0200.a
+		custom_tooltip  = zz_valyria_item_crafting.0200.a.desc
+		add_character_flag = { flag = craft_modifier_01 months = 3 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -25 }  }
+	}
+	### Magic Xp Gain
+	option = {
+		name = zz_valyria_item_crafting.0200.b
+		custom_tooltip  = zz_valyria_item_crafting.0200.b.desc
+		add_character_flag = { flag = craft_modifier_02 months = 3 } 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -50 }  }
+	}
+	### Passive Mana Gain
+	option = {
+		name = zz_valyria_item_crafting.0200.c
+		custom_tooltip  = zz_valyria_item_crafting.0200.c.desc
+		add_character_flag = { flag = craft_modifier_03 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -100 }  }
+	}
+	### Learning
+	option = {
+		name = zz_valyria_item_crafting.0200.d
+		custom_tooltip  = zz_valyria_item_crafting.0200.d.desc
+		add_character_flag = { flag = craft_modifier_04 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -10 }  }
+	}
+	## diplomacy
+	option = {
+		name = zz_valyria_item_crafting.0200.e
+		custom_tooltip  = zz_valyria_item_crafting.0200.r.desc
+		add_character_flag = { flag = craft_modifier_05 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -10 }  }
+	}
+	## stewardship
+	option = {
+		name = zz_valyria_item_crafting.0200.f
+		custom_tooltip  = zz_valyria_item_crafting.0200.f.desc
+		add_character_flag = { flag = craft_modifier_06 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -10 }  }
+	}
+	## martial
+	option = {
+		name = zz_valyria_item_crafting.0200.g
+		custom_tooltip  = zz_valyria_item_crafting.0200.g.desc
+		add_character_flag = { flag = craft_modifier_07 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -10 }  }
+	}
+	## imtrigue
+	option = {
+		name = zz_valyria_item_crafting.0200.h
+		custom_tooltip  = zz_valyria_item_crafting.0200.h.desc
+		add_character_flag = { flag = craft_modifier_08 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -10 }  }
+	}
+	## prowess
+	option = {
+		name = zz_valyria_item_crafting.0200.i
+		custom_tooltip  = zz_valyria_item_crafting.0200.i.desc
+		add_character_flag = { flag = craft_modifier_09 months = 3 }
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = -10 }  }
+	}
+
+
+	### Not for me
+	option = {
+		name = zz_valyria_item_crafting.0200.z
+	}
+}
+
+## Forging event, options for progress
+
+zz_valyria_item_crafting.0300 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0300.t
+	desc =  zz_valyria_item_crafting.0300.desc
+	theme = dragon
+	override_background = { event_background = valyria_forging }
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+	}
+
+	## use valyrian secrets
+	option = {
+		name = zz_valyria_item_crafting.0300.a
+		zz_valyria_item_crafting_forging_test = { 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_item_crafting.0300.a
+			SKILL = zz_valyria_crafting_alchemy
+		}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0300.b
+		zz_valyria_item_crafting_forging_test = { 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_item_crafting.0300.b
+			SKILL = zz_valyria_crafting_learning
+		}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0300.c
+		zz_valyria_item_crafting_forging_test = { 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_item_crafting.0300.c
+			SKILL = 0
+		}
+	}
+	
+
+}
+
+
+### intervention event, use second option to force event progress, spend mana, use dragon fire, kill someone. 
+zz_valyria_item_crafting.0400 = {
+	type = activity_event
+	title = zz_valyria_item_crafting.0400.t
+	desc =  zz_valyria_item_crafting.0400.desc
+	theme = dragon
+	override_background = { event_background = valyria_forging }
+	center_portrait = {
+		character = root
+		animation = happy_teacher
+	}
+
+	immediate = {
+		scope:activity.activity_location = { save_scope_as = location }
+		if = { 
+			limit = {
+				scope:activity ?= {
+					has_activity_option = {
+						category = magic_item_crafting_catalyst
+						option = magic_item_crafting_catalyst_blood_sacrifice
+					}
+				}
+			}
+			random_courtier_or_guest = {
+				save_scope_as = crafting_sacrifice 
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0400.magic_catalyst_25
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_magic
+				}
+			}
+			zz_valyria_has_mana_to_cast = { MANACOST = 25 }
+		}
+		zz_valyria_mana_spend = {
+			MANACOST = 25
+		} 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 25 }  }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0400.magic_catalyst_50
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_magic
+				}
+			}
+			zz_valyria_has_mana_to_cast = { MANACOST = 50 }
+		}
+		zz_valyria_mana_spend = {
+			MANACOST = 50
+		} 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 50 }  }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0400.magic_catalyst_100
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_magic
+				}
+			}
+			zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+		}
+		zz_valyria_mana_spend = {
+			MANACOST = 100
+		} 
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 100 }  }
+	}
+	option = {
+		name = zz_valyria_item_crafting.0400.dragon_fire_catalyst
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_dragon_fire
+				}
+			}
+		}
+		random_list = { 
+			1 = {
+				scope:activity ?= {activity_special_type_progression_variable = { NUM = 25 }  }
+			}
+			1 = {
+				scope:activity ?= {activity_special_type_progression_variable = { NUM = 50 }  }
+			}
+			1 = {
+				scope:activity ?= {activity_special_type_progression_variable = { NUM = 150 }  }
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_item_crafting.0400.blood_sacrifice_catalyst
+		trigger = {
+			scope:activity ?= {
+				has_activity_option = {
+					category = magic_item_crafting_catalyst
+					option = magic_item_crafting_catalyst_blood_sacrifice
+				}
+			}
+		}
+		scope:activity ?= {activity_special_type_progression_variable = { NUM = 200 }  }
+		add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:crafting_sacrifice}
+		execute_opinion_effect = {
+			VICTIM = scope:crafting_sacrifice
+			EXECUTIONER = scope:host
+		}
+		scope:crafting_sacrifice = {
+			death = {
+				killer = scope:crafting_sacrifice
+				death_reason = death_sacrificed_to_gods
+			}
+		}
+	}
+	### Do not seek enchancement
+	option = {
+		name = zz_valyria_item_crafting.0400.z
+	}
+}

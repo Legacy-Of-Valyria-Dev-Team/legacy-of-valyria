@@ -1,0 +1,2454 @@
+﻿zz_make_protector = {
+	desc = zz_make_protector_desc
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 1999
+	category = interaction_category_admin
+
+
+	is_shown = {
+		scope:actor = {
+			any_court_position_holder = {
+				type = zz_valyria_champion_of_the_fourteen_court_position
+			}
+			is_imprisoned = no
+			is_ai = no
+		}
+		scope:recipient = {
+			NOT = { 
+				has_trait = dragon
+			}
+			any_courtier_or_guest = {
+				exists = dynasty
+				dynasty = scope:actor.dynasty
+				num_of_relation_bodyguard = 0
+			}
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			any_court_position_holder = {
+				type = zz_valyria_champion_of_the_fourteen_court_position
+				NOT = { 
+					has_character_flag = zz_valyria_made_protector
+				}
+			}
+		}
+	}
+	populate_recipient_list = {
+		scope:actor = { 
+			every_court_position_holder = {
+				type = zz_valyria_champion_of_the_fourteen_court_position
+				limit = {
+					NOT = { 
+						has_character_flag = zz_valyria_made_protector
+					}
+				}
+				add_to_list = characters
+			}
+		}
+	}
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { years = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+
+	on_accept = {
+		scope:secondary_recipient = {
+			agot_on_cancel_kingsguard_bodyguard = yes 
+			add_character_flag = { flag = zz_valyria_made_protector months = 1 } 
+			save_scope_as = councillor
+		}
+		scope:recipient = {
+			save_scope_as = target_character
+		}
+		scope:actor = {
+			save_scope_as = councillor_liege
+			trigger_event = agot_kingsguard.2001
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+	}
+}
+
+
+zz_create_cadet_branch = {
+
+	category = interaction_category_vassal
+	common_interaction = no
+	icon = powerful_family_shield
+	cost = {
+		prestige = 1000
+		influence = {
+			add =  scope:actor.medium_influence_value
+		}
+	}
+	is_shown = {
+		#always = no 
+		scope:actor = {
+			government_has_flag = government_is_freehold 
+		}
+		
+		scope:recipient = {
+			exists = house
+			exists = house.house_head
+			is_house_head = no
+			liege = scope:actor
+			is_ruler = yes
+			#has_trait = dragonrider
+		}
+	}
+
+	auto_accept = yes
+	on_accept = {
+		scope:recipient = {
+			found_cadet_house_decision_effect = {
+				CHARACTER = scope:recipient 
+				PRESTIGE = major_prestige_gain
+			}
+			if = {
+				limit = {
+					government_allows = administrative
+					highest_held_title_tier >= tier_duchy
+					liege ?= {
+						is_independent_ruler = yes
+						government_allows = administrative
+						NOT = {
+							government_has_flag = government_is_freehold
+						}
+					}
+				}
+				create_noble_family_effect = yes
+				change_influence = major_influence_gain
+			}
+			else_if = {
+				limit = { 
+					government_allows = administrative
+					highest_held_title_tier >= tier_duchy
+					liege = {
+						is_independent_ruler = yes
+						government_allows = administrative
+						government_has_flag = government_is_freehold
+					}
+				}
+				create_noble_family_dragonrider_effect  = yes
+				change_influence = major_influence_gain
+			}
+		}
+	}
+}
+
+zz_establish_dragon_rider_house = {
+
+	category = interaction_category_vassal
+	common_interaction = no
+	icon = powerful_family_shield
+
+	is_shown = {
+		#always = no 
+		scope:actor = {
+			government_has_flag = government_is_freehold 
+		}
+		
+		scope:recipient = {
+			liege = scope:actor
+			is_ruler = no
+			has_trait = dragonrider
+		}
+	}
+
+	auto_accept = yes
+	on_accept = {
+		scope:recipient = {
+			found_cadet_house_decision_effect = {
+				CHARACTER = scope:recipient 
+				PRESTIGE = major_prestige_gain
+			}
+			create_dynamic_title = {
+				tier = duchy
+				name = NEW_CREATED_TITLE_NAME
+			}
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			scope:new_title = {
+				change_title_holder = {
+					holder = scope:recipient
+					change = scope:change
+					government_base = scope:actor
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+			if = {
+				limit = {
+					liege ?= {
+						is_independent_ruler = yes
+						government_allows = administrative
+						NOT = {
+							government_has_flag = government_is_freehold
+						}
+					}
+				}
+				create_noble_family_effect = yes
+				change_influence = major_influence_gain
+			}
+			else_if = {
+				limit = { 
+					liege = {
+						is_independent_ruler = yes
+						government_allows = administrative
+						government_has_flag = government_is_freehold
+					}
+				}
+				create_noble_family_dragonrider_effect  = yes
+				change_influence = major_influence_gain
+			}
+		}
+	}
+}
+
+
+grant_freehold_interaction = {
+	icon = grant_governorship
+	category = interaction_category_vassal
+	common_interaction = yes
+
+	desc = grant_governorship_interaction_desc
+
+	special_interaction = grant_governorship_interaction
+	interface = grant_titles
+	target_type = title
+	target_filter = actor_domain_titles
+	interface_priority = 60
+
+	# actor character giving the titles
+	# recipient character receiving the titles
+
+	is_shown = {
+		always = no
+		NOT = { scope:actor = scope:recipient }
+		scope:recipient = {
+			OR = {
+				target_is_liege_or_above = scope:actor
+				is_pool_guest_of = scope:actor
+			}
+		}
+		scope:actor = {
+			government_has_flag = government_is_freehold 
+			government_allows = administrative
+			highest_held_title_tier >= tier_county
+		}
+		
+		trigger_if = {
+			limit = {
+				scope:actor = { is_ai = yes }
+			}
+			scope:recipient = {
+				NOT = { any_parent = { is_ai = no } }
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			is_adult = yes
+			NOT = { is_at_war_with = scope:actor }
+			bp2_valid_for_standard_interactions_trigger = yes
+			is_busy_in_events_localised = yes
+			trigger_if = {
+				limit = { is_ruler = no }
+				is_imprisoned = no
+			}
+			# Only the preferred gender can be appointed unless they hold titles already
+			trigger_if = {
+				limit = {
+					scope:actor = {
+						OR = {
+							has_realm_law = male_only_law
+							has_realm_law = male_preference_law
+						}
+					}
+					is_landed = no
+				}
+				is_female = no
+			}
+			trigger_if = {
+				limit = {
+					scope:actor = {
+						OR = {
+							has_realm_law = female_only_law
+							has_realm_law = female_preference_law
+						}
+					}
+					is_landed = no
+				}
+				is_female = yes
+			}
+			# DON'T TAKE OTHER PLAYERS' ACCLAIMED KNIGHTS
+			custom_description = {
+				text = grant_title_stealing_acclaimed_knight
+				subject = scope:recipient
+				NOR = {
+					AND = {
+						is_acclaimed = yes
+						liege ?= {
+							is_ai = no
+							NOT = { this = scope:actor }
+						}
+					}
+					AND = {
+						is_acclaimed = yes
+						scope:actor = { is_ai = yes }
+					}
+				}
+			}
+			trigger_if = {
+				limit = { is_landed = yes }
+				government_allows = administrative
+			}
+			is_clergy = no
+			# Gallivanters won't accept additional responsibilities.
+			NOT = { has_trait = gallivanter }
+		}
+	}
+
+	can_send = {
+		scope:recipient = {
+			custom_tooltip = {
+				text = promote_candidate_interaction_existing_holder_tt
+				this != scope:target.holder
+			}
+			
+			trigger_if = { # Governors can only be appointed to certain titles
+				limit = {
+					is_governor = yes
+					scope:target = { is_noble_family_title = no } # For tooltip reasons, so we don't show more than necessary
+				}
+				custom_tooltip = { # Only one province of highest rank
+					text = only_one_province_of_highest_rank_tt
+					NAND = {
+						highest_held_title_tier = scope:target.tier
+						scope:target.tier >= tier_duchy
+						scope:target = { # We make an exception if recipient controls at least one de jure county
+							any_de_jure_county = {
+								count < 1
+								OR = {
+									holder = scope:recipient
+									holder = { is_vassal_or_below_of = scope:recipient }
+								}
+							}
+						}
+					}
+				}
+				custom_tooltip = {
+					text = NOT_ANY_IN_DE_JURE_ALL_GLOBAL
+					any_held_title = {
+						OR = {
+							# The target title is part of your de jure structure
+							is_de_jure_liege_or_above_target = scope:target
+							target_is_de_jure_liege_or_above = scope:target
+							# Or is a neighboring county which de jure duchy is not part of your realm
+							AND = {
+								any_title_to_title_neighboring_county = { this = scope:target }
+								scope:target = {
+									tier = tier_county
+									duchy = {
+										OR = {
+											NOT = { exists = holder }
+											holder = {
+												NOR = {
+													is_vassal_or_below_of = scope:actor
+													this = scope:actor
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			trigger_if = { # If recipient is landless and only have a family title, target title must be a duchy or above
+				limit = {
+					is_landless_ruler = yes
+					any_held_title = { is_noble_family_title = yes }
+				}
+				scope:target = { NOT = { tier < tier_duchy } }
+			}
+			trigger_if = { # If recipient is a count, they can get only get counties within the same duchy
+				limit = { highest_held_title_tier = tier_county }
+				trigger_if = {
+					limit = { scope:target.tier = tier_county }
+					custom_tooltip = {
+						text = NOT_ANY_IN_DE_JURE_ALL_GLOBAL
+						any_held_title = { duchy = scope:target.duchy }
+					}
+				}
+			}
+		}
+	}
+
+	can_be_picked_title = {
+		scope:target = {
+			is_leased_out = no
+
+			NOT = { tier = tier_barony }
+
+			scope:recipient = {
+				trigger_if = { # Governors can only be appointed to certain titles
+					limit = {
+						is_governor = yes
+						scope:target = { is_noble_family_title = no } # For tooltip reasons, so we don't show more than necessary
+					}
+					custom_tooltip = { # Only one province of highest rank
+						text = only_one_province_of_highest_rank_tt
+						NAND = {
+							highest_held_title_tier = scope:target.tier
+							scope:target.tier >= tier_duchy
+							scope:target = { # We make an exception if recipient controls at least one de jure county
+								any_de_jure_county = {
+									count < 1
+									OR = {
+										holder = scope:recipient
+										holder = { is_vassal_or_below_of = scope:recipient }
+									}
+								}
+							}
+						}
+					}
+					custom_tooltip = {
+						text = NOT_ANY_IN_DE_JURE_ALL_GLOBAL
+						any_held_title = {
+							OR = {
+								# The target title is part of your de jure structure
+								is_de_jure_liege_or_above_target = scope:target
+								target_is_de_jure_liege_or_above = scope:target
+								# Or is a neighboring county which de jure duchy is not part of your realm
+								AND = {
+									any_title_to_title_neighboring_county = { this = scope:target }
+									scope:target = {
+										tier = tier_county
+										duchy = {
+											OR = {
+												NOT = { exists = holder }
+												holder = {
+													NOR = {
+														is_vassal_or_below_of = scope:actor
+														this = scope:actor
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				trigger_if = { # If recipient is landless and only have a family title, target title must be a duchy or above
+					limit = {
+						is_landless_ruler = yes
+						any_held_title = { is_noble_family_title = yes }
+					}
+					scope:target = { NOT = { tier < tier_duchy } }
+				}
+				trigger_if = { # If recipient is a count, they can get only get counties within the same duchy
+					limit = { highest_held_title_tier = tier_county }
+					trigger_if = {
+						limit = { scope:target.tier = tier_county }
+						custom_tooltip = {
+							text = NOT_ANY_IN_DE_JURE_ALL_GLOBAL
+							any_held_title = { duchy = scope:target.duchy }
+						}
+					}
+				}
+			}
+
+			custom_tooltip = {
+				text = GRANT_TITLES_ITEM_CANT_GIVE_ADMIN_PRIMARY
+				NOT = {
+					this = scope:actor.primary_title.title_capital_county.duchy
+				}
+			}
+
+			trigger_if = {
+				limit = { is_noble_family_title = yes }
+				custom_tooltip = {
+					text = GRANT_TITLES_ITEM_CANT_GIVE_NOBLE_FAMILY
+					always = no
+				}
+			}
+
+			trigger_if = {
+				limit = {
+					list_size:target_titles > 0
+				}
+				custom_tooltip = {
+					text = GRANT_TITLES_ITEM_ADMIN_CANT_GIVE_MORE_THAN_ONE
+					any_in_list = {
+						list = target_titles
+						scope:target ?= this
+					}
+				}
+			}
+
+			#AGOT Disabled
+			#trigger_if = {
+			#	limit = { scope:target = title:k_fashion }
+			#	NOT = { scope:target = title:k_fashion }
+			#}
+		}
+
+		custom_description = {
+			text = grant_titles_interaction_can_only_give_diarch_de_jure_liege_to_diarch
+			subject = scope:actor.diarch
+			NAND = {
+				# Only applies if we have an active diarchy.
+				scope:actor = { has_active_diarchy = yes }
+				# Now, prevent us from giving away our diarch's land to invalidate them...
+				scope:target = {
+					any_dejure_vassal_title_holder = { this = scope:actor.diarch }
+					# ... _unless_ we're giving it _to_ the diarch.
+					NOT = { scope:recipient = scope:actor.diarch }
+					# Plus we only care if the title is below our tier.
+					tier < scope:actor.highest_held_title_tier
+				}
+			}
+		}
+
+		custom_description = {
+			text = grant_titles_interaction_title_being_wagered
+			NOT = {
+				scope:target = { has_variable = wagered_county }
+			}
+		}
+	}
+
+	auto_accept = yes
+
+	on_auto_accept = {
+		scope:recipient = {
+			trigger_event = {
+				id = zz_char_interaction.0111
+				delayed = yes #this has to be delayed in case you grant it to someone that doesn't have an estate yet, for the change_government effect to work and generate the estate
+			}
+		}
+	}
+
+	on_accept = {
+		if = {
+			limit = {
+				scope:recipient = {
+					is_acclaimed = yes
+					liege = {
+						this = scope:actor
+					}
+				}
+			}
+			custom_tooltip = grant_title_landing_acclaimed_knight_warning
+		}
+
+		if = {
+			limit = {
+				any_in_list = {
+					list = target_titles
+					tier >= tier_duchy
+					title_capital_county = {
+						NOT = { culture = scope:actor.culture }
+						culture = scope:recipient.culture
+					}
+					NOT = {
+						recent_history = {
+							type = granted
+							years = 10
+						}
+					}
+				}
+			}
+			scope:recipient.culture = {
+				change_cultural_acceptance = {
+					target = scope:actor.culture
+					value = grant_title_cultural_acceptance_impact
+					desc = cultural_acceptance_gain_granted_title
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_in_list = {
+					list = target_titles
+					tier >= tier_county
+				}
+				scope:actor.culture = { has_cultural_parameter = landing_house_members_give_prestige }
+				exists = scope:actor.house
+				exists = scope:recipient.house
+				scope:actor.house = scope:recipient.house
+			}
+			scope:actor = {
+				add_prestige = {
+					value = 0
+					every_in_list = {
+						list = target_titles
+						limit = { tier = tier_empire }
+						add = massive_prestige_gain
+					}
+					every_in_list = {
+						list = target_titles
+						limit = { tier = tier_kingdom }
+						add = major_prestige_gain
+					}
+					every_in_list = {
+						list = target_titles
+						limit = { tier = tier_duchy }
+						add = medium_prestige_gain
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_in_list = {
+					list = target_titles
+					tier >= tier_county
+				}
+				scope:actor.culture = { has_cultural_parameter = landing_house_members_gives_renown }
+				exists = scope:actor.house
+				exists = scope:recipient.house
+				scope:actor.house = scope:recipient.house
+			}
+			scope:actor.dynasty = {
+				add_dynasty_prestige = {
+					value = 0
+					every_in_list = {
+						list = target_titles
+						limit = { tier = tier_kingdom }
+						add = major_dynasty_prestige_gain
+					}
+					every_in_list = {
+						list = target_titles
+						limit = { tier = tier_duchy }
+						add = medium_dynasty_prestige_gain
+					}
+				}
+			}
+		}
+
+		# Iterate over all given titles
+		#  - Add opinion modifiers
+		#  - Collect titles that discontent reduction can later be derived from
+		every_in_list = {
+			list = target_titles
+			save_temporary_scope_as = this_title
+			if = {
+				limit = {
+					exists = scope:landed_title
+				}
+				scope:recipient = {
+					if = {
+						limit = {
+							scope:this_title.tier = tier_duchy
+						}
+
+						hidden_effect = {
+							add_opinion = {
+								target = scope:actor
+								modifier = received_title_duchy
+							}
+							if = {
+								limit = {
+									is_lowborn = yes
+								}
+								scope:actor = {
+									every_vassal = {
+										limit = {
+											has_vassal_stance = courtly
+										}
+										add_opinion = {
+											target = scope:actor
+											modifier = courtly_lowborn_grant_opinion
+											opinion = -10	#less than usual because admin realms are more tolerant of bureaucratic "new" nobility
+										}
+									}
+								}
+							}
+						}
+
+						scope:this_title = { add_to_temporary_list = titles_to_grant }
+					}
+
+					else_if = {
+						limit = {
+							scope:this_title.tier = tier_kingdom
+						}
+
+						hidden_effect = {
+							add_opinion = {
+								target = scope:actor
+								modifier = received_title_kingdom
+							}
+							if = {
+								limit = {
+									is_lowborn = yes
+								}
+								scope:actor = {
+									every_vassal = {
+										limit = {
+											has_vassal_stance = courtly
+										}
+										add_opinion = {
+											target = scope:actor
+											modifier = courtly_lowborn_grant_opinion
+											opinion = -30	#less than usual because admin realms are more tolerant of bureaucratic "new" nobility
+										}
+									}
+								}
+							}
+						}
+
+						scope:this_title = { add_to_temporary_list = titles_to_grant }
+					}
+				}
+
+				#Promised a vassal this title they had a claim on (vassal.2901)
+				if = {
+					limit = {
+						scope:actor = {
+							exists = var:was_promised_title
+							var:was_promised_title = scope:recipient
+						}
+					}
+					if = {
+						limit = {
+							scope:recipient = {
+								exists = var:promised_title
+							}
+							scope:landed_title = scope:recipient.var:promised_title
+						}
+						scope:actor = {
+							trigger_event = {
+								id = vassal.2910
+								days = { 7 14 }
+							}
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:recipient = {
+						has_trait = bastard
+					}
+				}
+				custom_tooltip = grant_title_to_bastard_dynasty_warning
+			}
+		} # every_in_list
+
+		# The accumulated discontent reduction of the recipient
+		scope:recipient = {
+			if = {
+				limit = {
+					is_a_faction_member = yes
+				}
+				add_joined_faction_discontent = grant_title_opinion_sum_discontent_calc
+			}
+		}
+
+		if = {
+			limit = {
+				any_in_list = {
+					list = target_titles
+					tier = tier_kingdom
+				}
+			}
+			custom_tooltip = grant_title_modifier_stack_kingdoms
+		}
+		if = {
+			limit = {
+				any_in_list = {
+					list = titles_to_grant
+					tier = tier_duchy
+				}
+			}
+			custom_tooltip = grant_title_modifier_stack_duchies
+		}
+		if = {
+			limit = {
+				trigger_if = {
+					limit = { scope:actor = { is_ai = yes } }
+					scope:actor = {
+						any_vassal = {
+							has_vassal_stance = courtly
+						}
+					}
+				}
+				scope:recipient = {
+					is_lowborn = yes
+				}
+				any_in_list = {
+					list = titles_to_grant
+					tier >= tier_county
+				}
+			}
+			custom_tooltip = grant_title_modifier_courtly_lowborn_grant_penalty
+		}
+		if = {
+			limit = {
+				scope:recipient = { is_a_faction_member = yes }
+			}
+			custom_tooltip = grant_title_modifier_stack_discontent
+		}
+
+		# Jealousy check
+		if = {
+			limit = {
+				any_in_list = {
+					list = titles_to_grant
+					any_claimant = { grant_title_rivalry_trigger = yes }
+				}
+			}
+			hidden_effect = {
+				random = {
+					chance = 25
+					ordered_in_list = {
+						list = titles_to_grant
+						limit = {
+							any_claimant = { grant_title_rivalry_trigger = yes }
+						}
+						order_by = tier
+						save_scope_as = claim_title
+						ordered_claimant = {
+							limit = { grant_title_rivalry_trigger = yes }
+							order_by = primary_title.tier
+							save_scope_as = claim_vassal
+							if = {
+								limit = {
+									scope:recipient = { is_lowborn = yes }
+								}
+								scope:recipient = { save_scope_as = lowborn_scope }
+							}
+							else_if = {
+								limit = {
+									scope:recipient = { has_claim_on = scope:claim_title }
+								}
+								scope:recipient = { save_scope_as = claimant_scope }
+							}
+							scope:actor = {
+								trigger_event = {
+									id = bp1_yearly.8070
+									days = 5
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		scope:actor = {
+			# Maintenance for runestones
+			if = {
+				limit = {
+					# Use expanded version if we have FP1.
+					has_fp1_dlc_trigger = yes
+					fp1_remove_stele_new_holder_trigger = {
+						TITLE = scope:target
+						PREVIOUS_HOLDER = scope:actor
+						NEW_HOLDER = scope:recipient
+					}
+				}
+				# Actually removed in fp1_other_decisions.0113
+				custom_tooltip = runestone_grant_title_warning
+			}
+			else_if = {
+				limit = {
+					scope:target = {
+						exists = var:ancestor_to_bury
+						has_county_modifier = county_raised_runestone_modifier
+					}
+					NOT = { scope:recipient.dynasty = var:ancestor_to_bury.dynasty } #We only have to change something if the new holder is of a different dynasty
+				}
+				# Actually removed in religious_decision.0312
+				custom_tooltip = runestone_grant_title_warning
+			}
+
+			if = {
+				limit = {
+					dynasty ?= { has_dynasty_perk = ep1_culture_legacy_3 }
+					scope:recipient = {
+						is_playable_character = no
+						NOT = { culture = scope:actor.culture }
+						any_in_list = {
+							list = target_titles
+							OR = {
+								tier = tier_county
+								tier = tier_barony
+							}
+							culture = scope:recipient.culture
+						}
+					}
+				}
+				if = {
+					limit = {
+						can_add_hook = {
+							target = scope:recipient
+							type = favor_hook
+						}
+					}
+					add_hook = {
+						type = favor_hook
+						target = scope:recipient
+					}
+				}
+			}
+
+			#Feedback for actor
+			hidden_effect = {
+				if = {
+					limit = {
+						NOT = { exists = scope:recipient_is_independent }
+						scope:recipient = {
+							any_held_title = {
+								tier > tier_barony
+								NOT = { is_in_list = target_titles }
+							}
+						}
+					}
+					set_variable = {
+						name = lower_count
+						value = {
+							value = -1
+							every_in_list = {
+								list = target_titles
+								limit = {
+									NOT = { tier = scope:actor.highest_held_title_tier }
+								}
+								add = 1
+							}
+						}
+					}
+					save_scope_value_as = {
+						name = equal_count
+						value = {
+							value = 0
+							every_in_list = {
+								list = target_titles
+								limit = { tier = scope:actor.highest_held_title_tier }
+								add = 1
+							}
+						}
+					}
+					ordered_in_list = {
+						list = target_titles
+						order_by = tier
+						save_temporary_scope_as = loc_title
+					}
+					send_interface_toast = {
+						type = event_toast_effect_neutral
+						title = grant_governorship_interaction_notification
+						left_icon = scope:recipient
+						right_icon = scope:loc_title
+						if = {
+							limit = { scope:actor.var:lower_count ?= 0 }
+							custom_tooltip = grant_governorship_interaction_notification_effect_2
+						}
+						else_if = {
+							limit = {
+								exists = scope:actor.var:lower_count
+								scope:actor.var:lower_count > 1
+							}
+							custom_tooltip = grant_governorship_interaction_notification_effect_3
+						}
+						else_if = {
+							limit = { scope:actor.var:lower_count ?= 1 }
+							custom_tooltip = grant_governorship_interaction_notification_effect_4
+						}
+						else_if = {
+							limit = {
+								scope:equal_count >= 1
+								scope:recipient.top_liege ?= scope:actor.top_liege
+							}
+							custom_tooltip = grant_titles_interaction_notification_effect_5
+						}
+						else = { custom_tooltip = grant_titles_interaction_notification_effect }
+						if = {
+							limit = {
+								exists = dynasty
+								#AGOT Modified
+								is_diff_culture_trigger = {
+									CHAR = scope:actor
+									STATUS = involved
+								}
+								any_character_struggle = {
+									involvement = involved
+									#AGOT Modified, BTW struggle has faith removed
+									#has_struggle_phase_parameter = struggle_grant_titles_diff_faith_culture_gives_prestige
+									has_struggle_phase_parameter = struggle_grant_titles_diff_culture_gives_prestige
+								}
+							}
+							dynasty = { add_dynasty_prestige = minor_dynasty_prestige_gain }
+						}
+						remove_variable = lower_count
+					}
+				}
+			}
+		}
+
+		hidden_effect = {
+			# Struggle Catalyst
+			if = {
+				limit = {
+					scope:actor = {
+						#AGOT Modified
+						is_diff_culture_trigger = {
+							CHAR = scope:recipient
+							STATUS = involved
+						}
+						any_character_struggle = {
+							involvement = involved
+							activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+								#AGOT Modified, BTW struggle has faith removed
+								#CATALYST = catalyst_grant_privilege_to_diff_faith_culture_vassal
+								CATALYST = catalyst_grant_privilege_to_diff_culture_vassal
+								CHAR = scope:recipient
+							}
+						}
+					}
+				}
+				scope:actor = {
+					every_character_struggle = {
+						involvement = involved
+						limit = {
+							activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+								#AGOT Modified, BTW struggle has faith removed
+								#CATALYST = catalyst_grant_privilege_to_diff_faith_culture_vassal
+								CATALYST = catalyst_grant_privilege_to_diff_culture_vassal
+								CHAR = scope:recipient
+							}
+						}
+						activate_struggle_catalyst = {
+							#AGOT Modified, BTW struggle has faith removed
+							#catalyst = catalyst_grant_privilege_to_diff_faith_culture_vassal
+							catalyst = catalyst_grant_privilege_to_diff_culture_vassal
+							character = scope:actor
+						}
+					}
+				}
+			}
+		}
+
+		# Achievements.
+		#AGOT Disabled
+		#scope:actor = {
+		#	if = {
+		#		limit = {
+		#			has_variable_list = candidate_a_knights_tale_achievement
+		#			is_target_in_variable_list = {
+		#				name = candidate_a_knights_tale_achievement
+		#				target = scope:recipient
+		#			}
+		#		}
+		#		set_global_variable = {
+		#			name = finished_a_knights_tale_achievement
+		#			value = yes
+		#		}
+		#	}
+		#}
+	}
+
+	ai_will_do = {
+		base = 0
+
+		modifier = {
+			scope:recipient.house ?= scope:actor.house
+			add = 100
+		}
+		modifier = {
+			scope:recipient = {
+				is_close_family_of = scope:actor
+			}
+			add = 100
+		}
+	}
+}
+request_raid_remit_interaction = {
+	icon = icon_request_raid_remit
+	category = interaction_category_admin
+	interface_priority = 90
+
+	desc = request_raid_remit_interaction_desc
+	use_diplomatic_range = yes
+
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+
+	cooldown_against_recipient = { years = 5 }
+
+	is_shown = {
+		scope:actor = {
+			is_independent_ruler = no
+			government_allows = administrative
+		}
+		scope:secondary_recipient ?= {
+			NOT = { house = scope:recipient.house }
+			top_liege = scope:actor.top_liege
+			NOT = { house = scope:actor.house }
+			government_allows = administrative
+			any_held_title = { is_noble_family_title = yes }
+		}
+		#AGOT ADDED
+		scope:actor = {
+			is_human = yes
+		}
+		scope:recipient = {
+			is_human = yes
+		}
+		scope:secondary_recipient ?= {
+			is_human = yes
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			is_adult = yes
+			custom_tooltip = {
+				text = raid_estate_noble_family_tt
+				any_held_title = { is_noble_family_title = yes }
+				house.house_head ?= this
+			}
+			custom_tooltip = {
+				text = raid_estate_already_remit_tt
+				NOT = { exists = var:raid_estate_permission }
+			}
+		}
+		scope:recipient.house.house_head ?= {
+			custom_tooltip = {
+				text = raid_estate_noble_family_target_tt
+				any_held_title = { is_noble_family_title = yes }
+			}
+			custom_tooltip = {
+				text = raid_estate_estate_tt
+				domicile ?= { is_domicile_type = estate }
+			}
+			custom_tooltip = {
+				text = raid_estate_estate_tt
+				domicile ?= { is_domicile_type = dragonkeep }
+			}
+		}
+		scope:actor = {
+			NOT = { is_at_war_with = scope:recipient }
+		}
+	}
+
+	populate_recipient_list = {
+		scope:actor.top_liege = {
+			every_noble_family = {
+				limit = {
+					NOR = {
+						holder = scope:actor
+						holder = scope:actor.top_liege
+					}
+				}
+				holder = { add_to_list = characters }
+			}
+		}
+	}
+
+	redirect = {
+		scope:recipient.house.house_head ?= { save_scope_as = secondary_recipient }
+		scope:actor.top_liege = { save_scope_as = recipient }
+	}
+
+	send_option = {
+		is_valid = { scope:actor.gold >= scope:actor.minor_gold_value }
+		flag = gold
+		localization = GENERIC_SPEND_GOLD
+	}
+	send_option = {
+		is_valid = {
+			scope:actor = { has_usable_hook = scope:recipient }
+			NOT = {
+				scope:recipient = { has_hook = scope:actor }
+			}
+		}
+		flag = hook
+		localization = GENERIC_SPEND_A_HOOK
+	}
+	should_use_extra_icon = {
+		scope:actor = { has_usable_hook = scope:recipient }
+	}
+	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
+
+	send_options_exclusive = no
+
+	on_accept = {
+		if = {
+			limit = { scope:gold = yes }
+			scope:actor = {
+				pay_short_term_gold = {
+					target = scope:recipient
+					gold = scope:actor.minor_gold_value
+				}
+			}
+		}
+		scope:recipient = { custom_tooltip = request_raid_remit_interaction_effect_tt }
+		custom_tooltip = request_raid_remit_interaction_duration_tt
+		hidden_effect = {
+			scope:actor = { trigger_event = ep3_interactions_events.0421 }
+		}
+	}
+
+	on_decline = {
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_bad
+				title = request_raid_remit_effect_toast
+				left_icon = scope:recipient
+				right_icon = scope:actor
+				scope:recipient = {
+					send_interface_toast = {
+						type = event_toast_effect_bad
+						title = request_raid_remit_effect_toast
+						left_icon = scope:recipient
+						right_icon = scope:actor
+						if = {
+							limit = { scope:actor = { is_ai = yes } }
+							reverse_add_opinion = {
+								modifier = angry_opinion
+								opinion = -20
+								target = scope:actor
+							}
+						}
+						if = {
+							limit = { is_ai = yes }
+							add_opinion = {
+								modifier = respect_opinion
+								opinion = -10
+								target = scope:actor
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	cost = {
+		influence = {
+			add = scope:actor.massive_influence_value
+			# Being a Powerful or Dominant Family reduces the cost significantly
+			scope:actor.house = {
+				if = {
+					limit = { is_dominant_family = yes }
+					add = {
+						value = massive_influence_value
+						multiply = -0.75
+						desc = is_dominant_family_desc
+					}
+				}
+				else_if = {
+					limit = { is_powerful_family = yes }
+					add = {
+						value = massive_influence_value
+						multiply = -0.5
+						desc = is_powerful_family_desc
+					}
+				}
+			}
+		}
+	}
+
+	ai_potential = {
+		is_house_head = yes
+		house ?= {
+			any_house_member = {
+				count <= 5
+				is_alive = yes
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = peer_vassals
+		ai_recipients = scripted_relations
+		max = 10
+	}
+
+	ai_accept = {
+		base = -30
+		modifier = {
+			scope:hook = yes
+			add = 40
+			desc = SCHEME_WEAK_HOOK_USED
+		}
+		modifier = {
+			scope:gold = yes
+			add = 25
+			desc = SCHEME_WITH_GIFT_SIGNIFICANT
+		}
+		modifier = { # Target house is powerful
+			add = -10
+			desc = MY_HOUSE_IS_POWERFUL
+			scope:secondary_recipient.house ?= { is_powerful_family = yes }
+		}
+		modifier = { # Target house is dominant
+			add = -25
+			desc = MY_HOUSE_IS_DOMINANT
+			scope:secondary_recipient.house ?= { is_dominant_family = yes }
+		}
+		modifier = {
+			scope:actor.house = { is_powerful_family = yes }
+			add = 10
+			desc = YOUR_FAMILY_IS_POWERFUL
+		}
+		modifier = {
+			scope:actor.house = { is_dominant_family = yes }
+			add = 25
+			desc = YOUR_FAMILY_IS_DOMINANT
+		}
+		modifier = {
+			scope:recipient.primary_spouse ?= { house ?= scope:secondary_recipient.house }
+			add = -10
+			desc = MY_SPOUSES_HOUSE
+		}
+		modifier = {
+			any_child = { house = scope:secondary_recipient.house }
+			add = -10
+			desc = MY_CHILDS_HOUSE
+		}
+		modifier = {
+			is_close_family_of = scope:secondary_recipient
+			add = -10
+			desc = TARGET_IS_MY_CLOSE_FAMILY
+		}
+		opinion_modifier = {
+			opinion_target = scope:actor
+			multiplier = 0.5
+		}
+		opinion_modifier = {
+			opinion_target = scope:secondary_recipient
+			multiplier = -0.5
+		}
+		modifier = {
+			has_relation_rival = scope:secondary_recipient
+			add = 10
+			desc = THEY_ARE_MY_RIVAL
+		}
+		modifier = {
+			add = -10
+			desc = THEY_ARE_MY_FRIEND
+			scope:secondary_recipient = { has_relation_friend = scope:recipient }
+		}
+		modifier = { # You're my friend :)
+			add = 10
+			desc = youre_my_friend_tt
+			has_relation_friend = scope:actor
+		}
+		modifier = { # You're my rival >:(
+			add = -10
+			desc = ai_opinion.reason.relation.rival
+			has_relation_rival = scope:actor
+		}
+		modifier = { # You're my guardian
+			add = 10
+			desc = youre_my_guardian_tt
+			has_relation_guardian = scope:actor
+		}
+		ai_value_modifier = {
+			ai_boldness = -0.2
+			ai_honor = -0.2
+		}
+	}
+
+	ai_frequency = 120
+
+	ai_will_do = {
+		base = -25
+		opinion_modifier = { # Opinion
+			opinion_target = scope:recipient
+			multiplier = -0.5
+		}
+		modifier = { # My rival
+			add = 25
+			scope:actor = { has_relation_rival = scope:recipient }
+		}
+		modifier = { # My friend
+			add = -25
+			scope:actor = { has_relation_friend = scope:recipient }
+		}
+		modifier = {
+			existing_feud_against_target_trigger = { TARGET = scope:recipient }
+			add = 15
+		}
+	}
+}
+
+start_raid_estate_interaction = {
+	icon = icon_raid_estate
+	interface_priority = 90
+	category = interaction_category_admin
+	send_name = START_SCHEME 
+	scheme = raid_estate
+	ignores_pending_interaction_block = yes  
+	ai_frequency = 60
+
+	ai_targets = { ai_recipients = liege }
+	ai_targets = {
+		ai_recipients = peer_vassals
+		max = 20
+	}
+	ai_targets = {
+		ai_recipients = vassals
+		max = 20
+	}
+
+	cooldown = { years = 5 }
+
+	highlighted_reason = start_raid_estate_interaction_HIGHLIGHTED
+
+	is_highlighted = { scope:actor.var:raid_estate_permission ?= scope:recipient.house }
+
+	is_shown = {
+		scope:actor = { government_allows = administrative }
+		scope:recipient.house.house_head ?= {
+			exists = house
+			NOT = { house = scope:actor.house }
+			top_liege = scope:actor.top_liege
+			government_allows = administrative
+			any_held_title = { is_noble_family_title = yes }
+		}
+		#AGOT ADDED
+		scope:actor = {
+			is_human = yes
+		}
+		scope:recipient = {
+			is_human = yes
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			is_available_adult = yes
+			custom_tooltip = {
+				text = raid_estate_noble_family_tt
+				any_held_title = { is_noble_family_title = yes }
+				house.house_head ?= this
+			}
+		}
+		scope:recipient.house.house_head ?= {
+			custom_tooltip = {
+				text = raid_estate_noble_family_target_tt
+				any_held_title = { is_noble_family_title = yes }
+			}
+			OR = {
+				custom_tooltip = {
+					text = raid_estate_estate_tt
+					domicile ?= { is_domicile_type = estate }
+				}
+				custom_tooltip = {
+					text = raid_estate_estate_tt
+					domicile ?= { is_domicile_type = dragonkeep }
+				}
+			}
+
+		}
+	}
+
+	desc = start_raid_estate_interaction_desc
+
+	# Scheme Starter Packages
+	options_heading = schemes.t.agent_packages
+	send_options_exclusive = yes
+	## Balanced agents.
+	send_option = {
+		flag = agent_focus_balance
+		current_description = start_raid_estate_interaction.tt.agent_focus_balance
+	}
+	## Focused on Success Chance.
+	send_option = {
+		flag = agent_focus_success
+		current_description = start_raid_estate_interaction.tt.agent_focus_success
+	}
+	## Focused on Speed.
+	send_option = {
+		flag = agent_focus_speed
+		current_description = start_raid_estate_interaction.tt.agent_focus_speed
+	}
+	## Focused on Secrecy.
+	send_option = {
+		flag = agent_focus_secrecy
+		current_description = start_raid_estate_interaction.tt.agent_focus_secrecy
+	}
+
+	on_accept = {
+		scope:recipient = { 
+			custom_tooltip = raid_estate_kill_maim_imprison_house_members_tt
+			custom_tooltip = raid_estate_destroy_buildings_tt
+			custom_tooltip = raid_estate_house_modifier_tt
+			random_held_title = {
+				limit = { is_noble_family_title = yes }
+				save_scope_as = target_title
+			}
+		}
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = start_raid_estate_notification
+				left_icon = scope:recipient					
+				right_icon = scope:target_title
+				# Success.
+				if = {
+					limit = { scope:agent_focus_success ?= yes }
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Success.
+						AGENT_1 = agent_scout
+						AGENT_2 = agent_scout
+						AGENT_3 = agent_muscle
+						# Speed.
+						AGENT_4 = agent_infiltrator
+						# Secrecy.
+						AGENT_5 = agent_lookout
+					}
+				}
+				# Speed.
+				else_if = {
+					limit = { scope:agent_focus_speed ?= yes }
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Speed.
+						AGENT_1 = agent_infiltrator
+						AGENT_2 = agent_infiltrator
+						AGENT_3 = agent_footpad
+						# Success.
+						AGENT_4 = agent_scout
+						# Secrecy.
+						AGENT_5 = agent_lookout
+					}
+				}
+				# Secrecy.
+				else_if = {
+					limit = { scope:agent_focus_secrecy ?= yes }
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Secrecy.
+						AGENT_1 = agent_lookout
+						AGENT_2 = agent_lookout
+						AGENT_3 = agent_alibi
+						# Success.
+						AGENT_4 = agent_scout
+						# Speed.
+						AGENT_5 = agent_infiltrator
+					}
+				}
+				# Balanced.
+				else = {
+					begin_scheme_with_agents_effect = {
+						SCHEME_TYPE = raid_estate
+						TARGET_TYPE = target_character
+						TARGET_SCOPE = scope:recipient
+						# Success.
+						AGENT_1 = agent_scout
+						AGENT_2 = agent_muscle
+						# Speed.
+						AGENT_3 = agent_infiltrator
+						AGENT_4 = agent_footpad
+						# Secrecy.
+						AGENT_5 = agent_lookout
+					}
+				}
+			}
+			# Scheme progress bonus from education
+			education_5_scheme_progress_effect = { SKILL = intrigue }
+			# Scheme bonuses from being the emperor/dominant family/powerful family
+			ep3_actor_scheme_modifier_effect = yes
+
+			custom_tooltip = raid_estate_gain_coin_tt
+			if = {
+				limit = {
+					has_relation_rival = scope:recipient
+				}
+				custom_tooltip = raid_estate_nemesis_relation_tt
+			}
+			else = {
+				custom_tooltip = raid_estate_rival_relation_tt
+			}
+
+			stress_impact = {
+				content = medium_stress_impact_gain
+			}
+			if = {
+				limit = {
+					has_relation_nemesis = scope:recipient
+				}
+				stress_impact = { base = major_stress_impact_loss }
+			}
+			else_if = {
+				limit = {
+					has_relation_rival = scope:recipient
+				}
+				stress_impact = { base = medium_stress_impact_loss }
+			}
+		}
+	}
+
+	ai_potential = {
+		NOT = {
+			any_scheme = { is_hostile = yes }
+		}
+		any_held_title = { is_noble_family_title = yes }
+	}
+	
+	auto_accept = yes
+
+	ai_will_do = {
+		base = -20
+		#Personality
+		modifier = {
+			has_trait = vengeful
+			add = 15
+		}
+		modifier = {
+			has_trait = forgiving
+			add = -15
+		}
+		modifier = {
+			has_trait = brave
+			add = 15
+		}
+		modifier = {
+			has_trait = craven
+			add = -15
+		}
+		# Relationships
+		modifier = {
+			add = -25
+			has_any_moderate_good_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = -50
+			has_any_best_good_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = 15
+			has_any_mild_bad_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = 25
+			has_any_moderate_bad_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			add = 50
+			has_any_worst_bad_relationship_with_character_trigger = { CHARACTER = scope:recipient }
+		}
+		modifier = {
+			scope:recipient.house = scope:actor.top_liege.house
+			add = -25
+		}
+		opinion_modifier = {
+			who = scope:actor
+			opinion_target = scope:recipient
+			multiplier = -0.25
+		}
+	}
+}
+
+cabinet_of_curiosities_interaction = {
+	category = interaction_category_admin
+	common_interaction = yes
+	interface_priority = 60
+	desc = cabinet_of_curiosities_interaction_desc
+	icon = artisan_inspiration
+
+	target_type = artifact
+	target_filter = actor_artifacts
+
+	can_be_picked_artifact = {
+		scope:actor = {
+			any_artifact = {
+				this = scope:target
+			}
+			#block the artifact from the laamp escort contract
+			NOT = {
+				any_scheme = {
+					var:escorted_artifact ?= scope:target
+				}
+			}
+		}
+	}
+
+	is_shown = {
+		scope:recipient = scope:actor
+		scope:actor = {
+			domicile ?= {
+				OR = {
+					has_domicile_building_or_higher = cabinet_of_curiosities_01
+					has_domicile_building_or_higher = dragonkeep_cabinet_of_curiosities_01
+				}
+				
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		# needs to have an artifact to give away
+		scope:actor = {
+			has_any_artifact = yes
+			is_imprisoned = no
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = cabinet_of_curiosities_interaction_notification
+				left_icon = scope:actor
+				right_icon = scope:target
+
+				custom_tooltip = artifact_added_to_domicile_tt
+
+				# Determine Bonus
+				if = {
+					limit = {
+						scope:target = { is_unique = yes }
+					}
+					house = {
+						if = {
+							limit = {
+								has_variable = ep3_legacy_domicile_artifact_counter_unique
+							}
+							change_variable = {
+								name = ep3_legacy_domicile_artifact_counter_unique
+								add = 1
+							}
+						}
+						else = {
+							set_variable = {
+								name = ep3_legacy_domicile_artifact_counter_unique
+								value = 1
+							}
+						}
+					}
+				}
+				scope:target = {
+					if = {
+						limit = { rarity = common }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_common
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_common
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_common
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = masterwork }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_masterwork
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_masterwork
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_masterwork
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = famed }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_famed
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_famed
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_famed
+									value = 1
+								}
+							}
+						}
+					}
+					else_if = {
+						limit = { rarity = illustrious }
+						scope:actor.house = {
+							if = {
+								limit = {
+									has_variable = ep3_legacy_domicile_artifact_counter_illustrious
+								}
+								change_variable = {
+									name = ep3_legacy_domicile_artifact_counter_illustrious
+									add = 1
+								}
+							}
+							else = {
+								set_variable = {
+									name = ep3_legacy_domicile_artifact_counter_illustrious
+									value = 1
+								}
+							}
+						}
+					}
+				}
+			}
+
+			custom_tooltip = add_artifact_to_domicile_warning
+			hidden_effect = {
+				destroy_artifact = scope:target
+				house = {
+					if = {
+						limit = {
+							has_variable = ep3_legacy_domicile_artifact_counter
+						}
+						change_variable = {
+							name = ep3_legacy_domicile_artifact_counter
+							add = 1
+						}
+					}
+					else = {
+						set_variable = {
+							name = ep3_legacy_domicile_artifact_counter
+							value = 1
+						}
+					}
+				}
+			}
+		}
+	}
+
+	auto_accept = yes
+
+	# AI
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 84
+
+	ai_potential = {
+		has_any_unequipped_artifact = yes
+		any_character_artifact = {
+			count >= 5
+			is_equipped = no
+		}
+	}
+
+	ai_will_do = {
+		base = 30
+	}
+}
+
+house_head_request_interaction = {
+	icon = house_head_request_interaction
+	category = interaction_category_admin
+	common_interaction = yes
+	desc = house_head_request_interaction_desc
+
+	ai_maybe = yes
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+	can_send_despite_rejection = yes
+	popup_on_receive = yes
+
+	greeting = positive
+	notification_text = HOUSE_HEAD_REQUEST_PROPOSAL
+
+	pre_answer_yes_key = ACCEPT
+	pre_answer_no_key = DECLINE
+
+	ai_targets = {
+		ai_recipients = family
+		ai_recipients = peer_vassals
+		ai_recipients = vassals
+		ai_recipients = liege
+	}
+	ai_target_quick_trigger = { adult = yes }
+	ai_frequency = 36
+
+	cooldown_against_recipient = { years = 10 }
+	cooldown = { years = 2 }
+
+	redirect = {
+	}
+
+	cost = { # If the cost changes, remember to update the on_send to give correct refund in the event
+	}
+
+	is_shown = {
+		NOT = { scope:recipient = scope:actor }
+		scope:actor = {
+			government_allows = administrative
+			this = house.house_head
+		}
+		scope:recipient = {
+			government_allows = administrative
+			house = scope:actor.house
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			NOT = { is_at_war_with = scope:recipient }
+		}
+		scope:recipient = {
+			is_landed = yes
+			is_adult = yes
+		}
+	}
+
+	send_options_exclusive = yes
+	send_option = {
+		flag = gold
+		localization = HH_ASK_FOR_GOLD
+	}
+	send_option = {
+		flag = hostile_schemes
+		localization = ASK_FOR_HOSTILE_SCHEMES_HELP
+	}
+	send_option = {
+		flag = personal_schemes
+		localization = ASK_FOR_PERSONAL_SCHEMES_HELP
+	}
+	send_option = {
+		flag = political_schemes
+		localization = ASK_FOR_POLITICAL_SCHEMES_HELP
+	}
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = hh_recipient_has_valid_artifact
+				scope:recipient = {
+					any_character_artifact = {
+						save_temporary_scope_as = target_artifact
+						OR = {
+							scope:actor.house = { has_house_artifact_claim = scope:target_artifact }
+							scope:actor = { has_personal_artifact_claim = scope:target_artifact }
+						}
+					}
+				}
+			}
+		}
+		is_shown = {
+			OR = { 
+				scope:actor.domicile ?= { has_domicile_building_or_higher = cabinet_of_curiosities_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_cabinet_of_curiosities_01 }
+			}
+
+		}
+		flag = artifact
+		localization = ASK_FOR_ARTIFACT
+	}
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = hh_recipient_has_valid_knight
+				scope:recipient = {
+					number_of_knights > 0
+					any_knight = {
+						is_acclaimed = no
+						is_landed = no
+					}
+				}
+			}
+		}
+		is_shown = {
+			OR = {
+				scope:actor.domicile ?= { has_domicile_building_or_higher = guardhouse_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = barracks_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_guardhouse_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_barracks_01 }
+			}
+		}
+		flag = knight
+		localization = ASK_FOR_KNIGHT
+	}
+	send_option = {
+		is_valid = {
+			trigger_if = {
+				limit = {
+					scope:actor = {
+						NOT = {
+							any_maa_regiment = { is_personal_maa_regiment = yes }
+						}
+					}
+				}
+				custom_tooltip = {
+					text = hh_has_personal_maa
+					scope:actor = {
+						any_maa_regiment = { is_personal_maa_regiment = yes }
+					}
+				}
+			}
+			trigger_else = {
+				custom_tooltip = {
+					text = hh_has_personal_maa_size
+					scope:actor = {
+						any_maa_regiment = {
+							is_personal_maa_regiment = yes
+							can_upgrade_maa = yes
+						}
+					}
+				}
+			}
+			custom_tooltip = {
+				text = hh_recipient_has_personal_maa
+				scope:recipient = {
+					any_maa_regiment = {
+						is_personal_maa_regiment = yes
+					}
+				}
+			}
+		}
+		is_shown = {
+			OR = {
+				scope:actor.domicile ?= { has_domicile_building_or_higher = guardhouse_03 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = barracks_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = watchtower_04 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_guardhouse_03 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_barracks_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_watchtower_04 }
+			}
+		}
+		flag = maa
+		localization = ASK_FOR_MAA
+	}
+	send_option = {
+		is_shown = {
+			OR = {
+				scope:actor.domicile ?= { has_domicile_building_or_higher = storage_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = storage_warehouse_03 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_storage_01 }
+				scope:actor.domicile ?= { has_domicile_building_or_higher = dragonkeep_storage_warehouse_03 }
+			}
+		}
+		flag = building
+		localization = ASK_FOR_BUILDING
+	}
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = hh_recipient_has_valid_courtier
+				scope:recipient = {
+					any_courtier_or_guest = {
+						ep3_interesting_courtier_to_ask_trigger = yes
+					}
+				}
+			}
+		}
+		flag = courtier
+		localization = ASK_FOR_COURTIER
+	}
+
+	on_send = {
+	}
+
+	on_accept = {
+		if = {
+			limit = {
+				scope:gold = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					scope:recipient = {
+						pay_short_term_gold = {
+							target = scope:actor
+							gold = medium_gold_value
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:hostile_schemes = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					custom_tooltip = {
+						text = hostile_schemes_help_request_tt
+						scope:actor = {
+							add_to_variable_list = {
+								name = supporting_hostile_schemes
+								target = scope:recipient
+								years = 10
+							}
+						}
+					}
+					scope:recipient = {
+						add_character_modifier = {
+							modifier = hostile_schemes_distracted_modifier
+							years = 5
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:personal_schemes = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					custom_tooltip = {
+						text = personal_schemes_help_request_tt
+						scope:actor = {
+							add_to_variable_list = {
+								name = supporting_personal_schemes
+								target = scope:recipient
+								years = 10
+							}
+						}
+					}
+					scope:recipient = {
+						add_character_modifier = {
+							modifier = personal_schemes_distracted_modifier
+							years = 5
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:political_schemes = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					custom_tooltip = {
+						text = political_schemes_help_request_tt
+						scope:actor = {
+							add_to_variable_list = {
+								name = supporting_political_schemes
+								target = scope:recipient
+								years = 10
+							}
+						}
+					}
+					scope:recipient = {
+						add_character_modifier = {
+							modifier = political_schemes_distracted_modifier
+							years = 5
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:artifact = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+					right_icon = scope:target_artifact
+
+					scope:recipient = {
+						random_character_artifact = {
+							limit = {
+								save_temporary_scope_as = target_artifact
+								OR = {
+									scope:actor.house = { has_house_artifact_claim = scope:target_artifact }
+									scope:actor = { has_personal_artifact_claim = scope:target_artifact }
+								}
+							}
+							save_scope_as = target_artifact
+							set_owner = scope:actor
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:knight = yes
+			}
+			scope:recipient = {
+				ordered_knight = {
+					limit = {
+						is_acclaimed = no
+						is_landed = no
+					}
+					order_by = prowess
+					save_scope_as = knight
+				}
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+					right_icon = scope:knight
+
+					scope:actor = { add_courtier = scope:knight }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:maa = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					scope:recipient = {
+						ordered_maa_regiment = {
+							limit = {
+								is_personal_maa_regiment = yes
+							}
+							save_scope_as = maa_regiment_decrease
+						}
+						scope:maa_regiment_decrease = {
+							change_maa_regiment_size = -1
+						}
+					}
+					scope:actor = {
+						ordered_maa_regiment = {
+							limit = {
+								is_personal_maa_regiment = yes
+								can_upgrade_maa = yes
+							}
+							save_scope_as = maa_regiment_increase
+						}
+						scope:maa_regiment_increase = {
+							change_maa_regiment_size = {
+								size = 1
+								reinforce = yes
+							}
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:building = yes
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+
+					scope:actor = {
+						add_to_variable_list = {
+							name = supporting_building
+							target = scope:recipient
+							years = 10
+						}
+						add_character_modifier = {
+							modifier = estate_supporting_buildings_modifier
+							years = 10
+						}
+					}
+					scope:recipient = {
+						add_prestige = medium_prestige_loss
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:courtier = yes
+			}
+			scope:recipient = {
+				random_courtier_or_guest = {
+					limit = {
+						ep3_interesting_courtier_to_ask_trigger = yes
+					}
+					save_scope_as = courtier
+				}
+			}
+			scope:actor = {
+				send_interface_message = {
+					type = event_toast_effect_good
+					title = house_head_request_accepted
+					left_icon = scope:recipient
+					right_icon = scope:courtier
+
+					add_courtier = scope:courtier
+				}
+			}
+		}
+	}
+
+	on_decline = {
+		scope:actor = {
+			send_interface_message = {
+				type = event_toast_effect_bad
+				title = house_head_request_denied
+				left_icon = scope:recipient
+
+				scope:recipient = {
+					change_influence = major_influence_loss
+				}
+			}
+		}
+
+		scope:actor = {
+			if = {
+				limit = {
+					is_ai = yes
+				}
+				add_opinion = {
+					target = scope:recipient
+					modifier = disrespect_opinion
+					opinion = -30
+				}
+			}
+		}
+	}
+
+	ai_potential = {
+		is_house_head = yes
+	}
+
+	ai_will_do = {
+		base = 50
+	}
+
+	ai_accept = {
+		base = 100
+		modifier = {
+			add = 25
+			desc = CLOSE_FAMILY_REASON
+			scope:recipient = {
+				is_close_family_of = scope:actor
+			}
+		}
+
+		modifier = {
+			add = 25
+			desc = WE_ARE_FRIENDS
+			scope:recipient = {
+				has_relation_friend = scope:actor
+			}
+		}
+
+		modifier = {
+			add = 50
+			desc = WE_ARE_BEST_FRIENDS
+			scope:recipient = {
+				has_relation_best_friend = scope:actor
+			}
+		}
+
+		modifier = {
+			add = 10
+			desc = WE_ARE_LOVERS
+			scope:recipient = {
+				has_relation_lover = scope:actor
+			}
+		}
+
+		modifier = {
+			add = -100
+			desc = WE_ARE_RIVALS
+			scope:recipient = {
+				has_relation_rival = scope:actor
+			}
+		}
+
+		modifier = {
+			add = -500
+			desc = WE_ARE_NEMESES
+			scope:recipient = {
+				has_relation_nemesis = scope:actor
+			}
+		}
+		opinion_modifier = {
+			opinion_target = scope:actor
+			multiplier = 0.5
+		}
+		modifier = {
+			# can't afford to be difficult
+			scope:recipient = {
+				influence <= major_influence_value
+			}
+			add = 30
+			desc = INFLUENCE_USED
+		}
+		# Don't bankrupt the AI
+		modifier = {
+			scope:gold = yes
+			scope:recipient.gold <= medium_gold_value
+			add = -75
+			desc = GOLD_NEGATIVE_REASON
+		}
+		# Personality
+		modifier = {
+			scope:recipient = {
+				has_trait = loyal
+			}
+			desc = INTERACTION_LOYAL
+			add = 20
+		}
+		modifier = {
+			scope:recipient = {
+				has_trait = disloyal
+			}
+			desc = INTERACTION_DISLOYAL
+			add = -20
+		}
+	}
+}
