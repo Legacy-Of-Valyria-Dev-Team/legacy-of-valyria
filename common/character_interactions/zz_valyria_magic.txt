@@ -141,6 +141,32 @@ valyria_magic_teach_spell = {
 						target = prev
 					}
 				}
+				ordered_in_list = {
+					variable = mage_list
+					position = 0
+					order_by = learning
+					save_scope_as = zz_magic_teacher
+				}
+			}
+			clear_variable_list ?= zz_valyria_spell_list
+			scope:zz_magic_teacher = {
+				every_memory = {
+					limit = { 
+						has_memory_category = magic
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_spell_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_valyria_mystery }
+							}
+							set_variable = { name = zz_valyria_mystery value = prev }
+						}
+					}
+				}
 			}
 		}
 	}

@@ -2,7 +2,7 @@ window = {
 	name = "zz_magic_teaching_window"
 	layer = top
 	using = Window_Background
-	size = { 1000 800 }
+	size = { 1100 800 }
 	datacontext = "[GetScriptedGui('zz_valyria_magic_teaching')]"
 	visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 
@@ -36,11 +36,10 @@ window = {
 				}
 				hbox = { 
 					layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
-					size = {30% 90%}
 					vbox = {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = expanding
-						spacer = { size = { 0 30 } }
+						max_width = 300
 						text_single = {
 							text = "Mages"
 							fontsize = 24
@@ -51,6 +50,8 @@ window = {
 							name = "mages_scrollarea"
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
+							max_width = 250
+							max_height = 450
 							blockoverride "scrollbox_content"
 							{
 								dynamicgridbox = {
@@ -62,7 +63,7 @@ window = {
 											align = left
 											datacontext = "[Scope.GetCharacter]"
 											layoutpolicy_vertical = expanding
-											layoutpolicy_horizontal = expanding
+											layoutpolicy_horizontal = growing
 											down = "[GetScriptedGui('zz_valyria_magic_teacher').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_teacher', Character.MakeScope ).End )]"
 											onclick = "[GetScriptedGui('zz_valyria_magic_teacher').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_teacher', Character.MakeScope ).End )]"
 											vbox = {
@@ -81,11 +82,40 @@ window = {
 								}
 							}
 						}
+						expand = {}
 					}
 					vbox = {
-						layoutpolicy_horizontal = expanding layoutpolicy_vertical = expanding
-						size = {50% 90%}
-						spacer = { size = { 0 30 } }
+						layoutpolicy_horizontal = growing 
+						layoutpolicy_vertical = growing
+						max_width = 300
+						text_single = {
+							raw_text = "Magic Teacher Stats"
+							fontsize = 24
+							align = top
+						}
+						spacer = { size = { 00 30 } }
+						text_single = {
+							raw_text = "Magic Teacher"
+							fontsize = 18
+							align = left
+						}
+						spacer = { size = { 00 15 } }
+
+						vbox = {
+							size = { 200 120 }
+							datacontext = "[GetPlayer.MakeScope.Var('zz_magic_teacher').Char]"
+							portrait_head_small = {}
+							text_single = {
+								align = left
+								text = "[Character.GetNameNoTooltip]"
+							}
+						}
+						expand = {}
+					}
+					vbox = {
+						layoutpolicy_horizontal = expanding 
+						layoutpolicy_vertical = expanding
+						max_width = 500
 						text_single = {
 							text = game_concept_zz_mystery
 							fontsize = 24
@@ -96,36 +126,59 @@ window = {
 							name = "spell_scrollarea"
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
+							max_width = 450
+							max_height = 450
 							blockoverride "scrollbox_content"
 							{
 								dynamicgridbox = {
 									datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_spell_list')]"
-								
 									item = {
-										flowcontainer = {
+										button_standard = {
 											datacontext = "[Scope.CharacterMemory]"
-											button_standard = {
-												text_single = {
-													minimumsize = { 100 38 }
-													margin = { 15 15 }
-													text = "[CharacterMemory.GetName|U]"
-													resizeparent = yes
-													align = center|nobaseline
-													default_format = "#low"
-												}
-												datacontext = "[GetScriptedGui('zz_valyria_magic_teach_action_01')]"
-												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
-												visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
-												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
-												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
-											}														
-
-
-										}
+											minimumsize = { 400 38 }
+											text_single = {
+												minimumsize = { 100 38 }
+												margin = { 15 15 }
+												text = "[CharacterMemory.GetName|U]"
+												alwaystransparent = yes
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_teach_action_01')]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+										}	
 									}
 								}
+								expand = {}
 							}
 						}
+						spacer = { size = { 0 10 } }
+						
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "[GetPlayer.MakeScope.Var('zz_valyria_mystery').CharacterMemory.GetName|U]"
+							}
+						}
+						spacer = { size = { 00 10 } }
+						
+						button_standard = {
+							text_single = {
+								minimumsize = { 200 38 }
+								margin = { 15 15 }
+								raw_text = "Teach Mystery"
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"								
+							}
+							datacontext = "[GetScriptedGui('zz_valyria_magic_teach')]"
+							onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+						}
+						expand = {}
 					}
 				}
 			}
