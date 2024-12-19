@@ -12,7 +12,17 @@
 			send_interface_toast = {
 				title = $ZZ_EVENT_OPTION_NAME$.crit_success
 				left_icon = root
-				zz_valyria_magic_education_reward = yes
+				if = {
+					limit = {
+						var:reward_scale = flag:massive
+					}
+					z_valyria_magic_education_reward_massive = yes
+				}
+				else = {
+					zz_valyria_magic_education_reward_major = yes
+				}
+				zz_valyria_extra_reward_calculation_effect = yes
+				
 			}
 			stress_impact = {
 				base = medium_stress_impact_loss
@@ -28,6 +38,7 @@
 				title = $ZZ_EVENT_OPTION_NAME$.success
 				left_icon = root
 				zz_valyria_magic_education_reward_medium = yes
+				zz_valyria_extra_reward_calculation_effect = yes
 			}
 			stress_impact = {
 				base = minor_stress_impact_loss
@@ -43,6 +54,7 @@
 				title = $ZZ_EVENT_OPTION_NAME$.small_success
 				left_icon = root
 				zz_valyria_magic_education_reward_minor = yes
+				zz_valyria_extra_reward_calculation_effect = yes
 			}
 			stress_impact = {
 				base = minor_stress_impact_loss
@@ -68,93 +80,21 @@
 	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
 }
 
-
-zz_valyria_magic_education_reward = {
-	if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.0100.a
-		}	
-		zz_valyria_magic_education_reward_skill_point_reward = { NUMBER = 5}
-	}	
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.0100.b
-		}	
-		zz_valyria_magic_education_reward_massive = yes
-	}	
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.0200.a
-		}	
-		zz_valyria_magic_education_reward_skill_point_reward = { NUMBER = 5}
-	}	
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.0200.b
-		}	
-		zz_valyria_magic_education_reward_massive = yes
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.1100.a
-		}	
-		zz_valyria_magic_education_reward_massive = yes
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.1100.b
-		}	
-		zz_valyria_magic_education_reward_major = yes
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.1200.a
-		}	
-		zz_valyria_magic_education_reward_massive = yes
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.1200.b
-		}	
-		zz_valyria_magic_education_reward_major = yes
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.2100.a
-		}	
+zz_valyria_extra_reward_calculation_effect = {
+	if = {
+		limit = {
+			var:random_spell = yes
+		}
 		zz_valyria_magic_education_reward_random_spell_effect = yes
 	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.2100.b
-		}	
-		zz_valyria_magic_education_reward_skill_point_reward = { NUMBER = 3}
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.2100.y
-		}	
-		zz_valyria_magic_education_reward_massive = yes 
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.2200.a
-		}	
-		zz_valyria_magic_education_reward_random_spell_effect = yes
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.2200.b
-		}	
-		zz_valyria_magic_education_reward_skill_point_reward = { NUMBER = 3}
-	}
-	else_if = { 
-		limit = { 
-			has_character_flag = zz_valyria_magic_education.2200.y
-		}	
-		zz_valyria_magic_education_reward_massive = yes 
+	if = {
+		limit = {
+			exists = var:skill_points
+		}
+		zz_valyria_magic_education_reward_skill_point_reward = { NUMBER = var:skill_points }
 	}
 }
+
 
 zz_valyria_magic_education_reward_massive = {
 	scope:activity = {
@@ -165,7 +105,7 @@ zz_valyria_magic_education_reward_massive = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_massive
 			scope:activity = { activity_special_type_progression_massive = yes }
 		}
 	}
@@ -179,7 +119,7 @@ zz_valyria_magic_education_reward_major = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_major
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_major
 			scope:activity = { activity_special_type_progression_major = yes }
 		}
 	}
@@ -193,7 +133,7 @@ zz_valyria_magic_education_reward_medium = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_medium
 			scope:activity = { activity_special_type_progression_medium = yes }
 		}
 	}
@@ -207,7 +147,7 @@ zz_valyria_magic_education_reward_minor = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_tiny	
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_tiny	
 			scope:activity = { activity_special_type_progression_tiny  = yes }
 		}
 	}
@@ -221,7 +161,7 @@ zz_valyria_magic_education_reward_failure = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_failure	
+			#custom_tooltip = zz_valyria_magic_education_tt_failure	
 			scope:activity = { activity_special_type_progression_negative  = yes }
 		}
 	}
@@ -235,8 +175,7 @@ zz_valyria_magic_education_reward_random_spell_effect = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_random_spell.tt
-			scope:activity = { activity_special_type_progression_medium = yes }
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_random_spell.tt
 			hidden_effect = {
 				scope:host = { zz_random_gain_magic_spell = yes }
 			}
@@ -252,8 +191,7 @@ zz_valyria_magic_education_reward_skill_point_reward = {
 			tags = { good learning activity }
 			character = root
 			#Effect
-			custom_tooltip =zz_valyria_magic_education_tt_positive_skill_increase.$NUMBER$.tt
-			scope:activity = { activity_special_type_progression_major = yes }
+			#custom_tooltip =zz_valyria_magic_education_tt_positive_skill_increase.$NUMBER$.tt
 			scope:host = {
 				zz_magic_education_increase_skill_effect = {
 					NUMBER = $NUMBER$
@@ -327,7 +265,7 @@ zz_valyria_magical_education_reward_massive = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_massive
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_massive
 			scope:activity = { activity_special_type_progression_massive = yes }
 		}
 	}
@@ -341,7 +279,7 @@ zz_valyria_magical_education_reward_major = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_major
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_major
 			scope:activity = { activity_special_type_progression_major = yes }
 		}
 	}
@@ -355,7 +293,7 @@ zz_valyria_magical_education_reward_medium = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_medium
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_medium
 			scope:activity = { activity_special_type_progression_medium = yes }
 		}
 	}
@@ -369,7 +307,7 @@ zz_valyria_magical_education_reward_minor = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_positive_tiny	
+			#custom_tooltip = zz_valyria_magic_education_tt_positive_tiny	
 			scope:activity = { activity_special_type_progression_tiny  = yes }
 		}
 	}
@@ -383,7 +321,7 @@ zz_valyria_magical_education_reward_failure = {
 			character = root
 
 			#Effect
-			custom_tooltip = zz_valyria_magic_education_tt_negative	
+			#custom_tooltip = zz_valyria_magic_education_tt_negative	
 			scope:activity = { activity_special_type_progression_negative  = yes }
 		}
 	}
@@ -401,7 +339,7 @@ zz_magic_education_learn_spell_effect = {
 			tags = { good learning activity }
 			character = root
 			#Effect
-			custom_tooltip = learn.$SPELL$.t
+			#custom_tooltip = learn.$SPELL$.t
 		}
 	}
 }
@@ -578,7 +516,7 @@ disburse_magic_education_reward_effect = {
 			has_dlc_feature = royal_court
 			scope:host = { has_royal_court = yes }
 		}
-		custom_tooltip = adult_education_books_good_reward
+		#custom_tooltip = adult_education_books_good_reward
 		hidden_effect = {
 			random_dummy_gender_effect = yes
 			create_artifact_book_effect = {
@@ -622,7 +560,7 @@ disburse_magic_education_reward_effect = {
 				}
 			}
 		}
-		custom_tooltip = adult_education_books_good_reward
+		#custom_tooltip = adult_education_books_good_reward
 		hidden_effect = {
 			save_temporary_scope_value_as = {
 				name = should_be_trinket
