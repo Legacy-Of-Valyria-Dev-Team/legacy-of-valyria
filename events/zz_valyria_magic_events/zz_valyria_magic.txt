@@ -1180,3 +1180,702 @@ zz_valyria_magic_management.003 = {
 		}
 	}
 }
+
+namespace = zz_valyria_magic_management
+
+zz_valyria_magic_management.001 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_management.001.t
+	desc = zz_valyria_magic_management.001.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+	immediate = {
+		if = { 
+			limit = {
+				has_trait = zz_magister
+			}
+			scope:root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		every_living_mage = {
+			limit = {
+				liege_or_court_owner ?= scope:root
+			}
+			scope:root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			set_variable = {
+				name = si_selecting_character
+				value = root
+			}
+			root = {
+				set_variable = {
+					name = si_selected_character
+					value = prev
+				}
+			}
+		}
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_management.001a
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:generalist_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:generalist_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+
+	}
+	option = {
+		name = zz_valyria_magic_management.001b
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:blood_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:blood_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.001b
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:blood_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:blood_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.001b
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:blood_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:blood_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.001c
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:shadow_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:shadow_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.001d
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:dream_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:dream_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.001e
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:alchemy_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:alchemy_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.f
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:fire_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:fire_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.g
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:air_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:air_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.h
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						var:current_school_of_magic ?= flag:water_magic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:water_magic
+				}
+			}
+		}
+		else = {
+			var:si_selecting_character = {
+				set_variable = {
+					name = current_school_of_magic 
+					value = flag:none
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_management.002 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_management.002.t
+	desc = zz_valyria_magic_management.002.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+	immediate = {
+		if = { 
+			limit = {
+				has_trait = dragonrider
+				OR = {
+					has_trait = lifestyle_blademaster
+					has_trait = lifestyle_reveler
+					has_trait = lifestyle_hunter	
+					has_trait = lifestyle_mystic
+					has_trait = lifestyle_physician
+					has_trait = lifestyle_herbalist
+					has_trait = lifestyle_gardener 
+				}
+			}
+			scope:root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		every_courtier_or_guest = {
+			limit = {
+				has_trait = dragonrider
+				OR = {
+					has_trait = lifestyle_blademaster
+					has_trait = lifestyle_reveler
+					has_trait = lifestyle_hunter	
+					has_trait = lifestyle_mystic
+					has_trait = lifestyle_physician
+					has_trait = lifestyle_herbalist
+					has_trait = lifestyle_gardener 
+				}
+			}
+			scope:root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			set_variable = {
+				name = si_selecting_character
+				value = root
+			}
+			root = {
+				set_variable = {
+					name = si_selected_character
+					value = prev
+				}
+			}
+		}
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_management.002a
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_blademaster
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.4
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.002b
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_hunter
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.6
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.002c
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_mystic
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.8
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.002d
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_physician
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.10
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.002e
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_herbalist
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.12
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.002f
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_herbalist
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.14
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.002g
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					has_trait = lifestyle_reveler
+				}
+			}
+			var:si_selecting_character = {
+				trigger_event = { 
+					id =  zz_agot_filler_dragon.2
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_management.003 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_management.003.t
+	desc = zz_valyria_magic_management.003.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+	immediate = {
+		scope:root = {
+			add_to_variable_list = {
+				name = possible_characters
+				target = prev
+			}
+		}
+		every_courtier_or_guest = {
+			scope:root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			set_variable = {
+				name = si_selecting_character
+				value = root
+			}
+			root = {
+				set_variable = {
+					name = si_selected_character
+					value = prev
+				}
+			}
+		}
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_management.003a
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_necromancer
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_necromancer
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003b
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_mage
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_mage
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003c
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOR = {
+						has_nickname = nick_the_witch
+						has_nickname = nick_the_warlock
+					}
+				}
+			}
+			var:si_selecting_character = {
+				if  = { 
+					limit = {
+						is_female = yes 
+					}
+					give_nickname = nick_the_witch
+				}
+				else = {
+					give_nickname = nick_the_warlock
+				}
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003d
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_seer
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_seer
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003e
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_dreamer
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_dreamer
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003f
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_poet
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_poet
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003g
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_bard
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_bard
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003h
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_singer
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_singer
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_magic_management.003i
+		if = {
+			limit = {
+				var:si_selecting_character = {
+					NOT = {
+						has_nickname = nick_the_dragonknight_historic
+					}
+				}
+			}
+			var:si_selecting_character = {
+				give_nickname = nick_the_dragonknight_historic
+			}
+		}
+	}
+}
