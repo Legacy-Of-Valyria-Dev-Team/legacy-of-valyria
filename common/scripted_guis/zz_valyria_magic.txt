@@ -1,4 +1,1174 @@
-﻿mages_tab = {
+﻿zz_valyria_magic_casting = {
+	scope = character
+	saved_scopes = {
+	}
+	is_shown = {
+		exists = var:zz_magic_target
+		is_ai = no
+	}
+	is_valid = {
+	}
+	effect = {
+	}
+}
+
+zz_valyria_magic_casting_close = {
+	scope = character
+	saved_scopes = {
+	}
+	is_shown = {
+	}
+	is_valid = {
+	}
+	effect = {
+		remove_variable = zz_magic_target
+		remove_variable = zz_magic_caster
+		clear_variable_list = zz_valyria_spell_list
+		clear_variable_list = mage_list
+	}
+}
+
+zz_valyria_magic_caster = {
+	scope = character
+	saved_scopes = {
+		zz_magic_caster
+	}
+	is_shown = {
+		var:zz_magic_caster ?= scope:zz_magic_caster
+	}
+	
+	effect = {
+		scope:zz_magic_caster = {
+			root = {
+				clear_variable_list = zz_valyria_spell_list
+				set_variable = {
+					name = zz_magic_caster
+					value = scope:zz_magic_caster
+				}
+			}
+			scope:zz_magic_caster = {
+				every_memory = {
+					limit = { 
+						has_memory_category = magic
+					}
+					root = {
+						add_to_variable_list = {
+							name = zz_valyria_spell_list
+							target = prev
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+zz_valyria_blood_magic_01 = {
+	scope = character
+
+	is_shown = {
+	}
+	is_valid = {
+
+		trigger_if  = { 
+			limit  = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 3
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_03_mysteries_of_regeneration
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				number_of_maa_regiments > 0
+				any_maa_regiment = {
+					maa_current_troops_count < maa_max_troops_count
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				has_raised_armies = yes
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_05_mysteries_of_replication
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 90
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+			var:magic_user ={
+				any_character_artifact = {
+					has_variable = dragon_egg
+					NOT = { has_variable = cradled_egg }
+					#NOT = { has_variable = dud_egg }
+					NOT = { has_variable = pitted_egg }
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 90
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				any_character_artifact = {
+					has_variable = dud_egg 
+					NOT = { has_variable = cradled_egg }
+					NOT = { has_variable = pitted_egg }
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 90
+				}
+			}
+			var:zz_magic_target = {
+				has_trait = dragon
+				is_female = yes
+				NOT = { 
+					has_character_flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 35
+				}
+			}
+			var:zz_magic_target = {
+				has_trait = dragon
+			}
+			
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 35
+				}
+			}
+			var:zz_magic_target = {
+				NOR = {
+					has_trait = dragon
+					agot_is_dragonblood_character = yes
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_11_mysteries_of_longevity
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 25
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_15_mysteries_of_fertility
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 20
+				}
+			}
+			var:zz_magic_target = {
+				has_raised_armies = yes 
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+			var:zz_magic_target = {
+				NOR = {
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_self
+						this = root.var:zz_magic_user
+					}
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_caster
+						this = root.var:zz_magic_caster
+					}
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 100
+				}
+			}
+			var:zz_magic_target = {
+				has_trait = dragon
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 35
+				}
+			}
+			var:zz_magic_target = {
+				is_pregnant = yes
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 25
+				}
+			}
+			var:zz_magic_target = {
+				is_pregnant = yes
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 25
+				}
+			}
+			var:zz_magic_target = {
+				is_pregnant = yes
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_02_mysteries_of_shadowy_daggers
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_03_mysteries_of_the_shadow_shield
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_04_mysteries_of_the_shadowy_cloak
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_05_mysteries_cloying_shadow
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_06_mysteries_of_feeble_daggers
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_07_mysteries_of_the_weakened_vigilience
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_shadow_magic_08_mysteries_of_the_revealed_shadows
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_01_mysteries_mental_domination
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 10
+				}
+			}
+			var:zz_magic_target = {
+				NOR = {
+					has_trait = dragon
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_self
+						this = root.var:zz_magic_user
+					}
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_caster
+						this = root.var:zz_magic_caster
+					}
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 10
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_03_mysteries_of_dreams
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 10
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_04_mysteries_of_secrets
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 10
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 10
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_07_mysteries_of_dreaming_fascination
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 25
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_if_not_culture_head
+					culture = {
+						culture_head ?= PREV
+					}
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_08_mysteries_of_murderous_dream
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 10
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_09_mysteries_of_minor_scrying
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 60
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				has_trait = zz_magister
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				is_landed = yes
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				is_landed = yes
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 50
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 50
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 2
+				}
+			}
+			var:zz_magic_target = {
+				NOR = {
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_self
+						this = root.var:zz_magic_user
+					}
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_caster
+						this = root.var:zz_magic_caster
+					}
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 3
+				}
+			}
+			var:zz_magic_target = {
+				has_raised_armies = yes 
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 15
+				}
+			}
+			var:zz_magic_target = {
+				has_raised_armies = yes 
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_fire_magic_04_mysteries_of_flaming_purification
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 2
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 2
+				}
+			}
+			var:zz_magic_target = {
+				NOR = {
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_self
+						this = root.var:zz_magic_user
+					}
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_caster
+						this = root.var:zz_magic_caster
+					}
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_air_magic_02_mysteries_of_the_tempestuous_winds
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 3
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				number_of_maa_regiments > 0
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_air_magic_03_mysteries_of_the_wall_of_the_wind
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 5
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 25
+				}
+			}
+			var:zz_magic_target = {
+				is_landed = yes
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 2
+				}
+			}
+			var:zz_magic_target = {
+				NOR = {
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_self
+						this = root.var:zz_magic_user
+					}
+					custom_tooltip = {
+						text = zz_valyria_magic_cannot_cast_on_caster
+						this = root.var:zz_magic_caster
+					}
+				}
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_water_magic_02_mysteries_of_the_surging_torrent
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 4
+				}
+			}
+			var:zz_magic_target = {
+				has_raised_armies = yes
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_water_magic_03_mysteries_of_endurance
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 1
+				}
+			}
+			var:zz_magic_target = {
+				has_raised_armies = yes
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+		trigger_if  = { 
+			limit = {
+				scope:zz_valyria_mystery = {
+					has_memory_type = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne
+				}
+			}
+			var:zz_magic_caster = { 
+				zz_valyria_has_mana_to_cast = {
+					MANACOST = 25
+				}
+			}
+			var:zz_magic_target = {
+				NOT = {
+					has_trait = dragon
+				}
+				
+			}
+		}
+	}
+		
+	effect = {
+		save_scope_as = actor
+		var:zz_magic_caster = {
+			save_scope_as = secondary_recipient
+		}
+		var:zz_magic_target = { 
+			save_scope_as = recipient
+		}
+		root = {
+			remove_variable = zz_magic_caster
+			remove_variable = zz_magic_target
+			clear_variable_list = zz_valyria_spell_list
+			clear_variable_list = mage_list
+		}
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration EVENT = zz_valyria_magic_blood_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification EVENT = zz_valyria_magic_blood_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_03_mysteries_of_regeneration EVENT = zz_valyria_magic_blood_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_04_mysteries_of_renewal EVENT = zz_valyria_magic_blood_magic_spells.004 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication EVENT = zz_valyria_magic_blood_magic_spells.005 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_06_mysteries_of_draconic_rejuvenation EVENT = zz_valyria_magic_blood_magic_spells.006 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_07_mysteries_of_enchanted_blood EVENT = zz_valyria_magic_blood_magic_spells.007 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying EVENT = zz_valyria_magic_blood_magic_spells.008 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement EVENT = zz_valyria_magic_blood_magic_spells.009 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_10_mysteries_of_draconic_blood EVENT = zz_valyria_magic_blood_magic_spells.010 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_11_mysteries_of_longevity EVENT = zz_valyria_magic_blood_magic_spells.011 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality EVENT = zz_valyria_magic_blood_magic_spells.012 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience EVENT = zz_valyria_magic_blood_magic_spells.013 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_14_mysteries_of_fortitude EVENT = zz_valyria_magic_blood_magic_spells.014 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_15_mysteries_of_fertility EVENT = zz_valyria_magic_blood_magic_spells.015 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_16_mysteries_of_blood_control EVENT = zz_valyria_magic_blood_magic_spells.016 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption EVENT = zz_valyria_magic_blood_magic_spells.017 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics EVENT = zz_valyria_magic_blood_magic_spells.018 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection EVENT = zz_valyria_magic_blood_magic_spells.019 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection EVENT = zz_valyria_magic_blood_magic_spells.020 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection EVENT = zz_valyria_magic_blood_magic_spells.021 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_01_mysteries_of_shadowy_steeds EVENT = zz_valyria_magic_shadow_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_02_mysteries_of_shadowy_daggers EVENT = zz_valyria_magic_shadow_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_03_mysteries_of_the_shadow_shield EVENT = zz_valyria_magic_shadow_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_04_mysteries_of_the_shadowy_cloak EVENT = zz_valyria_magic_shadow_magic_spells.004 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_05_mysteries_cloying_shadow EVENT = zz_valyria_magic_shadow_magic_spells.005 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_06_mysteries_of_feeble_daggers EVENT = zz_valyria_magic_shadow_magic_spells.006 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_07_mysteries_of_the_weakened_vigilience EVENT = zz_valyria_magic_shadow_magic_spells.007 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_shadow_magic_08_mysteries_of_the_revealed_shadows EVENT = zz_valyria_magic_shadow_magic_spells.008 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_01_mysteries_mental_domination EVENT = zz_valyria_magic_dream_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_02_mysteries_of_dreaming_destinies EVENT = zz_valyria_magic_dream_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_03_mysteries_of_dreams EVENT = zz_valyria_magic_dream_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_04_mysteries_of_secrets EVENT = zz_valyria_magic_dream_magic_spells.004 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_05_mysteries_of_personality_distortion EVENT = zz_valyria_magic_dream_magic_spells.005 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_06_mysteries_of_education_reformation EVENT = zz_valyria_magic_dream_magic_spells.006 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_07_mysteries_of_dreaming_fascination EVENT = zz_valyria_magic_dream_magic_spells.007 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_08_mysteries_of_murderous_dream EVENT = zz_valyria_magic_dream_magic_spells.008 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_09_mysteries_of_minor_scrying EVENT = zz_valyria_magic_dream_magic_spells.009 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power EVENT = zz_valyria_magic_dream_magic_spells.010 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_alchemy_magic_01_mysteries_of_growth EVENT = zz_valyria_magic_alchemy_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_alchemy_magic_02_mysteries_of_construction EVENT = zz_valyria_magic_alchemy_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation EVENT = zz_valyria_magic_alchemy_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_alchemy_magic_04_mysteries_of_arms EVENT = zz_valyria_magic_alchemy_magic_spells.004 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_alchemy_magic_05_mysteries_of_realm_fortification EVENT = zz_valyria_magic_alchemy_magic_spells.005 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame EVENT = zz_valyria_magic_fire_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame EVENT = zz_valyria_magic_fire_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire EVENT = zz_valyria_magic_fire_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_fire_magic_04_mysteries_of_flaming_purification EVENT = zz_valyria_magic_fire_magic_spells.004 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades EVENT = zz_valyria_magic_fire_magic_spells.005 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_air_magic_01_mysteries_of_the_slicing_wind EVENT = zz_valyria_magic_air_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_air_magic_02_mysteries_of_the_tempestuous_winds EVENT = zz_valyria_magic_air_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_air_magic_03_mysteries_of_the_wall_of_the_wind EVENT = zz_valyria_magic_air_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane EVENT = zz_valyria_magic_air_magic_spells.004 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_water_magic_01_mysteries_of_the_crushing_waters EVENT = zz_valyria_magic_water_magic_spells.001 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_water_magic_02_mysteries_of_the_surging_torrent EVENT = zz_valyria_magic_water_magic_spells.002 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_water_magic_03_mysteries_of_endurance EVENT = zz_valyria_magic_water_magic_spells.003 }
+		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_water_magic_04_mysteries_of_rhoyne EVENT = zz_valyria_magic_water_magic_spells.004 }
+	}
+}
+
+mages_tab = {
 	is_shown = {
 		has_trait = zz_magister
 		#always = no

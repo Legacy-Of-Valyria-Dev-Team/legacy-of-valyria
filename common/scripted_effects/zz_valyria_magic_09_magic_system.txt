@@ -3,7 +3,7 @@
 		type = event_generic_neutral
 		title = spell_failure
 		desc = spell_failure_txt
-		left_icon = scope:actor
+		left_icon = scope:secondary_recipient
 		right_icon = scope:recipient
 		custom_tooltip = spell_failure_txt
 		scope:secondary_recipient  = {
@@ -209,6 +209,27 @@ zz_vayria_magic_duel_contest_effect = {
 		}
 	}	
 }
+zz_valyria_magic_apply_province_modifier_effect = {
+	if = { 
+		limit = { 
+			scope:secondary_recipient = { 
+				any_equipped_character_artifact = { 
+					has_variable = glass_candle
+				}
+			}	
+		}
+		add_province_modifier = {
+			modifier = $MODIFIER$
+			years = $BOOSTED_DURATION$
+		}		
+	}
+	else = { 
+		add_county_modifier = {
+			modifier = $MODIFIER$
+			years = $DURATION$
+		}		
+	}
+}
 
 zz_valyria_magic_apply_county_modifier_effect = {
 	if = { 
@@ -230,7 +251,6 @@ zz_valyria_magic_apply_county_modifier_effect = {
 			years = $DURATION$
 		}		
 	}
-
 }
 zz_valyria_magic_apply_character_modifier_effect = {
 	if = { 
@@ -1916,6 +1936,34 @@ zz_random_gain_magic_spell = {
 			}
 			zz_gain_air_magic_spell = yes
 		}			
+	}
+}
+
+zz_valyria_magic_learning_gui_effect = {
+	if  = { 
+		limit  = {
+			scope:zz_valyria_mystery = {
+				has_memory_type = $SPELL$
+			}
+		}
+		var:zz_magic_learner = {
+			zz_add_spell = { 
+				SPELL = $SPELL$
+			}
+		}
+	}
+}
+zz_valyria_magic_casting_gui_effect = {
+	if = {
+		limit = {
+			scope:zz_valyria_mystery = { 
+				has_memory_type = $SPELL$
+			}
+		}
+		custom_tooltip = $SPELL$.interaction.desc
+		trigger_event = { 
+			id = $EVENT$ 
+		}
 	}
 }
 
