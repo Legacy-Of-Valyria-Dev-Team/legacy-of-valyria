@@ -132,6 +132,10 @@ valyria_magic_self_wounding = {
 			NOT = { 
 				has_trait = dragon
 			}
+			OR = {
+				top_liege = scope:actor
+				this = scope:actor
+			}
 		}
 		scope:actor = {
 			is_ai = no
@@ -373,111 +377,5 @@ valyria_magic_teach_spell = {
 
 	}
 }
-
-
-## Blood Sacrifice
-valyria_designate_blood_magic_sacrifice.interaction = {
-	icon = icon_scheme_abduct
-	interface_priority = 10000
-	category = interaction_category_religion
-	desc = designate_gruesome_festivals_sacrifice.interaction_desc
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-			zz_valyria_is_mage = yes 
-		}
-		scope:recipient = {
-			is_imprisoned_by = scope:actor
-			NOT = { has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier }
-			NOT = { 
-				has_trait = dragon
-			}
-		}
-	}
-
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_is_mage = yes 
-		}
-	}
-
-	on_accept = {
-		scope:actor = {
-			hidden_effect = {
-				every_prisoner = {
-					limit = { has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier }
-					save_scope_value_as = {
-						name = removal_type
-						value = flag:override
-					}
-					designate_gruesome_festivals_sacrifice_modifier_removed_effect = { DESIGNATOR = scope:actor }
-				}
-			}
-		}
-		scope:recipient = {
-			send_interface_toast = {
-				type = event_toast_effect_neutral
-				title = designate_gruesome_festivals_sacrifice.interaction.recipient.notification.t
-				left_icon = scope:actor
-				designate_gruesome_festivals_sacrifice_interaction_effect = yes
-				custom_tooltip = designate_gruesome_festivals_sacrifice_interaction.recipient.notification.tt
-			}
-		}
-
-		# If we're a clan this interaction affects unity
-		add_clan_unity_interaction_effect = {
-			CHARACTER = scope:actor
-			TARGET = scope:recipient
-			VALUE = medium_unity_loss
-			DESC = clan_unity_human_sacrifice.desc
-			REVERSE_NON_HOUSE_TARGET = no
-		}
-	}
-
-	auto_accept = yes
-}
-
-
-valyria_remove_designated_blood_magic_sacrifice.interaction = {
-	icon = icon_scheme_abduct
-	interface_priority = 9000
-	category = interaction_category_religion
-	desc = remove_designated_gruesome_festivals_sacrifice.interaction_desc
-
-	is_shown = {
-		scope:actor = { 
-			is_ai = no
-			zz_valyria_is_mage = yes  
-		}
-		scope:recipient = { has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier }
-	}
-
-	is_valid_showing_failures_only = {
-	}
-
-	on_accept = {
-		scope:recipient = {
-			save_scope_value_as = {
-				name = removal_type
-				value = flag:manual
-			}
-			designate_gruesome_festivals_sacrifice_modifier_removed_effect ={ DESIGNATOR = scope:actor }
-		}
-
-		# If we're a clan this interaction affects unity
-		add_clan_unity_interaction_effect = {
-			CHARACTER = scope:actor
-			TARGET = scope:recipient
-			VALUE = medium_unity_gain
-			DESC = clan_unity_human_sacrifice_removal.desc
-			REVERSE_NON_HOUSE_TARGET = no
-		}
-	}
-
-	auto_accept = yes
-}
-## Blood Magic
-
 
 
