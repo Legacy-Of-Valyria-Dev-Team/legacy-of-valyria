@@ -1,0 +1,211 @@
+types scroll_making {
+
+	type zz_valyria_magic_scroll_making_window_open = window {
+		name = "zz_valyria_magic_scroll_making_window_open"
+		allow_outside = yes
+		movable = yes
+		parentanchor = center
+		size = { 0 0 }
+
+		visible = "[And( Not( IsPauseMenuShown ), And(Or(Not(IsObserver), GetPlayer.IsValid), IsDefaultGUIMode))]"
+
+		zz_valyria_magic_scroll_making = {}
+	}
+
+	type zz_valyria_magic_scroll_making = window {
+		name = "zz_valyria_magic_scroll_making"
+		layer = top
+		using = Window_Background
+		size = { 1100 800 }
+		datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_making')]"
+		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+
+		state = {
+			name = _show
+			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+		}
+		margin_widget = {
+			size = { 100% 100% }
+			margin = { 0 26 }
+			margin_right = 13
+
+			widget = {
+				size = { 100% 100% }
+
+				vbox = {
+					using = Window_Margins
+
+					header_pattern = {
+						layoutpolicy_horizontal = expanding
+
+						blockoverride "header_text"
+						{
+							raw_text = "Scribe Scroll"
+						}
+
+						blockoverride "button_close"
+						{
+							onclick = "[GetScriptedGui('zz_valyria_magic_scroll_making_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						}
+					}
+					hbox = { 
+						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+							max_width = 300
+							text_single = {
+								raw_text = "Mages"
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 00 30 } }
+							scrollbox = {
+								name = "mages_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 250
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datamodel = "[GetPlayer.MakeScope.GetList('mage_list')]"
+									
+										item = {
+											button_standard = {
+												size = { 200 120 }
+												align = left
+												datacontext = "[Scope.GetCharacter]"
+												layoutpolicy_vertical = expanding
+												layoutpolicy_horizontal = growing
+												down = "[GetScriptedGui('zz_valyria_magic_scroll_maker').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_scroll_maker', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_scroll_maker').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_scroll_maker', Character.MakeScope ).End )]"
+												vbox = {
+													layoutpolicy_horizontal = expanding
+													layoutpolicy_vertical = expanding
+													margin_right = 4
+													spacing = 5
+													portrait_head_small = {}
+													text_single = {
+														text = "[Character.GetNameNoTooltip]"
+													}
+													spacer = { size = { 00 15 } }
+												}
+											}								 
+										}
+									}
+								}
+							}
+							expand = {}
+						}
+						vbox = {
+							layoutpolicy_horizontal = growing 
+							layoutpolicy_vertical = growing
+							max_width = 300
+							text_single = {
+								raw_text = "Scroll Scriber Stats"
+								fontsize = 24
+								align = top
+							}
+							spacer = { size = { 00 30 } }
+							text_single = {
+								raw_text = "Scroll Scribe"
+								fontsize = 18
+								align = left
+							}
+							spacer = { size = { 00 15 } }
+
+							vbox = {
+								size = { 200 120 }
+								datacontext = "[GetPlayer.MakeScope.Var('zz_scroll_maker').Char]"
+								portrait_head_small = {}
+								text_single = {
+									align = left
+									text = "[Character.GetNameNoTooltip]"
+								}
+							}
+							spacer = { size = { 00 5 } }
+							flowcontainer = {
+								text_single = {
+									align = left
+									raw_text = "Higher Mysteries - [Scope.Char.MakeScope.Var('zz_scroll_maker').ScriptValue('zz_valyria_higher_mysteries_stat_gui')|0]"
+								}
+							}
+							expand = {}
+						}
+						vbox = {
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							max_width = 500
+							text_single = {
+								text = game_concept_zz_mystery
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 0 30 } }
+							scrollbox = {
+								name = "spell_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 450
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_spell_list')]"
+										item = {
+											button_standard = {
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 400 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_making_action_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							spacer = { size = { 0 10 } }
+							
+							flowcontainer = {
+								text_single = {
+									align = left
+									raw_text = "[GetPlayer.MakeScope.Var('zz_valyria_mystery').CharacterMemory.GetName|U]"
+								}
+							}
+							spacer = { size = { 00 10 } }
+							
+							button_standard = {
+								text_single = {
+									minimumsize = { 200 38 }
+									margin = { 15 15 }
+									raw_text = "Scribe Scroll"
+									resizeparent = yes
+									align = center|nobaseline
+									default_format = "#low"								
+								}
+								datacontext = "[GetScriptedGui('zz_valyria_scroll_make')]"
+								onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+							}
+							expand = {}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_scroll_making_window_open = {}

@@ -1,0 +1,133 @@
+﻿
+manage_protector_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 36
+
+	is_shown = {
+		#has_game_rule = debug_mode_on
+		OR = {
+			has_government = freehold_government
+			can_have_kingsguard = yes
+		}
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		root = {
+			remove_variable = zz_protecter_protected
+			remove_variable = zz_protect_protector
+			remove_variable = zz_protector_assigner
+
+			save_scope_as = zz_protector_assigner
+			every_court_position_holder = {
+				type = zz_valyria_champion_of_the_fourteen_court_position
+				root = {
+					add_to_variable_list = {
+						name = protector_list
+						target = prev
+					}
+				}
+			}
+			every_court_position_holder = {
+				type = zz_kingsguard_lord_commander_court_position
+				root = {
+					add_to_variable_list = {
+						name = protector_list
+						target = prev
+					}
+				}
+			}
+			every_court_position_holder = {
+				type = zz_kingsguard_court_position
+				root = {
+					add_to_variable_list = {
+						name = protector_list
+						target = prev
+					}
+				}
+			}
+			ordered_in_list = {
+				variable = protector_list
+				position = 0
+				order_by = prowess
+				save_scope_as = zz_protect_protector
+			}
+			root = {
+				add_to_variable_list = {
+					name = protectee_list
+					target = this
+				}
+			}
+
+			every_consort = {
+				limit = {
+					NOR = { 
+						is_target_in_variable_list = {
+							name = protector_list
+							target = this 
+						} 
+						is_target_in_variable_list = {
+							name = protectee_list
+							target = this 
+						} 
+					}
+				}
+				root = {
+					add_to_variable_list = {
+						name = protectee_list
+						target = prev
+					}
+				}
+			}
+			every_close_or_extended_family_member = {
+				limit = {
+					NOR = { 
+						is_target_in_variable_list = {
+							name = protector_list
+							target = this 
+						} 
+						is_target_in_variable_list = {
+							name = protectee_list
+							target = this 
+						} 
+					}
+				}
+				root = {
+					add_to_variable_list = {
+						name = protectee_list
+						target = prev
+					}
+				}
+			}
+			set_variable = {
+				name = zz_protector_assigner
+				value = scope:zz_protector_assigner
+			}			
+			set_variable = {
+				name = zz_protect_protector
+				value = scope:zz_protect_protector
+			}	
+			
+		}
+	}
+
+	ai_potential = {
+		always = no 
+	}
+}

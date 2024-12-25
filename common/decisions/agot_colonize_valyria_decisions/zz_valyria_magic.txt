@@ -241,3 +241,233 @@ restore_valyrian_freehold_decision = {
 		base = 100
 	}
 }
+
+
+order_scroll_crafting_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 36
+
+	is_shown = {
+		#has_game_rule = debug_mode_on
+		has_government = freehold_government
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		root = {
+			save_scope_as = actor
+			save_scope_as = zz_magic_user
+		}
+		scope:actor = {
+			remove_variable = zz_scroll_maker
+			remove_variable = zz_magic_user
+
+			set_variable = {
+				name = zz_magic_user
+				value = scope:zz_magic_user
+			}
+			if = { 
+				limit = {
+					has_trait = zz_magister
+				}
+				scope:actor = {
+					add_to_variable_list = {
+						name = mage_list
+						target = prev
+					}
+				}
+			}
+			every_living_mage = {
+				limit = {
+					liege_or_court_owner ?= scope:actor
+				}
+				scope:actor = {
+					add_to_variable_list = {
+						name = mage_list
+						target = prev
+					}
+				}
+			}
+			ordered_in_list = {
+				variable = mage_list
+				position = 0
+				order_by = learning
+				save_scope_as = zz_scroll_maker
+			}
+			set_variable = {
+				name = zz_scroll_maker
+				value = scope:zz_scroll_maker
+			}
+			clear_variable_list ?= zz_valyria_spell_list
+
+			scope:zz_scroll_maker ?= {
+				every_memory = {
+					limit = { 
+						has_memory_category = magic
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_spell_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_valyria_mystery }
+							}
+							set_variable = { name = zz_valyria_mystery value = prev }
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+manage_magic_school_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 72
+
+	is_shown = {
+		#has_game_rule = debug_mode_on
+		has_trait = zz_magister
+		is_ai = no
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		trigger_event = zz_valyria_magic_management.001
+	}
+}
+
+manage_grant_nickname_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 72
+
+	is_shown = {
+		#has_game_rule = debug_mode_on
+		has_trait = zz_magister
+		is_ai = no
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		trigger_event = zz_valyria_magic_management.003
+	}
+}
+
+
+manage_dragon_rider_lifestyle_training_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 72
+
+	is_shown = {
+		#has_game_rule = debug_mode_on
+		has_government = freehold_government
+		is_ai = no 
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		trigger_event = zz_valyria_magic_management.002
+	}
+}
+
+make_dummy title_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 72
+
+	is_shown = {
+		has_game_rule = debug_mode_on
+		has_government = freehold_government
+		is_ai = no 
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		create_dynamic_title = {
+			tier = duchy
+			name = NEW_CREATED_TITLE_NAME
+		}
+	}
+}

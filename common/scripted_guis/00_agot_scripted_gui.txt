@@ -1,0 +1,3118 @@
+﻿# Updates coa after editor
+
+agot_name = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			is_ruler = yes
+			primary_title.tier >= tier_barony
+			any_spouse = {
+				is_ruler = yes
+			}
+			any_spouse = {
+				primary_title.tier >= tier_barony
+			}
+
+			father ?= {
+				primary_title.tier >= tier_kingdom
+				primary_title.holder ?= {
+					exists = yes
+					NOR = {
+						has_government = free_city_government
+						has_government = administrative_government
+						has_government = landless_adventurer_government
+					}
+				}
+				NOR = {
+					has_government = free_city_government
+					has_government = administrative_government
+					has_government = landless_adventurer_government
+				}
+			}
+			AND = {
+				mother ?= {
+					primary_title.tier >= tier_kingdom
+					primary_title.holder ?= {
+						exists = yes
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+					NOR = {
+						has_government = free_city_government
+						has_government = administrative_government
+						has_government = landless_adventurer_government
+					}
+				}
+				trigger_if = { #For when a husband is landless
+					limit = {
+						father ?= {
+							primary_title.tier >= tier_barony
+						}
+					}
+					father ?= {
+						primary_title.holder ?= {
+							exists = yes
+							NOR = {
+								has_government = free_city_government
+								has_government = administrative_government
+								has_government = landless_adventurer_government
+								primary_title.tier < tier_kingdom
+							}
+						}
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+				}
+			}
+			is_lowborn = yes
+		}
+		NOR = {
+			has_title = title:k_the_most_devout
+			AND = {
+				has_trait = silent_sister
+				is_ruler = no
+			}
+			AND = {
+				OR = {
+					has_trait = maester
+					has_trait = maester_historical
+				}
+				is_ruler = no
+			}
+			AND = {
+				OR = {
+					has_trait = bastard
+					OR = {
+						has_inactive_trait = surname_flowers
+						has_inactive_trait = surname_hill
+						has_inactive_trait = surname_pyke
+						has_inactive_trait = surname_rivers
+						has_inactive_trait = surname_sand
+						has_inactive_trait = surname_snow
+						has_inactive_trait = surname_stone
+						has_inactive_trait = surname_storm
+						has_inactive_trait = surname_waters
+					}
+				}
+				NOT = { has_trait = silent_sister }
+				OR = {
+					has_trait = knight
+					AND = {
+						has_trait_xp = {
+							trait = squire
+							track = knight
+							value >= 100
+						}
+						OR = {
+							age >= 16 #You are at least 16
+							AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+								age < 16
+								age >= 12
+								#Youngest knight was Daemon Blackfyre
+								prowess >= extremely_high_skill_rating
+							}
+						}
+					}
+				}
+				NOR = {
+					has_trait = maester #you shouldn't be able to knight maesters anyway but just in case
+					has_trait = maester_historical
+				}
+				NOT = { has_court_position = zz_kingsguard_lord_commander_court_position}
+				NOT = { any_spouse = { is_ruler = yes } }
+				NOR = {
+					is_ruler = yes
+					primary_title.tier >= tier_barony
+				}
+			}
+			AND = {
+				OR = {
+					has_trait = knight
+					AND = {
+						has_trait_xp = {
+							trait = squire
+							track = knight
+							value >= 100
+						}
+						OR = {
+							age >= 16 #You are at least 16
+							AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+								age < 16
+								age >= 12
+								#Youngest knight was Daemon Blackfyre
+								prowess >= extremely_high_skill_rating
+							}
+						}
+					}
+				}
+
+				NOR = {
+					has_trait = maester #you shouldn't be able to knight maesters anyway but just in case
+					has_trait = maester_historical
+				}
+				NOT = {
+					has_court_position = zz_kingsguard_lord_commander_court_position
+					primary_title = title:d_kingsguard
+				}
+				NOT = { any_spouse = { is_ruler = yes } }
+				NOR = {
+					has_trait = bastard
+					OR = {
+						has_inactive_trait = surname_flowers
+						has_inactive_trait = surname_hill
+						has_inactive_trait = surname_pyke
+						has_inactive_trait = surname_rivers
+						has_inactive_trait = surname_sand
+						has_inactive_trait = surname_snow
+						has_inactive_trait = surname_stone
+						has_inactive_trait = surname_storm
+						has_inactive_trait = surname_waters
+					}
+				}
+				NOT = { has_trait = silent_sister }
+				NOR = {
+					is_ruler = yes
+					primary_title.tier >= tier_barony
+					father ?= {
+						primary_title.tier >= tier_kingdom
+						OR = {
+							AND = {
+								primary_title.holder ?= {
+									exists = yes
+								}
+								primary_title = title:k_dragonstone
+								dynasty ?= dynasty:dynn_Targaryen
+								agot_is_independent_ruler = no
+							}
+							primary_title.holder ?= {
+								exists = yes
+								OR = {
+									agot_is_independent_ruler = yes
+									vassal_contract_has_flag = has_palatinate_contract
+								}
+								NOR = {
+									has_government = free_city_government
+									has_government = administrative_government
+									has_government = landless_adventurer_government
+								}
+							}
+						}
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+					mother ?= {
+						primary_title.tier >= tier_kingdom
+						OR = {
+							AND = {
+								primary_title.holder ?= {
+									exists = yes
+								}
+								primary_title = title:k_dragonstone
+								dynasty ?= dynasty:dynn_Targaryen
+								agot_is_independent_ruler = no
+							}
+							primary_title.holder ?= {
+								exists = yes
+								OR = {
+									agot_is_independent_ruler = yes
+									vassal_contract_has_flag = has_palatinate_contract
+								}
+								NOR = {
+									has_government = free_city_government
+									has_government = administrative_government
+									has_government = landless_adventurer_government
+								}
+							}
+						}
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+				}
+			}
+			AND = {
+				OR = {
+					has_trait = bastard
+					OR = {
+						has_inactive_trait = surname_flowers
+						has_inactive_trait = surname_hill
+						has_inactive_trait = surname_pyke
+						has_inactive_trait = surname_rivers
+						has_inactive_trait = surname_sand
+						has_inactive_trait = surname_snow
+						has_inactive_trait = surname_stone
+						has_inactive_trait = surname_storm
+						has_inactive_trait = surname_waters
+					}
+				}
+				NOR = {
+					is_ruler = yes
+					primary_title.tier >= tier_barony
+				}
+				NOT = { has_court_position = zz_kingsguard_lord_commander_court_position}
+				NOT = { any_spouse = { is_ruler = yes } }
+				NOT = { has_trait = silent_sister }
+				NOT = {
+					OR = {
+						has_trait = knight
+						AND = {
+							has_trait_xp = {
+								trait = squire
+								track = knight
+								value >= 100
+							}
+							OR = {
+								age >= 16 #You are at least 16
+								AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+									age < 16
+									age >= 12
+									#Youngest knight was Daemon Blackfyre
+									prowess >= extremely_high_skill_rating
+								}
+							}
+						}
+					}
+					OR = {
+						has_trait = maester
+						has_trait = maester_historical
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_name_unlanded = {
+	scope = character
+
+	is_shown = {
+		NOR = {
+			is_ruler = yes
+			primary_title.tier >= tier_barony
+			any_spouse = {
+				is_ruler = yes
+			}
+			any_spouse = {
+				primary_title.tier >= tier_barony
+			}
+
+			father ?= {
+				primary_title.tier >= tier_kingdom
+				primary_title.holder ?= {
+					exists = yes
+					NOR = {
+						has_government = free_city_government
+						has_government = administrative_government
+						has_government = landless_adventurer_government
+					}
+				}
+				NOR = {
+					has_government = free_city_government
+					has_government = administrative_government
+					has_government = landless_adventurer_government
+				}
+			}
+			AND = {
+				mother ?= {
+					primary_title.tier >= tier_kingdom
+					primary_title.holder ?= {
+						exists = yes
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+					NOR = {
+						has_government = free_city_government
+						has_government = administrative_government
+						has_government = landless_adventurer_government
+					}
+				}
+				trigger_if = { #For when a husband is landless
+					limit = {
+						father ?= {
+							primary_title.tier >= tier_barony
+						}
+					}
+					father ?= {
+						primary_title.holder ?= {
+							exists = yes
+							NOR = {
+								has_government = free_city_government
+								has_government = administrative_government
+								has_government = landless_adventurer_government
+								primary_title.tier < tier_kingdom
+							}
+						}
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+				}
+			}
+			is_lowborn = yes
+		}
+		NOR = {
+			has_title = title:k_the_most_devout
+			AND = {
+				has_trait = silent_sister
+				is_ruler = no
+			}
+			AND = {
+				OR = {
+					has_trait = maester
+					has_trait = maester_historical
+				}
+				is_ruler = no
+			}
+			AND = {
+				OR = {
+					has_trait = bastard
+					OR = {
+						has_inactive_trait = surname_flowers
+						has_inactive_trait = surname_hill
+						has_inactive_trait = surname_pyke
+						has_inactive_trait = surname_rivers
+						has_inactive_trait = surname_sand
+						has_inactive_trait = surname_snow
+						has_inactive_trait = surname_stone
+						has_inactive_trait = surname_storm
+						has_inactive_trait = surname_waters
+					}
+				}
+				NOT = { has_trait = silent_sister }
+				OR = {
+					has_trait = knight
+					AND = {
+						has_trait_xp = {
+							trait = squire
+							track = knight
+							value >= 100
+						}
+						OR = {
+							age >= 16 #You are at least 16
+							AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+								age < 16
+								age >= 12
+								#Youngest knight was Daemon Blackfyre
+								prowess >= extremely_high_skill_rating
+							}
+						}
+					}
+				}
+				NOR = {
+					has_trait = maester #you shouldn't be able to knight maesters anyway but just in case
+					has_trait = maester_historical
+				}
+				NOT = { has_court_position = zz_kingsguard_lord_commander_court_position}
+				NOT = { any_spouse = { is_ruler = yes } }
+				NOR = {
+					is_ruler = yes
+					primary_title.tier >= tier_barony
+				}
+			}
+			AND = {
+				OR = {
+					has_trait = knight
+					AND = {
+						has_trait_xp = {
+							trait = squire
+							track = knight
+							value >= 100
+						}
+						OR = {
+							age >= 16 #You are at least 16
+							AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+								age < 16
+								age >= 12
+								#Youngest knight was Daemon Blackfyre
+								prowess >= extremely_high_skill_rating
+							}
+						}
+					}
+				}
+
+				NOR = {
+					has_trait = maester #you shouldn't be able to knight maesters anyway but just in case
+					has_trait = maester_historical
+				}
+				NOT = {
+					has_court_position = zz_kingsguard_lord_commander_court_position
+					primary_title = title:d_kingsguard
+				}
+				NOT = { any_spouse = { is_ruler = yes } }
+				NOR = {
+					has_trait = bastard
+					OR = {
+						has_inactive_trait = surname_flowers
+						has_inactive_trait = surname_hill
+						has_inactive_trait = surname_pyke
+						has_inactive_trait = surname_rivers
+						has_inactive_trait = surname_sand
+						has_inactive_trait = surname_snow
+						has_inactive_trait = surname_stone
+						has_inactive_trait = surname_storm
+						has_inactive_trait = surname_waters
+					}
+				}
+				NOT = { has_trait = silent_sister }
+				NOR = {
+					is_ruler = yes
+					primary_title.tier >= tier_barony
+				}
+			}
+			AND = {
+				OR = {
+					has_trait = bastard
+					OR = {
+						has_inactive_trait = surname_flowers
+						has_inactive_trait = surname_hill
+						has_inactive_trait = surname_pyke
+						has_inactive_trait = surname_rivers
+						has_inactive_trait = surname_sand
+						has_inactive_trait = surname_snow
+						has_inactive_trait = surname_stone
+						has_inactive_trait = surname_storm
+						has_inactive_trait = surname_waters
+					}
+				}
+				NOR = {
+					is_ruler = yes
+					primary_title.tier >= tier_barony
+				}
+				NOT = { has_court_position = zz_kingsguard_lord_commander_court_position}
+				NOT = { any_spouse = { is_ruler = yes } }
+				NOT = { has_trait = silent_sister }
+				NOT = {
+					OR = {
+						has_trait = knight
+						AND = {
+							has_trait_xp = {
+								trait = squire
+								track = knight
+								value >= 100
+							}
+							OR = {
+								age >= 16 #You are at least 16
+								AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+									age < 16
+									age >= 12
+									#Youngest knight was Daemon Blackfyre
+									prowess >= extremely_high_skill_rating
+								}
+							}
+						}
+					}
+					OR = {
+						has_trait = maester
+						has_trait = maester_historical
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_ser_knight = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			has_trait = knight
+			AND = {
+				has_trait_xp = {
+					trait = squire
+					track = knight
+					value >= 100
+				}
+				OR = {
+					age >= 16 #You are at least 16
+					AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+						age < 16
+						age >= 12
+						#Youngest knight was Daemon Blackfyre
+						prowess >= extremely_high_skill_rating
+					}
+				}
+			}
+		}
+
+		NOR = {
+			has_trait = maester #you shouldn't be able to knight maesters anyway but just in case
+			has_trait = maester_historical
+		}
+		NOT = {
+			has_court_position = zz_kingsguard_lord_commander_court_position
+			primary_title = title:d_kingsguard
+		}
+		NOT = { any_spouse = { is_ruler = yes } }
+		NOR = {
+			has_trait = bastard
+			OR = {
+				has_inactive_trait = surname_flowers
+				has_inactive_trait = surname_hill
+				has_inactive_trait = surname_pyke
+				has_inactive_trait = surname_rivers
+				has_inactive_trait = surname_sand
+				has_inactive_trait = surname_snow
+				has_inactive_trait = surname_stone
+				has_inactive_trait = surname_storm
+				has_inactive_trait = surname_waters
+			}
+		}
+		NOT = { has_trait = silent_sister }
+		NOR = {
+			is_ruler = yes
+			primary_title.tier >= tier_barony
+		}
+
+		#Princes/Princesses
+		NOR = {
+			father ?= {
+				primary_title.tier >= tier_kingdom
+				OR = {
+					AND = {
+						primary_title.holder ?= {
+							exists = yes
+						}
+						primary_title = title:k_dragonstone
+						dynasty ?= dynasty:dynn_Targaryen
+						agot_is_independent_ruler = no
+					}
+					primary_title.holder ?= {
+						exists = yes
+						OR = {
+							agot_is_independent_ruler = yes
+							vassal_contract_has_flag = has_palatinate_contract
+						}
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+				}
+				NOR = {
+					has_government = free_city_government
+					has_government = administrative_government
+					has_government = landless_adventurer_government
+				}
+			}
+			mother ?= {
+				primary_title.tier >= tier_kingdom
+				OR = {
+					AND = {
+						primary_title.holder ?= {
+							exists = yes
+						}
+						primary_title = title:k_dragonstone
+						dynasty ?= dynasty:dynn_Targaryen
+					}
+					primary_title.holder ?= {
+						exists = yes
+						OR = {
+							agot_is_independent_ruler = yes
+							vassal_contract_has_flag = has_palatinate_contract
+						}
+						NOR = {
+							has_government = free_city_government
+							has_government = administrative_government
+							has_government = landless_adventurer_government
+						}
+					}
+				}
+				NOR = {
+					has_government = free_city_government
+					has_government = administrative_government
+					has_government = landless_adventurer_government
+				}
+			}
+		}
+	}
+}
+
+agot_name_bastard = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			has_trait = bastard
+			OR = {
+				has_inactive_trait = surname_flowers
+				has_inactive_trait = surname_hill
+				has_inactive_trait = surname_pyke
+				has_inactive_trait = surname_rivers
+				has_inactive_trait = surname_sand
+				has_inactive_trait = surname_snow
+				has_inactive_trait = surname_stone
+				has_inactive_trait = surname_storm
+				has_inactive_trait = surname_waters
+			}
+		}
+		NOR = {
+			is_ruler = yes
+			primary_title.tier >= tier_barony
+		}
+		NOT = { has_court_position = zz_kingsguard_lord_commander_court_position}
+		NOT = { any_spouse = { is_ruler = yes } }
+		NOT = { has_trait = silent_sister }
+		NOT = {
+			OR = {
+				has_trait = knight
+				AND = {
+					has_trait_xp = {
+						trait = squire
+						track = knight
+						value >= 100
+					}
+					OR = {
+						age >= 16 #You are at least 16
+						AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+							age < 16
+							age >= 12
+							#Youngest knight was Daemon Blackfyre
+							prowess >= extremely_high_skill_rating
+						}
+					}
+				}
+			}
+			OR = {
+				has_trait = maester
+				has_trait = maester_historical
+			}
+		}
+	}
+}
+
+agot_ser_knight_bastard = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			has_trait = bastard
+			OR = {
+				has_inactive_trait = surname_flowers
+				has_inactive_trait = surname_hill
+				has_inactive_trait = surname_pyke
+				has_inactive_trait = surname_rivers
+				has_inactive_trait = surname_sand
+				has_inactive_trait = surname_snow
+				has_inactive_trait = surname_stone
+				has_inactive_trait = surname_storm
+				has_inactive_trait = surname_waters
+			}
+		}
+		NOT = { has_trait = silent_sister }
+		OR = {
+			has_trait = knight
+			AND = {
+				has_trait_xp = {
+					trait = squire
+					track = knight
+					value >= 100
+				}
+				OR = {
+					age >= 16 #You are at least 16
+					AND = { #You are 12 or older and either: your prowess is >= 20; or, your prowess is >=15 and you are a formiddable fighter
+						age < 16
+						age >= 12
+						#Youngest knight was Daemon Blackfyre
+						prowess >= extremely_high_skill_rating
+					}
+				}
+			}
+		}
+		NOR = {
+			has_trait = maester #you shouldn't be able to knight maesters anyway but just in case
+			has_trait = maester_historical
+		}
+		NOT = { has_court_position = zz_kingsguard_lord_commander_court_position}
+		NOT = { any_spouse = { is_ruler = yes } }
+		NOR = {
+			is_ruler = yes
+			primary_title.tier >= tier_barony
+		}
+	}
+}
+
+agot_maester = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			has_trait = maester
+			has_trait = maester_historical
+		}
+		is_ruler = no
+	}
+}
+
+agot_silent_sister = {
+	scope = character
+
+	is_shown = {
+		has_trait = silent_sister
+		is_ruler = no
+	}
+}
+
+agot_high_septon = {
+	scope = character
+
+	is_shown = {
+		has_title = title:k_the_most_devout
+	}
+}
+
+agot_high_septon_tt = {
+	scope = character
+
+	is_shown = {
+		has_title = title:k_the_most_devout
+	}
+}
+
+agot_not_high_septon_tt = {
+	scope = character
+
+	is_shown = {
+		NOT = { has_title = title:k_the_most_devout }
+	}
+}
+
+agot_same_culture_noble = {
+	scope = title
+
+	is_shown = {
+		OR = {
+			has_game_rule = agot_hv_conversion_unrestricted
+			NOT = { holder.culture = culture:high_valyrian }
+			AND = {
+				title_province = { geographical_region = world_westeros }
+				NOT = { has_game_rule = agot_hv_conversion_unrestricted }
+				NAND = {
+					holder.culture = culture:high_valyrian
+					culture = culture:westerosi_valyrian
+				}
+			}
+			AND = {
+				NOT = {
+					title_province = { geographical_region = world_westeros }
+				}
+				NOT = { has_game_rule = agot_hv_conversion_unrestricted }
+				NAND = {
+					holder.culture = culture:high_valyrian
+					culture = culture:essosi_valyrian
+				}
+			}
+		}
+	}
+}
+
+agot_gui_update_coa_house = {
+	scope = character
+
+	is_valid = {
+	}
+
+	effect = {
+		scope:edit_scope = {
+			every_house_member = {
+				limit = { is_ruler = yes }
+				trigger_event = { id = agot_coa_events.0001 days = 1 }
+			}
+		}
+	}
+}
+
+agot_activity_window = {
+	scope = character
+
+	#is_valid = {
+	#}
+
+	#effect = {
+	#}
+}
+
+agot_wall_fall = {
+	scope = character
+
+	is_valid = {
+	}
+
+	effect = {
+		title:b_castle_black.title_province = {
+			if = {
+				limit = {
+					has_variable = agot_wall_is_normal
+				}
+				set_variable = agot_wall_has_fallen_middle
+			}
+			remove_building = special_the_wall
+		}
+		title:b_castle_black.title_province = {
+			add_building = special_the_wall_damaged
+		}
+	}
+}
+
+agot_can_have_paramour = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			agot_can_have_paramour = yes
+			has_trait = paramour
+		}
+	}
+}
+
+agot_can_have_knight = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			AND = {
+				is_eligible_for_agot_squirehood_trigger = yes
+				NOT = {
+					culture = { agot_is_wildling_culture = yes }
+				}
+			}
+			AND = {
+				has_trait = squire
+				has_trait_xp = {
+					trait = squire
+					track = knight
+					value < 100
+				}
+			}
+		}
+	}
+}
+
+agot_can_have_squire = {
+	scope = character
+
+	is_shown = {
+		is_agot_knight_trigger = yes
+	}
+}
+
+agot_can_have_bodyguard = {
+	scope = character
+
+	is_shown = {
+		dynasty ?= {
+			any_dynasty_member = {
+				is_landed = yes
+				can_have_kingsguard = yes
+			}
+		}
+		any_relation = {
+			type = bodyguard
+			is_alive = yes
+		}
+	}
+}
+
+agot_can_have_bodyguard_target = {
+	scope = character
+
+	is_shown = {
+		has_trait = kingsguard
+	}
+}
+
+agot_end_wildfire = {
+	scope = character
+
+	effect = {
+		title:b_hookmarket.title_province = {
+			if = {
+				limit = {
+					has_building = special_kings_landing_hoodmarket_destroyed
+				}
+				remove_building = special_kings_landing_hoodmarket_destroyed
+			}
+			if = {
+				limit = {
+					NOT = {
+						OR = {
+							has_building = special_kings_landing_hoodmarket
+							has_building = special_kings_landing_hoodmarket_destroyed
+						}
+					}
+				}
+				add_building = special_kings_landing_hoodmarket
+			}
+		}
+	}
+}
+
+agot_has_personal_coa = {
+	scope = character
+
+	is_shown = {
+		OR = {
+			agot_can_have_personal_arms_trigger = yes
+			any_relation = {
+				type = agot_personal_coa_slave
+			}
+		}
+	}
+}
+agot_send_away_coa_slave = {
+	scope = character
+	is_valid = {
+		has_character_flag = has_personal_coa
+	}
+	effect = {
+		random_relation = {
+			type = agot_personal_coa_slave
+			save_scope_as = exiled_dummy
+		}
+		trigger_event = { id = agot_events_personal_coat_of_arms.0001 days = 1 }
+	}
+}
+agot_summon_personal_coa_slave = {
+	scope = character
+	is_valid = {}
+	effect = {
+		random_relation = {
+			type = agot_personal_coa_slave
+			save_scope_as = exiled_dummy
+		}
+		if = {
+			limit = {
+				NOT = { scope:exiled_dummy = { is_courtier_of = root } }
+			}
+			add_courtier = scope:exiled_dummy
+			trigger_event = { id = agot_events_personal_coat_of_arms.0001 days = 7 }
+		}
+	}
+}
+# Selecting Artifact
+agot_artifact_selecting = {
+	scope = character
+
+	is_valid = {
+	}
+
+	is_shown = {
+		var:selected_artifact ?= scope:selected_artifact
+	}
+
+	effect = {
+		set_variable = { name = selected_artifact value = scope:selected_artifact }
+	}
+}
+
+# Triggers that Check if the Strong Seed VBOX is appropriate
+agot_strong_seed_hair_selection_is_valid = {
+	scope = character
+
+	is_valid = {}
+	is_shown = {
+		has_variable = custom_strong_seed_hair_selection
+	}
+}
+agot_strong_seed_height_selection_is_valid = {
+	scope = character
+
+	is_valid = {}
+	is_shown = {
+		has_variable = custom_strong_seed_height_selection
+	}
+}
+agot_strong_seed_ears_selection_is_valid = {
+	scope = character
+
+	is_valid = {}
+	is_shown = {
+		has_variable = custom_strong_seed_ears_selection
+	}
+}
+agot_strong_seed_eyes_selection_is_valid = {
+	scope = character
+
+	is_valid = {}
+	is_shown = {
+		has_variable = custom_strong_seed_eyes_selection
+	}
+}
+# Strong Seed Effects that give you traits or whatever
+agot_strong_seed_hair_selection = {
+	scope = character
+	is_valid = {}
+	saved_scopes = {
+		cool_silver_hair
+		cool_neutral_silver_hair
+		neutral_silver_hair
+		silver_blonde_hair
+		silver_gold_hair
+		black_hair
+		light_blonde_hair
+		gold_hair
+		bronze_hair
+		light_red_hair
+		red_hair
+		kissed_by_fire_hair
+		auburn_hair
+		brown_hair
+		dark_brown_hair
+		none
+	}
+	effect = {
+		# cool_silver_hair
+		random_courtier = {
+			limit = {
+				has_character_flag = cc_dummy
+			}
+			save_scope_as = cc_dummy
+		}
+		if = {
+			limit = {
+				scope:cool_silver_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = cool_silver_hair
+					make_trait_inactive = cool_silver_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:cool_silver_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:cool_silver_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = cool_silver_hair
+					remove_trait = cool_silver_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# cool_neutral_silver_hair
+		if = {
+			limit = {
+				scope:cool_neutral_silver_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = cool_neutral_silver_hair
+					make_trait_inactive = cool_neutral_silver_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:cool_neutral_silver_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:cool_neutral_silver_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = cool_neutral_silver_hair
+					remove_trait = cool_neutral_silver_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# neutral_silver_hair
+		if = {
+			limit = {
+				scope:neutral_silver_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = neutral_silver_hair
+					make_trait_inactive = neutral_silver_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:neutral_silver_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:neutral_silver_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = neutral_silver_hair
+					remove_trait = neutral_silver_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# silver blonde hair
+		if = {
+			limit = {
+				scope:silver_blonde_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = silver_blonde_hair
+					make_trait_inactive = silver_blonde_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:silver_blonde_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:silver_blonde_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = silver_blonde_hair
+					remove_trait = silver_blonde_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# silver gold hair
+		if = {
+			limit = {
+				scope:silver_gold_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = silver_gold_hair
+					make_trait_inactive = silver_gold_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:silver_gold_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:silver_gold_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = silver_gold_hair
+					remove_trait = silver_gold_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# black_hair
+		if = {
+			limit = {
+				scope:black_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = black_hair
+					make_trait_inactive = black_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:black_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:black_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = black_hair
+					remove_trait = black_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# light_blonde_hair
+		if = {
+			limit = {
+				scope:light_blonde_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = light_blonde_hair
+					make_trait_inactive = light_blonde_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:light_blonde_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:light_blonde_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = light_blonde_hair
+					remove_trait = light_blonde_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# gold_hair
+		if = {
+			limit = {
+				scope:gold_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = gold_hair
+					make_trait_inactive = gold_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:gold_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:gold_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = gold_hair
+					remove_trait = gold_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# bronze_hair
+		if = {
+			limit = {
+				scope:bronze_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = bronze_hair
+					make_trait_inactive = bronze_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:bronze_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:bronze_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = bronze_hair
+					remove_trait = bronze_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# light_red_hair
+		if = {
+			limit = {
+				scope:light_red_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = light_red_hair
+					make_trait_inactive = light_red_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:light_red_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:light_red_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = light_red_hair
+					remove_trait = light_red_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# red_hair
+		if = {
+			limit = {
+				scope:red_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = red_hair
+					make_trait_inactive = red_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:red_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:red_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = red_hair
+					remove_trait = red_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# kissed_by_fire_hair
+		if = {
+			limit = {
+				scope:kissed_by_fire_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = kissed_by_fire_hair
+					make_trait_inactive = kissed_by_fire_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:kissed_by_fire_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:kissed_by_fire_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = kissed_by_fire_hair
+					remove_trait = kissed_by_fire_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# auburn_hair
+		if = {
+			limit = {
+				scope:auburn_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = auburn_hair
+					make_trait_inactive = auburn_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:auburn_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:auburn_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = auburn_hair
+					remove_trait = auburn_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# brown_hair
+		if = {
+			limit = {
+				scope:brown_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = brown_hair
+					make_trait_inactive = brown_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:brown_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:brown_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = brown_hair
+					remove_trait = brown_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# dark_brown_hair
+		if = {
+			limit = {
+				scope:dark_brown_hair ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+					#add_trait = dark_brown_hair
+					make_trait_inactive = dark_brown_hair
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_hair
+						value = flag:dark_brown_hair_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:dark_brown_hair ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = dark_brown_hair
+					remove_trait = dark_brown_hair
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+		# remove all
+		if = {
+			limit = {
+				scope:none ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_hair_selection = yes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_hair }
+			}
+		}
+	}
+}
+agot_strong_seed_height_selection = {
+	scope = character
+	is_valid = {}
+	saved_scopes = {
+		tol
+		smol_tol
+		none
+	}
+	effect = {
+		random_courtier = {
+			limit = {
+				has_character_flag = cc_dummy
+			}
+			save_scope_as = cc_dummy
+		}
+		# Tol
+		if = {
+			limit = {
+				scope:tol ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_height = yes
+					make_trait_inactive = tol
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_height
+						value = flag:tol_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:tol ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = tol
+					remove_trait = tol
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_height }
+			}
+		}
+		# Smol Tol
+		if = {
+			limit = {
+				scope:smol_tol ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_height = yes
+					make_trait_inactive = smol_tol
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_height
+						value = flag:smol_tol_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:smol_tol ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = smol_tol
+					remove_trait = smol_tol
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_height }
+			}
+		}
+		# remove all
+		if = {
+			limit = {
+				scope:none ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_height = yes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_height }
+			}
+		}
+	}
+}
+agot_strong_seed_ears_selection = {
+	scope = character
+	is_valid = {}
+	saved_scopes = {
+		dumbo_ears
+		none
+	}
+	effect = {
+		random_courtier = {
+			limit = {
+				has_character_flag = cc_dummy
+			}
+			save_scope_as = cc_dummy
+		}
+		# dumbo_ears
+		if = {
+			limit = {
+				scope:dumbo_ears ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = { make_trait_inactive = dumbo_ears }
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_ears
+						value = flag:dumbo_ears_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:dumbo_ears ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = dumbo_ears
+					remove_trait = dumbo_ears
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_ears }
+			}
+		}
+		# remove all
+		if = {
+			limit = {
+				scope:none ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = { remove_all_ears = yes }
+				dynasty = { remove_variable ?= custom_strong_seed_ears }
+			}
+		}
+	}
+}
+agot_strong_seed_eyes_selection = {
+	scope = character
+	is_valid = {}
+	saved_scopes = {
+		light_blue_eyes
+		blue_eyes
+		midnight_eyes
+		seaglass_eyes
+		seafoam_eyes
+		emerald_eyes
+		grey_eyes
+		gold_eyes
+		light_brown_eyes
+		brown_eyes
+		black_eyes
+		purple_eyes_1
+		purple_eyes_2
+		purple_eyes_3
+		purple_eyes_4
+		purple_eyes_5
+		purple_eyes_6
+		purple_eyes_7
+		purple_eyes_8
+		purple_eyes_9
+		purple_eyes_10
+		purple_eyes_11
+		purple_eyes_12
+		purple_eyes_13
+		purple_eyes_14
+		purple_eyes_15
+		purple_eyes_16
+		none
+	}
+	effect = {
+		random_courtier = {
+			limit = {
+				has_character_flag = cc_dummy
+			}
+			save_scope_as = cc_dummy
+		}
+		# light_blue_eyes
+		if = {
+			limit = {
+				scope:light_blue_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = light_blue_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:light_blue_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:light_blue_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = light_blue_eyes
+					remove_trait = light_blue_eyes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_eyes }
+			}
+		}
+		# blue_eyes
+		if = {
+			limit = {
+				scope:blue_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = blue_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:blue_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:blue_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = blue_eyes
+					remove_trait = blue_eyes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_eyes }
+			}
+		}
+		# midnight_eyes
+		if = {
+			limit = {
+				scope:midnight_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = midnight_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:midnight_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:midnight_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = midnight_eyes
+					remove_trait = midnight_eyes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_eyes }
+			}
+		}
+		# seaglass_eyes
+		if = {
+			limit = {
+				scope:seaglass_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = seaglass_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:seaglass_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:seaglass_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = seaglass_eyes
+					remove_trait = seaglass_eyes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_eyes }
+			}
+		}
+		# seafoam_eyes
+		if = {
+			limit = {
+				scope:seafoam_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = seafoam_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:seafoam_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:seafoam_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = seafoam_eyes
+					remove_trait = seafoam_eyes
+				}
+				dynasty = { remove_variable ?= custom_strong_seed_eyes }
+			}
+		}
+		# emerald_eyes
+		if = {
+			limit = {
+				scope:emerald_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = emerald_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:emerald_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:emerald_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = emerald_eyes
+					remove_trait = emerald_eyes
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# grey_eyes
+		if = {
+			limit = {
+				scope:grey_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = grey_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:grey_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:grey_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = grey_eyes
+					remove_trait = grey_eyes
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# gold_eyes
+		if = {
+			limit = {
+				scope:gold_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = gold_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:gold_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:gold_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = gold_eyes
+					remove_trait = gold_eyes
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# light_brown_eyes
+		if = {
+			limit = {
+				scope:light_brown_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = light_brown_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:light_brown_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:light_brown_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = light_brown_eyes
+					remove_trait = light_brown_eyes
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# brown_eyes
+		if = {
+			limit = {
+				scope:brown_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = brown_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:brown_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:brown_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = brown_eyes
+					remove_trait = brown_eyes
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# black_eyes
+		if = {
+			limit = {
+				scope:black_eyes ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = black_eyes
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:black_eyes_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:black_eyes ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = black_eyes
+					remove_trait = black_eyes
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 1
+		if = {
+			limit = {
+				scope:purple_eyes_1 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_1
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_1_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_1 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_1
+					remove_trait = purple_eyes_1
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 2
+		if = {
+			limit = {
+				scope:purple_eyes_2 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_2
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_2_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_2 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_2
+					remove_trait = purple_eyes_2
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 3
+		if = {
+			limit = {
+				scope:purple_eyes_3 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_3
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_3_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_3 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_3
+					remove_trait = purple_eyes_3
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 4
+		if = {
+			limit = {
+				scope:purple_eyes_4 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_4
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_4_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_4 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_4
+					remove_trait = purple_eyes_4
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 5
+		if = {
+			limit = {
+				scope:purple_eyes_5 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_5
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_5_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_5 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_5
+					remove_trait = purple_eyes_5
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 6
+		if = {
+			limit = {
+				scope:purple_eyes_6 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_6
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_6_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_6 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_6
+					remove_trait = purple_eyes_6
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 7
+		if = {
+			limit = {
+				scope:purple_eyes_7 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_7
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_7_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_7 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_7
+					remove_trait = purple_eyes_7
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 8
+		if = {
+			limit = {
+				scope:purple_eyes_8 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_8
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_8_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_8 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_8
+					remove_trait = purple_eyes_8
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 9
+		if = {
+			limit = {
+				scope:purple_eyes_9 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_9
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_9_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_9 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_9
+					remove_trait = purple_eyes_9
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 10
+		if = {
+			limit = {
+			   scope:purple_eyes_10 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_10
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_10_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_10 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_10
+					remove_trait = purple_eyes_10
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 11
+		if = {
+			limit = {
+				scope:purple_eyes_11 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_11
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_11_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_11 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_11
+					remove_trait = purple_eyes_11
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 12
+		if = {
+			limit = {
+				scope:purple_eyes_12 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_12
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_12_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_12 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_12
+					remove_trait = purple_eyes_12
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 13
+		if = {
+			limit = {
+				scope:purple_eyes_13 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_13
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_13_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_13 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_13
+					remove_trait = purple_eyes_13
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 14
+		if = {
+			limit = {
+				scope:purple_eyes_14 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_14
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_14_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_14 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_14
+					remove_trait = purple_eyes_14
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 15
+		if = {
+			limit = {
+				scope:purple_eyes_15 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_15
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_15_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_15 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_15
+					remove_trait = purple_eyes_15
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# purple_eyes 16
+		if = {
+			limit = {
+				scope:purple_eyes_16 ?= yes
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					remove_all_eyes = yes
+					make_trait_inactive = purple_eyes_16
+				}
+				dynasty = {
+					set_variable = {
+						name = custom_strong_seed_eyes
+						value = flag:purple_eyes_16_custom_strong_seed
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple_eyes_16 ?= no
+			}
+			hidden_effect = {
+				scope:cc_dummy = {
+					make_trait_active = purple_eyes_16
+					remove_trait = purple_eyes_16
+				}
+				dynasty = { remove_variable = custom_strong_seed_eyes }
+			}
+		}
+		# remove all
+		if = {
+			limit = {
+				scope:none ?= yes
+			}
+			scope:cc_dummy = {
+				remove_all_eyes = yes
+			}
+			dynasty = { remove_variable = custom_strong_seed_eyes }
+		}
+	}
+}
+
+agot_loyalist_faction_is_shown = {
+	scope = faction
+
+	is_shown = {
+		faction_is_type = agot_loyalist_faction
+	}
+}
+
+# Heterochromia Effects
+agot_heterochromia_selection_is_valid = {
+	scope = character
+
+	is_valid = {}
+	is_shown = {
+		has_variable = heterochromia_selection
+	}
+}
+
+agot_heterochromia_selection = {
+	scope = character
+	saved_scopes = {
+		green1
+		green2
+		blue1
+		blue2
+		black1
+		black2
+		brown1
+		brown2
+		brown3
+		grey
+		purple1
+		purple2
+		purple3
+		purple4
+		red
+		gold
+		random
+		no_overwrite
+		none
+	}
+	is_valid = {}
+	effect = {
+		random_courtier = {
+			limit = {
+				has_character_flag = cc_dummy
+			}
+			save_scope_as = cc_dummy
+		}
+		if = {
+			limit = {
+				scope:green1 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_green1
+			}
+		}
+		else_if = {
+			limit = {
+				scope:green1 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:green2 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_green2
+			}
+		}
+		else_if = {
+			limit = {
+				scope:green2 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:blue1 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_blue1
+			}
+		}
+		else_if = {
+			limit = {
+				scope:blue1 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:blue2 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_blue2
+			}
+		}
+		else_if = {
+			limit = {
+				scope:blue2 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:black1 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_black1
+			}
+		}
+		else_if = {
+			limit = {
+				scope:black1 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:black2 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_black2
+			}
+		}
+		else_if = {
+			limit = {
+				scope:black2 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:brown1 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_brown1
+			}
+		}
+		else_if = {
+			limit = {
+				scope:brown1 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:brown2 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_brown2
+			}
+		}
+		else_if = {
+			limit = {
+				scope:brown2 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:brown3 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_brown3
+			}
+		}
+		else_if = {
+			limit = {
+				scope:brown3 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:grey ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_grey
+			}
+		}
+		else_if = {
+			limit = {
+				scope:grey ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:purple1 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_purple1
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple1 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:purple2 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_purple2
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple2 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:purple3 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_purple3
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple3 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:purple4 ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_purple4
+			}
+		}
+		else_if = {
+			limit = {
+				scope:purple4 ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:red ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_red
+			}
+		}
+		else_if = {
+			limit = {
+				scope:red ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:gold ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+				make_trait_inactive = heterochromia_gold
+			}
+		}
+		else_if = {
+			limit = {
+				scope:gold ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:no_overwrite ?= yes
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		else_if = {
+			limit = {
+				scope:no_overwrite ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:random ?= yes
+			}
+			hidden_effect = {
+				random_list = {
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_green1
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_green2
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_blue1
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_blue2
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_black1
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_black2
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_brown1
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_brown2
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_brown3
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_grey
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_purple1
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_purple2
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_purple3
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_purple4
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_red
+					}
+					1 = {
+						agot_remove_heterochromia_eyes_effect = yes
+						make_trait_inactive = heterochromia_gold
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				scope:random ?= no
+			}
+			hidden_effect = {
+				agot_remove_heterochromia_eyes_effect = yes
+			}
+		}
+		# remove all
+		if = {
+			limit = {
+				scope:none ?= yes
+			}
+			agot_remove_heterochromia_eyes_effect = yes
+		}
+	}
+}
+
+agot_hide_house = {
+	scope = house
+	is_shown = {
+		any_in_global_list = {
+			variable = dummy_houses_for_hc
+			this = root
+		}
+	}
+}
+
+agot_can_expose = {
+	scope = secret
+
+	is_valid = {
+		secret_owner = {
+			NOT = { has_character_flag = agot_is_at_unknown_place }
+		}
+	}
+}
+
+fake_death_char = {
+	scope = character
+
+	is_shown = {
+		is_alive = yes
+		OR = {
+			has_inactive_trait  = fake_death_ongoing_tbc
+			has_inactive_trait  = fake_death_ongoing_battle
+			has_inactive_trait  = fake_death_ongoing_illness
+			has_inactive_trait  = fake_death_ongoing_siege
+			has_inactive_trait  = fake_death_ongoing_accident
+		}
+	}
+}
+
+fake_death_character = {
+	#scope = empty
+	saved_scopes = {
+		char
+	}
+	is_shown = {
+		exists = scope:char
+		scope:char = {
+			AND = {
+				is_alive = yes
+				OR = {
+					has_inactive_trait  = fake_death_ongoing_tbc
+					has_inactive_trait  = fake_death_ongoing_battle
+					has_inactive_trait  = fake_death_ongoing_illness
+					has_inactive_trait  = fake_death_ongoing_siege
+					has_inactive_trait  = fake_death_ongoing_accident
+				}
+			}
+		}
+	}
+}
+
+fake_death_char_tbc = {
+	scope = character
+
+	is_shown = {
+		is_alive = yes
+		has_inactive_trait  = fake_death_ongoing_tbc
+	}
+}
+
+fake_death_char_battle = {
+	scope = character
+
+	is_shown = {
+		is_alive = yes
+		has_inactive_trait  = fake_death_ongoing_battle
+	}
+}
+
+fake_death_char_illness = {
+	scope = character
+
+	is_shown = {
+		is_alive = yes
+		has_inactive_trait  = fake_death_ongoing_illness
+	}
+}
+
+fake_death_char_siege = {
+	scope = character
+
+	is_shown = {
+		is_alive = yes
+		has_inactive_trait  = fake_death_ongoing_siege
+	}
+}
+
+fake_death_char_accident = {
+	scope = character
+
+	is_shown = {
+		is_alive = yes
+		has_inactive_trait  = fake_death_ongoing_accident
+	}
+}
+
+agot_can_set_realm_capital = {
+	scope = province
+
+	is_valid = {
+		trigger_if = {
+			limit = {
+				scope:actor = {
+					government_has_flag = government_is_nw
+					capital_province ?= {
+						duchy = title:d_the_wall
+					}
+				}
+			}
+			duchy = title:d_the_wall
+		}
+	}
+}

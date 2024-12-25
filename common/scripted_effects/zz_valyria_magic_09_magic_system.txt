@@ -58,7 +58,7 @@ zz_vayria_magic_duel_contest_effect = {
 	zz_valyria_magic_duel_stress_effect = yes 
 	if = {
 		limit = {
-			scope:weaken_spell_flag = yes
+			#scope:weaken_spell_flag = yes
 		}
 		scope:secondary_recipient = {
 			duel = {
@@ -72,7 +72,7 @@ zz_vayria_magic_duel_contest_effect = {
 					scope:recipient = {
 						if = {
 							limit = {
-								scope:strike_imprison_flag = yes
+								#scope:strike_imprison_flag = yes
 							}
 							increase_wounds_effect = { REASON = fire_magic }
 							add_trait = burned
@@ -115,7 +115,7 @@ zz_vayria_magic_duel_contest_effect = {
 	}	
 	if = {
 		limit = {
-			scope:weaken_spell_flag = no
+			#scope:weaken_spell_flag = no
 		}
 		scope:secondary_recipient = {
 			duel = {
@@ -275,217 +275,6 @@ zz_valyria_magic_apply_character_modifier_effect = {
 }
 
 
-
-zz_old_strike_effect = { 
-	if = {
-		limit = {
-			has_trait = compassionate
-			has_trait = wrathful
-			has_trait = sadistic
-		}
-		stress_impact = {
-			compassionate = medium_stress_impact_gain
-			wrathful = medium_stress_impact_loss
-			sadistic = medium_stress_impact_loss
-		}
-	}
-	else_if = {
-		limit = {
-			OR = {
-				has_relation_rival = scope:recipient
-				has_relation_nemesis = scope:recipient
-			}
-		}
-		add_stress = major_stress_loss
-		stress_impact = {
-			forgiving = medium_stress_impact_gain
-			wrathful = medium_stress_impact_loss
-			sadistic = medium_stress_impact_loss
-		}
-	}
-	if = {
-		limit = {
-			scope:weaken_spell_flag = yes
-		}
-		add_dread = medium_dread_gain
-		scope:recipient = {
-			if = {
-				limit = {
-					scope:flame_strike_imprison_flag = yes
-				}
-				increase_wounds_effect = { REASON = fire_magic }
-				add_trait = burned
-				add_trait_xp = {
-					trait = burned
-					value = { 5 200 }
-				}
-				add_stress = massive_stress_gain
-				imprison_character_effect = {
-					TARGET = scope:recipient
-					IMPRISONER = scope:actor
-				}
-			}
-			else = {
-				show_as_tooltip = {
-					add_trait = wounded_3
-					add_stress = massive_stress_gain
-				}
-				scope:actor = {
-					if = {
-						limit = {
-							NOR = {
-								has_imprisonment_reason = scope:recipient
-								has_banish_reason = scope:recipient
-								has_execute_reason = scope:recipient
-							}
-						}
-						add_tyranny = minor_tyranny_gain
-					}
-				}
-				custom_tooltip = power_strike_spare_ct
-			}
-		}
-	}
-	else = {
-		add_dread = major_dread_gain
-		if = {
-			limit = {
-				scope:secondary_recipient = {
-					is_in_army = yes
-					exists = commanding_army
-					commanding_army = {
-						is_army_in_combat = yes
-					}
-				}
-				scope:recipient = {
-					is_in_army = yes
-					OR = {
-						AND = {
-							exists = commanding_army
-							commanding_army = {
-								is_army_in_combat = yes
-							}
-							NOT = {
-								commanding_army = scope:secondary_recipient.commanding_army
-							}
-							commanding_army.location = scope:secondary_recipient.commanding_army.location
-						}
-						AND = {
-							exists = liege_or_court_owner
-							liege_or_court_owner = {
-								any_army = {
-									is_army_in_combat = yes
-									NOT = {
-										THIS = scope:secondary_recipient.commanding_army
-									}
-									location = scope:secondary_recipient.commanding_army.location
-								}
-							}
-						}
-					}
-				}
-			}
-			scope:secondary_recipient = {
-				add_character_flag = mage_during_battle_flag
-			}
-		}
-		else = {
-			if = {
-				limit = {
-					has_execute_reason = scope:recipient
-				}
-				custom_tooltip = IS_ALLOWED_TO_EXECUTE_DESC
-			}
-			else = {
-				add_tyranny = execution_tyranny_gain
-				add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:recipient }
-				if = {
-					limit = {
-						NOT = {	has_trait = murderer	}
-					}
-					add_trait = murderer
-				}
-				hidden_effect = {
-					if = {
-						limit = {
-							exists = scope:recipient.primary_heir
-							scope:recipient.primary_heir = {
-								any_close_family_member = {
-									this = scope:recipient
-								}
-								NOR = {
-									has_relation_rival = scope:actor
-									has_relation_nemesis = scope:actor
-									has_relation_magic_minion  = scope:actor
-									has_trait = craven
-									has_trait = forgiving
-								}
-							}
-						}
-						set_relation_rival = scope:recipient.primary_heir
-					}
-					else_if = {
-						limit = {
-							scope:recipient.age<16
-							exists = scope:recipient.father
-							scope:recipient.father = {
-								is_alive = yes
-								is_landed = yes
-								is_ruler = yes
-								NOR = {
-									has_relation_rival = scope:actor
-									has_relation_nemesis = scope:actor
-									has_relation_magic_minion = scope:actor
-									has_trait = craven
-									has_trait = forgiving
-								}
-							}
-						}
-						set_relation_rival = scope:recipient.father
-					}
-				}
-			}
-		}
-	}				
-	if = {
-		limit = {
-			scope:weaken_spell_flag = no
-		}
-		if = {
-			limit = {
-				scope:secondary_recipient = {
-					has_character_flag = mage_during_battle_flag
-				}
-			}
-			scope:recipient = {
-				add_trait_xp = {
-					trait = burned
-					value = { 5 200 }
-				}
-				death = {
-					death_reason = death_battle
-					killer = scope:secondary_recipient
-				}
-			}
-			scope:secondary_recipient = {
-				remove_character_flag = mage_during_battle_flag
-			}
-		}
-		else = {
-			execute_opinion_effect = { VICTIM = scope:recipient EXECUTIONER = scope:secondary_recipient }
-			scope:recipient = {
-				add_trait_xp = {
-					trait = burned
-					value = { 5 200 }
-				}
-				death = {
-					death_reason = death_execution
-					killer = scope:secondary_recipient
-				}
-			}
-		}
-	}	
-}
 
 
 zz_valyria_mana_gain = {
@@ -746,15 +535,13 @@ zz_valyria_magic_cast_xp_gain = {
 }
 
 zz_valyria_magic_cast_effect = { 
-	scope:secondary_recipient = {
-		remove_variable = casttype
-	}
+	#scope:secondary_recipient = {
+	#	remove_variable = casttype
+	#}
 	if = {
 		limit = {
 			NOT = {
-				any_equipped_character_artifact = { 
-					has_variable = $SPELL$
-				}
+				exists = var:cast_type
 			}
 		}
 		scope:secondary_recipient = {
@@ -777,50 +564,51 @@ zz_valyria_magic_cast_effect = {
 			}
 		}
 	}
-	else_if = {
-		limit = {
-			any_equipped_character_artifact = { 
-				has_variable = $SPELL$
-			}
-		}
+	else = {
 		if = { 
 			limit = {
 				any_equipped_character_artifact = { 
-					has_variable = scroll
+					exists = var:item_type
+					exists = var:spell
 				}
 			}
 			random_equipped_character_artifact = {
-				limit = {
-					has_variable = scroll
+				if = {
+					limit = {
+						exists = var:item_type
+						exists = var:spell
+						#var:item_type ?= scroll
+						var:spell = flag:$SPELL$
+					}
+					save_scope_as = item
+					scope:secondary_recipient = {
+						set_variable = {
+							name = casttype 
+							value = flag:scroll
+						}
+					}
+					$SPELL$_effect = yes
 				}
-				save_scope_as = item
-				scope:secondary_recipient = {
-					set_variable = {
-						name = casttype 
-						value = flag:scroll
+				if = {
+					limit = {
+						exists = var:item_type
+						exists = var:spell
+						#var:item_type ?= potion
+					}
+					save_scope_as = item
+					scope:secondary_recipient = {
+						set_variable = {
+							name = casttype 
+							value = flag:potion
+						}
 					}
 				}
+				destroy_artifact = this
 				$SPELL$_effect = yes
 			}
 		}
-		else = {
-			random_equipped_character_artifact = {
-				limit = {
-					has_variable = potion
-				}
-				save_scope_as = item
-				scope:secondary_recipient = {
-					set_variable = {
-						name = casttype 
-						value = flag:potion
-					}
-				}
-			}
-			$SPELL$_effect = yes
-		}
 	}
-}
-
+}				
 zz_valyria_populate_mage_list = { 
 	if = { 
 		limit = {
@@ -912,11 +700,10 @@ zz_dragon_dreams = {
 zz_add_spell = {
 	if = {
 		limit = {
-			NOR  = {
-				any_memory = {
-					has_memory_type = $SPELL$
+			NOT = { 
+				zz_valyria_knows_spell = {
+					SPELL = $SPELL$
 				}
-				has_character_flag = $SPELL$_flag
 			}
 		}
 		save_scope_as = spell_learner
@@ -940,7 +727,7 @@ zz_add_spell = {
 				}
 				scope:activity ?= {
 					add_activity_log_entry = {
-						key = learn.$SPELL$.t
+						key = learn.$SPELL$
 						score = 25
 						tags = { good learning activity }
 						character = root
@@ -953,6 +740,18 @@ zz_add_spell = {
 	}
 }
 
+zz_random_spell_gain_effect = {
+	trigger = {
+		NOT = {
+			zz_valyria_knows_spell  = {
+				SPELL = $SPELL$
+			}
+		}
+	}
+	zz_add_spell  = {
+		SPELL = $SPELL$
+	}
+}
 
 zz_gain_blood_magic_spell = { 
 	random_list = {
@@ -963,12 +762,12 @@ zz_gain_blood_magic_spell = {
 				}
 			}
 			modifier = {
-				zz_valyria_knows_spell  = {
+				zz_valyria_knows_spell = {
 					SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
 				}
 				add = -100
 			}
-			zz_add_spell  = {
+			zz_add_spell = {
 				SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
 			}
 		}
@@ -979,7 +778,7 @@ zz_gain_blood_magic_spell = {
 				}
 			}
 			modifier = {
-				zz_valyria_knows_spell  = {
+				zz_valyria_knows_spell = {
 					SPELL = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification
 				}
 				add = -100
@@ -995,7 +794,7 @@ zz_gain_blood_magic_spell = {
 				}
 			}
 			modifier = {
-				zz_valyria_knows_spell  = {
+				zz_valyria_knows_spell = {
 					SPELL = zz_valyria_magic_blood_magic_03_mysteries_of_regeneration
 				}
 				add = -100
@@ -1011,7 +810,7 @@ zz_gain_blood_magic_spell = {
 				}
 			}
 			modifier = {
-				zz_valyria_knows_spell  = {
+				zz_valyria_knows_spell = {
 					SPELL = zz_valyria_magic_blood_magic_04_mysteries_of_renewal
 				}
 				add = -100
@@ -1027,7 +826,7 @@ zz_gain_blood_magic_spell = {
 				}
 			}
 			modifier = {
-				zz_valyria_knows_spell  = {
+				zz_valyria_knows_spell = {
 					SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication
 				}
 				add = -100
@@ -1116,7 +915,7 @@ zz_gain_blood_magic_spell = {
 			trigger = {
 				NOT = {
 					zz_valyria_knows_spell  = {
-						SPELL = zz_valyria_magic_blood_magic_12_mysteries_of_vitality
+						SPELL ?= zz_valyria_magic_blood_magic_12_mysteries_of_vitality
 					}
 				}
 			}
@@ -1128,7 +927,7 @@ zz_gain_blood_magic_spell = {
 			trigger = {
 				NOT = {
 					zz_valyria_knows_spell  = {
-						SPELL = zz_valyria_magic_blood_magic_13_mysteries_of_resilience
+						SPELL ?= zz_valyria_magic_blood_magic_13_mysteries_of_resilience
 					}
 				}
 			}
@@ -1445,6 +1244,72 @@ zz_gain_dream_magic_spell = {
 			zz_add_spell  = {
 				SPELL = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power
 			}
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_11_mysteries_penetrative_insight}
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_12_mysteries_perceptive_insight }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_13_mysteries_secret_penetration }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_14_mysteries_secret_perception }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_15_mysteries_hidden_discernment }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_16_mysteries_secret_binding_own }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_17_mysteries_secret_binding_targeted }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_18_mysteries_secret_binding_known }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_19_mysteries_breach_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_20_mysteries_breach_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_21_mysteries_empower_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_22_mysteries_empower_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_23_mysteries_manipulate_participation_of_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_24_mysteries_manipulate_participation_of_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_25_mysteries_reveal_participation_of_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_26_mysteries_reveal_participation_of_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_27_mysteries_delay_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_28_mysteries_delay_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_29_mysteries_weaken_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_30_mysteries_weaken_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_31_mysteries_disrupt_hostile_schemes }
+		}
+		100 = {
+			zz_random_spell_gain_effect = { SPELL = zz_valyria_magic_dream_magic_32_mysteries_disrupt_schemes }
 		}
 	}
 }
@@ -1828,6 +1693,72 @@ zz_random_gain_magic_spell = {
 					zz_valyria_knows_spell = {
 						SPELL = zz_valyria_magic_dream_magic_10_mysteries_dreams_of_mystic_power
 					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_11_mysteries_penetrative_insight
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_12_mysteries_perceptive_insight
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_13_mysteries_secret_penetration
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_14_mysteries_secret_perception
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_15_mysteries_hidden_discernment
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_16_mysteries_secret_binding_own
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_17_mysteries_secret_binding_targeted
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_18_mysteries_secret_binding_known
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_19_mysteries_breach_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_20_mysteries_breach_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_21_mysteries_empower_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_22_mysteries_empower_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_23_mysteries_manipulate_participation_of_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_24_mysteries_manipulate_participation_of_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_25_mysteries_reveal_participation_of_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_26_mysteries_reveal_participation_of_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_27_mysteries_delay_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_28_mysteries_delay_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_29_mysteries_weaken_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_30_mysteries_weaken_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_31_mysteries_disrupt_hostile_schemes
+					}
+					zz_valyria_knows_spell = {
+						SPELL = zz_valyria_magic_dream_magic_32_mysteries_disrupt_schemes
+					}
 				}
 			}
 			modifier = { 
@@ -1946,13 +1877,25 @@ zz_valyria_magic_learning_gui_effect = {
 				has_memory_type = $SPELL$
 			}
 		}
-		var:zz_magic_learner = {
+		scope:zz_magic_learner = {
 			zz_add_spell = { 
 				SPELL = $SPELL$
 			}
 		}
 	}
 }
+
+zz_valyria_magic_casting_gui_tooltip_effect = {
+	if = {
+		limit = {
+			scope:zz_valyria_mystery = { 
+				has_memory_type = $SPELL$
+			}
+		}
+		custom_tooltip = $SPELL$.interaction.desc
+	}
+}
+
 zz_valyria_magic_casting_gui_effect = {
 	if = {
 		limit = {
@@ -1963,6 +1906,37 @@ zz_valyria_magic_casting_gui_effect = {
 		custom_tooltip = $SPELL$.interaction.desc
 		trigger_event = { 
 			id = $EVENT$ 
+		}
+	}
+}
+
+zz_valyria_scroll_making_gui_effect = {
+	if  = { 
+		limit  = {
+			scope:zz_valyria_mystery = {
+				has_memory_type = $SPELL$
+			}
+		}
+		agot_create_artifact_saans_scrolls_effect = { OWNER = root }
+		scope:newly_created_artifact = {
+			
+			set_variable = {
+				name = item_type
+				value = flag:scroll 
+			}
+			set_variable = {
+				name = spell
+				value = flag:$SPELL$
+			}
+			set_variable = {
+				name = cast_potency
+				value = {
+					scope:zz_scroll_maker = {
+						value = zz_valyria_higher_mysteries_stat_gui
+					}
+				}
+			}
+			set_artifact_name = zz_valyria_artifact_magic_scroll_name
 		}
 	}
 }
