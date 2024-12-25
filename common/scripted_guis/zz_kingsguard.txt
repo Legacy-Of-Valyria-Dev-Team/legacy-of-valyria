@@ -1,0 +1,96 @@
+﻿zz_kingsguard_protection = {
+	scope = character
+	saved_scopes = {
+	}
+	is_shown = {
+		exists = var:zz_protect_protector
+		is_ai = no
+	}
+	is_valid = {
+	}
+	effect = {
+	}
+}
+
+zz_kingsguard_protection_close = {
+	scope = character
+	saved_scopes = {
+	}
+	is_shown = {
+	}
+	is_valid = {
+	}
+	effect = {
+		remove_variable = zz_protect_protector
+		remove_variable = zz_protect_protected
+		clear_variable_list = protector_list
+		clear_variable_list = protectee_list
+	}
+}
+
+zz_kingsguard_protector = {
+	scope = character
+	saved_scopes = {
+		zz_protect_protector
+	}
+	is_shown = {
+		var:zz_protect_protector ?= scope:zz_protect_protector
+	}
+	
+	effect = {
+		scope:zz_protect_protector = {
+			root = {
+				set_variable = {
+					name = zz_protect_protector
+					value = scope:zz_protect_protector
+				}
+			}
+		}
+	}
+}
+
+zz_kingsguard_protection_clear = {
+	scope = character
+	saved_scopes = {
+	}
+	
+	effect = {
+		var:zz_protect_protector = {
+			remove_variable = zz_protect_protected
+			every_relation = {
+				type = bodyguard_target
+				remove_relation_bodyguard = prev
+			}
+		}
+	}
+}
+
+zz_kingsguard_protectee = {
+	scope = character
+	saved_scopes = {
+		zz_protect_protected
+	}
+	is_shown = {
+		var:zz_protect_protector.var:zz_protect_protected ?= scope:zz_protect_protected
+	}
+	
+	effect = {
+		var:zz_protect_protector = {
+			every_relation = {
+				type = bodyguard_target
+				remove_relation_bodyguard = prev
+			}
+			set_variable = {
+				name = zz_protect_protected
+				value = scope:zz_protect_protected
+			}
+			save_scope_as = councillor
+			scope:zz_protect_protected = {
+				save_scope_as = target_character
+			}
+			agot_start_bodyguarding = {
+				TARGET = scope:zz_protect_protected
+			}
+		}
+	}
+}
