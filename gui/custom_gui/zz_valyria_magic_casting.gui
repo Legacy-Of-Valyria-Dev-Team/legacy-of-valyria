@@ -1,0 +1,284 @@
+window = {
+	name = "zz_magic_window"
+	layer = top
+	using = Window_Background
+	size = { 1000 800 }
+	datacontext = "[GetScriptedGui('zz_valyria_magic_casting')]"
+	visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+
+	state = {
+		name = _show
+		on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+	}
+	margin_widget = {
+		size = { 100% 100% }
+		margin = { 0 26 }
+		margin_right = 13
+
+		widget = {
+			size = { 100% 100% }
+
+			vbox = {
+				using = Window_Margins
+
+				header_pattern = {
+					layoutpolicy_horizontal = expanding
+
+					blockoverride "header_text"
+					{
+						raw_text = "Magic Casting"
+					}
+
+					blockoverride "button_close"
+					{
+						onclick = "[GetScriptedGui('zz_valyria_magic_casting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+					}
+				}
+				hbox = { 
+					layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+					
+					datacontext = "[GetPlayer.MakeScope]"
+					vbox = {
+						layoutpolicy_vertical = expanding
+						layoutpolicy_horizontal = expanding
+						max_width = 300
+						spacer = { size = { 0 30 } }
+						text_single = {
+							raw_text = "Mages"
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 00 30 } }
+						scrollbox = {
+							name = "mages_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = growing
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[Scope.GetList('mage_list')]"
+								
+									item = {
+										button_standard = {
+											size = { 200 120 }
+											align = left
+											datacontext = "[Scope.GetCharacter]"
+											layoutpolicy_vertical = expanding
+											layoutpolicy_horizontal = growing
+
+											down = "[GetScriptedGui('zz_valyria_magic_caster').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_caster', Character.MakeScope ).End )]"
+											onclick = "[GetScriptedGui('zz_valyria_magic_caster').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_caster', Character.MakeScope ).End )]"
+											vbox = {
+												layoutpolicy_horizontal = expanding
+												layoutpolicy_vertical = expanding
+												margin_right = 4
+												spacing = 5
+												portrait_head_small = {}
+												text_single = {
+													text = "[Character.GetNameNoTooltip]"
+												}
+												spacer = { size = { 00 15 } }
+											}
+										}								 
+									}
+								}
+							}
+						}
+						expand = {}
+					}
+					vbox = {
+						layoutpolicy_horizontal = growing 
+						layoutpolicy_vertical = expanding
+						size = {40% 90%}
+						spacer = { size = { 00 30 } }
+						text_single = {
+							raw_text = "Magic Casting Stats"
+							fontsize = 24
+							align = top
+						}
+						spacer = { size = { 00 30 } }
+						text_single = {
+							raw_text = "Magic Caster"
+							fontsize = 18
+							align = left
+						}
+						spacer = { size = { 00 15 } }
+
+						vbox = {
+							size = { 200 120 }
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+							margin_right = 4
+							spacing = 5
+							datacontext = "[GetPlayer.MakeScope.Var('zz_magic_caster').Char]"
+							portrait_head_small = {}
+							text_single = {
+								align = left
+								text = "[Character.GetNameNoTooltip]"
+							}
+							spacer = { size = { 00 10 } }
+							expand = {}
+						}
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Higher Mysteries - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_higher_mysteries_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Blood Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_blood_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Shadow Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_shadow_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Dream Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_dream_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Alchemy Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_alchemy_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Fire Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_fire_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Air Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_air_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Water Magic - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_water_magic_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 15 } }
+						flowcontainer = {
+							text_single = {
+								align = left
+								raw_text = "Drops of Power - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_drops_of_power_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
+							text_single = {
+								align = left
+								raw_text = "Stores of Power 1 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_01_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
+							text_single = {
+								align = left
+								raw_text = "Stores of Power 2 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_02_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
+							text_single = {
+								align = left
+								raw_text = "Stores of Power 3 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_03_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
+							text_single = {
+								align = left
+								raw_text = "Stores of Power 4 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_04_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
+							text_single = {
+								align = left
+								raw_text = "Stores of Power 5 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_05_stat_gui')|0]"
+							}
+						}
+						spacer = { size = { 00 5 } }
+						flowcontainer = {
+							visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
+							text_single = {
+								align = left
+								raw_text = "Stores of Power 6 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_06_stat_gui')|0]"
+							}
+						}
+
+						
+						expand = {}
+					}
+					vbox = {
+						layoutpolicy_horizontal = expanding layoutpolicy_vertical = expanding
+						size = {40% 90%}
+						spacer = { size = { 0 30 } }
+						text_single = {
+							text = game_concept_zz_mystery
+							fontsize = 24
+							align = center
+						}
+						spacer = { size = { 0 30 } }
+						scrollbox = {
+							name = "spell_scrollarea"
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							blockoverride "scrollbox_content"
+							{
+								dynamicgridbox = {
+									datamodel = "[Scope.GetList('zz_valyria_spell_list')]"
+									item = {
+										flowcontainer = {
+											datacontext = "[Scope.CharacterMemory]"
+											button_standard = {
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}														
+										}
+									}
+								}
+							}
+						}
+						expand = {}
+					}
+				}
+			}
+		}
+	}
+}
