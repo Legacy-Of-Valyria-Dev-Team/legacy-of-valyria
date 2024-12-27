@@ -338,6 +338,97 @@ order_scroll_crafting_decision = {
 	}
 }
 
+order_resource_creation_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 36
+
+	is_shown = {
+		has_game_rule = debug_mode_on
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		random_realm_province = {
+			if = { 
+				limit = {
+					exists = var:zz_valyria_resource_iron
+				}
+				change_variable = {
+					name = zz_valyria_resource_iron
+					add = 10
+				}
+			}
+			else = {
+				set_variable = {
+					name = zz_valyria_resource_iron
+					value = 10
+				}
+			}
+			if = { 
+				limit = {
+					exists = var:zz_valyria_resource_steel
+				}
+				change_variable = {
+					name = zz_valyria_resource_steel
+					add = 5
+				}
+			}
+			else = {
+				set_variable = {
+					name = zz_valyria_resource_steel
+					value = 5
+				}
+			}
+			if = { 
+				limit = {
+					exists = var:zz_valyria_resource_obsidian
+				}
+				change_variable = {
+					name = zz_valyria_resource_obsidian
+					add = 3
+				}
+			}
+			else = {
+				set_variable = {
+					name = zz_valyria_resource_obsidian
+					value = 3
+				}
+			}
+			if = { 
+				limit = {
+					exists = var:zz_valyria_resource_valyrian_steel
+				}
+				change_variable = {
+					name = zz_valyria_resource_valyrian_steel
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = zz_valyria_resource_valyrian_steel
+					value = 1
+				}
+			}
+		}
+	}
+}
+
 order_item_crafting_decision = {
 	picture = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
@@ -364,23 +455,7 @@ order_item_crafting_decision = {
 	}
 
 	effect = {
-		random_realm_province = {
-			if = { 
-				limit = {
-					exists = var:zz_valyria_resource_iron
-				}
-				change_variable = {
-					name = zz_valyria_resource_iron
-					add = 5
-				}
-			}
-			else = {
-				set_variable = {
-					name = zz_valyria_resource_iron
-					value = 5
-				}
-			}
-		}
+
 		
 		root = {
 			save_scope_as = actor
