@@ -7,8 +7,9 @@
 		value = flag:$RING_MODIFIER$
 	}
 
+
 	create_artifact = {
-		name = zz_valyria_artifact_mages_ring_name
+		name = zz_valyria_artifact_mages_ring_name_dummy
 		description = zz_valyria_artifact_mages_ring_desc
 		visuals = archmaester_ring
 		type = archmaester_ring
@@ -24,6 +25,7 @@
 	}
 	hidden_effect_new_object = {
 		scope:newly_created_artifact = {
+
 			clear_artifact_modifiers = yes
 			if = { 
 				limit = {
@@ -67,7 +69,11 @@
 				}
 				add_artifact_modifier = zz_valyria_water_magic_xp_gain_modifier_01_stacking
 			}
-			
+			set_variable = {
+				name = ring_modifier
+				value = flag:$RING_MODIFIER$
+			}
+			set_artifact_name = zz_valyria_artifact_mages_ring_name
 			set_variable = {
 				name = maesterwork
 				value = yes
@@ -193,9 +199,19 @@ zz_craft_item_apply_modifier_effect = {
 			var:zz_selected_modifier = trait:$MODIFIER$
 		}
 		scope:newly_created_artifact = {
-			add_artifact_modifier = $MODIFIER$
+			while = {
+				limit = {
+					NOT = {
+						root = {
+							var:zz_selected_modifier = trait:zz_valyria_magic_xp_gain_passive_modifier
+						}
+					}
+					
+				}
+				count = zz_valyria_magic_alchemy_magic_crafting_value
+				add_artifact_modifier = $MODIFIER$
+			}
 		}
-
 	}
 }
 
@@ -454,4 +470,86 @@ zz_valyria_crafting_item_construct_effect = {
 		MODIFIER = zz_valyria_magic_prowess_modifier_01_stacking
 	}
 	
+}
+
+
+zz_craft_item_cost_effect = {
+	if = {
+		limit = {
+			var:zz_current_magic_reagent ?= flag:mages_power
+		}
+		var:zz_item_crafter ?= {
+			zz_valyria_mana_spend = {
+				MANACOST = zz_valyria_mana_cost
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_iron >= 1
+		}
+		while = {
+			count = var:zz_current_use_iron
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_iron
+				}
+				change_variable = {
+					name = zz_valyria_resource_iron
+					add = -1
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_steel >= 1
+		}
+		while = {
+			count = var:zz_current_use_steel
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_steel
+				}
+				change_variable = {
+					name = zz_valyria_resource_steel
+					add = -1
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_obsidian >= 1
+		}
+		while = {
+			count = var:zz_current_use_obsidian
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_obsidian
+				}
+				change_variable = {
+					name = zz_valyria_resource_obsidian
+					add = -1
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_valyrian_steel >= 1
+		}
+		while = {
+			count = var:zz_current_use_valyrian_steel
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_valyrian_steel
+				}
+				change_variable = {
+					name = zz_valyria_resource_valyrian_steel
+					add = -1
+				}
+			}
+		}
+	}
 }
