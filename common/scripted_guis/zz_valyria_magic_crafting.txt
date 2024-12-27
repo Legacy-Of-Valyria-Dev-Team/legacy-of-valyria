@@ -106,7 +106,7 @@ zz_valyria_magic_item_craft_add_one_iron = {
 zz_valyria_magic_item_craft_minus_one_iron = {
 	scope = character
 	is_valid = {
-		zz_current_use_iron >= 1
+		zz_valyria_current_use_iron >= 1
 	}
 	effect = {
 		change_variable = {
@@ -202,10 +202,73 @@ zz_valyria_magic_item_craft_minus_one_valyrian_steel = {
 		}
 	}
 }
+zz_valyria_magic_item_craft_none = {
+	scope = character
+	is_shown = {
+		var:zz_current_magic_reagent ?= flag:none
+	}
+	effect = {
+		set_variable = {
+			name = zz_current_magic_reagent
+			value = flag:none
+		}
+	}
+}
+zz_valyria_magic_item_craft_dragonfire = {
+	scope = character
+	is_shown = {
+		var:zz_current_magic_reagent ?= flag:dragonfire
+	}
+	is_valid = {
+		var:zz_item_crafter = {
+			has_trait = dragonrider
+		}
+	}
+	effect = {
+		set_variable = {
+			name = zz_current_magic_reagent
+			value = flag:dragonfire
+		}
+	}
+}
+zz_valyria_magic_item_craft_mages_power = {
+	scope = character
+	is_shown = {
+		var:zz_current_magic_reagent ?= flag:mages_power
+	}
+	is_valid = {
+		var:zz_item_crafter = {
+			zz_valyria_has_mana_to_cast = {
+				MANACOST = 1
+			}
+		}
+	}
+	effect = {
+		set_variable = {
+			name = zz_current_magic_reagent
+			value = flag:mages_power
+		}
+	}
+}
+zz_valyria_magic_item_craft_human_sacrifice = {
+	scope = character
+	is_shown = {
+		var:zz_current_magic_reagent ?= flag:human_sacrifice
+	}
+	effect = {
+		set_variable = {
+			name = zz_current_magic_reagent
+			value = flag:human_sacrifice
+		}
+	}
+}
 
 zz_valyria_magic_item_craft = {
 	scope = character
 	saved_scopes = {
+	}
+	is_valid = {
+		zz_valyria_resources_current_spend >= zz_valyria_current_cost
 	}
 	is_shown = {
 	}
