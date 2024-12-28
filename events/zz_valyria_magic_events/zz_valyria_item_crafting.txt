@@ -1,0 +1,55 @@
+﻿namespace = zz_valyria_item_crafting_human_sacrifice
+
+zz_valyria_item_crafting_human_sacrifice.01 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_item_crafting_human_sacrifice.01.t
+	desc = zz_valyria_item_crafting_human_sacrifice.01.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+	immediate = {
+		clear_variable_list ?= possible_characters
+		remove_variable = si_selecting_character
+		every_courtier_or_guest = {
+			root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = si_selecting_character }
+			}
+			set_variable = { name = si_selecting_character value = prev }
+		}
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
+	}
+	
+
+	option = {
+		name = zz_valyria_item_crafting_human_sacrifice.01.opt.a
+		var:si_selecting_character = {
+			save_scope_as = target
+		}
+		scope:target = {
+			death = {
+				killer = root
+				death_reason = death_sacrificed_to_gods
+			}
+		}
+	}
+}
