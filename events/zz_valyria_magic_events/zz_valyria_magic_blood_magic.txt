@@ -3789,6 +3789,127 @@ zz_valyria_magic_alchemy_magic_spells.005 = {
 }
 
 
+zz_valyria_magic_alchemy_magic_spells.006 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_alchemy_magic_spells.006.t
+	desc = zz_valyria_magic_alchemy_magic_spells.006.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+
+	immediate = {
+		clear_variable_list = possible_artifacts
+		remove_variable = selected_artifact
+		scope:recipient = {
+			every_character_artifact = {
+				limit = {
+					NOT = {
+						has_variable = dragon_egg
+					}
+				}
+				root = {
+					add_to_variable_list = {
+						name = possible_artifacts
+						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = selected_artifact }
+						}
+						set_variable = { name = selected_artifact value = prev }
+					}
+				}
+			}
+		}
+
+	}
+
+	widget = {
+		is_shown = {
+			is_ai = no
+		}
+		gui = "event_window_artifact_selection"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_alchemy_magic_spells.006.opt.a
+		trigger = {
+		}
+		var:selected_artifact ?= { 
+			save_scope_as = target
+		}
+		trigger_event = zz_valyria_magic_alchemy_magic_spells.00601
+
+	}
+	
+	option = {
+		name = zz_valyria_magic_alchemy_magic_spells.006.opt.z
+	}
+}
+
+zz_valyria_magic_alchemy_magic_spells.00601 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_alchemy_magic_spells.006.t
+	desc = zz_valyria_magic_alchemy_magic_spells.006.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+
+	immediate = {
+		remove_variable = selected_trait
+		clear_variable_list = possible_traits
+		trait:zz_valyria_magic_none_modifier_01_stacking = {
+			root = {
+				add_to_variable_list = {
+					name = possible_traits
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_trait }
+					}
+					set_variable = { name = selected_trait value = prev }
+				}
+			}
+		}
+		every_trait = {
+			limit = {
+				has_trait_flag = zz_item_modifier
+			}
+			root = {
+				add_to_variable_list = {
+					name = possible_traits
+					target = prev
+				}
+			}
+		}
+	}
+
+	widget = {
+		is_shown = {
+			is_ai = no
+		}
+		gui = "event_window_trait_selection"
+		container = "custom_widgets_container"
+	}
+	option = {
+		name = zz_valyria_magic_alchemy_magic_spells.006.opt.a
+		trigger = {
+		}
+		var:selected_trait ?= { 
+			save_scope_as = modifier
+		}
+		zz_valyria_magic_cast_effect = { 
+			MANACOST = 100
+			SKILL = alchemy_magic
+			SPELL  = zz_valyria_magic_alchemy_magic_06_mysteries_of_enchantment
+		}
+	}
+}
+
+
 
 namespace = zz_valyria_magic_fire_magic_spells 
 
