@@ -16,9 +16,7 @@
 
 	can_start_showing_failures_only = {
 		zz_valyria_is_mage_activities = yes 
-		any_prisoner = { 
-			this = exists
-		}
+		has_prisoners = yes
 	}
 
 	is_valid = {
@@ -26,9 +24,7 @@
 			has_variable = activity_invalidated
 		}
 		scope:host = {
-			any_prisoner = { 
-				this = exists
-			}
+			has_prisoners = yes
 			zz_valyria_is_mage_activities = yes 
 			is_playable_character = yes
 			NOT = { is_incapable = yes }
@@ -110,7 +106,7 @@
 				# Run conclusion stuff here
 				scope:host = {
 					save_scope_as = blotter
-					var:unlucky_guest = {
+					var:unlucky_guest ?= {
 						save_scope_as = unlucky_guest
 					}					
 					remove_variable = unlucky_guest
@@ -149,62 +145,14 @@
 							}
 						}
 						## Big RIP, scope:unlucky_guest.
-						if = {
-							limit = { exists = scope:unlucky_guest }
-							# Sort opinions and kinslaying.
-							add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:unlucky_guest}
-							execute_opinion_effect = {
-								VICTIM = scope:unlucky_guest
-								EXECUTIONER = scope:blotter
-							}
-							# Are you HumSac'ing the HoF of a faith that doesn't practice HumSac?
-							## We hide this, since it's too late for you to do anything about now and it's more fun/terrifying to find out about it *after* the sacrifice.
-							hidden_effect = {
-								humsacd_a_hof_effect = {
-									SACRIFICER = scope:blotter
-									SACRIFICED_HOF = scope:unlucky_guest
-								}
-							}
-							## And are you actually humsac'ing your *OWN* HoF?
-							if = {
-								limit = { scope:blotter.faith.religious_head = scope:unlucky_guest }
-								# Inform players that they're an abysmal, abysmal faith adherent.
-								every_player = {
-									limit = {
-										NOT = { this = scope:blotter }
-										faith = scope:unlucky_guest.faith
-									}
-									trigger_event = fp1_other_decisions.0023
-								}
-								# Update scope:blotter's HumSac'd HoFs kill tally manually, since we're not going through the usual effect.
-								add_to_variable_list = {
-									name = humsacd_hofs
-									target = scope:unlucky_guest.faith
-								}
-								# And tell scope:blotter they dun goofed.
-								trigger_event = {
-									id = fp1_other_decisions.0024
-									# We give it a day's delay, since they _might_ have taken a conversion option in the event itself, in which case the follow-up event is invalid.
-									days = 1
-								}
-							}
-							# How exactly do they die?
-							scope:unlucky_guest = {
-								death = {
-									killer = scope:blotter
-									death_reason = death_sacrificed_to_gods
-								}
-							}
-						}
 						every_attending_character = {
 							if = {
 								limit = {
-									scope:unlucky_guest = {
+									scope:unlucky_guest ?= {
 										OR = {
 											agot_is_dragonblood_character = yes
 											agot_has_dragonblood_heritage = yes 
 										}
-										
 									}
 								}
 								zz_valyria_mana_gain = {
@@ -214,6 +162,55 @@
 							else ={
 								zz_valyria_mana_gain = {
 									MANAGAIN = 3
+								}
+							}
+						}
+						scope:host = {
+							if = {
+								limit = { exists = scope:unlucky_guest }
+								# Sort opinions and kinslaying.
+								add_kinslayer_trait_or_nothing_effect = { VICTIM = scope:unlucky_guest}
+								execute_opinion_effect = {
+									VICTIM = scope:unlucky_guest
+									EXECUTIONER = scope:blotter
+								}
+								# Are you HumSac'ing the HoF of a faith that doesn't practice HumSac?
+								## We hide this, since it's too late for you to do anything about now and it's more fun/terrifying to find out about it *after* the sacrifice.
+								hidden_effect = {
+									humsacd_a_hof_effect = {
+										SACRIFICER = scope:blotter
+										SACRIFICED_HOF = scope:unlucky_guest
+									}
+								}
+								## And are you actually humsac'ing your *OWN* HoF?
+								if = {
+									limit = { scope:blotter.faith.religious_head = scope:unlucky_guest }
+									# Inform players that they're an abysmal, abysmal faith adherent.
+									every_player = {
+										limit = {
+											NOT = { this = scope:blotter }
+											faith = scope:unlucky_guest.faith
+										}
+										trigger_event = fp1_other_decisions.0023
+									}
+									# Update scope:blotter's HumSac'd HoFs kill tally manually, since we're not going through the usual effect.
+									add_to_variable_list = {
+										name = humsacd_hofs
+										target = scope:unlucky_guest.faith
+									}
+									# And tell scope:blotter they dun goofed.
+									trigger_event = {
+										id = fp1_other_decisions.0024
+										# We give it a day's delay, since they _might_ have taken a conversion option in the event itself, in which case the follow-up event is invalid.
+										days = 1
+									}
+								}
+								# How exactly do they die?
+								scope:unlucky_guest = {
+									death = {
+										killer = scope:blotter
+										death_reason = death_sacrificed_to_gods
+									}
 								}
 							}
 						}
@@ -401,7 +398,7 @@
 		}
 	}
 	province_filter = domicile_domain
-	ai_province_filter = capital
+	ai_province_filter = domicile_domain
 
 	max_province_icons = 5
 	
@@ -425,6 +422,10 @@
 		}
 	}
 	cooldown = { years = 1 }
+	
+
+	is_single_location = yes
+	planner_type = province
 	
 	###################
 	# ACTIVITY-SPECIFIC PULSES
