@@ -10,21 +10,22 @@ zz_valyria_item_crafting_human_sacrifice.01 = {
 	right_portrait = scope:recipient
 	immediate = {
 		clear_variable_list ?= possible_characters
-		remove_variable = si_selecting_character
+		remove_variable = si_selected_character
 		every_courtier_or_guest = {
 			root = {
 				add_to_variable_list = {
 					name = possible_characters
 					target = prev
 				}
+				if = {
+					limit = {
+						NOT = { has_variable = si_selected_character }
+					}
+					set_variable = { name = si_selected_character value = prev }
+				}
 			}
 		}
-		if = {
-			limit = {
-				NOT = { has_variable = si_selecting_character }
-			}
-			set_variable = { name = si_selecting_character value = prev }
-		}
+
 	}
 	widget = {
 		is_shown = {
@@ -42,7 +43,7 @@ zz_valyria_item_crafting_human_sacrifice.01 = {
 
 	option = {
 		name = zz_valyria_item_crafting_human_sacrifice.01.opt.a
-		var:si_selecting_character = {
+		var:si_selected_character = {
 			save_scope_as = target
 		}
 		scope:target = {
