@@ -101,7 +101,7 @@ zz_valyria_make_scroll_list = {
 	remove_variable ?= zz_valyria_scroll
 	clear_variable_list ?= zz_valyria_scroll_list
 
-	scope:$ITEM_CASTER$ = {
+	scope:$ITEM_CASTER$ ?= {
 		every_character_artifact= {
 			limit = { 
 				has_variable = spell
@@ -697,45 +697,30 @@ zz_valyria_magic_cast_effect = {
 	else = {
 		if = { 
 			limit = {
-				any_character_artifact = { 
-					var:item_type ?= flag:scroll
-					exists = var:spell
-				}
+				var:cast_type = flag:scroll
 			}
-			random_character_artifact = {
+			scope:zz_valyria_scroll = {
 				if = {
 					limit = {
-						exists = var:item_type
-						exists = var:spell
 						var:item_type ?= flag:scroll
 						var:spell = flag:$SPELL$
 					}
-					save_scope_as = item
 					scope:secondary_recipient = {
+						remove_variable = casttype
 						set_variable = {
 							name = casttype 
 							value = flag:scroll
 						}
-					}
-					$SPELL$_effect = yes
-				}
-				if = {
-					limit = {
-						exists = var:item_type
-						exists = var:spell
-						#var:item_type ?= potion
-					}
-					save_scope_as = item
-					scope:secondary_recipient = {
+						remove_variable = cast_potency
 						set_variable = {
-							name = casttype 
-							value = flag:potion
+							name = cast_potency 
+							value = scope:zz_valyria_scroll.var:cast_potency
 						}
 					}
 				}
 				destroy_artifact = this
-				$SPELL$_effect = yes
 			}
+			$SPELL$_effect = yes
 		}
 	}
 }				
@@ -2059,6 +2044,20 @@ zz_valyria_magic_casting_gui_effect = {
 		limit = {
 			scope:zz_valyria_mystery = { 
 				has_memory_type = $SPELL$
+			}
+		}
+		custom_tooltip = $SPELL$.interaction.desc
+		trigger_event = { 
+			id = $EVENT$ 
+		}
+	}
+}
+
+zz_valyria_magic_casting_scroll_gui_effect = {
+	if = {
+		limit = {
+			scope:zz_valyria_scroll = { 
+				var:spell ?= flag:$SPELL$
 			}
 		}
 		custom_tooltip = $SPELL$.interaction.desc
