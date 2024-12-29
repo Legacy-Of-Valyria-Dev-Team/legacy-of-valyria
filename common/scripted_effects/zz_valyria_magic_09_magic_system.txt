@@ -1,4 +1,130 @@
-﻿zz_valyria_spell_failure_effect = { 
+﻿
+zz_valyria_make_mage_list = {
+	remove_variable ?= zz_magic_caster
+	clear_variable_list ?= mage_list
+	if = { 
+		limit = {
+			has_trait = zz_magister
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = mage_list
+				target = prev
+			}
+		}
+	}
+	every_living_mage = {
+		limit = {
+			liege_or_court_owner ?= scope:$MAGIC_USER$
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = mage_list
+				target = prev
+			}
+		}
+	}
+	ordered_in_list = {
+		variable = mage_list
+		position = 0
+		order_by = learning
+		save_scope_as = zz_magic_caster
+	}
+}
+
+zz_valyria_make_spell_list = {
+	remove_variable ?= zz_valyria_mystery
+	clear_variable_list ?= zz_valyria_spell_list
+
+	scope:$MAGIC_CASTER$ = {
+		every_memory = {
+			limit = { 
+				has_memory_category = magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_list
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = zz_valyria_mystery }
+					}
+					set_variable = { name = zz_valyria_mystery value = prev }
+				}
+			}
+		}
+	}
+}
+
+
+zz_valyria_make_item_caster_list = {
+	remove_variable ?= zz_item_caster
+	clear_variable_list ?= item_caster_list
+	if = { 
+		limit = {
+			any_character_artifact = {
+				has_variable = spell
+				var:item_type = flag:scroll
+			}
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = item_caster_list
+				target = prev
+			}
+		}
+	}
+	every_courtier = {
+		limit = {
+			any_character_artifact = {
+				has_variable = spell
+				var:item_type = flag:scroll
+			}
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = item_caster_list
+				target = prev
+			}
+		}
+	}
+	ordered_in_list = {
+		variable = item_caster_list
+		position = 0
+		order_by = learning
+		save_scope_as = zz_item_caster
+	}
+}
+
+zz_valyria_make_scroll_list = {
+	remove_variable ?= zz_valyria_scroll
+	clear_variable_list ?= zz_valyria_scroll_list
+
+	scope:$ITEM_CASTER$ = {
+		every_character_artifact= {
+			limit = { 
+				has_variable = spell
+				var:item_type = flag:scroll
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_scroll_list
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = zz_valyria_scroll }
+					}
+					set_variable = { name = zz_valyria_scroll value = prev }
+				}
+			}
+		}
+	}
+}
+
+
+zz_valyria_spell_failure_effect = { 
 	send_interface_message = {
 		type = event_generic_neutral
 		title = spell_failure
@@ -224,7 +350,7 @@ zz_valyria_magic_apply_province_modifier_effect = {
 		}		
 	}
 	else = { 
-		add_county_modifier = {
+		add_province_modifier = {
 			modifier = $MODIFIER$
 			years = $DURATION$
 		}		
@@ -540,9 +666,13 @@ zz_valyria_magic_cast_effect = {
 	#}
 	if = {
 		limit = {
-			NOT = {
-				exists = var:cast_type
+			OR = {
+				var:cast_type = flag:mystery
+				NOT = {
+					exists = var:cast_type
+				}
 			}
+
 		}
 		scope:secondary_recipient = {
 			zz_valyria_magic_cast_xp_gain = {
@@ -567,17 +697,17 @@ zz_valyria_magic_cast_effect = {
 	else = {
 		if = { 
 			limit = {
-				any_equipped_character_artifact = { 
-					exists = var:item_type
+				any_character_artifact = { 
+					var:item_type ?= flag:scroll
 					exists = var:spell
 				}
 			}
-			random_equipped_character_artifact = {
+			random_character_artifact = {
 				if = {
 					limit = {
 						exists = var:item_type
 						exists = var:spell
-						#var:item_type ?= scroll
+						var:item_type ?= flag:scroll
 						var:spell = flag:$SPELL$
 					}
 					save_scope_as = item
@@ -1907,6 +2037,17 @@ zz_valyria_magic_casting_gui_tooltip_effect = {
 		limit = {
 			scope:zz_valyria_mystery = { 
 				has_memory_type = $SPELL$
+			}
+		}
+		custom_tooltip = $SPELL$.interaction.desc
+	}
+}
+
+zz_valyria_magic_casting_scroll_gui_tooltip_effect = {
+	if = {
+		limit = {
+			scope:zz_valyria_scroll = { 
+				var:spell ?= flag:$SPELL$
 			}
 		}
 		custom_tooltip = $SPELL$.interaction.desc

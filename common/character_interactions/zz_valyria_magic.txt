@@ -39,55 +39,17 @@ zz_valyria_magic_01.interaction = {
 	on_send = {
 		scope:actor = {
 			save_scope_as = zz_magic_user
-			if = { 
-				limit = {
-					has_trait = zz_magister
-				}
-				scope:actor = {
-					add_to_variable_list = {
-						name = mage_list
-						target = prev
-					}
-				}
-			}
-			every_living_mage = {
-				limit = {
-					liege_or_court_owner ?= scope:actor
-				}
-				scope:actor = {
-					add_to_variable_list = {
-						name = mage_list
-						target = prev
-					}
-				}
-			}
-			ordered_in_list = {
-				variable = mage_list
-				position = 0
-				order_by = learning
-				save_scope_as = zz_magic_caster
-			}
-			clear_variable_list ?= zz_valyria_spell_list
-			scope:zz_magic_caster = {
-				every_memory = {
-					limit = { 
-						has_memory_category = magic
-					}
-					scope:actor = {
-						add_to_variable_list = {
-							name = zz_valyria_spell_list
-							target = prev
-						}
-						if = {
-							limit = {
-								NOT = { has_variable = zz_valyria_mystery }
-							}
-							set_variable = { name = zz_valyria_mystery value = prev }
-						}
-					}
-				}
+			zz_valyria_make_mage_list =  {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_spell_list = {MAGIC_USER = zz_magic_user MAGIC_CASTER = zz_magic_caster}
+			zz_valyria_make_item_caster_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_scroll_list = {MAGIC_USER = zz_magic_user ITEM_CASTER = zz_item_caster}
+			remove_variable = cast_type
+			set_variable = {
+				name = cast_type
+				value = flag:mystery
 			}
 		}
+
 		scope:recipient = {
 			save_scope_as = zz_magic_target
 		}
@@ -95,7 +57,6 @@ zz_valyria_magic_01.interaction = {
 	on_accept = {
 		scope:actor = {
 			remove_variable = zz_magic_target
-			remove_variable = zz_magic_caster
 			remove_variable = zz_magic_user
 			
 			set_variable = {
@@ -105,6 +66,10 @@ zz_valyria_magic_01.interaction = {
 			set_variable = {
 				name = zz_magic_caster
 				value = scope:zz_magic_caster
+			}	
+			set_variable = {
+				name = zz_item_caster
+				value = scope:zz_item_caster
 			}	
 			set_variable = {
 				name = zz_magic_target
