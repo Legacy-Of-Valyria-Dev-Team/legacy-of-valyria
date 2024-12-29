@@ -527,7 +527,7 @@ zz_valyria_mana_spend = {
 			has_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_06
-				value >=$MANACOST$
+				value = var:zz_manacost
 			}
 		}
 		
@@ -535,7 +535,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_06
-				value = -$MANACOST$  
+				value = mana_cost_subtaction
 			}
 		}
 	}
@@ -545,7 +545,7 @@ zz_valyria_mana_spend = {
 			has_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_05
-				value >=$MANACOST$
+				value >= var:zz_manacost
 			}
 		}
 		
@@ -553,7 +553,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_05
-				value = -$MANACOST$  
+				value = mana_cost_subtaction
 			}
 		}
 	}
@@ -563,7 +563,7 @@ zz_valyria_mana_spend = {
 			has_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_04
-				value >=$MANACOST$
+				value >= var:zz_manacost
 			}
 		}
 		
@@ -571,7 +571,7 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_04
-				value = -$MANACOST$  
+				value = mana_cost_subtaction 
 			}
 		}
 	}
@@ -581,14 +581,14 @@ zz_valyria_mana_spend = {
 			has_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_03
-				value >=$MANACOST$
+				value >= var:zz_manacost
 			}
 		}
 		hidden_effect = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_03
-				value = -$MANACOST$  
+				value = mana_cost_subtaction
 			}
 		}
 	}
@@ -598,14 +598,14 @@ zz_valyria_mana_spend = {
 			has_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_02
-				value >=$MANACOST$
+				value >= var:zz_manacost
 			}
 		}
 		hidden_effect = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_02
-				value =  -$MANACOST$  
+				value =  mana_cost_subtaction
 			}
 		}
 	}
@@ -615,14 +615,14 @@ zz_valyria_mana_spend = {
 			has_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_01
-				value >=$MANACOST$
+				value >= var:zz_manacost
 			}
 		}
 		hidden_effect = {
 			add_trait_xp = {
 				trait = born_under_a_red_comet
 				track = stores_of_power_01
-				value = -$MANACOST$  
+				value = mana_cost_subtaction
 			}
 		}
 	}
@@ -634,10 +634,11 @@ zz_valyria_mana_spend = {
 			add_trait_xp = {
 				trait = zz_magister
 				track = drops_of_power
-				value = -$MANACOST$  
+				value = mana_cost_subtaction
 			}
 		}
 	}
+	remove_variable = zz_manacost
 }
 
 zz_valyria_gain_spell_experience = { 
@@ -677,9 +678,12 @@ zz_valyria_magic_cast_effect = {
 			zz_valyria_magic_cast_xp_gain = {
 				SKILL = $SKILL$
 			}
-			zz_valyria_mana_spend = {
-				MANACOST = $MANACOST$
-			} 
+			set_variable = {
+				name = zz_manacost 
+				value = current_mystery_cost
+			}
+			zz_valyria_mana_spend = yes
+
 		}
 		random_list = { 
 			40 = { 
@@ -879,20 +883,25 @@ zz_add_spell = {
 }
 
 zz_random_spell_gain_effect = {
-	trigger = {
-		NOT = {
-			zz_valyria_knows_spell  = {
+	random_list = {
+		100 = {
+			trigger = {
+				NOT = {
+					zz_valyria_knows_spell  = {
+						SPELL = $SPELL$
+					}
+				}
+			}
+			zz_add_spell  = {
 				SPELL = $SPELL$
 			}
 		}
-	}
-	zz_add_spell  = {
-		SPELL = $SPELL$
 	}
 }
 
 zz_gain_blood_magic_spell = { 
 	random_list = {
+		
 		100 = {
 			zz_random_spell_gain_effect = {SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration }	
 		}
