@@ -848,36 +848,35 @@ zz_add_spell = {
 			}
 		}
 		save_scope_as = spell_learner
-		send_interface_message = {
-			type = event_generic_neutral
-			title = learn.$SPELL$.title
-			desc = learn.$SPELL$.desc
-			left_icon = scope:spell_learner
-			right_icon = scope:spell_learner
-			custom_tooltip = learn.$SPELL$.desc
-			#add_character_flag =  $SPELL$_flag
-			scope:spell_learner = {
-				create_character_memory = {
-					type = $SPELL$
+		scope:spell_learner = {
+			create_character_memory = {
+				type = $SPELL$
+			}
+			scope:new_memory = {
+				set_variable = {
+					name = learning_location
+					value = scope:spell_learner.location
 				}
-				scope:new_memory = {
-					set_variable = {
-						name = learning_location
-						value = scope:spell_learner.location
-					}
-				}
-				zz_valyria_set_spell_values = {MP = $SPELL$_cost }
-				scope:activity ?= {
-					add_activity_log_entry = {
-						key = learn.$SPELL$
-						score = 25
-						tags = { good learning activity }
-						character = root
-						#Effect
-						custom_tooltip = learn.$SPELL$.title
-					}
+				save_scope_as = zz_spell
+			}
+			zz_valyria_set_spell_values = {MP = $SPELL$_cost }
+			scope:activity ?= {
+				add_activity_log_entry = {
+					key = zz_valyria_magic_learn_spell
+					score = 25
+					tags = { good learning activity }
+					character = root
+					#Effect
+					custom_tooltip = zz_valyria_magic_learn_spell_desc
 				}
 			}
+		}
+		send_interface_message = {
+			type = event_generic_neutral
+			title = zz_valyria_magic_learn_spell_title
+			left_icon = scope:spell_learner
+			right_icon = scope:spell_learner
+			custom_tooltip = zz_valyria_magic_learn_spell_desc
 		}		
 	}
 }
