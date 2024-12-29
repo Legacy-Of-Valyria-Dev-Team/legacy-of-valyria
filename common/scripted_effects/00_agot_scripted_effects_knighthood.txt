@@ -100,6 +100,7 @@
 		}
 	}
 }
+
 agot_add_become_a_knight_prestige_effect = {
 	add_prestige = {
 		value = 50
@@ -229,6 +230,7 @@ agot_add_become_a_knight_prestige_effect = {
 	}
 
 }
+
 agot_offer_squire_interaction_effect = {
 	scope:knight = {
 		set_relation_agot_squire = scope:squire
@@ -634,6 +636,28 @@ agot_tournament_reward_knighthood_prize = {
 			type = agot_knighted_someone_as_tourney_prize
 			participants = {
 				squire = $WINNER$
+			}
+		}
+	}
+}
+
+agot_add_squire_trait_xp_effect = {
+	add_trait_xp = {
+		trait = squire
+		track = knight
+		value = {
+			value = 0
+			add = {
+				integer_range = { min = $MIN_VALUE$ max = $MAX_VALUE$ }
+				if = {
+					limit = {
+						any_relation = {
+							type = agot_knight
+							has_perk = chivalric_dominance_perk
+						}
+					}
+					add = { 5 10 }
+				}
 			}
 		}
 	}
