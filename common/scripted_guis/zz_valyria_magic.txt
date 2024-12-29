@@ -30,6 +30,9 @@ zz_valyria_magic_casting_close = {
 
 zz_valyria_magic_casting_mystery = {
 	scope = character
+	is_valid = {
+		exists = var:zz_magic_caster
+	}
 	effect = {
 		set_variable = {
 			name = cast_type
@@ -39,6 +42,9 @@ zz_valyria_magic_casting_mystery = {
 }
 zz_valyria_magic_casting_scroll = {
 	scope = character
+	is_valid = {
+		exists = var:zz_item_caster
+	}
 	effect = {
 		set_variable = {
 			name = cast_type
@@ -47,24 +53,6 @@ zz_valyria_magic_casting_scroll = {
 	}
 }
 
-
-zz_valyria_magic_item_casting = {
-	scope = character
-	is_valid = {
-		OR = {
-			any_character_artifact = {
-				exists = var:item_type
-				var:item_type = flag:scroll
-			}
-			any_courtier = {
-				any_character_artifact = {
-					exists = var:item_type
-					var:item_type = flag:scroll
-				}
-			}
-		}
-	}
-}
 
 zz_valyria_magic_caster = {
 	scope = character
@@ -206,6 +194,10 @@ zz_valyria_blood_magic_01 = {
 		set_variable = {
 			name = zz_valyria_mystery
 			value = scope:zz_valyria_mystery
+		}
+		set_variable = {
+			name = zz_valyria_mystery_cost
+			value = var:zz_valyria_mystery.var:manacost
 		}
 		zz_valyria_magic_casting_gui_tooltip_effect = { SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration  }
 		zz_valyria_magic_casting_gui_tooltip_effect = { SPELL = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification }
