@@ -1,0 +1,173 @@
+﻿namespace = agot_EE_unsullied_events
+
+# Slaver trains Unsullied (Triggered by decision)
+agot_EE_unsullied_events.1 = {
+	type = character_event
+	title = agot_EE_unsullied_events.1.t
+	desc = agot_EE_unsullied_events.1.desc
+	theme = war
+	left_portrait = {
+		character = root
+		animation = personality_cynical
+	}
+
+	immediate = {
+		random_held_title = {
+			limit = {
+				tier = tier_county
+				OR = {
+					has_county_modifier = slave_pop_1
+					has_county_modifier = slave_pop_2
+					has_county_modifier = slave_pop_3
+					has_county_modifier = slave_pop_4
+					has_county_modifier = slave_pop_5
+					has_county_modifier = slave_pop_6
+					has_county_modifier = slave_pop_7
+					has_county_modifier = slave_pop_8
+				}
+			}
+			reduce_slave_population_effect = yes
+		}
+		create_maa_regiment = {
+			type = unsullied_training
+			check_can_recruit = no
+			size = 5
+		}
+	}
+
+	# Note, make into options: Train all you can, train a thousand, train a century, or nevermind
+	option = {
+		name = agot_EE_unsullied_events.1.a
+		# AFter 10 years
+		#trigger_event = {
+		#	id = agot_EE_unsullied_events.2
+		#	# days = { 1825 3650 } # After 10 years?
+		#	#years = 10
+		#	days = 3
+		#}
+	}
+}
+
+agot_EE_unsullied_events.2 = {
+	type = character_event
+	title = agot_EE_unsullied_events.2.t
+	desc = agot_EE_unsullied_events.2.desc
+	theme = war
+	left_portrait = {
+		character = root
+		animation = personality_content
+	}
+
+	immediate = {
+		# Consider scenario: What if, in-between training, the province switches hands?
+		scope:unsullied_training_location = {
+			set_variable = {
+				name = unsullied_counter
+				value = 0
+			}
+			while = {
+				limit = { has_province_modifier = unsullied_training }
+				reduce_unsullied_training_effect = yes
+				add_unsullied_effect = yes
+				change_variable = {
+					name = unsullied_counter
+					add = 1
+				}
+			}
+		}
+	}
+
+	option = {
+		name = agot_EE_unsullied_events.2.a
+		custom_tooltip = { text = agot_EE_unsullied_events.2.counter }
+		remove_variable = unsullied_counter
+	}
+}
+
+#agot_EE_unsullied_events.3 = {
+#	type = character_event
+#	title = agot_EE_unsullied_events.1.t
+#	desc = agot_EE_unsullied_events.1.desc
+#	theme = default
+#	left_portrait = {
+#		character = root
+#		animation = personality_content
+#	}
+#}
+
+#agot_EE_unsullied_events.4 = {
+#	type = character_event
+#	title = agot_EE_unsullied_events.1.t
+#	desc = agot_EE_unsullied_events.1.desc
+#	theme = default
+#	left_portrait = {
+#		character = root
+#		animation = personality_content
+#	}
+#}
+
+#agot_EE_unsullied_events.5 = {
+#	type = character_event
+#	title = agot_EE_unsullied_events.1.t
+#	desc = agot_EE_unsullied_events.1.desc
+#	theme = default
+#	left_portrait = {
+#		character = root
+#		animation = personality_content
+#	}
+#}
+
+
+# Prompt
+agot_EE_unsullied_events.100 = { 
+	type = character_event
+	title = agot_EE_unsullied_events.100.t
+	desc = agot_EE_unsullied_events.100.desc
+	theme = default
+	left_portrait = {
+		character = root
+		animation = personality_content
+	}
+	#right_portrait = {
+	#	character = scope:greenhand
+	#	animation = admiration
+	#}
+
+	immediate = {
+		#random_character_artifact = {
+		#	limit = { has_variable = ruined_oakenseat }
+		#	destroy_artifact = this
+		#}
+		#agot_create_artifact_restored_oakenseat_effect = { OWNER = this }
+		#scope:newly_created_artifact = {
+		#	equip_artifact_to_owner_replace = yes
+		#}
+		#character:Gardener_1 = {
+		#	save_scope_as = greenhand
+		#}
+	}
+
+	# Special: Buy all
+	option = {
+		name = agot_EE_unsullied_events.1.a
+		#root.dynasty = { add_dynasty_prestige = major_dynasty_prestige_value }
+	}
+
+	# Thousand
+	option = {
+		name = agot_EE_unsullied_events.1.b
+		#root.dynasty = { add_dynasty_prestige = major_dynasty_prestige_value }
+	}
+
+	# Century
+	option = {
+		name = agot_EE_unsullied_events.1.c
+		#root.dynasty = { add_dynasty_prestige = major_dynasty_prestige_value }
+	}
+	
+	# Cancel
+	option = {
+		name = agot_EE_unsullied_events.1.d
+		#root.dynasty = { add_dynasty_prestige = major_dynasty_prestige_value }
+	}
+}
