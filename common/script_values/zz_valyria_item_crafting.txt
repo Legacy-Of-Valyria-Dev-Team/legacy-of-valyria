@@ -1,0 +1,262 @@
+﻿zz_valyria_province_resource_iron = {
+	value = 0
+	if = {
+		limit = {
+			exists = this 
+			exists = var:zz_valyria_resource_iron
+		}
+		add = var:zz_valyria_resource_iron
+	}
+}
+
+zz_valyria_province_resource_steel = {
+	value = 0
+	if = {
+		limit = {
+			exists = this 
+			exists = var:zz_valyria_resource_steel
+		}
+		add = var:zz_valyria_resource_steel
+	}
+}
+zz_valyria_province_resource_obsidian = {
+	value = 0
+	if = {
+		limit = {
+			exists = this 
+			exists = var:zz_valyria_resource_obsidian
+		}
+		add = var:zz_valyria_resource_obsidian
+	}
+}
+
+zz_valyria_province_resource_valyrian_steel = {
+	value = 0
+	if = {
+		limit = {
+			exists = this 
+			exists = var:zz_valyria_resource_valyrian_steel
+		}
+		add = var:zz_valyria_resource_valyrian_steel
+	}
+}
+
+zz_valyria_resources_iron = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		every_realm_province = {
+			limit = {
+				exists = var:zz_valyria_resource_iron
+			}
+			add = var:zz_valyria_resource_iron
+		}
+	}
+}
+
+zz_valyria_resources_steel = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		every_realm_province = {
+			limit = {
+				exists = var:zz_valyria_resource_steel
+			}
+			add = var:zz_valyria_resource_steel
+		}
+	}
+}
+
+zz_valyria_resources_obsidian = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		every_realm_province = {
+			limit = {
+				exists = var:zz_valyria_resource_obsidian
+			}
+			add = var:zz_valyria_resource_obsidian
+		}
+	}
+}
+
+zz_valyria_resources_valyrian_steel = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		every_realm_province = {
+			limit = {
+				exists = var:zz_valyria_resource_valyrian_steel
+			}
+			add = var:zz_valyria_resource_valyrian_steel
+		}
+	}
+}
+
+
+zz_valyria_current_use_iron = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = var:zz_current_use_iron
+	}
+}
+zz_valyria_current_use_steel = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = var:zz_current_use_steel
+	}
+}
+zz_valyria_current_use_obsidian = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = var:zz_current_use_obsidian
+	}
+}
+
+zz_valyria_current_use_valyrian_steel = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = var:zz_current_use_valyrian_steel
+	}
+}
+
+zz_valyria_current_crafter_stat = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+			exists = var:zz_item_crafter
+		}
+		var:zz_item_crafter = {
+			add = zz_valyria_higher_mysteries_stat_gui
+		}
+	}
+}
+
+zz_valyria_magic_alchemy_magic_crafting_value = {
+	value = 0
+	root = {
+		add = {
+			value = zz_valyria_current_crafter_stat
+			divide = 20
+			min = 1
+		}	
+	}
+
+}
+zz_valyria_current_item_cost = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = var:zz_current_cost_item
+	}
+}
+zz_valyria_current_item_modifier = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = var:zz_current_cost_modifier
+	}
+}
+
+
+zz_valyria_current_cost = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		add = zz_valyria_current_item_cost
+		add = zz_valyria_current_item_modifier
+		divide = {
+			value = zz_valyria_current_crafter_stat
+			divide = 50
+			min = 1
+		}
+	}
+}
+
+zz_valyria_mana_cost = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		if = {
+			limit = {
+				exists = var:zz_item_crafter 
+			}
+			var:zz_item_crafter = {
+				add = "has_trait_xp(zz_magister|drops_of_power)" 
+			}
+		}
+	}
+}
+
+zz_valyria_resources_current_spend = {
+	value = 0 
+	if = {
+		limit = {
+			exists = this 
+		}
+		if = {
+			limit = {
+				var:zz_current_magic_reagent ?= flag:dragonfire
+			}
+			add = 50
+		}
+		if = {
+			limit = {
+				var:zz_current_magic_reagent ?= flag:mages_power
+			}
+			var:zz_item_crafter = {
+				add = "has_trait_xp(zz_magister|drops_of_power)" 
+			}
+		}
+		if = {
+			limit = {
+				var:zz_current_magic_reagent ?= flag:human_sacrifice
+			}
+			add = 100
+		}
+		add = {
+			value = zz_valyria_current_use_iron
+		}
+		add = {
+			value = zz_valyria_current_use_steel
+			multiply = 3
+		}
+		add = {
+			value = zz_valyria_current_use_obsidian
+			multiply = 5
+		}
+		add = {
+			value = zz_valyria_current_use_valyrian_steel
+			multiply = 10
+		}
+	}
+}

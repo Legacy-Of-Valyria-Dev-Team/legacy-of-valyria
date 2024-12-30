@@ -29,10 +29,11 @@ scripted_effect grand_rite_poor_outcome = {
 }
 
 valyria_blood_sacrifices.1 = { #by Mathilda Bjarnehed
-	type = activity_event
+	type = character_event
 	title = valyria_blood_sacrifices.1.t
 	desc = valyria_blood_sacrifices.1.desc
 	theme = witchcraft
+	window = zz_valyria_magic_character_event
 	override_background = {
 		reference = bp1_bonfire
 	}
@@ -41,12 +42,51 @@ valyria_blood_sacrifices.1 = { #by Mathilda Bjarnehed
 	immediate = {
 		save_scope_as = host
 		capital_province = { save_scope_as = background_wilderness_scope } 
+
+		clear_variable_list ?= possible_characters
+		remove_variable = si_selected_character
+		every_prisoner = {
+			root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = si_selected_character }
+					}
+					set_variable = { name = si_selected_character value = prev }
+				}
+			}
+		}
+	}
+
+	
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
 	}
 
 	#Read old scroll
 	option = {
 		name = valyria_blood_sacrifices.1.a
-
+		var:si_selected_character = {
+			save_scope_as = character
+		}
+		scope:host = { 
+			set_variable = {
+				name = unlucky_guest 
+				value = scope:character
+			}
+		}
 		duel = {
 			skill = learning
 			value = high_skill_rating
