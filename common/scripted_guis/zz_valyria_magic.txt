@@ -21,32 +21,23 @@ zz_valyria_magic_casting_close = {
 	is_valid = {
 	}
 	effect = {
-		remove_variable = zz_magic_target
+		remove_variable = zz_magic_ui
+		remove_variable = cast_type
 		remove_variable = zz_magic_caster
 		clear_variable_list = zz_valyria_spell_list
 		clear_variable_list = mage_list
 	}
 }
 
-zz_valyria_magic_casting_enact_mystery = {
-	scope = character
-	saved_scopes = {
-	}
-	is_shown = {
-		var:zz_magic_ui ?= flag:spell_casting
-		is_ai = no
-	}
-	is_valid = {
-		var:zz_magic_ui ?= flag:spell_casting
-	}
-	effect = {
-	}
-}
 
 zz_valyria_magic_casting_mystery = {
 	scope = character
+	is_shown = {
+		is_ai = no
+		zz_valyria_is_mage =  yes
+	}
 	is_valid = {
-		exists = var:zz_magic_caster
+		var:cast_type ?= flag:mystery
 	}
 	effect = {
 		set_variable = {
@@ -55,10 +46,14 @@ zz_valyria_magic_casting_mystery = {
 		}
 	}
 }
-zz_valyria_magic_casting_scroll = {
+zz_valyria_magic_casting_scroll_casting = {
 	scope = character
+	is_shown = {
+		zz_valyria_is_scroll_holder = yes
+		is_ai = no
+	}
 	is_valid = {
-		exists = var:zz_item_caster
+		var:cast_type ?= flag:scroll
 	}
 	effect = {
 		set_variable = {
@@ -497,11 +492,7 @@ zz_valyria_magic_cast = {
 			save_scope_as = zz_valyria_mystery
 		}
 		root = {
-			remove_variable = zz_magic_caster
-			remove_variable = zz_magic_target
-			remove_variable = zz_valyria_mystery
-			clear_variable_list = zz_valyria_spell_list
-			clear_variable_list = mage_list
+			remove_variable = zz_magic_ui
 		}
 
 		zz_valyria_magic_casting_gui_effect = { SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration EVENT = zz_valyria_magic_blood_magic_spells.001 }
@@ -602,11 +593,7 @@ zz_valyria_magic_scroll_cast = {
 			save_scope_as = zz_valyria_scroll
 		}
 		root = {
-			remove_variable = zz_item_caster
-			remove_variable = zz_magic_target
-			remove_variable = zz_valyria_scroll
-			clear_variable_list = zz_valyria_scroll_list
-			clear_variable_list = item_caster_list
+			remove_variable = zz_magic_ui
 		}
 
 		zz_valyria_magic_casting_scroll_gui_effect = { SPELL = zz_valyria_magic_blood_magic_01_mysteries_of_restoration EVENT = zz_valyria_magic_blood_magic_spells.001 }

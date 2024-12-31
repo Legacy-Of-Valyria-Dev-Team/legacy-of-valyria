@@ -104,6 +104,7 @@ zz_valyria_make_item_caster_list = {
 		value ?= scope:zz_item_caster
 	}
 }
+
 zz_valyria_make_scroll_learner_list = {
 	remove_variable ?= zz_valyria_scroll_learner
 	clear_variable_list ?= zz_valyria_scroll_learner_list
@@ -198,6 +199,70 @@ zz_valyria_spell_failure_effect = {
 					modifier = {
 						add = zz_spellcast_value
 					}
+				}
+			}
+		}
+	}
+}
+
+
+zz_valyria_make_scroll_maker_list = {
+	remove_variable ?= zz_scroll_maker
+	clear_variable_list ?= scroll_maker_list
+	if = { 
+		limit = {
+			has_trait = zz_magister
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = scroll_maker_list
+				target = prev
+			}
+		}
+	}
+	every_living_mage = {
+		limit = {
+			liege_or_court_owner ?= scope:$MAGIC_USER$
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = scroll_maker_list
+				target = prev
+			}
+		}
+	}
+	ordered_in_list = {
+		variable = scroll_maker_list
+		position = 0
+		order_by = learning
+		save_scope_as = zz_scroll_maker
+	}
+	set_variable = {
+		name = zz_scroll_maker
+		value ?= scope:zz_scroll_maker
+	}	
+}
+
+
+zz_valyria_make_scroll_maker_spell_list = {
+	remove_variable ?= zz_valyria_mystery
+	clear_variable_list ?= scroll_maker_spell_list 
+
+	scope:$SCROLL_MAKER$ = {
+		every_memory = {
+			limit = { 
+				has_memory_category = magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = scroll_maker_spell_list
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = zz_valyria_mystery }
+					}
+					set_variable = { name = zz_valyria_mystery value = prev }
 				}
 			}
 		}
@@ -1817,7 +1882,7 @@ zz_valyria_magic_learning_scroll_gui_effect = {
 			destroy_artifact = this
 		}
 		custom_tooltip = $SPELL$.interaction.desc
-		scope:zz_magic_learner = {
+		var:zz_valyria_scroll_learner = {
 			zz_add_spell = { 
 				SPELL = $SPELL$
 			}
