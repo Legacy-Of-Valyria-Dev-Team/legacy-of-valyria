@@ -1,0 +1,582 @@
+﻿zz_valyria_create_magic_ring_effect = {
+	$OWNER$ = { save_scope_as = owner }
+	set_artifact_rarity_illustrious = yes
+
+	save_scope_value_as = {
+		name = ring_modifier
+		value = flag:$RING_MODIFIER$
+	}
+
+
+	create_artifact = {
+		name = zz_valyria_artifact_mages_ring_name_dummy
+		description = zz_valyria_artifact_mages_ring_desc_dummy
+		visuals = archmaester_ring
+		type = archmaester_ring
+		template = zz_valyria_mages_ring_artifact_template
+		modifier = zz_valyria_magic_xp_gain_passive_modifier
+		history = {
+			type = created_before_history
+		}
+		save_scope_as = newly_created_artifact
+		wealth = scope:wealth
+		quality = scope:quality
+		decaying = no
+	}
+	hidden_effect_new_object = {
+		scope:newly_created_artifact = {
+
+			clear_artifact_modifiers = yes
+			if = { 
+				limit = {
+					scope:ring_modifier = flag:blood_magic
+				}
+				add_artifact_modifier = zz_valyria_blood_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:shadow_magic
+				}
+				add_artifact_modifier = zz_valyria_shadow_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:dream_magic
+				}
+				add_artifact_modifier = zz_valyria_dream_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:alchemy_magic
+				}
+				add_artifact_modifier = zz_valyria_alchemy_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:fire_magic
+				}
+				add_artifact_modifier = zz_valyria_fire_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:air_magic
+				}
+				add_artifact_modifier = zz_valyria_air_magic_xp_gain_modifier_01_stacking
+			}
+			else_if = { 
+				limit = {
+					scope:ring_modifier = flag:water_magic
+				}
+				add_artifact_modifier = zz_valyria_water_magic_xp_gain_modifier_01_stacking
+			}
+			set_variable = {
+				name = ring_modifier
+				value = flag:$RING_MODIFIER$
+			}
+			set_artifact_name = zz_valyria_artifact_mages_ring_name
+			set_variable = {
+				name = maesterwork
+				value = yes
+			}
+			add_artifact_history = {
+				type = given
+				recipient = scope:owner
+			}
+			equip_artifact_to_owner_replace = yes
+		}
+	}
+}
+
+zz_item_calculate_cost_effect = {
+	if = {
+		limit = {
+			var:zz_selected_item = trait:$ITEM$
+		}
+		set_variable = {
+			name = zz_current_cost_item
+			value = $COST$
+		}
+	}
+}
+zz_modifier_calculate_effect = {
+	if = {
+		limit = {
+			var:zz_selected_modifier = trait:$MODIFIER$
+		}
+		set_variable = {
+			name = zz_current_cost_modifier
+			value = $COST$
+		}
+	}
+}
+
+
+zz_item_craft_zz_valyria_crafting_vs_sword_01 = {
+	agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = root } 
+}
+zz_item_craft_zz_valyria_crafting_vs_sword_02 = {
+	agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = root } 
+}
+zz_item_craft_zz_valyria_crafting_vs_sword_03 = {
+	agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root } 
+}
+zz_item_craft_zz_valyria_crafting_vs_sword_04 = {
+	agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root } 
+}
+zz_item_craft_zz_valyria_crafting_dragonbone_bow_01 = {
+	agot_create_artifact_dragonbone_longbow_effect = { OWNER = ROOT }
+}
+
+zz_item_craft_zz_valyria_crafting_vs_armour_01 = {
+	agot_create_artifact_valyrian_steel_armor_effect = { OWNER = root } 
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_01 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = blood_magic   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_02 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = shadow_magic   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_03 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = dream_magic   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_04 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = alchemy_magic   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_05 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = fire_magic   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_06 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = air_magic   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_07 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = water_magic   }
+}
+zz_item_craft_zz_valyria_crafting_dragon_saddle_01 = {
+	cv_create_artifact_dragon_saddle_effect ={ OWNER = root TYPE = brown_common   }
+}
+
+zz_item_craft_zz_valyria_crafting_dragon_saddle_02 = {
+	cv_create_artifact_dragon_saddle_effect ={ OWNER = root TYPE = brown_masterwork   }
+}
+
+zz_item_craft_zz_valyria_crafting_dragon_saddle_03 = {
+	cv_create_artifact_dragon_saddle_effect ={ OWNER = root TYPE = black_famed   }
+}
+
+
+zz_item_craft_zz_valyria_crafting_dragon_horn_01 = {
+	agot_create_artifact_dragon_horn_effect = { OWNER = root DRAGON = root }
+}
+
+zz_item_craft_zz_valyria_crafting_glass_candle_01 = {
+	agot_create_random_glass_candle_effect = { OWNER =  root  }
+}
+
+
+
+
+
+zz_craft_item_effect = {
+	if = {
+		limit = {
+			var:zz_selected_item = trait:$ITEM$
+		}
+		zz_item_craft_$ITEM$ = yes 
+
+	}
+}
+
+zz_craft_item_apply_modifier_effect = {
+	if = {
+		limit = {
+			var:zz_selected_modifier = trait:$MODIFIER$
+		}
+		scope:newly_created_artifact = {
+			while = {
+				count = zz_valyria_magic_alchemy_magic_crafting_value
+				if = { 
+					limit = { 
+						root = {
+							var:zz_selected_modifier = trait:zz_valyria_magic_xp_gain_passive_modifier
+						}
+					}
+					if = {
+						limit = {
+							exists = var:item_mana_gain
+						}
+						change_variable = {
+							name = item_mana_gain
+							add = 0.25
+						}
+					}
+					else = {
+						set_variable = {
+							name = item_mana_gain
+							value = 0.25
+						}
+					}
+				}
+				add_artifact_modifier = $MODIFIER$
+			}
+		}
+	}
+}
+
+zz_valyria_crafting_calculate_crafting_cost_item_effect = {
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_01
+		COST = 50
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_02
+		COST = 50
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_03
+		COST = 50
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_04
+		COST = 50
+	}
+
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_dragonbone_bow_01
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_vs_armour_01
+		COST = 200
+	}
+
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_01
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_02
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_03
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_04
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_05
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_06
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_07
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_dragon_saddle_01
+		COST = 90
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_dragon_saddle_02
+		COST = 125
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_dragon_saddle_03
+		COST = 180
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_glass_candle_01
+		COST = 150
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_dragon_horn_01
+		COST = 200
+	}
+
+	
+}
+
+zz_valyria_crafting_calculate_crafting_cost_modifier_effect = {
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_none_modifier_01_stacking
+		COST = 0
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_mana_gain_modifier_01_stacking
+		COST = 75
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_xp_gain_modifier_01_stacking
+		COST = 50
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_blood_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_shadow_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_dream_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_alchemy_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_fire_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_air_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_water_magic_xp_gain_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_xp_gain_passive_modifier
+		COST = 150
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_learning_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_diplomacy_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_stewardship_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_martial_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_intrigue_modifier_01_stacking
+		COST = 25
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_magic_prowess_modifier_01_stacking
+		COST = 25
+	}
+}
+
+
+zz_valyria_crafting_item_construct_effect = {
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_01
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_02
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_03
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_vs_sword_04
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_dragonbone_bow_01
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_vs_armour_01
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_01
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_02
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_03
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_04
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_05
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_06
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_07
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_dragon_saddle_01
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_dragon_saddle_02
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_dragon_saddle_03
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_glass_candle_01
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_dragon_horn_01
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_mana_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_blood_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_shadow_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_dream_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_alchemy_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_fire_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_air_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_water_magic_xp_gain_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_xp_gain_passive_modifier
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_learning_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_diplomacy_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_stewardship_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_martial_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_intrigue_modifier_01_stacking
+	}
+	zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_magic_prowess_modifier_01_stacking
+	}
+	
+}
+
+
+zz_craft_item_cost_effect = {
+	if = {
+		limit = {
+			var:zz_current_magic_reagent ?= flag:mages_power
+		}
+		var:zz_item_crafter ?= {
+			set_variable = {
+				name = zz_manacost 
+				value = zz_valyria_mana_cost
+			}
+			zz_valyria_mana_spend = yes
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_magic_reagent ?= flag:human_sacrifice
+		}
+		trigger_event = zz_valyria_item_crafting_human_sacrifice.01 
+	}
+	
+	if = {
+		limit = {
+			var:zz_current_use_iron >= 1
+		}
+		while = {
+			count = var:zz_current_use_iron
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_iron
+					var:zz_valyria_resource_iron >= 1
+				}
+				change_variable = {
+					name = zz_valyria_resource_iron
+					add = -1
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_steel >= 1
+		}
+		while = {
+			count = var:zz_current_use_steel
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_steel
+					var:zz_valyria_resource_steel >= 1
+				}
+				change_variable = {
+					name = zz_valyria_resource_steel
+					add = -1
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_obsidian >= 1
+		}
+		while = {
+			count = var:zz_current_use_obsidian
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_obsidian
+					var:zz_valyria_resource_obsidian >= 1
+				}
+				change_variable = {
+					name = zz_valyria_resource_obsidian
+					add = -1
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			var:zz_current_use_valyrian_steel >= 1
+		}
+		while = {
+			count = var:zz_current_use_valyrian_steel
+			random_realm_province = {
+				limit = {
+					exists = var:zz_valyria_resource_valyrian_steel
+					var:zz_valyria_resource_valyrian_steel >= 1
+				}
+				change_variable = {
+					name = zz_valyria_resource_valyrian_steel
+					add = -1
+				}
+			}
+		}
+	}
+}
