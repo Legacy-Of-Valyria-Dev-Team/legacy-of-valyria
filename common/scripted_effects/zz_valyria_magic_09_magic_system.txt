@@ -30,6 +30,10 @@ zz_valyria_make_mage_list = {
 		order_by = learning
 		save_scope_as = zz_magic_caster
 	}
+	set_variable = {
+		name = zz_magic_caster
+		value ?= scope:zz_magic_caster
+	}	
 }
 
 zz_valyria_make_spell_list = {
@@ -75,7 +79,7 @@ zz_valyria_make_item_caster_list = {
 			}
 		}
 	}
-	every_courtier = {
+	every_courtier_or_guest = {
 		limit = {
 			any_character_artifact = {
 				has_variable = spell
@@ -94,6 +98,57 @@ zz_valyria_make_item_caster_list = {
 		position = 0
 		order_by = learning
 		save_scope_as = zz_item_caster
+	}
+	set_variable = {
+		name = zz_item_caster
+		value ?= scope:zz_item_caster
+	}
+}
+zz_valyria_make_scroll_learner_list = {
+	remove_variable ?= zz_valyria_scroll_learner
+	clear_variable_list ?= zz_valyria_scroll_learner_list
+
+	scope:$MAGIC_USER$ = {
+
+		add_to_variable_list = {
+			name = zz_valyria_scroll_learner_list
+			target = prev
+		}
+
+		every_close_or_extended_family_member = {
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_scroll_learner_list
+					target = prev
+				}
+			}
+		}
+		every_courtier_or_guest = {
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_scroll_learner_list
+					target = prev
+				}
+			}
+		}
+		every_vassal_or_below = {
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_scroll_learner_list
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = zz_valyria_scroll_learner_list
+			position = 0
+			order_by = learning
+			save_scope_as = zz_valyria_scroll_learner
+		}
+		set_variable = {
+			name = zz_valyria_scroll_learner
+			value ?= scope:zz_valyria_scroll_learner
+		}
 	}
 }
 
@@ -877,6 +932,14 @@ zz_add_spell = {
 			left_icon = scope:spell_learner
 			right_icon = scope:spell_learner
 			custom_tooltip = zz_valyria_magic_learn_spell_desc
+			if = { 
+				limit = {
+					not = {
+						has_trait = zz_magister
+					}
+				}
+				add_trait_force_tooltip = zz_magister
+			}
 		}		
 	}
 }
@@ -1746,9 +1809,12 @@ zz_valyria_magic_casting_scroll_gui_effect = {
 zz_valyria_magic_learning_scroll_gui_effect = {
 	if = {
 		limit = {
-			scope:zz_valyria_scroll = { 
+			var:zz_valyria_scroll = { 
 				var:spell ?= flag:$SPELL$
 			}
+		}
+		var:zz_valyria_scroll = {
+			destroy_artifact = this
 		}
 		custom_tooltip = $SPELL$.interaction.desc
 		scope:zz_magic_learner = {
@@ -1914,7 +1980,7 @@ zz_random_scroll_gain_effect = {
 	}
 }
 
-zz_gain_blood_magic_scrolll = { 
+zz_gain_blood_magic_scroll = { 
 	zz_random_scroll_gain_effect = {
 		SPELL_01 = zz_valyria_magic_blood_magic_01_mysteries_of_restoration
 		SPELL_02 = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification

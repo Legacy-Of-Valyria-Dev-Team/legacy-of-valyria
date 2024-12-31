@@ -149,7 +149,7 @@ zz_valyria_is_mage = {
 	OR = { 
 		has_trait = zz_magister
 		any_living_mage = {
-			liege_or_court_owner ?= scope:actor 
+			liege_or_court_owner ?= PREV
 		}
 	}
 }
@@ -163,7 +163,7 @@ zz_valyria_is_mage_can_teach = {
 		}
 		any_living_mage = {
 			AND = {
-				liege_or_court_owner ?= scope:actor 
+				liege_or_court_owner ?= PREV
 				NOT = { 
 					has_character_flag = zz_valyria_magic_taught_magic 
 				}
@@ -1068,6 +1068,24 @@ zz_valyria_scroll_has_dead_dragon_egg_trigger = {
 				custom_tooltip = {
 					text = zz_valyria_magic_cannot_cast_on_dragon
 					has_trait = dragon
+				}
+			}
+		}
+	}
+}
+
+
+zz_valyria_scroll_learn_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_scroll = {
+				var:spell ?= flag:$SPELL$
+			}
+		}
+		var:zz_valyria_scroll_learner = {
+			NOT = {
+				any_memory = {
+					has_memory_type = $SPELL$
 				}
 			}
 		}

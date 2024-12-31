@@ -253,7 +253,7 @@ order_scroll_crafting_decision = {
 	ai_check_interval = 36
 
 	is_shown = {
-		has_government = freehold_government
+		zz_valyria_is_mage = yes
 	}
 
 	is_valid = {
@@ -269,6 +269,10 @@ order_scroll_crafting_decision = {
 	}
 
 	effect = {
+		set_variable = {
+			name = zz_magic_ui
+			value = flag:scroll_making
+		}
 		root = {
 			save_scope_as = actor
 			save_scope_as = zz_magic_user
@@ -654,6 +658,55 @@ manage_grant_nickname_decision = {
 
 	effect = {
 		trigger_event = zz_valyria_magic_management.003
+	}
+}
+
+order_scroll_learning_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = convert_to_administrative_decision_desc
+
+	ai_check_interval = 36
+
+	is_shown = {
+		#has_government = freehold_government
+	}
+
+	is_valid = {
+		has_ep3_dlc_trigger = yes
+		is_ai = no
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		remove_variable = zz_magic_ui
+		set_variable = {
+			name = zz_magic_ui
+			value = flag:scroll_learning
+		}
+		root = {
+			save_scope_as = actor
+			save_scope_as = zz_magic_user
+		}
+		scope:actor = {
+			remove_variable = zz_magic_user
+
+			set_variable = {
+				name = zz_magic_user
+				value = scope:zz_magic_user
+			}
+			zz_valyria_make_item_caster_list =  {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_scroll_learner_list =  {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_scroll_list = {MAGIC_USER = zz_magic_user ITEM_CASTER = zz_item_caster}
+		}
 	}
 }
 
