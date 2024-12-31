@@ -1,0 +1,76 @@
+## Gogossos 
+proclaiming_the_tenth_city = { #form gogossos free city
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_found_kingdom.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 120
+	title = proclaiming_the_tenth_city_title
+	desc = proclaiming_the_tenth_city_desc
+	
+	is_shown = {
+		is_independent_ruler = yes
+		primary_title.title_capital_county = {
+				title_province = {
+					geographical_region = world_gogossos
+				}
+			}
+		
+		NOR = { 
+			exists = title:e_gogossos.holder 
+			government_has_flag = government_is_pirate 
+		}
+	}
+	
+	is_valid = {
+		custom_description = {
+			text = proclaim_gogossos
+			any_held_title = {
+				title_capital_county.title_province = { geographical_region = world_gogossos }
+				tier = tier_empire
+				count >= 5
+				save_temporary_scope_as = de_jure_empire
+				root = { completely_controls = scope:de_jure_empire }
+			}
+		}
+		has_title = title:d_gogossos
+		has_title = title:c_gogossos
+		is_imprisoned = no
+		is_independent_ruler = yes
+	}
+	
+	effect = {
+		save_scope_as = founder
+		title:e_gogossos = {
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change_it
+				add_claim_on_loss = no
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change_it
+			}
+			resolve_title_and_vassal_change = scope:change_it
+			hidden_effect = {
+				copy_title_history = root.primary_title
+			}
+		}
+		
+		hidden_effect = {
+			legend_seed_great_deed_dynasty_effect = yes
+			change_government = free_city_government
+		}
+		cost = { gold = 5000 }
+		trigger_event = gogossos_proclaim.0001
+		
+		every_player = {
+			limit = {
+				NOT = { this = scope:founder } 	
+			}
+			trigger_event = {
+				id = gogossos_proclaim.0002
+			}
+		}
+	}
+}
