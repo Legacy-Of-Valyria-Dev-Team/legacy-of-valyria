@@ -2,6 +2,53 @@ dothraki_clothing = {
 	usage = game
 	selection_behavior = max
 	priority = 4
+
+	lv_clothing_dothraki_children = {
+		dna_modifiers = {
+			accessory = {
+				mode = add
+				gene = clothes
+				template = religious_african_high_clothes
+				range = { 0 1 } # For the randomness to work correctly
+			}
+			accessory = {
+				mode = add
+				gene = headgear
+				template = no_headgear
+				range = { 0 1 } # For the randomness to work correctly
+			}
+			accessory = {
+				mode = add
+				gene = legwear
+				template = mena_war_legwear
+				range = { 0 1 } # For the randomness to work correctly
+			}
+		
+			morph = {
+                mode = modify_multiply
+                gene = gene_bs_bust
+                value = 0.2 # Setting this lower to reduce the exaggerated effect of large bust size when wearing clothes
+                template = bust_clothes
+            }
+			morph = {
+				mode = modify_multiply
+				gene = gene_bs_body_shape
+				value = 0.0
+				template = body_shape_average_clothed
+			}
+		}	
+		weight = {
+			base = 0
+			modifier = {
+				add = 99999
+				portrait_dothraki_clothing_trigger = yes
+				OR = { 
+					is_adult = no
+					age <= 17
+				}
+			}
+		}		
+	}
 	
 	lv_clothing_dothraki = {
 		dna_modifiers = {
@@ -54,6 +101,10 @@ dothraki_clothing = {
 			modifier = {
 				add = 99999
 				portrait_dothraki_clothing_trigger = yes
+				AND = { 
+					is_adult = yes
+					age >= 18
+				}
 			}
 		}		
 	}
@@ -105,7 +156,11 @@ dothraki_clothing = {
 				add = 99999
 				portrait_wear_armor_trigger = yes
 				portrait_dothraki_clothing_trigger = yes
+				AND = { 
+					is_adult = yes
+					age >= 18
+				}
 			}
-		}		
+		}
 	}
 }
