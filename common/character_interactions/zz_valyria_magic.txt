@@ -1,5 +1,185 @@
 ﻿## Teach Magic Decision 
+
+zz_valyria_magic_01.interaction = {
+
+	desc = zz_valyria_magic_01.interaction.interaction.desc
+	icon = icon_magic
+	#icon = blood_magic
+	#icon = shadow_magic	
+	#icon = dream_magic
+	#icon = alchemy_magic 
+	#icon = fire_magic
+	#icon = air_magic
+	#icon = water_magic
+	common_interaction = yes
+	interface_priority = 40000
+	category = interaction_category_religion
+
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+			
+			is_imprisoned = no
+			zz_valyria_is_mage = yes 
+		}
+		scope:recipient = {
+		}	
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			zz_valyria_is_mage = yes 
+		}
+	}
+	
+
+	cooldown_against_recipient = { days = 0 } 
+	cooldown = { days = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_send = {
+		scope:actor = {
+			save_scope_as = zz_magic_user
+			zz_valyria_make_mage_list =  {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_spell_list = {MAGIC_USER = zz_magic_user MAGIC_CASTER = zz_magic_caster}
+			zz_valyria_make_item_caster_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_scroll_list = {MAGIC_USER = zz_magic_user ITEM_CASTER = zz_item_caster}
+			remove_variable = cast_type
+			set_variable = {
+				name = cast_type
+				value = flag:mystery
+			}
+		}
+
+		scope:recipient = {
+			save_scope_as = zz_magic_target
+		}
+	}
+	on_accept = {
+		scope:actor = {
+			remove_variable = zz_magic_target
+			remove_variable = zz_magic_user
+			
+			set_variable = {
+				name = zz_magic_user
+				value = scope:zz_magic_user
+			}		
+			if = {
+				limit = {
+					exists = scope:zz_magic_caster
+				}	
+				set_variable = {
+					name = zz_magic_caster
+					value = scope:zz_magic_caster
+				}	
+			}
+			if = {
+				limit = {
+					exists = scope:zz_item_caster
+				}
+				set_variable = {
+					name = zz_item_caster
+					value = scope:zz_item_caster
+				}	
+			}
+
+			set_variable = {
+				name = zz_magic_target
+				value = scope:zz_magic_target
+			}
+			set_variable = {
+				name = zz_valyria_mystery_cost
+				value = var:zz_valyria_mystery.var:manacost
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+valyria_magic_self_wounding = {
+	is_shown = {
+		scope:recipient = {
+			has_trait = zz_magister
+			is_imprisoned = no
+			NOT = { 
+				has_trait = dragon
+			}
+			OR = {
+				top_liege = scope:actor
+				this = scope:actor
+			}
+		}
+		scope:actor = {
+			is_ai = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:recipient  = {
+			has_trait = zz_magister
+		}
+	}
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 25000
+	category = interaction_category_religion
+	
+	cooldown_against_recipient = { days = 30 } 
+	cooldown = { years = 0 } 
+	ignores_pending_interaction_block = yes
+	use_diplomatic_range = yes
+	on_accept = {
+		scope:actor = {
+			scope:recipient = {
+				random = {
+					chance = 50
+					increase_wounds_effect = { REASON = blood_magic }
+				}				
+				if = {
+					limit = {
+						OR = {
+							agot_is_dragonblood_character = yes
+							agot_has_dragonblood_heritage = yes 
+						}
+					}
+					zz_valyria_mana_gain = {
+						MANAGAIN = 3
+					}
+				}
+				else ={
+					zz_valyria_mana_gain = {
+						MANAGAIN = 1
+					}
+				}
+
+			}
+		}
+	}
+	auto_accept = yes
+	ai_targets = {
+		ai_recipients = self
+	}
+
+	ai_frequency = 12
+
+	ai_will_do = {
+		base = 0
+
+	}
+}
+
 valyria_magic_teach_decision = {
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 20000
+	category = interaction_category_religion
 	populate_recipient_list = {
 		scope:actor = { 
 			zz_valyria_populate_mage_list_can_teach = yes
@@ -27,10 +207,6 @@ valyria_magic_teach_decision = {
 		piety = massive_piety_value
 		gold = massive_gold_max_value
 	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 1999
-	category = interaction_magic_friendly
 
 	cooldown_against_recipient = { days = 0 } 
 	cooldown = { years = 0 } 
@@ -61,6 +237,10 @@ valyria_magic_teach_decision = {
 }
 
 valyria_magic_teach_spell = {
+	icon = icon_magic
+	common_interaction = yes
+	interface_priority = 15000
+	category = interaction_category_religion
 
 	is_shown = {
 		scope:actor = {
@@ -84,12 +264,7 @@ valyria_magic_teach_spell = {
 	}
 	cost = {
 		piety = minor_piety_value
-	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 20000
-	category = interaction_magic_friendly
-	
+	}	
 	cooldown_against_recipient = { days = 0 } 
 	cooldown = { days = 0 } 
 	ignores_pending_interaction_block = yes
@@ -142,321 +317,14 @@ valyria_magic_teach_spell = {
 					}
 				}
 			}
-		}
-	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 0
-
-	}
-}
-valyria_magic_self_wounding = {
-	is_shown = {
-		scope:recipient = {
-			has_trait = zz_magister
-			is_imprisoned = no
-			NOT = { 
-				has_trait = dragon
-			}
-		}
-		scope:actor = {
-			is_ai = no
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:recipient  = {
-			has_trait = zz_magister
-		}
-	}
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 5000
-	category = interaction_magic_hostile
-	
-	cooldown_against_recipient = { days = 30 } 
-	cooldown = { years = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	on_accept = {
-		scope:actor = {
-			scope:recipient = {
-				random = {
-					chance = 50
-					increase_wounds_effect = { REASON = blood_magic }
-				}				
-				if = {
-					limit = {
-						OR = {
-							agot_is_dragonblood_character = yes
-							agot_has_dragonblood_heritage = yes 
-						}
-					}
-					zz_valyria_mana_gain = {
-						MANAGAIN = 3
-					}
-				}
-				else ={
-					zz_valyria_mana_gain = {
-						MANAGAIN = 1
-					}
-				}
-
-			}
-		}
-	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 0
-
-	}
-}
-
-valyria_magic_use_artifact = {
-	is_shown = {
-		scope:recipient = {
-			is_imprisoned = no
-			is_ai = no
-			always = no
-			NOT = { 
-				has_trait = dragon
-			}
-		}
-	}
-	is_valid_showing_failures_only = {
-		scope:recipient  = {
-			zz_valyria_has_artifact  = yes
-		}
-	}
-	icon = icon_magic
-	common_interaction = no
-	interface_priority = 10
-	category = interaction_secrets_of_valyria
-
-	cooldown_against_recipient = { days = 90 } 
-	cooldown = { years = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	on_accept = {
-		scope:actor = {
-			scope:recipient = {
-				increase_wounds_effect = { REASON = blood_magic }
-				if = {
-					limit = {
-						OR = {
-							agot_is_dragonblood_character = yes
-							agot_has_dragonblood_heritage = yes 
-						}
-					}
-					zz_valyria_mana_gain = {
-						MANAGAIN = 3
-					}
-				}
-				else ={
-					zz_valyria_mana_gain = {
-						MANAGAIN = 1
-					}
-				}
-
-			}
-		}
-	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 0
-
-	}
-}
-
-## Blood Sacrifice
-valyria_designate_blood_magic_sacrifice.interaction = {
-	icon = icon_scheme_abduct
-	interface_priority = 1000
-	category = interaction_magic_hostile
-	desc = designate_gruesome_festivals_sacrifice.interaction_desc
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-			zz_valyria_is_mage = yes 
-		}
-		scope:recipient = {
-			is_imprisoned_by = scope:actor
-			NOT = { has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier }
-			NOT = { 
-				has_trait = dragon
-			}
-		}
-	}
-
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_is_mage = yes 
-		}
-	}
-
-	on_accept = {
-		scope:actor = {
-			hidden_effect = {
-				every_prisoner = {
-					limit = { has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier }
-					save_scope_value_as = {
-						name = removal_type
-						value = flag:override
-					}
-					designate_gruesome_festivals_sacrifice_modifier_removed_effect = { DESIGNATOR = scope:actor }
-				}
-			}
-		}
-		scope:recipient = {
-			send_interface_toast = {
-				type = event_toast_effect_neutral
-				title = designate_gruesome_festivals_sacrifice.interaction.recipient.notification.t
-				left_icon = scope:actor
-				designate_gruesome_festivals_sacrifice_interaction_effect = yes
-				custom_tooltip = designate_gruesome_festivals_sacrifice_interaction.recipient.notification.tt
-			}
-		}
-
-		# If we're a clan this interaction affects unity
-		add_clan_unity_interaction_effect = {
-			CHARACTER = scope:actor
-			TARGET = scope:recipient
-			VALUE = medium_unity_loss
-			DESC = clan_unity_human_sacrifice.desc
-			REVERSE_NON_HOUSE_TARGET = no
-		}
-	}
-
-	auto_accept = yes
-}
-
-
-valyria_remove_designated_blood_magic_sacrifice.interaction = {
-	icon = icon_scheme_abduct
-	interface_priority = 1000
-	category = interaction_magic_friendly
-	desc = remove_designated_gruesome_festivals_sacrifice.interaction_desc
-
-	is_shown = {
-		scope:actor = { 
-			is_ai = no
-			zz_valyria_is_mage = yes  
-		}
-		scope:recipient = { has_character_modifier = gruesome_festivals_designated_sacrifice_fp1_modifier }
-	}
-
-	is_valid_showing_failures_only = {
-	}
-
-	on_accept = {
-		scope:recipient = {
-			save_scope_value_as = {
-				name = removal_type
-				value = flag:manual
-			}
-			designate_gruesome_festivals_sacrifice_modifier_removed_effect ={ DESIGNATOR = scope:actor }
-		}
-
-		# If we're a clan this interaction affects unity
-		add_clan_unity_interaction_effect = {
-			CHARACTER = scope:actor
-			TARGET = scope:recipient
-			VALUE = medium_unity_gain
-			DESC = clan_unity_human_sacrifice_removal.desc
-			REVERSE_NON_HOUSE_TARGET = no
-		}
-	}
-
-	auto_accept = yes
-}
-## Blood Magic
-
-zz_valyria_magic_01.interaction = {
-
-	desc = zz_valyria_magic_01.interaction.interaction.desc
-	icon = blood_magic
-	#icon = shadow_magic	
-	#icon = dream_magic
-	#icon = alchemy_magic 
-	#icon = fire_magic
-	#icon = air_magic
-	#icon = water_magic
-	common_interaction = yes
-	interface_priority = 10000
-	category = interaction_magic_friendly
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-			
-			is_imprisoned = no
-			zz_valyria_is_mage = yes 
-		}
-		scope:recipient = {
-		}	
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			zz_valyria_is_mage = yes 
-		}
-	}
-	
-
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { days = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-	on_send = {
-		scope:actor = {
-			save_scope_as = zz_magic_user
-			if = { 
-				limit = {
-					has_trait = zz_magister
-				}
-				scope:actor = {
-					add_to_variable_list = {
-						name = mage_list
-						target = prev
-					}
-				}
-			}
-			every_living_mage = {
-				limit = {
-					liege_or_court_owner ?= scope:actor
-				}
-				scope:actor = {
-					add_to_variable_list = {
-						name = mage_list
-						target = prev
-					}
-				}
-			}
 			ordered_in_list = {
 				variable = mage_list
 				position = 0
 				order_by = learning
-				save_scope_as = zz_magic_caster
+				save_scope_as = zz_magic_teacher
 			}
 			clear_variable_list ?= zz_valyria_spell_list
-			scope:zz_magic_caster = {
+			scope:zz_magic_teacher = {
 				every_memory = {
 					limit = { 
 						has_memory_category = magic
@@ -466,31 +334,14 @@ zz_valyria_magic_01.interaction = {
 							name = zz_valyria_spell_list
 							target = prev
 						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_valyria_mystery }
+							}
+							set_variable = { name = zz_valyria_mystery value = prev }
+						}
 					}
 				}
-			}
-		}
-		scope:recipient = {
-			save_scope_as = zz_magic_target
-		}
-	}
-	on_accept = {
-		scope:actor = {
-			remove_variable = zz_magic_target
-			remove_variable = zz_magic_caster
-			remove_variable = zz_magic_user
-			
-			set_variable = {
-				name = zz_magic_user
-				value = scope:zz_magic_user
-			}			
-			set_variable = {
-				name = zz_magic_caster
-				value = scope:zz_magic_caster
-			}	
-			set_variable = {
-				name = zz_magic_target
-				value = scope:zz_magic_target
 			}
 		}
 	}
@@ -506,4 +357,5 @@ zz_valyria_magic_01.interaction = {
 
 	}
 }
+
 

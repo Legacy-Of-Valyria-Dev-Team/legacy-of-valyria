@@ -1,0 +1,300 @@
+﻿#Badger KG Stuff
+invite_to_kingsguard_interaction = {
+	category = interaction_category_diplomacy
+	icon = icon_kingsguard
+
+	use_diplomatic_range = no
+
+	ai_maybe = yes
+	ai_min_reply_days = 8
+	ai_max_reply_days = 16
+	can_send_despite_rejection = yes
+	popup_on_receive = yes
+	pause_on_receive = yes
+
+	desc = invite_to_kingsguard_interaction_desc
+
+	on_decline_summary = kingsguard_decline_summary
+
+	greeting = negative
+	notification_text = REQUEST_VOWS_NOTIFICATION_TEXT
+
+	is_shown = {
+		scope:actor = {
+			primary_title = {
+				has_variable = kingsguard
+			}
+			NAND = {
+				primary_title = { exists = var:kingsguard_1 }
+				primary_title = { exists = var:kingsguard_2 }
+				primary_title = { exists = var:kingsguard_3 }
+				primary_title = { exists = var:kingsguard_4 }
+				primary_title = { exists = var:kingsguard_5 }
+				primary_title = { exists = var:kingsguard_6 }
+			}
+			NOT = { has_character_flag = choosing_kingsguard }
+		}
+		scope:recipient = {
+			is_human = yes
+			NOR = {
+				has_trait = kingsguard
+				has_trait = maester
+				scope:recipient = scope:actor
+			}
+			top_liege = scope:actor
+			is_male = yes
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			is_landed = no
+			is_married = no
+			is_capable_adult = yes
+			can_be_knight_trigger = { ARMY_OWNER = scope:actor }
+			NOR = {
+				has_trait = order_member
+				has_trait = nightswatch
+				has_trait = septon
+				has_trait = drowned_man
+			}
+			custom_description = {
+				text = kingsguard_position_rejected_desc
+				object = scope:recipient
+				NOT = {
+					has_character_flag = kingsguard_position_rejected
+				}
+			}
+		}
+	}
+
+	auto_accept = {
+		custom_description = {
+			text = "ORDER_VOWS_AMBITION"
+			subject = scope:actor
+			object = scope:recipient
+			scope:recipient = {
+				has_character_modifier = training_for_kingsguard
+			}
+		}
+	}
+
+
+	ai_accept = {
+		base = 50 # Being KG is prestigious
+
+		modifier = { #Trained my whole life for this
+		add = 100
+		has_character_modifier = training_for_kingsguard
+		desc = ORDER_VOWS_AMBITION
+		}
+
+		#External Factors
+		opinion_modifier = { # Opinion Factor
+		who = scope:recipient
+		opinion_target = scope:actor
+		multiplier = 0.25
+		desc = AI_SIMPLE_OPINION_REASON
+		}
+
+		modifier = { # Bethrothed
+			add = -50
+			scope:recipient = {
+				exists = betrothed
+			}
+			desc = ORDER_VOWS_MARRIED_OR_BETROTHED
+		}
+
+		modifier = { # Wrong Faith
+			add = -100
+			scope:recipient = {
+				AND = {
+					NOT = { faith = scope:actor.faith }
+					ai_zeal >= -30 # More cynical characters don't care
+				}
+			}
+			desc = ORDER_VOWS_DIFFERENT_FAITH
+		}
+
+		modifier = {  #Big honour for a pleb
+			add = 25
+			scope:recipient = {
+				is_lowborn = yes
+			}
+			desc = ORDER_VOWS_LOWBORN
+		}
+
+		modifier = {  #Primary Heir very unlikely
+			add = -100
+			scope:recipient = {
+				any_heir_title = {
+					exists = this
+					place_in_line_of_succession = {
+						target = prev
+						value == 1
+					}
+				}
+			}
+			desc = ORDER_VOWS_HEIR_1
+		}
+
+		modifier = { #Further Heirs but non functioning for the moment
+			add = -35
+			scope:recipient = {
+				any_heir_title = {
+					exists = this
+					NOT = {
+						place_in_line_of_succession = {
+							target = scope:recipient
+							value == 1
+						}
+					}
+				}
+			}
+			desc = ORDER_VOWS_HEIR_2
+		}
+
+		#Personality Factors
+		modifier = { # Great honor to serve
+			add = {
+				value = ai_honor
+				divide = 2
+			}
+			ai_honor > 0
+			desc = ORDER_VOWS_HONOR
+		}
+		modifier = { # Amibitious no interest
+			add = {
+				value = ai_greed
+				multiply = -0.5
+			}
+			ai_greed > 0
+			desc = TAKE_THE_VOWS_GREED
+		}
+		modifier = {
+			add = {
+				value = ai_zeal
+				divide = 2
+			}
+			ai_zeal < 0
+			desc = ORDER_VOWS_SKEPTIC
+		}
+		modifier = {
+			add = {
+				value = ai_zeal
+				divide = 2
+			}
+			ai_zeal > 0
+			desc = ORDER_VOWS_ZEAL
+		}
+		modifier = {
+			add = {
+				value = ai_boldness
+				divide = 2
+				min = 10
+			}
+			ai_boldness > 0
+			desc = ORDER_VOWS_BOLD
+		}
+		modifier = {
+			add = {
+				value = ai_boldness
+			}
+			ai_boldness < 0
+			desc = ORDER_VOWS_CRAVEN
+		}
+
+		#Negative Traits
+		modifier = {
+			add = -50
+			scope:recipient = {
+				OR = {
+					has_trait = lustful
+					has_trait = lifestyle_reveler
+					has_trait = seducer
+				}
+			}
+			desc = ORDER_VOWS_HORNY
+		}
+	}
+
+	on_accept = {
+		scope:recipient = {
+			save_scope_as = kingsguard_candidate #for the acceptance event
+		}
+
+		scope:actor = {
+			save_scope_as = king
+			trigger_event = {
+				id = agot_kingsguard.1005
+			}
+		}
+	}
+
+	on_decline = {
+		scope:recipient = {
+			save_scope_as = kingsguard_candidate #for the rejection event
+			add_character_flag = kingsguard_position_rejected
+		}
+
+		#Letter event informing the character about the rejection.
+		scope:actor = {
+			save_scope_as = king
+			trigger_event = {
+				id = agot_kingsguard.1007
+			}
+		}
+	}
+}
+
+appoint_lord_commander_interaction = {
+	category = interaction_category_diplomacy
+	icon = icon_kingsguard
+
+
+	use_diplomatic_range = no
+
+	ai_maybe = yes
+	ai_min_reply_days = 8
+	ai_max_reply_days = 16
+	#can_send_despite_rejection = yes
+	popup_on_receive = yes
+	pause_on_receive = yes
+
+	desc = appoint_lord_commander_interaction_desc
+
+	greeting = positive
+	notification_text = REQUEST_VOWS_NOTIFICATION_TEXT
+
+	is_shown = {
+		scope:actor = {
+			primary_title = {
+				has_variable = kingsguard
+			}
+			NOT = { exists = court_position:zz_kingsguard_lord_commander_court_position }
+			NOT = { has_character_flag = choosing_lord_commander }
+			NOT = {
+				primary_title = { exists = var:kingsguard_lord_commander }
+			}
+		}
+		scope:recipient = {
+			has_trait = kingsguard
+			top_liege = scope:actor
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			is_kingsguard_trigger = yes 
+		}
+	}
+
+	auto_accept = yes
+
+	on_accept = {
+		agot_assign_lord_commander_effect = {
+			COMMANDER = scope:recipient
+			KING = scope:actor
+		}
+	}
+}
