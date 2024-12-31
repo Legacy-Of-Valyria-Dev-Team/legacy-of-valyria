@@ -1,4 +1,4 @@
-types kingsguard_protection {
+types magic_scroll_learning {
 	type zz_valyria_magic_scroll_learning_window_open = window {
 		name = "zz_valyria_magic_scroll_learning_window_open"
 		allow_outside = yes
@@ -39,7 +39,7 @@ types kingsguard_protection {
 
 						blockoverride "header_text"
 						{
-							raw_text = "Kingsguard Protection"
+							raw_text = "Study Magic Scroll"
 						}
 
 						blockoverride "button_close"
@@ -51,6 +51,7 @@ types kingsguard_protection {
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						
 						datacontext = "[GetPlayer.MakeScope]"
+						
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
@@ -64,13 +65,14 @@ types kingsguard_protection {
 							spacer = { size = { 00 30 } }
 							vbox = {
 								size = { 200 120 }
-								datacontext = "[GetPlayer.MakeScope.Var('zz_magic_caster').Char]"
+								datacontext = "[GetPlayer.MakeScope.Var('zz_item_caster').Char]"
 								portrait_head_small = {}
 								text_single = {
 									align = left
 									text = "[Character.GetNameNoTooltip]"
 								}
 							}
+							spacer = { size = { 00 25 } }
 							scrollbox = {
 								name = "mages_scrollarea"
 								layoutpolicy_vertical = expanding
@@ -80,7 +82,7 @@ types kingsguard_protection {
 								blockoverride "scrollbox_content"
 								{
 									dynamicgridbox = {
-										datamodel = "[Scope.GetList('mage_list')]"
+										datamodel = "[Scope.GetList('item_caster_list')]"
 									
 										item = {
 											button_standard = {
@@ -90,8 +92,8 @@ types kingsguard_protection {
 												layoutpolicy_vertical = expanding
 												layoutpolicy_horizontal = growing
 
-												down = "[GetScriptedGui('zz_valyria_magic_caster').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_caster', Character.MakeScope ).End )]"
-												onclick = "[GetScriptedGui('zz_valyria_magic_caster').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_caster', Character.MakeScope ).End )]"
+												down = "[GetScriptedGui('zz_valyria_magic_scroll_learning_owner').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_item_caster', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_owner').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_item_caster', Character.MakeScope ).End )]"
 												vbox = {
 													layoutpolicy_horizontal = expanding
 													layoutpolicy_vertical = expanding
@@ -111,80 +113,74 @@ types kingsguard_protection {
 							expand = {}
 						}
 						vbox = {
-							layoutpolicy_horizontal = growing 
+							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							size = {40% 90%}
-							spacer = { size = { 00 30 } }
+							max_width = 500
 							text_single = {
-								raw_text = "Protection Status"
+								text = game_concept_zz_mystery
 								fontsize = 24
-								align = top
+								align = center
 							}
-							hbox = {
-								layoutpolicy_horizontal = growing 
-								layoutpolicy_vertical = growing
-								datacontext = "[GetPlayer.MakeScope.Var('zz_protect_protector').Char]"
-								vbox = {
-									layoutpolicy_horizontal = growing 
-									layoutpolicy_vertical = growing
-									text_single = {
-										raw_text = "Protector"
-										fontsize = 18
-										align = left
-									}
-									spacer = { size = { 00 15 } }
-									vbox = {
-										size = { 200 120 }
-										layoutpolicy_horizontal = expanding
-										layoutpolicy_vertical = expanding
-										margin_right = 4
-										spacing = 5
-										datacontext = "[GetPlayer.MakeScope.Var('zz_protect_protector').Char]"
-										portrait_head_small = {}
-										text_single = {
-											align = left
-											text = "[Character.GetNameNoTooltip]"
-										}
-										spacer = { size = { 00 10 } }
-										expand = {}
-									}
-									spacer = { size = { 00 15 } }
-									button_standard = {
-										text_single = {
-											align =	center
-											raw_text = "Cancel Protection"
-										}
-										onclick = "[GetScriptedGui('zz_kingsguard_protection_clear').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-									}	
-									expand = {}					
+							spacer = { size = { 0 30 } }
+							flowcontainer = {
+								text_single = {
+									align = left
+									raw_text = "[Scope.Char.MakeScope.Var('zz_valyria_scroll').Artifact.GetName|U]"
 								}
-								vbox = {
-									layoutpolicy_horizontal = growing 
-									layoutpolicy_vertical = growing
-									text_single = {
-										raw_text = "Protected"
-										fontsize = 18
-										align = left
-									}
-									spacer = { size = { 00 15 } }
-									vbox = {
-										size = { 200 120 }
-										layoutpolicy_horizontal = expanding
-										layoutpolicy_vertical = expanding
-										margin_right = 4
-										spacing = 5
-										datacontext = "[GetPlayer.MakeScope.Var('zz_protect_protector').Var('zz_protect_protected').Char]"
-										portrait_head_small = {}
-										text_single = {
-											align = left
-											text = "[Character.GetNameNoTooltip]"
+							}
+							spacer = { size = { 00 25 } }
+							scrollbox = {
+								name = "spell_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 500
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_scroll_list')]"
+										
+										item = {
+											button_standard = {
+												datacontext = "[Scope.Artifact]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[Artifact.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_learning_seroll')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_scroll', Artifact.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_scroll', Artifact.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_scroll', Artifact.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_scroll', Artifact.MakeScope ).End)]"
+											}	
 										}
-										spacer = { size = { 00 10 } }
-										expand = {}
 									}
 									expand = {}
 								}
 							}
+							spacer = { size = { 0 10 } }
+
+							
+							button_standard = {
+								text_single = {
+									minimumsize = { 200 38 }
+									margin = { 15 15 }
+									raw_text = "Study Scroll"
+									resizeparent = yes
+									align = center|nobaseline
+									default_format = "#low"								
+								}
+								datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_cast')]"
+								onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+							}
+							expand = {}
 						}
 						vbox = {
 							layoutpolicy_vertical = expanding
@@ -192,19 +188,31 @@ types kingsguard_protection {
 							max_width = 300
 							spacer = { size = { 0 30 } }
 							text_single = {
-								raw_text = "Family Member"
+								raw_text = "Scroll Student"
 								fontsize = 24
 								align = center
 							}
 							spacer = { size = { 00 30 } }
+							vbox = {
+								size = { 200 120 }
+								datacontext = "[GetPlayer.MakeScope.Var('zz_magic_student').Char]"
+								portrait_head_small = {}
+								text_single = {
+									align = left
+									text = "[Character.GetNameNoTooltip]"
+								}
+							}
+							spacer = { size = { 00 25 } }
 							scrollbox = {
-								name = "family_scrollarea"
+								name = "mages_scrollarea"
 								layoutpolicy_vertical = expanding
-								layoutpolicy_horizontal = growing
+								layoutpolicy_horizontal = expanding
+								max_width = 250
+								max_height = 450
 								blockoverride "scrollbox_content"
 								{
 									dynamicgridbox = {
-										datamodel = "[Scope.GetList('protectee_list')]"
+										datamodel = "[Scope.GetList('item_student_list')]"
 									
 										item = {
 											button_standard = {
@@ -213,9 +221,9 @@ types kingsguard_protection {
 												datacontext = "[Scope.GetCharacter]"
 												layoutpolicy_vertical = expanding
 												layoutpolicy_horizontal = growing
-												
-												onclick = "[GetScriptedGui('zz_kingsguard_protectee').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_protect_protected', Character.MakeScope ).End )]"
-												down = "[GetScriptedGui('zz_kingsguard_protectee').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_protect_protected', Character.MakeScope ).End )]"
+
+												down = "[GetScriptedGui('zz_valyria_magic_item_student').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_item_student', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_item_student').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_item_student', Character.MakeScope ).End )]"
 												vbox = {
 													layoutpolicy_horizontal = expanding
 													layoutpolicy_vertical = expanding
@@ -240,4 +248,4 @@ types kingsguard_protection {
 		}
 	}
 }
-zz_kingsguard_protection_window_open = {}
+zz_valyria_magic_scroll_learning_window_open = {}
