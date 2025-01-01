@@ -44,6 +44,8 @@ zz_valyria_magic_learning_type_apprentice = {
 
 zz_valyria_magic_learning_type_apprentice_click = {
 	scope = character
+	is_valid = {
+	}
 	effect = {
 		set_variable = {
 			name = learning_type
@@ -56,6 +58,11 @@ zz_valyria_magic_learning_type_apprentice_master = {
 	scope = character
 	saved_scopes = {
 		zz_magic_master
+	}
+	is_valid = {
+		not = {
+			any_relation = { type = zz_magic_master }
+		}
 	}
 	is_shown = {
 		var:zz_magic_master ?= scope:zz_magic_master
@@ -73,6 +80,11 @@ zz_valyria_magic_learning_type_apprentice_learner = {
 	scope = character
 	saved_scopes = {
 		zz_valyria_magic_learner
+	}
+	is_valid = {
+		not = {
+			any_relation = { type = zz_magic_master }
+		}
 	}
 	is_shown = {
 		var:zz_valyria_magic_learner ?= scope:zz_valyria_magic_learner
@@ -105,6 +117,21 @@ zz_valyria_magic_learning_type_apprentice_learn = {
 			add_trait_force_tooltip = zz_magister
 			zz_random_gain_magic_spell = yes
 		}
+
+		scope:zz_valyria_magic_learner = {
+			every_relation = {
+				type = zz_magic_master
+				remove_relation_zz_magic_apprentice = scope:zz_valyria_magic_learner
+			}
+		}
+		var:zz_magic_master = {
+			set_relation_zz_magic_apprentice  = scope:zz_valyria_magic_learner
+		}
+		trigger_event = {
+			years = 5
+			id = zz_valyria_magic.2
+		}
+
 		zz_valyria_make_magic_master_list = {MAGIC_USER = zz_magic_user}
 		zz_valyria_make_magic_learner_list = {MAGIC_USER = zz_magic_user}
 	}
@@ -357,7 +384,15 @@ zz_valyria_magic_learning_type_mystery_learner = {
 
 zz_valyria_magic_learning_type_mystery_teach = {
 	scope = character
+	is_valid = {
+		gold >= 1000
+	}
 	effect = {
+		remove_short_term_gold = {
+			gold = {
+				value = 1000
+			}
+		}
 		save_scope_as = actor
 		var:zz_magic_user = {
 			save_scope_as = zz_magic_user
