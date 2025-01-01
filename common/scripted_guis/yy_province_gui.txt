@@ -1,0 +1,190 @@
+yy_province_window = {
+	scope = character
+	effect = {
+		if = {
+			limit = {
+				OR = {
+					has_variable = yy_province_window
+					has_variable = yy_selected_province
+					has_variable_list = yy_provinces
+					has_variable_list = yy_selected_province_baronies
+				}
+			}
+			remove_variable = yy_province_window
+			remove_variable = yy_selected_province
+			clear_variable_list = yy_provinces
+			clear_variable_list = yy_selected_province_baronies
+		}
+	}
+}
+
+yy_province_window_data = {
+	scope = character
+	effect = {
+		if = {
+			limit = {
+				AND = {
+					has_variable = yy_selected_province
+					var:yy_selected_province = scope:yy_selected_province
+				}
+			}
+			remove_variable = yy_selected_province
+			clear_variable_list = yy_selected_province_baronies
+		}
+		else = {
+			set_variable = {
+				name = yy_selected_province
+				value = scope:yy_selected_province
+			}
+			clear_variable_list = yy_selected_province_baronies
+			save_scope_as = yy_province_owner
+			scope:yy_selected_province = {
+				every_county_province = {
+					scope:yy_province_owner = {
+						add_to_variable_list = {
+							name = yy_selected_province_baronies
+							target = prev
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+yy_province_window_slavery_buy = {
+	scope = character
+	saved_scopes = {
+		yy_selected_province
+	}
+	is_valid = {
+		scope:yy_selected_province = {
+			NOT = { has_county_modifier = slave_pop_8 }
+			OR = { # Note: Maybe make this into a script value
+				AND = {
+					has_county_modifier = slave_pop_7
+					title_province = { has_building = agot_slave_camps_08 }
+				}
+				AND = {
+					has_county_modifier = slave_pop_6
+					title_province = { has_building = agot_slave_camps_07 }
+				}
+				AND = {
+					has_county_modifier = slave_pop_5
+					title_province = { has_building = agot_slave_camps_06 }
+				}
+				AND = {
+					has_county_modifier = slave_pop_4
+					title_province = { has_building = agot_slave_camps_05 }
+				}
+				AND = {
+					has_county_modifier = slave_pop_3
+					title_province = { has_building = agot_slave_camps_04 }
+				}
+				AND = {
+					has_county_modifier = slave_pop_2
+					title_province = { has_building = agot_slave_camps_03 }
+				}
+				AND = {
+					has_county_modifier = slave_pop_1
+					title_province = { has_building = agot_slave_camps_02 }
+				}
+				AND = {
+					NOR = {
+						has_county_modifier = slave_pop_8
+						has_county_modifier = slave_pop_7
+						has_county_modifier = slave_pop_6
+						has_county_modifier = slave_pop_5
+						has_county_modifier = slave_pop_4
+						has_county_modifier = slave_pop_3
+						has_county_modifier = slave_pop_2
+						has_county_modifier = slave_pop_1
+					}
+					title_province = { has_building = agot_slave_camps_01 }
+				}
+			}
+		}
+	}
+	effect = {
+		# We'll want to make this more detailed eventually (maybe like find a suitable seller), but for testing purposes let's just do a quick buy effect
+		remove_short_term_gold = 100
+		scope:yy_selected_province = { upgrade_slave_population_effect = yes }
+	}
+}
+
+yy_province_window_slavery_sell = {
+	scope = character
+	saved_scopes = {
+		yy_selected_province
+	}
+	is_valid = {
+		scope:yy_selected_province = {
+			OR = {
+				has_county_modifier = slave_pop_8
+				has_county_modifier = slave_pop_7
+				has_county_modifier = slave_pop_6
+				has_county_modifier = slave_pop_5
+				has_county_modifier = slave_pop_4
+				has_county_modifier = slave_pop_3
+				has_county_modifier = slave_pop_2
+				has_county_modifier = slave_pop_1
+			}
+		}
+	}
+	effect = {
+		# We'll want to make this more detailed eventually (maybe like find a suitable buyer), but for testing purposes let's just do a quick sell effect
+		add_gold = 100
+		scope:yy_selected_province = { reduce_slave_population_effect = yes }
+	}
+}
+
+#yy_province_window_slavery_recruit = {
+#	scope = character
+#	saved_scopes = {
+#		yy_selected_province
+#	}
+#	is_valid = {
+#		scope:yy_selected_province = {
+#			OR = {
+#				has_county_modifier = slave_pop_8
+#				has_county_modifier = slave_pop_7
+#				has_county_modifier = slave_pop_6
+#				has_county_modifier = slave_pop_5
+#				has_county_modifier = slave_pop_4
+#				has_county_modifier = slave_pop_3
+#				has_county_modifier = slave_pop_2
+#				has_county_modifier = slave_pop_1
+#			}
+#		}
+#	}
+#	effect = {
+#		# Create the regiment then refresh the list
+#		create_maa_regiment = {
+#			type = unsullied
+#			check_can_recruit = no
+#			size = 10
+#		}
+#		scope:yy_selected_province = {
+#			clear_variable_list = agot_EE_slave_county_armies
+#		}
+#		every_maa_regiment = {
+#			save_scope_as = agot_EE_slave_army
+#			limit = {
+#				scope:yy_selected_province = {
+#					NOT = {
+#						any_in_list = {
+#							list = agot_EE_slave_county_armies
+#							this = scope:agot_EE_slave_army
+#						}
+#					}
+#				}
+#			}
+#			scope:yy_selected_province = {
+#				add_to_variable_list = {
+#					name = agot_EE_slave_county_armies
+#					target = prev
+#				}
+#			}
+#		}
+#	}
+#}
