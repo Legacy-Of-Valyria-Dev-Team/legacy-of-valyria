@@ -117,6 +117,11 @@ zz_valyria_make_scroll_learner_list = {
 		}
 
 		every_close_or_extended_family_member = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
 			scope:$MAGIC_USER$ = {
 				add_to_variable_list = {
 					name = zz_valyria_scroll_learner_list
@@ -125,6 +130,11 @@ zz_valyria_make_scroll_learner_list = {
 			}
 		}
 		every_courtier_or_guest = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
 			scope:$MAGIC_USER$ = {
 				add_to_variable_list = {
 					name = zz_valyria_scroll_learner_list
@@ -133,6 +143,11 @@ zz_valyria_make_scroll_learner_list = {
 			}
 		}
 		every_vassal_or_below = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
 			scope:$MAGIC_USER$ = {
 				add_to_variable_list = {
 					name = zz_valyria_scroll_learner_list
@@ -179,32 +194,241 @@ zz_valyria_make_scroll_list = {
 	}
 }
 
-zz_valyria_spell_failure_effect = { 
-	send_interface_message = {
-		type = event_generic_neutral
-		title = spell_failure
-		desc = spell_failure_txt
-		left_icon = scope:secondary_recipient
-		right_icon = scope:recipient
-		custom_tooltip = spell_failure_txt
-		scope:secondary_recipient  = {
-			random_list = {
-				50 = {
-					increase_wounds_effect = { REASON = fire_magic }
+zz_valyria_make_magic_master_list = {
+	remove_variable ?= zz_magic_master
+	clear_variable_list ?= magic_master_list
+	if = { 
+		limit = {
+			has_trait = zz_magister
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = magic_master_list
+				target = prev
+			}
+		}
+	}
+	every_living_mage = {
+		limit = {
+			liege_or_court_owner ?= scope:$MAGIC_USER$
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = magic_master_list
+				target = prev
+			}
+		}
+	}
+	ordered_in_list = {
+		variable = magic_master_list
+		position = 0
+		order_by = learning
+		save_scope_as = zz_magic_master
+	}
+	set_variable = {
+		name = zz_magic_master
+		value ?= scope:zz_magic_master
+	}	
+}
+
+zz_valyria_make_magic_learner_list = {
+	remove_variable ?= zz_valyria_magic_learner
+	clear_variable_list ?= magic_learner_list
+
+	scope:$MAGIC_USER$ = {
+		if = { 
+			limit = {
+				not = {
+					has_trait = zz_magister
 				}
-				25 = {
-					add_trait_force_tooltip = scaly
+			}
+			add_to_variable_list = {
+				name = magic_learner_list
+				target = prev
+			}
+		}
+		every_close_or_extended_family_member = {
+			limit = {
+				nor = {
+					has_trait = zz_magister
+					has_trait = dragon
 				}
-				25 = {
-					modifier = {
-						add = zz_spellcast_value
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_learner_list
+					target = prev
+				}
+			}
+		}
+		every_courtier_or_guest = {
+			limit = {
+				nor = {
+					has_trait = zz_magister
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_learner_list
+					target = prev
+				}
+			}
+		}
+		every_vassal_or_below = {
+			limit = {
+				nor = {
+					has_trait = zz_magister
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_learner_list
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = magic_learner_list
+			position = 0
+			order_by = learning
+			save_scope_as = zz_valyria_magic_learner
+		}
+		set_variable = {
+			name = zz_valyria_magic_learner
+			value ?= scope:zz_valyria_magic_learner
+		}
+	}
+}
+zz_valyria_make_magic_mystery_master_list = {
+	remove_variable ?= zz_magic_mystery_master
+	clear_variable_list ?= magic_mystery_master_list
+	if = { 
+		limit = {
+			has_trait = zz_magister
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = magic_mystery_master_list
+				target = prev
+			}
+		}
+	}
+	every_living_mage = {
+		limit = {
+			liege_or_court_owner ?= scope:$MAGIC_USER$
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = magic_mystery_master_list
+				target = prev
+			}
+		}
+	}
+	ordered_in_list = {
+		variable = magic_mystery_master_list
+		position = 0
+		order_by = learning
+		save_scope_as = zz_magic_mystery_master
+	}
+	set_variable = {
+		name = zz_magic_mystery_master
+		value ?= scope:zz_magic_mystery_master
+	}	
+}
+
+zz_valyria_make_master_spell_list = {
+	remove_variable ?= zz_valyria_teach_mystery
+	clear_variable_list ?= zz_valyria_teach_mystery_list
+
+	scope:$MAGIC_TEACHER$ ?= {
+		every_memory = {
+			limit = { 
+				has_memory_category = magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_teach_mystery_list
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = zz_valyria_teach_mystery }
 					}
+					set_variable = { name = zz_valyria_teach_mystery value = prev }
 				}
 			}
 		}
 	}
 }
+zz_valyria_make_magic_mystery_learner_list = {
+	remove_variable ?= zz_valyria_mystery_magic_learner
+	clear_variable_list ?= magic_mystery_learner_list
 
+	scope:$MAGIC_USER$ = {
+		if = { 
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
+			add_to_variable_list = {
+				name = magic_mystery_learner_list
+				target = prev
+			}
+		}
+		every_close_or_extended_family_member = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_mystery_learner_list
+					target = prev
+				}
+			}
+		}
+		every_courtier_or_guest = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_mystery_learner_list
+					target = prev
+				}
+			}
+		}
+		every_vassal_or_below = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_mystery_learner_list
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = magic_mystery_learner_list
+			position = 0
+			order_by = learning
+			save_scope_as = zz_valyria_mystery_magic_learner
+		}
+		set_variable = {
+			name = zz_valyria_mystery_magic_learner
+			value ?= scope:zz_valyria_mystery_magic_learner
+		}
+	}
+}
 
 zz_valyria_make_scroll_maker_list = {
 	remove_variable ?= zz_scroll_maker
@@ -248,7 +472,7 @@ zz_valyria_make_scroll_maker_spell_list = {
 	remove_variable ?= zz_valyria_mystery
 	clear_variable_list ?= scroll_maker_spell_list 
 
-	scope:$SCROLL_MAKER$ = {
+	scope:$SCROLL_MAKER$ ?= {
 		every_memory = {
 			limit = { 
 				has_memory_category = magic
@@ -294,6 +518,33 @@ zz_valyria_magic_duel_stress_effect = {
 			forgiving = medium_stress_impact_gain
 			wrathful = medium_stress_impact_loss
 			sadistic = medium_stress_impact_loss
+		}
+	}
+}
+
+
+zz_valyria_spell_failure_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = spell_failure
+		desc = spell_failure_txt
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip = spell_failure_txt
+		scope:secondary_recipient  = {
+			random_list = {
+				50 = {
+					increase_wounds_effect = { REASON = fire_magic }
+				}
+				25 = {
+					add_trait_force_tooltip = scaly
+				}
+				25 = {
+					modifier = {
+						add = zz_spellcast_value
+					}
+				}
+			}
 		}
 	}
 }
@@ -1810,15 +2061,26 @@ zz_random_gain_magic_spell = {
 zz_valyria_magic_learning_gui_effect = {
 	if  = { 
 		limit  = {
-			scope:zz_valyria_mystery = {
+			scope:zz_valyria_teach_mystery = {
 				has_memory_type = $SPELL$
 			}
 		}
-		scope:zz_magic_learner = {
+		scope:zz_valyria_mystery_magic_learner = {
 			zz_add_spell = { 
 				SPELL = $SPELL$
 			}
 		}
+	}
+}
+
+zz_valyria_magic_learning_gui_tooltip_effect = {
+	if = {
+		limit = {
+			scope:zz_valyria_teach_mystery = { 
+				has_memory_type = $SPELL$
+			}
+		}
+		custom_tooltip = $SPELL$.interaction.desc
 	}
 }
 
@@ -1874,7 +2136,7 @@ zz_valyria_magic_casting_scroll_gui_effect = {
 zz_valyria_magic_learning_scroll_gui_effect = {
 	if = {
 		limit = {
-			scope:zz_valyria_scroll = { 
+			scope:zz_valyria_scroll ?= { 
 				var:spell ?= flag:$SPELL$
 			}
 		}
@@ -1893,7 +2155,7 @@ zz_valyria_magic_learning_scroll_gui_effect = {
 zz_valyria_scroll_making_gui_effect = {
 	if  = { 
 		limit  = {
-			scope:zz_valyria_mystery = {
+			scope:zz_valyria_mystery ?= {
 				has_memory_type = $SPELL$
 			}
 		}

@@ -40,7 +40,7 @@ types magic_scroll_learning {
 
 						blockoverride "header_text"
 						{
-							raw_text = "Study Magic Scroll"
+							raw_text = "Study Magic"
 						}
 
 						blockoverride "button_close"
@@ -48,7 +48,449 @@ types magic_scroll_learning {
 							onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						}
 					}
+
+					hbox = {
+						margin_right = 13
+						margin_left = 13
+
+						layoutpolicy_horizontal = expanding
+						expand = {}
+						button_standard = { 
+							name = "mage_apprentice_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Become Magic Apprentice"
+									alwaystransparent = yes
+								}
+							}							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							#visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						}
+						button_standard = { 
+							name = "mystery_learning_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Study Magic Mystery"
+									alwaystransparent = yes
+								}
+
+							}
+							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							#visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						}
+						button_standard = { 
+							name = "scroll_learning_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Study Magic Scroll"
+									alwaystransparent = yes
+								}
+
+							}
+							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_learning_type_scroll')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							#visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_scroll_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						}
+						expand = {}
+					}
 					hbox = { 
+						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+						visible = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+						datacontext = "[GetPlayer.MakeScope]"
+						
+						vbox = {
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							max_width = 300
+							spacer = { size = { 0 30 } }
+							text_single = {
+								raw_text = "Magic Master"
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 00 30 } }
+							vbox = {
+								size = { 200 120 }
+								datacontext = "[GetPlayer.MakeScope.Var('zz_magic_master').Char]"
+								portrait_head_small = {}
+								text_single = {
+									align = left
+									text = "[Character.GetNameNoTooltip]"
+								}
+							}
+							spacer = { size = { 00 25 } }
+							scrollbox = {
+								name = "mages_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 250
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datamodel = "[Scope.GetList('magic_master_list')]"
+									
+										item = {
+											button_standard = {
+												size = { 200 120 }
+												align = left
+												datacontext = "[Scope.GetCharacter]"
+												layoutpolicy_vertical = expanding
+												layoutpolicy_horizontal = growing
+
+												down = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_master').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_master', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_master').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_master', Character.MakeScope ).End )]"
+												vbox = {
+													layoutpolicy_horizontal = expanding
+													layoutpolicy_vertical = expanding
+													margin_right = 4
+													spacing = 5
+													portrait_head_small = {}
+													text_single = {
+														text = "[Character.GetNameNoTooltip]"
+													}
+													spacer = { size = { 00 15 } }
+												}
+											}								 
+										}
+									}
+								}
+							}
+							expand = {}
+						}
+						vbox = {
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							max_width = 500
+							text_single = {
+								raw_text = "Education Details"
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 0 30 } }
+
+							spacer = { size = { 00 25 } }
+
+							spacer = { size = { 0 10 } }
+
+							
+							button_standard = {
+								text_single = {
+									minimumsize = { 200 38 }
+									margin = { 15 15 }
+									raw_text = "Make Apprentice"
+									resizeparent = yes
+									align = center|nobaseline
+									default_format = "#low"								
+								}
+								down = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_learn').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+								onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_learn').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							}
+							expand = {}
+						}
+						vbox = {
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							max_width = 300
+							spacer = { size = { 0 30 } }
+							text_single = {
+								raw_text = "Magic Apprentice"
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 00 30 } }
+							vbox = {
+								size = { 200 120 }
+								datacontext = "[GetPlayer.MakeScope.Var('zz_valyria_magic_learner').Char]"
+								portrait_head_small = {}
+								text_single = {
+									align = left
+									text = "[Character.GetNameNoTooltip]"
+								}
+							}
+							spacer = { size = { 00 25 } }
+							scrollbox = {
+								name = "mages_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 250
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datamodel = "[Scope.GetList('magic_learner_list')]"
+									
+										item = {
+											button_standard = {
+												size = { 200 120 }
+												align = left
+												datacontext = "[Scope.GetCharacter]"
+												layoutpolicy_vertical = expanding
+												layoutpolicy_horizontal = growing
+
+												down = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_learner').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_magic_learner', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice_learner').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_magic_learner', Character.MakeScope ).End )]"
+												vbox = {
+													layoutpolicy_horizontal = expanding
+													layoutpolicy_vertical = expanding
+													margin_right = 4
+													spacing = 5
+													portrait_head_small = {}
+													text_single = {
+														text = "[Character.GetNameNoTooltip]"
+													}
+													spacer = { size = { 00 15 } }
+												}
+											}								 
+										}
+									}
+								}
+							}
+							expand = {}
+						}
+					}
+					hbox = { 
+						visible = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+						
+						datacontext = "[GetPlayer.MakeScope]"
+						
+						vbox = {
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							max_width = 300
+							spacer = { size = { 0 30 } }
+							text_single = {
+								raw_text = "Magic Teacher"
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 00 30 } }
+							vbox = {
+								size = { 200 120 }
+								datacontext = "[GetPlayer.MakeScope.Var('zz_magic_mystery_master').Char]"
+								portrait_head_small = {}
+								text_single = {
+									align = left
+									text = "[Character.GetNameNoTooltip]"
+								}
+							}
+							spacer = { size = { 00 25 } }
+							scrollbox = {
+								name = "mages_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 250
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datamodel = "[Scope.GetList('magic_mystery_master_list')]"
+									
+										item = {
+											button_standard = {
+												size = { 200 120 }
+												align = left
+												datacontext = "[Scope.GetCharacter]"
+												layoutpolicy_vertical = expanding
+												layoutpolicy_horizontal = growing
+												vbox = {
+													layoutpolicy_horizontal = expanding
+													layoutpolicy_vertical = expanding
+													margin_right = 4
+													spacing = 5
+													portrait_head_small = {}
+													text_single = {
+														text = "[Character.GetNameNoTooltip]"
+													}
+													spacer = { size = { 00 15 } }
+												}
+												down = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_master').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_mystery_master', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_master').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_magic_mystery_master', Character.MakeScope ).End )]"
+												
+											}								 
+										}
+									}
+								}
+							}
+							expand = {}
+						}
+						vbox = {
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							max_width = 500
+							text_single = {
+								text = game_concept_zz_mystery
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 0 30 } }
+							flowcontainer = {
+								text_single = {
+									align = left
+									raw_text = "[Scope.Char.MakeScope.Var('zz_valyria_teach_mystery').CharacterMemory.GetName|U]"
+								}
+							}
+							spacer = { size = { 00 25 } }
+							scrollbox = {
+								name = "spell_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 450
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_teach_mystery_list')]"
+										
+										item = {
+											button_standard = {
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 400 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_mystery')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_teach_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_teach_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_teach_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_teach_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							spacer = { size = { 0 10 } }
+							flowcontainer = {
+								text_single = {
+									align = left
+									raw_text = "[Scope.Char.MakeScope.Var('zz_valyria_teach_mystery').CharacterMemory.GetName|U]"
+								}
+							}
+							spacer = { size = { 0 10 } }
+
+							
+							button_standard = {
+								text_single = {
+									minimumsize = { 200 38 }
+									margin = { 15 15 }
+									raw_text = "Study Mystery"
+									resizeparent = yes
+									align = center|nobaseline
+									default_format = "#low"								
+								}
+								onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_teach').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+							}
+							expand = {}
+						}
+						vbox = {
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							max_width = 300
+							spacer = { size = { 0 30 } }
+							text_single = {
+								raw_text = "Mystery Student"
+								fontsize = 24
+								align = center
+							}
+							spacer = { size = { 00 30 } }
+							vbox = {
+								size = { 200 120 }
+								datacontext = "[GetPlayer.MakeScope.Var('zz_valyria_mystery_magic_learner').Char]"
+								portrait_head_small = {}
+								text_single = {
+									align = left
+									text = "[Character.GetNameNoTooltip]"
+								}
+							}
+							spacer = { size = { 00 25 } }
+							scrollbox = {
+								name = "mages_scrollarea"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 250
+								max_height = 450
+								blockoverride "scrollbox_content"
+								{
+									dynamicgridbox = {
+										datamodel = "[Scope.GetList('magic_mystery_learner_list')]"
+									
+										item = {
+											button_standard = {
+												size = { 200 120 }
+												align = left
+												datacontext = "[Scope.GetCharacter]"
+												layoutpolicy_vertical = expanding
+												layoutpolicy_horizontal = growing
+
+												down = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_learner').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery_magic_learner', Character.MakeScope ).End )]"
+												onclick = "[GetScriptedGui('zz_valyria_magic_learning_type_mystery_learner').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery_magic_learner', Character.MakeScope ).End )]"
+												vbox = {
+													layoutpolicy_horizontal = expanding
+													layoutpolicy_vertical = expanding
+													margin_right = 4
+													spacing = 5
+													portrait_head_small = {}
+													text_single = {
+														text = "[Character.GetNameNoTooltip]"
+													}
+													spacer = { size = { 00 15 } }
+												}
+											}								 
+										}
+									}
+								}
+							}
+							expand = {}
+						}
+					}
+					hbox = { 
+						visible = "[GetScriptedGui('zz_valyria_magic_learning_type_scroll').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						
 						datacontext = "[GetPlayer.MakeScope]"
@@ -179,6 +621,7 @@ types magic_scroll_learning {
 									default_format = "#low"								
 								}
 								datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_learn')]"
+								
 								onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 							}
 							expand = {}
