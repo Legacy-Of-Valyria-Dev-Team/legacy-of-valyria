@@ -1,0 +1,46 @@
+﻿yy_show_province_window = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_recruitment.dds"
+	}
+	
+	ai_check_interval = 6
+	sort_order = 1000
+	desc = yy_show_province_window_desc
+	is_shown = {
+		agot_slavery_allowed_trigger = yes
+		NOR = {
+			has_variable = yy_province_window
+			has_variable_list = yy_provinces
+		}
+	}
+	effect = {
+		#custom_tooltip = agot_EE_manage_slaves_effect
+		#trigger_event = agot_EE_unsullied_events.1
+
+		# If player, open the window, else automate AI to just buy and sell slave pops
+		if = {
+			limit = { is_ai = no }
+			save_scope_as = yy_province_owner
+			set_variable = {
+				name = yy_province_window
+				value = yes
+			}
+			every_realm_county = {
+				limit = { holder = scope:yy_province_owner }
+				scope:yy_province_owner = {
+					add_to_variable_list = {
+						name = yy_provinces
+						target = prev
+					}
+				}
+			}
+		}
+	}
+	ai_potential = {
+		always = no
+	}
+
+	ai_will_do = {
+		base = 0
+	}
+}
