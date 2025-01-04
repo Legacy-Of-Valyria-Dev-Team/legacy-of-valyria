@@ -13,6 +13,12 @@ zz_valyria_settlement.0020 = {
 				}
 				desc = zz_valyria_settlement.0020.diesase.desc
 			}
+			triggered_desc = {
+				trigger = {
+					has_character_flag = settlement_corruption_issues
+				}
+				desc = zz_valyria_settlement.0020.corruption.desc
+			}
 		}
 	}
 	
@@ -45,10 +51,20 @@ zz_valyria_settlement.0020 = {
 				
 				add_character_flag = { flag = settlement_diesase_issues months = 1}
 			}
+			25 = { # CORRUPTION (COLONY BURNS THROUGH RESOURCES FASTER THAN EXPECTED)
+				# SECRETLY KILL THE CORRUPT EMBEZZLERS (INTRIGUE)
+				# ESTABLISH A SERIES OF AUDITORS (STEWARDSHIP)
+				# ESTABLISH A LEGAL SYSTEM (DIPLOMACY)
+				# HANG AN EMBEZZLER AS AN EXAMPLE (MARTIAL)
+				
+				add_character_flag = { flag = settlement_corruption_issues months = 1}
+			}
 		}
 		root = { save_scope_as = book_creator }
 	}
-
+	
+	########################## DIESASE OPTIONS ##############################
+	
 	# Option A: Institute Hygiene Campaign
 	option = {
 		name = zz_valyria_settlement.0020.diesase.a
@@ -117,7 +133,83 @@ zz_valyria_settlement.0020 = {
 			base = 100
 		}
 	}
-
+	
+	########################## CORRUPTION OPTIONS ###########################
+	
+	# Option A: SECRETLY KILL THE CORRUPT EMBEZZLERS
+	option = {
+		name = zz_valyria_settlement.0020.corruption.a
+		trigger = {
+			scope:host = {intrigue > 20}
+			has_character_flag = settlement_corruption_issues
+		}
+		add_character_flag = zz_valyria_settlement.0020.corruption.a
+		zz_valyria_settlement_skill_test = {
+			SKILL = intrigue 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_settlement.0020.corruption.a
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option B: ESTABLISH A SERIES OF AUDITORS
+	option = {
+		name = zz_valyria_settlement.0020.corruption.b
+		trigger = {
+			scope:host = {stewardship > 20}
+			has_character_flag = settlement_corruption_issues
+		}
+		add_character_flag = zz_valyria_settlement.0020.corruption.b
+		zz_valyria_settlement_skill_test = {
+			SKILL = stewardship 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_settlement.0020.corruption.b
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option C: ESTABLISH A LEGAL SYSTEM
+	option = {
+		name = zz_valyria_settlement.0020.corruption.c
+		trigger = {
+			scope:host = {diplomacy > 20}
+			has_character_flag = settlement_corruption_issues
+		}
+		add_character_flag = zz_valyria_settlement.0020.corruption.c
+		zz_valyria_settlement_skill_test = {
+			SKILL = diplomacy 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_settlement.0020.corruption.c
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option D: HANG AN EMBEZZLER AS AN EXAMPLE
+	option = {
+		name = zz_valyria_settlement.0020.corruption.d
+		trigger = {
+			scope:host = {martial > 20}
+			has_character_flag = settlement_corruption_issues
+		}
+		add_character_flag = zz_valyria_settlement.0020.corruption.d
+		zz_valyria_settlement_skill_test = {
+			SKILL = martial 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_settlement.0020.corruption.d
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	#############################################################################
+	
 	# Option Z: muddle through, a 25% chance of major, medium, tiny, negative progress
 	option = {
 		name = zz_valyria_settlement.0020.z
