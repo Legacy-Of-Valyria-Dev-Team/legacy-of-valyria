@@ -44,24 +44,7 @@
 		#cancel the activity by not setting a new host
 		#free the students
 		scope:activity = {
-			every_attending_character = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			every_attending_character = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			every_attending_character = {
-				limit = {
-					has_character_flag = generated_character_uni
-				}
-				remove_character_flag = generated_character_uni
-			}
+
 		}
 		# Send your entourage home
 		scope:host = {
@@ -350,6 +333,14 @@
 				subtract = root.adult_education_activity_cost
 				desc = activity_cost_scale_by_era_desc
 			}
+			if = {
+				limit = { zz_valyria_has_volcano = yes }
+				add = {
+					value = root.adult_education_activity_cost
+					multiply = activity_cost_scale_by_era
+					multiply = 10
+				}
+			}
 		}
 	}
 
@@ -358,6 +349,14 @@
 			add = { # Base Cost, scaled by era
 				value = zz_valyria_colonisation_activity_cost
 				multiply = activity_cost_scale_by_era
+				if = {
+					limit = { zz_valyria_has_volcano = yes }
+					add = {
+						value = root.adult_education_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 10
+					}
+				}
 			}
 			
 
