@@ -171,6 +171,7 @@ window = {
 												onclick = "[GetVariableSystem.Clear('show_province_view')]"
 												onclick = "[GetScriptedGui('yy_province_window_data').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Scope.Title.MakeScope).End)]"
 												onclick = "[GetVariableSystem.SetOrToggle('show_county_view', Scope.Title.GetNameNoTooltip)]"
+												onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_county_overview')]"
 												down = "[And(ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_province').Title, Scope.Title), GetVariableSystem.Exists('show_county_view'))]"
 											}
 										}
@@ -559,6 +560,7 @@ types ProvinceWindowTypes {
 	type yy_county_view = vbox  {
 		datacontext = "[GetPlayer.MakeScope]"
 		datacontext = "[Scope.Var('yy_selected_province').Title]"
+		datacontext = "[Title.GetProvince.GetCountyCapitalProvince]"
 		visible = "[Scope.Var('yy_selected_province').IsSet]"
 		min_width = 550
 		max_width = 550
@@ -566,77 +568,165 @@ types ProvinceWindowTypes {
 		layoutpolicy_vertical = expanding
 		margin = { 15 15 }
 
-		widget = {
-			datacontext = "[Title.GetProvince.GetCountyCapitalProvince]"
-			layoutpolicy_horizontal = fixed
-			layoutpolicy_vertical = fixed
-			minimumsize = { 0 200 }
-			scissor = yes
-
-			background = {
-				using = Background_Area_Dark
-				margin_left = 5
-				margin_top = 3
-			}
-
-			background = {
-				texture = "[Province.GetHolding.GetIllustration]"
-				alpha = 0.8
-
-				modify_texture = {
-					texture = "gfx/interface/window_county/mask_holding_illustration.dds"
-					blend_mode = alphamultiply
-					alpha = 0.95
-				}
-			}
+		text_single = {
+			layoutpolicy_horizontal = expanding
+			text = "[Title.GetNameNoTooltip]"
+			align = center
+			using = Font_Size_Big
+			font = TitleFont
+			fontsize_min = 16
 		}
 
 		vbox = {
-			datacontext = "[Title.GetProvince.GetCountyCapitalProvince]"
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = expanding
 
-			flowcontainer = {
-				layoutpolicy_horizontal = expanding
-				ignoreinvisible = yes
-				spacing = 5
-				margin = { 5 5 }
+			coa_title_big_crown = {}
+			spacer = { size = { 0 5 } }
 
-				coa_title_medium = {
-					#AGOT Modified, Ruins
-					visible = "[And(HoldingView.GetTitle.HasHolder, Not(HoldingView.GetTitle.GetHolder.HasTrait(GetTrait('ruin').Self)))]" #ruin
+			hbox = {
+				name = "tabs"
+				layoutpolicy_horizontal = expanding
+
+				button_tab = {
+					layoutpolicy_horizontal = expanding
+					raw_text = "Overview" #LOCALIZE!!!
+					using = tooltip_ne
+					default_format = "#low"
+
+					onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_county_overview')]"
+					down = "[GetVariableSystem.HasValue('gui_tabs', 'tab_county_overview')]"
 				}
 
-				flowcontainer = {
-					direction = vertical
-					ignoreinvisible = yes
-					margin_top = 5
+				button_tab = {
+					#visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+					layoutpolicy_horizontal = expanding
+					raw_text = "Slaves" #LOCALIZE!!!
+					using = tooltip_ne
+					default_format = "#low"
 
-					flowcontainer = {
-						visible = "[Province.GetTitle.HasHolder]"
-						ignoreinvisible = yes
+					onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_county_slavery')]"
+					down = "[GetVariableSystem.HasValue('gui_tabs', 'tab_county_slavery')]"
+				}
+			}
 
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							text = "[Province.GetTitle.GetName]"
-							tooltip = "[Province.GetTitle.GetName]"
-							using = Font_Size_Big
-							font = TitleFont
-							fontsize_min = 16
+			vbox = {
+				visible = "[GetVariableSystem.HasValue('gui_tabs', 'tab_county_overview')]"
+				datacontext = "[Title.GetCountyData]"
+				layoutpolicy_horizontal = expanding
+				margin = { 15 15 }
+
+				hbox = {
+					layoutpolicy_horizontal = expanding
+
+					text_single = { text = "[holder]" }
+					spacer = { size = { 15 0 } }
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						text = "[Title.GetHolder.GetName]"
+						default_format = "#high"
+					}
+				}
+				hbox = {
+					layoutpolicy_horizontal = expanding
+
+					text_single = { raw_text = "[control|E]:" }
+					spacer = { size = { 15 0 } }
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						margin = { 5 0 }
+						text = "[County.GetControlLevel]"
+
+						default_format = "#high"
+						tooltipwidget = { county_control_tooltip_container = {} }
+
+						background = {
+							visible = "[LessThan_CFixedPoint(County.GetControl, '(CFixedPoint)100')]"
+							margin = { 5 0 }
+							using = Status_Bad
 						}
 					}
+					text_single = {
+						datacontext = "[CountyDataBreakdowns.AccessControl(County.Self)]"
+						visible = "[Or(LessThan_CFixedPoint(County.GetControl, '(CFixedPoint)100'), LessThan_CFixedPoint(ValueBreakdown.GetFixedPointValue, '(CFixedPoint)0'))]"
 
-					flowcontainer = {
-						ignoreinvisible = yes
+						margin_right = 5
+						text = "COUNTY_CONTROL_CHANGE_MONTHLY"
 
-						text_label_left = {
-							text = "YY_PROVINCE_GUI_HOLDINGDESC"
+						tooltip_visible = "[ValueBreakdown.HasTooltip]"
+						tooltipwidget = { widget_value_breakdown_tooltip = {} }
+					}
+				}
+				hbox = {
+					datacontext = "[County.GetCount.GetGovernment]"
+					datacontext = "[CountyDataBreakdowns.AccessDevelopmentChange(County.Self)]"
+					layoutpolicy_horizontal = expanding
+
+					text_single = { raw_text = "[development|E]:" }
+					spacer = { size = { 15 0 } }
+					text_single = {
+						visible = "[GovernmentType.IsAffectedByDevelopment]"
+						layoutpolicy_horizontal = expanding
+						margin = { 5 0 }
+						text = "[County.GetDevelopmentLevel]"
+
+						default_format = "#high"
+						tooltipwidget = { county_development_tooltip_container = {} }
+					}
+					text_single = {
+						visible = "[Not( GovernmentType.IsAffectedByDevelopment )]"
+						layoutpolicy_horizontal = expanding
+						margin = { 5 0 }
+						text = "[County.GetDevelopmentLevel]"
+
+						default_format = "#high;weak"
+						tooltipwidget = { county_development_tooltip_container = {} }
+					}
+					text_single = {
+						visible = "[GovernmentType.IsAffectedByDevelopment]"
+						margin_left = -5
+						text = "[ValueBreakdown.GetValueIndicatorHideNone('(CFixedPoint)-5', '(CFixedPoint)1')]"
+
+						tooltip_visible = "[ValueBreakdown.HasTooltip]"
+						tooltipwidget = {
+							widget_value_breakdown_tooltip = {
+								blockoverride "header_text" {
+									text = "COUNTY_DEVELOPMENT_PROGRESS_MONTHLY_TOOLTIP_HEADER"
+								}
+							}
 						}
+					}
+				}
+				hbox = {
+					layoutpolicy_horizontal = expanding
+
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						raw_text = "[county_opinion|E]:"
+					}
+					#button_normal = {
+					#	name = "in_faction"
+					#	visible = "[County.GetCountyCapitalProvince.GetHolding.IsInFaction]"
+					#	#onclick = "[HoldingView.OnGotoFaction]"
+					#	tooltip = "COUNTY_IN_FACTION_TOOLTIP"
+					#	size = { 20 20 }
+					#	texture = "gfx/interface/icons/symbols/icon_warning.dds"
+					#}
+					text_single = {
+						datacontext = "[CountyDataBreakdowns.AccessOpinion(County.Self)]"
+						margin = { 5 0 }
+						raw_text = "[ValueBreakdown.GetValue]"
+
+						default_format = "#high"
+						tooltip_visible = "[ValueBreakdown.HasTooltip]"
+
+						tooltipwidget = { widget_value_breakdown_tooltip = {} }
 					}
 				}
 			}
 
 			vbox = {
+				visible = "[GetVariableSystem.HasValue('gui_tabs', 'tab_county_slavery')]"
 				layoutpolicy_horizontal = expanding
 						
 				background = {
