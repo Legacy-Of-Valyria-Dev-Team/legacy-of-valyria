@@ -4,21 +4,17 @@ manage_protector_decision = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
 	}
 	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
+	desc = manage_protector_decision_desc
 
-	ai_check_interval = 36
+	ai_check_interval = 0 # Set to 0 instead of 36 since the AI will never use this anyway (removed the is_ai checks below)
 
 	is_shown = {
 		#has_game_rule = debug_mode_on
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
 		OR = {
 			has_government = freehold_government
 			can_have_kingsguard = yes
 		}
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
 	}
 	
 	is_valid_showing_failures_only = {
@@ -29,6 +25,7 @@ manage_protector_decision = {
 	}
 
 	effect = {
+		custom_tooltip = manage_protector_decision_effect_tooltip
 		root = {
 			remove_variable = zz_protecter_protected
 			remove_variable = zz_protect_protector
