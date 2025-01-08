@@ -497,7 +497,7 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 		title = zz_valyria_magic_blood_magic_05_mysteries_of_replication.t
 		desc = zz_valyria_magic_blood_magic_05_mysteries_of_replication.desc
 		left_icon = scope:actor
-		right_icon = scope:recipient
+		right_icon = scope:target_char
 		custom_tooltip = zz_valyria_magic_blood_magic_05_mysteries_of_replication.tt
 		random_list = { 
 			50 = {
@@ -512,35 +512,35 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 
 					destroy_artifact = scope:target 
 					create_character = {
-						age = scope:recipient.age
+						age = var:si_selected_character.age
 						gender = male
 						gender_female_chance = {
 							value = 0
 							if = {
-								limit = { scope:recipient = { is_female = yes } }
+								limit = { var:si_selected_character = { is_female = yes } }
 								add = 100
 							}
 						}
-						template_character = scope:recipient
+						template_character = scope:target_char
 			
 			
-			
-						location = scope:actor.location
+						employer = scope:actor 
+						#location = scope:actor.location
 			
 						random_traits = no
 			
-						#faith = scope:recipient.faith
-						#culture = scope:recipient.culture
-						dynasty_house = scope:recipient.father.house
+						#faith = var:si_selected_character.faith
+						#culture = var:si_selected_character.culture
+						dynasty_house = var:si_selected_character.father.house
 			
 						save_scope_as = character_clone 
 			
 						after_creation = {
-							copy_inheritable_appearance_from = scope:recipient
-							copy_traits = scope:recipient
-							change_first_name = { template_character = scope:recipient }
-							set_father = scope:recipient.father
-							set_mother = scope:recipient.mother
+							copy_inheritable_appearance_from = scope:target_char
+							copy_traits = scope:target_char
+							change_first_name = { template_character = scope:target_char }
+							set_father = scope:target_char.father
+							set_mother = scope:target_char.mother
 							remove_trait = dragonrider
 							remove_trait = nightswatch
 							remove_trait = pregnant
@@ -553,6 +553,7 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 						var:zz_valyria_magic_blood_magic_spells005 ?= flag:make_clone_child
 					}
 					remove_variable = zz_valyria_magic_blood_magic_spells005 
+
 					destroy_artifact = scope:target 
 					create_character = {
 						age = 1
@@ -560,35 +561,34 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 						gender_female_chance = {
 							value = 0
 							if = {
-								limit = { scope:recipient = { is_female = yes } }
+								limit = { var:si_selected_character = { is_female = yes } }
 								add = 100
 							}
 						}
-						template_character = scope:recipient
+						template_character = scope:target_char
 			
 			
-			
-						location = scope:actor.location
+						employer = scope:actor 
+						#location = scope:actor.location
 			
 						random_traits = no
 			
-						#faith = scope:recipient.faith
-						#culture = scope:recipient.culture
-						#dynasty_house = scope:recipient.father.house
+						#faith = var:si_selected_character.faith
+						#culture = var:si_selected_character.culture
+						dynasty_house = var:si_selected_character.father.house
 			
 						save_scope_as = character_clone 
 			
 						after_creation = {
-							copy_inheritable_appearance_from = scope:recipient
-							copy_traits = scope:recipient
-							change_first_name = { template_character = scope:recipient }
-							set_father = scope:recipient.father
-							set_mother = scope:recipient.mother
+							copy_inheritable_appearance_from = scope:target_char
+							copy_traits = scope:target_char
+							change_first_name = { template_character = scope:target_char }
+							set_father = scope:target_char.father
+							set_mother = scope:target_char.mother
 							remove_trait = dragonrider
 							remove_trait = nightswatch
 							remove_trait = pregnant
 							remove_trait = infertile
-							
 						}
 					}
 				}
@@ -599,28 +599,28 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 					remove_variable = zz_valyria_magic_blood_magic_spells005 
 					destroy_artifact = scope:target 
 					create_character = {
-						age = scope:recipient.age
-						opposite_gender = scope:recipient
-						template_character = scope:recipient
+						age = var:si_selected_character.age
+						opposite_gender = scope:target_char
+						template_character = scope:target_char
 			
 			
-			
-						location = scope:actor.location
+						employer = scope:actor 
+						#location = scope:actor.location
 			
 						random_traits = no
 			
-						#faith = scope:recipient.faith
-						#culture = scope:recipient.culture
-						dynasty_house = scope:recipient.father.house
+						#faith = var:si_selected_character.faith
+						#culture = var:si_selected_character.culture
+						dynasty_house = var:si_selected_character.father.house
 			
 						save_scope_as = character_clone 
 			
 						after_creation = {
-							copy_inheritable_appearance_from = scope:recipient
-							copy_traits = scope:recipient
-							change_first_name = { template_character = scope:recipient }
-							set_father = scope:recipient.father
-							set_mother = scope:recipient.mother
+							copy_inheritable_appearance_from = scope:target_char
+							copy_traits = scope:target_char
+							change_first_name = { template_character = scope:target_char }
+							set_father = scope:target_char.father
+							set_mother = scope:target_char.mother
 							remove_trait = dragonrider
 							remove_trait = nightswatch
 							remove_trait = pregnant
@@ -628,6 +628,20 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 						}
 					}
 				}
+				scope:target_char = {
+					save_scope_as = zz_magic_master
+				}
+				scope:character_clone ?= {
+					save_scope_as = zz_magic_learner
+				}
+				if = {
+					limit = {
+						exists = scope:zz_magic_learner
+					}
+					zz_copy_memories = yes
+				}
+				
+				
 				trigger_event = zz_valyria_magic_blood_magic.0003 
 			}
 			50 = {

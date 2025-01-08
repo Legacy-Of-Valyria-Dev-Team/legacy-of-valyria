@@ -463,6 +463,74 @@ zz_valyria_magic_blood_magic_spells.005 = {
 		gui = "event_window_artifact_selection"
 		container = "custom_widgets_container"
 	}
+
+	option = {
+		name = zz_valyria_magic_blood_magic_spells.005.opt.a
+		var:selected_artifact ?= { 
+			save_scope_as = target
+		}
+		trigger_event = zz_valyria_magic_blood_magic_spells.00501
+	}
+	option = {
+		name = zz_valyria_magic_blood_magic_spells.005.opt.z
+	}
+}
+
+zz_valyria_magic_blood_magic_spells.00501 = {
+	type = character_event
+	window = zz_valyria_magic_character_event
+	title = zz_valyria_magic_blood_magic_spells.005.t
+	desc = zz_valyria_magic_blood_magic_spells.005.desc
+	theme = dragon
+	left_portrait = root
+	right_portrait = scope:recipient
+	immediate = {
+		clear_variable_list ?= possible_characters
+		remove_variable = si_selected_character
+		scope:recipient = {
+			root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = si_selected_character }
+					}
+					set_variable = { name = si_selected_character value = prev }
+				}
+			}
+			every_close_or_extended_family_member = {
+				even_if_dead = yes
+				root = {
+					add_to_variable_list = {
+						name = possible_characters
+						target = prev
+					}
+					if = {
+						limit = {
+							NOT = { has_variable = si_selected_character }
+						}
+						set_variable = { name = si_selected_character value = prev }
+					}
+				}
+			}
+		}
+	}
+	widget = {
+		is_shown = {
+			root = {
+				any_in_list = {
+					variable = possible_characters
+					count > 0
+				}
+			}
+		}
+		gui = "event_window_character_selection_short"
+		container = "custom_widgets_container"
+	}
+	
+
 	option = {
 		name = zz_valyria_magic_blood_magic_spells.005.opt.a
 		trigger = {
@@ -472,8 +540,8 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				}
 			}
 		}
-		var:selected_artifact ?= { 
-			save_scope_as = target
+		var:si_selected_character ?= { 
+			save_scope_as = target_char
 		}
 		set_variable = { 
 			name = zz_valyria_magic_blood_magic_spells005
@@ -494,8 +562,8 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				}
 			}
 		}
-		var:selected_artifact ?= { 
-			save_scope_as = target
+		var:si_selected_character ?= { 
+			save_scope_as = target_char
 		}
 		set_variable = { 
 			name = zz_valyria_magic_blood_magic_spells005
@@ -516,8 +584,8 @@ zz_valyria_magic_blood_magic_spells.005 = {
 				}
 			}
 		}
-		var:selected_artifact ?= { 
-			save_scope_as = target
+		var:si_selected_character ?= { 
+			save_scope_as = target_char
 		}
 		set_variable = { 
 			name = zz_valyria_magic_blood_magic_spells005
@@ -528,9 +596,6 @@ zz_valyria_magic_blood_magic_spells.005 = {
 			SKILL = blood_magic
 			SPELL = zz_valyria_magic_blood_magic_05_mysteries_of_replication
 		}
-	}
-	option = {
-		name = zz_valyria_magic_blood_magic_spells.005.opt.z
 	}
 }
 zz_valyria_magic_blood_magic_spells.006 = {
