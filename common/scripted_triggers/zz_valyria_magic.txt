@@ -667,7 +667,35 @@ zz_valyria_mystery_has_dead_dragon_egg_trigger = {
 		var:zz_magic_target = {
 			any_character_artifact = {
 				has_variable = dragon_egg
-				#has_variable = dud_egg 
+				has_variable = dud_egg 
+				NOT = { has_variable = cradled_egg }
+				NOT = { has_variable = pitted_egg }
+			}
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+		}
+	}
+}
+zz_valyria_mystery_has_dragon_egg_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_mystery = {
+				has_memory_type = $SPELL$
+			}
+		}
+		var:zz_magic_caster = { 
+			zz_valyria_has_mana_to_cast = {
+				MANACOST = scope:zz_valyria_mystery.var:manacost
+			}
+		}
+		var:zz_magic_target = {
+			any_character_artifact = {
+				has_variable = dragon_egg
+				NOT = {has_variable = dud_egg}
 				NOT = { has_variable = cradled_egg }
 				NOT = { has_variable = pitted_egg }
 			}
@@ -1074,6 +1102,31 @@ zz_valyria_scroll_has_dead_dragon_egg_trigger = {
 			any_character_artifact = {
 				has_variable = dragon_egg
 				has_variable = dud_egg 
+				NOT = { has_variable = cradled_egg }
+				NOT = { has_variable = pitted_egg }
+			}
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+		}
+	}
+}
+zz_valyria_scroll_has_dragon_egg_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_scroll = {
+				var:spell ?= flag:$SPELL$
+			}
+		}
+		var:zz_item_caster = { 
+		}
+		var:zz_magic_target = {
+			any_character_artifact = {
+				has_variable = dragon_egg
+				NOT =  {has_variable = dud_egg }
 				NOT = { has_variable = cradled_egg }
 				NOT = { has_variable = pitted_egg }
 			}
