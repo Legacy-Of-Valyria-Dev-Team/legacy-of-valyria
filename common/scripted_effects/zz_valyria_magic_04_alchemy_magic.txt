@@ -94,8 +94,8 @@ zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_effect = {
 			}
 		}
 		scope:recipient = { 
-			add_gold = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_04 
-			domicile ?= { change_provisions = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_04 }
+			add_gold = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_value 
+			domicile ?= { change_provisions = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_value }
 		}
 		scope:recipient = {
 			if = {
@@ -366,7 +366,7 @@ zz_valyria_magic_alchemy_magic_07_mysteries_of_pious_transmutation_effect = {
 				callous = minor_stress_gain
 			}
 		}
-		scope:recipient = { add_piety = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_03 } 
+		scope:recipient = { add_piety = zz_valyria_magic_alchemy_magic_07_mysteries_of_pious_transmutation_value } 
 						
 		scope:recipient = {
 			if = {
@@ -403,7 +403,7 @@ zz_valyria_magic_alchemy_magic_08_mysteries_of_prestige_transmutation_effect = {
 				callous = minor_stress_gain
 			}
 		}
-		scope:recipient = { add_prestige = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_02 } 
+		scope:recipient = { add_prestige = zz_valyria_magic_alchemy_magic_08_mysteries_of_prestige_transmutation_value } 
 						
 		scope:recipient = {
 			if = {
@@ -441,9 +441,193 @@ zz_valyria_magic_alchemy_magic_09_mysteries_of_renown_transmutation_effect = {
 			}
 		}
 		scope:recipient = { 
-			dynasty = { add_dynasty_prestige = zz_valyria_magic_alchemy_magic_03_mysteries_of_transmutation_option_01}
+			dynasty = { add_dynasty_prestige = zz_valyria_magic_alchemy_magic_09_mysteries_of_renown_transmutation_value}
 		}
 						
+		scope:recipient = {
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier  = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_alchemy_magic_10_mysteries_of_age_manipulation_subtraction_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_alchemy_magic_10_mysteries_of_age_manipulation_subtraction.t
+		desc = zz_valyria_magic_alchemy_magic_10_mysteries_of_age_manipulation_subtraction.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_alchemy_magic_10_mysteries_of_age_manipulation_subtraction.tt
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		if = { 
+			limit = {
+				scope:option_01 ?= yes 
+			}
+			if = { 
+				limit = {
+					scope:recipient = { 
+						has_trait = immortal 
+					}
+				}
+				set_variable = {
+					name = effective_age
+					value = scope.scope:recipient.effective_age
+					days = 1
+				}
+				change_variable = {
+					name = effective_age
+					subtract = 1
+				}
+				scope:recipient = {
+					set_immortal_age = root.var:effective_age
+				}
+			}
+			else = {
+				scope:recipient = {
+					change_age = -1
+				}
+			}
+		} 
+		else = {
+			if = { 
+				limit = {
+					scope:recipient = { 
+						has_trait = immortal 
+					}
+				}
+				set_variable = {
+					name = effective_age
+					value = scope.scope:recipient.effective_age
+					days = 1
+				}
+				change_variable = {
+					name = effective_age
+					subtract = zz_valyria_magic_alchemy_magic_10_mysteries_of_age_manipulation_subtraction_value
+				}
+				scope:recipient = {
+					set_immortal_age = root.var:effective_age
+				}
+			}
+			else = {
+				scope:recipient = {
+					change_age = zz_valyria_magic_alchemy_magic_10_mysteries_of_age_manipulation_subtraction_value
+				}
+			}
+		}
+
+		
+		scope:recipient = {
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier  = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_alchemy_magic_11_mysteries_of_age_manipulation_addition_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_alchemy_magic_11_mysteries_of_age_manipulation_addition.t
+		desc = zz_valyria_magic_alchemy_magic_11_mysteries_of_age_manipulation_addition.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_alchemy_magic_11_mysteries_of_age_manipulation_addition.tt
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+		if = { 
+			limit = {
+				scope:option_01 ?= yes 
+			}
+			if = { 
+				limit = {
+					scope:recipient = { 
+						has_trait = immortal 
+					}
+				}
+				set_variable = {
+					name = effective_age
+					value = scope.scope:recipient.effective_age
+					days = 1
+				}
+				change_variable = {
+					name = effective_age
+					add = 1
+				}
+				scope:recipient = {
+					set_immortal_age = root.var:effective_age
+				}
+			}
+			else = {
+				scope:recipient = {
+					change_age = 1
+				}
+			}
+		} 
+		else = {
+			if = { 
+				limit = {
+					scope:recipient = { 
+						has_trait = immortal 
+					}
+				}
+				set_variable = {
+					name = effective_age
+					value = scope.scope:recipient.effective_age
+					days = 1
+				}
+				change_variable = {
+					name = effective_age
+					add = zz_valyria_magic_alchemy_magic_11_mysteries_of_age_manipulation_addition_value
+				}
+				scope:recipient = {
+					set_immortal_age = root.var:effective_age
+				}
+			}
+			else = {
+				scope:recipient = {
+					change_age = zz_valyria_magic_alchemy_magic_11_mysteries_of_age_manipulation_addition_value
+				}
+			}
+		}
+
+		
 		scope:recipient = {
 			if = {
 				limit = {
