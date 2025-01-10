@@ -162,7 +162,7 @@ pregnancy.0001 = {
 					is_ai = no
 				}
 				modifier = { 
-					add = -200
+					add = -2000
 					OR = {
 						has_character_flag = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection_flag
 						has_character_flag = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection_flag
@@ -235,6 +235,245 @@ pregnancy.0001 = {
 					days = 2
 				}
 			}
+		}
+	}
+}
+
+namespace = birth 
+
+birth.3001 = {
+	type = character_event
+	title = birth.3001.t
+	desc = birth.3001.desc_other_child
+	theme = death
+	override_background = { reference = bedchamber}
+	left_portrait = {
+		character = root
+		animation = grief
+		outfit_tags = { nightgown }
+	}
+	right_portrait = {
+		character = scope:father
+		trigger = {
+			exists = scope:father
+		}
+		animation = disbelief
+	}
+
+	trigger = {
+		NOT = {
+			has_character_flag = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection_flag
+		}
+		is_pregnant = yes
+	}
+
+	immediate = {
+		play_music_cue = mx_cue_death
+		create_character_memory = {
+			type = child_stillborn
+			participants = {
+				mother = root
+			}
+		}
+		hidden_effect = {
+			random_dummy_gender_effect = yes
+			end_pregnancy = yes
+			#AGOT Added
+			if = {
+				limit = {
+					has_character_flag = stillborn_girl
+				}
+				dummy_female = { save_scope_as = dummy_gender }
+			}
+			else_if = {
+				limit = {
+					has_character_flag = stillborn_boy
+				}
+				dummy_male = { save_scope_as = dummy_gender }
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:father
+				scope:father = {
+					is_alive = yes
+				}
+			}
+			scope:father = {
+				trigger_event = birth.3002
+			}
+		}
+		custom_tooltip = birth.3001.a.tt
+		pregnancy_cleanup_effect = yes
+	}
+
+	#NO NAMING WIDGET
+
+	option = {
+		name = birth.3001.a
+	}
+}
+
+#BIRTH: Mother: Mother dies, child survives
+birth.3011 = {
+	type = character_event
+	title = birth.3001.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					exists = scope:child_2
+				}
+				desc = birth.3011.desc_twin
+			}
+			desc = birth.3011.desc
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = { is_landless_adventurer = yes }
+				desc = birth.3011.adventurer
+			}
+			desc = birth.3011.landed
+		}
+	}
+	theme = death
+	override_background = { reference = bedchamber }
+	left_portrait = {
+		character = root
+		animation = newborn
+		outfit_tags = { nightgown }
+	}
+	lower_center_portrait = scope:child
+	lower_left_portrait = scope:child_2
+
+	trigger = {
+		NOT = {
+			has_character_flag = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection_flag
+		}
+		has_character_flag = birth_mother_will_die
+	}
+
+	immediate = {
+		play_music_cue = mx_cue_death
+		pregnancy_maintainance_effect = yes
+	}
+
+	#NAMING WIDGET
+	widgets = {
+		widget = {
+			is_shown = {
+				allow_naming_on_birth_of_child_trigger = { CHILD = scope:child }
+			}
+			gui = "event_window_widget_name_child"
+			container = "dynamic_birth_name"
+			controller = name_character
+			setup_scope = { scope:child = { save_scope_as = name_character_target } }
+		}
+		widget = {
+			is_shown = {
+				allow_naming_on_birth_of_child_trigger = { CHILD = scope:child_2 }
+			}
+			gui = "event_window_widget_name_child"
+			container = "dynamic_birth_name"
+			controller = name_character
+			setup_scope = { scope:child_2 = { save_scope_as = name_character_target } }
+		}
+	}
+
+	option = {
+		name = {
+			trigger = { scope:child = { has_trait = twin } }
+			text = birth.3011.twin.a
+		}
+		name = {
+			trigger = { scope:child = { NOT = { has_trait = twin } } }
+			text = birth.3011.a
+		}
+
+		if = {
+			limit = {
+				exists = scope:father
+				scope:father = {
+					is_alive = yes
+				}
+			}
+			scope:father = {
+				add_character_flag = {
+					flag = sent_relevant_death_event
+					days = 5
+				}
+				trigger_event = birth.3012
+			}
+		}
+		hidden_effect = {
+			remove_trait = pregnant
+		}
+		death = {
+			death_reason = death_childbirth
+		}
+	}
+}
+
+birth.3021 = {
+	type = character_event
+	title = birth.3001.t
+	desc = birth.3021.desc
+	theme = death
+	override_background = { reference = bedchamber }
+	left_portrait = {
+		character = root
+		animation = pain
+		outfit_tags = { nightgown }
+	}
+
+	trigger = {
+		NOR = {
+			has_character_flag = zz_valyria_magic_blood_magic_20_mysteries_of_maternal_protection_flag
+			has_character_flag = zz_valyria_magic_blood_magic_21_mysteries_of_babe_protection_flag
+		}
+		is_pregnant = yes
+	}
+
+	immediate = {
+		play_music_cue = mx_cue_death
+		create_character_memory = {
+			type = child_stillborn
+			participants = {
+				mother = root
+			}
+		}
+		hidden_effect = {
+			random_dummy_gender_effect = yes
+			end_pregnancy = yes
+		}
+		custom_tooltip = birth.3001.a.tt
+	}
+
+	#NO NAMING WIDGET
+
+	option = {
+		name = birth.3021.a
+		
+		if = {
+			limit = {
+				exists = scope:father
+				scope:father = {
+					is_alive = yes
+				}
+			}
+			scope:father = {
+				add_character_flag = {
+					flag = sent_relevant_death_event
+					days = 5
+				}
+				trigger_event = birth.3022
+			}
+		}
+		hidden_effect = {
+			remove_trait = pregnant
+		}
+		death = {
+			death_reason = death_childbirth
 		}
 	}
 }
