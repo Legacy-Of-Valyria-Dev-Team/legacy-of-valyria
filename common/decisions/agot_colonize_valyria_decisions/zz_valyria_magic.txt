@@ -9,6 +9,8 @@ convert_to_freehold_decision = {
 
 	ai_check_interval = 36
 
+	confirm_text = convert_to_freehold_decision_confirm
+
 	is_shown = {
 		#has_game_rule = debug_mode_on
 		NOT = { 
@@ -159,7 +161,7 @@ restore_valyrian_freehold_decision = {
 		is_playable_character = yes
 		has_title = title:e_valyria
 		NOT = { primary_title = title:e_lands_of_long_summer }
-		NOT = {  #Can only do it once.
+		NOT = { #Can only do it once.
 			is_target_in_global_variable_list = {
 				name = unavailable_unique_decisions
 				target = flag:flag_restored_valyrian_freehold
@@ -248,17 +250,13 @@ order_scroll_crafting_decision = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
 	}
 	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
+	desc = order_scroll_crafting_decision_desc
 
-	ai_check_interval = 36
+	ai_check_interval = 0 # Set to 0 instead of 36 since the AI will never use this anyway (removed the is_ai checks below)
 
 	is_shown = {
-		has_government = freehold_government
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
+		zz_valyria_is_mage = yes
 	}
 	
 	is_valid_showing_failures_only = {
@@ -269,6 +267,11 @@ order_scroll_crafting_decision = {
 	}
 
 	effect = {
+		custom_tooltip = order_scroll_crafting_decision_effect_tooltip
+		set_variable = {
+			name = zz_magic_ui
+			value = flag:scroll_making
+		}
 		root = {
 			save_scope_as = actor
 			save_scope_as = zz_magic_user
@@ -434,17 +437,13 @@ order_item_crafting_decision = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
 	}
 	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
+	desc = order_item_crafting_decision_desc
 
-	ai_check_interval = 36
+	ai_check_interval = 0 # Set to 0 instead of 36 since the AI will never use this anyway (removed the is_ai checks below)
 
 	is_shown = {
 		has_government = freehold_government
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
 	}
 	
 	is_valid_showing_failures_only = {
@@ -455,8 +454,7 @@ order_item_crafting_decision = {
 	}
 
 	effect = {
-
-		
+		custom_tooltip = order_item_crafting_decision_effect_tooltip
 		root = {
 			save_scope_as = actor
 			save_scope_as = zz_magic_user
@@ -598,19 +596,14 @@ manage_magic_school_decision = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
 	}
 	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
+	desc = manage_magic_school_decision_desc
 
-	ai_check_interval = 72
+	ai_check_interval = 0 # Set to 0 instead of 72 since the AI will never use this anyway (removed the is_ai checks below)
 
 	is_shown = {
 		#has_game_rule = debug_mode_on
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
 		has_trait = zz_magister
-		is_ai = no
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
 	}
 	
 	is_valid_showing_failures_only = {
@@ -621,6 +614,7 @@ manage_magic_school_decision = {
 	}
 
 	effect = {
+		custom_tooltip = manage_magic_school_decision_effect_tooltip
 		trigger_event = zz_valyria_magic_management.001
 	}
 }
@@ -630,19 +624,14 @@ manage_grant_nickname_decision = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
 	}
 	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
+	desc = manage_grant_nickname_decision_desc
 
-	ai_check_interval = 72
+	ai_check_interval = 0 # Set to 0 instead of 72 since the AI will never use this anyway (removed the is_ai checks below)
 
 	is_shown = {
 		#has_game_rule = debug_mode_on
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
 		has_trait = zz_magister
-		is_ai = no
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
 	}
 	
 	is_valid_showing_failures_only = {
@@ -653,29 +642,103 @@ manage_grant_nickname_decision = {
 	}
 
 	effect = {
+		custom_tooltip = manage_grant_nickname_decision_effect_tooltip
 		trigger_event = zz_valyria_magic_management.003
 	}
 }
 
+order_scroll_learning_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+	}
+	decision_group_type = zz_valyria_magic
+	desc = order_scroll_learning_decision_desc
 
+	ai_check_interval = 0 # Set to 0 instead of 36 since the AI will never use this anyway (removed the is_ai checks below)
+
+	is_shown = {
+		#has_government = freehold_government
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
+		zz_valyria_is_mage = yes 
+	}
+	
+	is_valid_showing_failures_only = {
+		is_at_war = no
+	}
+
+	cost = {
+	}
+
+	effect = {
+		custom_tooltip = order_scroll_learning_decision_effect_tooltip
+		remove_variable = zz_magic_user
+		remove_variable = zz_magic_ui
+		remove_variable = learning_type
+		save_scope_as = actor
+		save_scope_as = zz_magic_user
+		set_variable = {
+			name = zz_magic_user
+			value = scope:zz_magic_user
+		}
+		if = {
+			limit = {
+				zz_valyria_is_mage = yes 
+			}
+			zz_valyria_make_magic_master_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_magic_learner_list = {MAGIC_USER = zz_magic_user}
+			
+			zz_valyria_make_magic_mystery_master_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_magic_mystery_learner_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_master_spell_list = {MAGIC_USER = zz_magic_user MAGIC_TEACHER = zz_magic_mystery_master}
+		}
+		if = { 
+			limit = {
+				zz_valyria_is_scroll_holder = yes 
+			} 
+			zz_valyria_make_item_caster_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_scroll_learner_list = {MAGIC_USER = zz_magic_user}
+			zz_valyria_make_scroll_list = {MAGIC_USER = zz_magic_user ITEM_CASTER = zz_item_caster}
+		}
+		if = {
+			limit = {
+				zz_valyria_is_mage = yes 
+			}
+			set_variable = {
+				name = learning_type
+				value = flag:apprentice
+			}
+		}
+		else = {
+			set_variable = {
+				name = learning_type
+				value = flag:scroll
+			}
+		}
+		set_variable = {
+			name = zz_magic_ui
+			value = flag:scroll_learning
+		}
+	}
+}
 manage_dragon_rider_lifestyle_training_decision = {
 	picture = {
 		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
 	}
 	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
+	desc = manage_dragon_rider_lifestyle_training_decision_desc
 
-	ai_check_interval = 72
+	ai_check_interval = 0 # Set to 0 instead of 72 since the AI will never use this anyway (removed the is_ai checks below)
 
 	is_shown = {
 		#has_game_rule = debug_mode_on
+		has_ep3_dlc_trigger = yes # Moved the DLC check here instead of is_valid since the player without the DLC won't be able to use the decision anyway
 		has_government = freehold_government
-		is_ai = no 
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
+		OR = {
+			has_trait = dragonrider
+			any_courtier_or_guest = {
+				has_trait = dragonrider
+			}
+		}
 	}
 	
 	is_valid_showing_failures_only = {
@@ -686,41 +749,42 @@ manage_dragon_rider_lifestyle_training_decision = {
 	}
 
 	effect = {
+		custom_tooltip = manage_dragon_rider_lifestyle_training_decision_effect_tooltip
 		trigger_event = zz_valyria_magic_management.002
 	}
 }
 
-make_dummy_title_decision = {
-	picture = {
-		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
-	}
-	decision_group_type = zz_valyria_magic
-	desc = convert_to_administrative_decision_desc
-
-	ai_check_interval = 72
-
-	is_shown = {
-		has_game_rule = debug_mode_on
-		has_government = freehold_government
-		is_ai = no 
-	}
-
-	is_valid = {
-		has_ep3_dlc_trigger = yes
-		is_ai = no
-	}
-	
-	is_valid_showing_failures_only = {
-		is_at_war = no
-	}
-
-	cost = {
-	}
-
-	effect = {
-		create_dynamic_title = {
-			tier = duchy
-			name = NEW_CREATED_TITLE_NAME
-		}
-	}
-}
+#make_dummy_title_decision = {
+#	picture = {
+#		reference = "gfx/interface/illustrations/decisions/ep3_cerimonial_decision.dds"
+#	}
+#	decision_group_type = zz_valyria_magic
+#	desc = convert_to_administrative_decision_desc
+#
+#	ai_check_interval = 72
+#
+#	is_shown = {
+#		has_game_rule = debug_mode_on
+#		has_government = freehold_government
+#		is_ai = no 
+#	}
+#
+#	is_valid = {
+#		has_ep3_dlc_trigger = yes
+#		is_ai = no
+#	}
+#	
+#	is_valid_showing_failures_only = {
+#		is_at_war = no
+#	}
+#
+#	cost = {
+#	}
+#
+#	effect = {
+#		create_dynamic_title = {
+#			tier = duchy
+#			name = NEW_CREATED_TITLE_NAME
+#		}
+#	}
+#}

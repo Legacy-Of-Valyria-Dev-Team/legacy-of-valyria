@@ -1,41 +1,38 @@
 ﻿zz_valyria_magic_sites = {
 	OR = {
-		barony = title:b_kastaryia_4
-		barony = title:b_kastaryia_3
-		barony = title:b_kastaryia_2
-		barony = title:b_kastaryia_1
-		barony = title:b_valyria_5
-		barony = title:b_jarqanor_1
-		barony = title:b_aquos_dhaen_2
-		barony = title:b_iedradrys_2
-		barony = title:b_the_citadel
-		barony = title:b_dragonstone
-		barony = title:b_winterfell
-		barony = title:b_oldstones
+		barony ?= title:b_kastaryia_4
+		barony ?= title:b_kastaryia_2
+		barony ?= title:b_kastaryia_1
+		barony ?= title:b_valyria_5
+		barony ?= title:b_the_citadel
+		barony ?= title:b_dragonstone
+		barony ?= title:b_asshai_1
+		barony ?= title:b_asshai_2
+		barony ?= title:b_asshai_3
 	}
 }
 
 zz_valyria_doom_sites = { 
 	OR = {
-		barony = title:b_ilvonys_1
-		barony = title:b_dragonfields_1
-		barony = title:b_kastaryia_4
-		barony = title:b_valyria_5
-		barony = title:b_jarqanor_1
-		barony = title:b_ruklonos_1
-		barony = title:b_hills_of_nolos_1
+		barony ?= title:b_ilvonys_1
+		barony ?= title:b_dragonfields_1
+		barony ?= title:b_kastaryia_4
+		barony ?= title:b_valyria_5
+		barony ?= title:b_jarqanor_1
+		barony ?= title:b_ruklonos_1
+		barony ?= title:b_hills_of_nolos_1
 	}
 }
 
 zz_valyria_blackstone_sites = { 
 	OR = {
-		barony = title:b_pyrys_1
-		barony = title:b_aquos_dhaen_1
-		barony = title:b_kastaryia_3
-		barony = title:b_valyria_1
-		barony = title:b_gelios_1
-		barony = title:b_iedradrys_1
-		barony = title:b_oros_1
+		barony ?= title:b_pyrys_1
+		barony ?= title:b_aquos_dhaen_1
+		barony ?= title:b_kastaryia_3
+		barony ?= title:b_valyria_1
+		barony ?= title:b_gelios_1
+		barony ?= title:b_iedradrys_1
+		barony ?= title:b_oros_1
 	}
 }
 
@@ -155,7 +152,20 @@ zz_valyria_is_mage = {
 	OR = { 
 		has_trait = zz_magister
 		any_living_mage = {
-			liege_or_court_owner ?= scope:actor 
+			liege_or_court_owner ?= PREV
+		}
+	}
+}
+
+zz_valyria_is_scroll_holder = {
+	OR = { 
+		any_character_artifact = {
+			has_variable = spell
+		}
+		any_courtier_or_guest = {
+			any_character_artifact = {
+				has_variable = spell
+			}
 		}
 	}
 }
@@ -169,7 +179,7 @@ zz_valyria_is_mage_can_teach = {
 		}
 		any_living_mage = {
 			AND = {
-				liege_or_court_owner ?= scope:actor 
+				liege_or_court_owner ?= PREV
 				NOT = { 
 					has_character_flag = zz_valyria_magic_taught_magic 
 				}
@@ -180,14 +190,9 @@ zz_valyria_is_mage_can_teach = {
 
 
 zz_valyria_knows_spell = {
-	OR = { 
-		any_memory = {
-			has_memory_type = $SPELL$
-		}		
-		any_equipped_character_artifact = {		
-			var:spell ?= flag:$SPELL$
-		}
-	}
+	any_memory = {
+		has_memory_type = $SPELL$
+	}		
 }
 
 zz_valyria_knows_spell_court = {
@@ -679,11 +684,11 @@ zz_valyria_mystery_has_dead_dragon_egg_trigger = {
 zz_valyria_learn_spell_gui_trigger = {
 	trigger_if  = { 
 		limit  = {
-			scope:zz_valyria_mystery = {
+			scope:zz_valyria_teach_mystery = {
 				has_memory_type = $SPELL$
 			}
 		}
-		var:zz_magic_learner = { 
+		var:zz_valyria_mystery_magic_learner = { 
 			NOT = {
 				zz_valyria_knows_spell = {
 					SPELL = $SPELL$
@@ -1074,6 +1079,24 @@ zz_valyria_scroll_has_dead_dragon_egg_trigger = {
 				custom_tooltip = {
 					text = zz_valyria_magic_cannot_cast_on_dragon
 					has_trait = dragon
+				}
+			}
+		}
+	}
+}
+
+
+zz_valyria_scroll_learn_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_scroll = {
+				var:spell ?= flag:$SPELL$
+			}
+		}
+		var:zz_valyria_scroll_learner = {
+			NOT = {
+				any_memory = {
+					has_memory_type = $SPELL$
 				}
 			}
 		}

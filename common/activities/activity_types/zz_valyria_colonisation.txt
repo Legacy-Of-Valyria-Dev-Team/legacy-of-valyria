@@ -44,24 +44,7 @@
 		#cancel the activity by not setting a new host
 		#free the students
 		scope:activity = {
-			every_attending_character = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			every_attending_character = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
-			every_attending_character = {
-				limit = {
-					has_character_flag = generated_character_uni
-				}
-				remove_character_flag = generated_character_uni
-			}
+
 		}
 		# Send your entourage home
 		scope:host = {
@@ -341,14 +324,26 @@
 	cost = {
 		gold = {
 			add = {
-				value = root.adult_education_activity_cost
+				value = zz_valyria_colonisation_activity_cost
 				desc = pilgrimage_base_cost
 			}
 			add = {
-				value = root.adult_education_activity_cost
+				value = zz_valyria_colonisation_activity_cost
 				multiply = activity_cost_scale_by_era
-				subtract = root.adult_education_activity_cost
+				subtract = root.zz_valyria_colonisation_activity_cost
 				desc = activity_cost_scale_by_era_desc
+			}
+			add = {
+				if = {
+					limit = { 
+						scope:province ?= {
+							zz_valyria_has_volcano = yes
+						}
+					 }
+					 value = zz_valyria_colonisation_activity_cost
+					 multiply = activity_cost_scale_by_era
+					 multiply = 10
+				}
 			}
 		}
 	}
@@ -358,6 +353,18 @@
 			add = { # Base Cost, scaled by era
 				value = zz_valyria_colonisation_activity_cost
 				multiply = activity_cost_scale_by_era
+				if = {
+					limit = {
+						scope:province ?= {
+							zz_valyria_has_volcano = yes
+						}
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 10
+					}
+				}
 			}
 			
 
@@ -376,12 +383,16 @@
 	###################
 	# PHASES
 	###################
+	num_pickable_phases = 5
 
+	activity_planner_widgets = {
+		tournament_contest_selection = "activity_plugin_center"
+	}
 	phases = {
 		#Study!
-		colonisation_phase = {
+		colonisation_arrival_phase = {
 			is_predefined = yes
-
+			order = 1
 			ai_will_do = {
 				value = 0
 				add = {
@@ -396,7 +407,65 @@
 					limit = { this = scope:host }
 					scope:activity = {
 						#Phase progression
-						progress_activity_phase_after = { months = 9 }
+						progress_activity_phase_after = { months = 1 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					#Arrival event
+					trigger_event = { on_action = colonisation_arrival_events }
+				}
+			}
+		}
+		colonisation_phase = {
+			order = 2
+			number_of_picks = 5
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			cost = {
+				gold = {
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						desc = pilgrimage_base_cost
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						subtract = root.zz_valyria_colonisation_activity_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					add = {
+						if = {
+							limit = { 
+								scope:province ?= {
+									zz_valyria_has_volcano = yes
+								}
+							 }
+							 value = zz_valyria_colonisation_activity_cost
+							 multiply = activity_cost_scale_by_era
+							 multiply = 15
+						}
+					}
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { months = 1 } }
+				}
+			}
+
+			#This is when you arrive at the university
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 12 }
 						#Loc
 						activity_location = { save_scope_as = location }
 					}
@@ -415,8 +484,133 @@
 
 			on_end = {
 				scope:host = {
+					#resolve_valyria_colonisation_success_reward_effect = yes 
+					#valyria_colonisation_completed_log_entry_effect = yes
+					#trigger_event = zz_valyria_colonisation.0009 	
+				}
+			}
+		}
+		magic_colonisation_phase = {
+			is_predefined = no
+			order = 3
+			number_of_picks = 3
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			is_shown = {
+				has_trait = zz_magister
+			}
+			is_valid = {
+				scope:host = {
+					has_trait = zz_magister
+					zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+				}
+				
+			}
+			can_pick = {
+				has_trait = zz_magister
+				zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+			}
+			cost = {
+				gold = {
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						desc = pilgrimage_base_cost
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 10
+						subtract = root.zz_valyria_colonisation_activity_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					add = {
+						if = {
+							limit = { 
+								scope:province ?= {
+									zz_valyria_has_volcano = yes
+								}
+							 }
+							 value = zz_valyria_colonisation_activity_cost
+							 multiply = activity_cost_scale_by_era
+							 multiply = 10
+						}
+					}
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { weeks = 1 } }
+				}
+			}
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 1 }
+					}
+				}
+			}
+			on_end = {
+				scope:host = {
+					set_variable = {
+						name = zz_manacost 
+						value = 100
+					}
+					zz_valyria_mana_spend = yes
+				}
+				scope:activity = {
+					#Phase progression
+					activity_special_type_progression_massive = yes
+				}
+			}
+		}
+		
+		colonisation_conclusion_phase = {
+			is_predefined = yes 
+			order = 5
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { weeks = 1 } }
+				}
+			}
+			#This is when you arrive at the university
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 1 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					#Arrival event
+				}
+			}
+
+			#Events that happen while we're on site
+			on_monthly_pulse = {
+			}
+
+			on_end = {
+				scope:host = {
 					resolve_valyria_colonisation_success_reward_effect = yes 
 					valyria_colonisation_completed_log_entry_effect = yes
+					complete_activity_intent = yes
 					trigger_event = zz_valyria_colonisation.0009 	
 				}
 			}
@@ -475,30 +669,6 @@
 
 	on_start = {
 		scope:host = {
-			if = {
-				limit = {
-					has_character_flag = teacher_1
-				}
-				remove_character_flag = teacher_1
-			}
-			if = {
-				limit = {
-					has_character_flag = teacher_2
-				}
-				remove_character_flag = teacher_2
-			}
-			if = {
-				limit = {
-					has_character_flag = student_1
-				}
-				remove_character_flag = student_1
-			}
-			if = {
-				limit = {
-					has_character_flag = student_2
-				}
-				remove_character_flag = student_2
-			}
 		}
 		scope:activity ?= {
 			#Counter for the Activity Success Progress bar
@@ -534,32 +704,10 @@
 				}
 				# To reduce inflaction of generic characters
 				scope:activity = {
-					every_attending_character = {
-						limit = {
-							OR = {
-								has_character_flag = student_1
-								has_character_flag = student_2
-							}
-							has_character_flag = generated_character_uni
-						}
-						silent_disappearance_effect = yes
-					}
 				}
 			}
 			else = {
 				scope:activity = {
-					every_attending_character = {
-						limit = {
-							has_character_flag = student_1
-						}
-						remove_character_flag = student_1
-					}
-					every_attending_character = {
-						limit = {
-							has_character_flag = student_2
-						}
-						remove_character_flag = student_2
-					}
 				}
 			}
 		}
