@@ -11,6 +11,10 @@ zz_valyria_magic.9000 = {
 
 
 	immediate = {
+		zz_random_gain_magic_scroll = yes
+		scope:newly_created_artifact = {
+			save_scope_as = magic_scroll
+		}
 	}
 
 	trigger = {
@@ -29,8 +33,7 @@ zz_valyria_magic.9000 = {
 		}
 		custom_tooltip = {
 			text = zz_valyria_magic_youre_a_wizard_harry
-			add_trait_force_tooltip = zz_magister
-			zz_random_gain_magic_spell = yes 
+			 
 		}
 	}
 	option = {
@@ -41,10 +44,9 @@ zz_valyria_magic.9000 = {
 		custom_tooltip = {
 			text = zz_valyria_magic_youre_a_wizard_harry
 			zz_valyria_gain_spell_experience = {
-				XPGAIN = 5
+				XPGAIN = 1
 				XPTRACK = secrets_of_the_higher_mysteries
 			}
-			zz_random_gain_magic_spell = yes 
 		}
 	}
 	option = {
@@ -58,6 +60,7 @@ zz_valyria_magic.9000 = {
 		custom_tooltip = {
 			text = burn_you_witch
 			add_character_flag = no_magic
+			destroy_artifact = scope:magic_scroll
 		}
 	}
 	option = {
@@ -65,6 +68,31 @@ zz_valyria_magic.9000 = {
 		trigger = {
 			is_ai = yes 
 		}
+	}
+}
+
+zz_valyria_magic.2 = {
+	hidden = yes
+	scope = none
+	trigger = {
+	}
+	immediate = {
+		scope:zz_valyria_magic_learner = {
+			every_relation = {
+				type = zz_magic_master
+				remove_relation_zz_magic_apprentice = scope:zz_valyria_magic_learner
+			}
+		}
+	}
+	option = {
+		scope:zz_magic_learner = {
+			save_scope_as = zz_valyria_mystery_magic_learner
+			zz_valyria_gain_spell_experience = {
+				XPGAIN = 15 
+				XPTRACK = secrets_of_the_higher_mysteries
+			}
+		}
+		zz_copy_memories = yes
 	}
 }
 

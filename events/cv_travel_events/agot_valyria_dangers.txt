@@ -1,0 +1,97 @@
+﻿namespace = valyria_danger
+
+
+valyria_danger.0001 = { #firewyrm attack :O
+	type = character_event
+	title = valyria_danger.0001.t
+	desc = valyria_danger.0001.desc
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+	right_portrait = {
+		character = scope:travel_leader
+		animation = fear
+	}
+
+	trigger = {
+		is_location_valid_for_travel_event_on_land = yes
+		location = {
+			geographical_region = world_valyria
+		}
+	}
+
+	immediate = {
+		mp_delay_travel_plan = { DAYS = 60 }
+		travel_leader = { save_scope_as = travel_leader }
+		next_destination_province = { save_scope_as = destination }
+	}
+	traveler_danger_xp_effect = {
+		MIN = 3
+		MAX = 6
+	}
+
+	option = { #face it
+		name = valyria_danger.0001.a
+
+		random_list = {
+			60 = { #dead
+				death = {
+					death_reason = death_firewyrm_ate
+				}
+			}
+			30 = { #injured
+
+				add_trait = burned
+			}
+			10 = { #unscathed
+				
+			}
+
+		}
+
+
+	}
+	option = { #run away
+		name = valyria_danger.0001.b
+		random_list = {
+			40 = { #dead
+				death = {
+					death_reason = death_firewyrm_ate
+				}
+			}
+			25 = { #injured
+				add_trait = burned
+			}
+			35 = { #unscathed
+				
+			}
+
+		}
+
+	}
+	option = { #send your knights to slay it
+		name = valyria_danger.0001.c
+		random_list = {
+			20 = { #dead
+				random_knight = {
+					death = { death_reason = death_firewyrm_ate }
+				}
+				death = {
+					death_reason = death_firewyrm_ate
+				}
+			}
+			40 = { #injured, knights die
+				every_knight  = {
+					death = { death_reason = death_firewyrm_ate }
+				}
+				add_trait = burned
+			}
+			40 = { #unscathed
+				
+			}
+		}
+	}
+}

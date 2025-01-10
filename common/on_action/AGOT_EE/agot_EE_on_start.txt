@@ -1,0 +1,303 @@
+﻿# AGOT Essos Expansion Government On Actions
+# All realm/government-related on_actions goes here
+on_game_start = {
+    on_actions = {
+		agot_EE_on_start
+    }
+}
+
+on_game_start_after_lobby = {
+    on_actions = {
+        agot_EE_ruins
+    }
+}
+
+agot_EE_on_start = {
+    effect = {
+        set_global_variable = { # Set global variable for other submods to hook onto 
+            name = essos_is_loaded
+            value = yes
+        }
+
+		# Dynamically set special placeholder or EE-added cultural traditions to already-existing cultures
+		# This prevents us from using direct file overrides if we don't have to and is generally cleaner for cases such as AGOT itself updating those cultures
+		culture:andalosi = { if = { limit = { NOT = { has_cultural_tradition = agot_tradition_andalosi } } add_culture_tradition = agot_tradition_andalosi } }
+		culture:braavosi = { if = { limit = { NOT = { has_cultural_tradition = agot_tradition_braavosi } } add_culture_tradition = agot_tradition_braavosi } }
+		culture:volantene = { if = { limit = { NOT = { has_cultural_tradition = agot_tradition_volantene } } add_culture_tradition = agot_tradition_volantene } }
+		# Also give Essosi Valyrian's the Volantene cultural tradition
+		culture:essosi_valyrian = { if = { limit = { NOT = { has_cultural_tradition = agot_tradition_volantene } } add_culture_tradition = agot_tradition_volantene } }
+		culture:mantaryan = {
+			if = {
+				limit = { NOT = { has_cultural_tradition = agot_tradition_mantaryan } }
+				add_culture_tradition = agot_tradition_mantaryan
+			}
+			if = {
+				limit = { NOT = { has_cultural_tradition = agot_tradition_north_valyrian_1 } }
+				add_culture_tradition = agot_tradition_north_valyrian_1
+			}
+		}
+		culture:tolosi = {
+			if = {
+				limit = { NOT = { has_cultural_tradition = agot_tradition_tolosi } }
+				add_culture_tradition = agot_tradition_tolosi
+			}
+			if = {
+				limit = { NOT = { has_cultural_tradition = agot_tradition_north_valyrian_1 } }
+				add_culture_tradition = agot_tradition_north_valyrian_1
+			}
+		}
+		culture:elyrian = {
+			if = {
+				limit = { NOT = { has_cultural_tradition = agot_tradition_elyrian } }
+				add_culture_tradition = agot_tradition_elyrian
+			}
+			if = {
+				limit = { NOT = { has_cultural_tradition = agot_tradition_north_valyrian_1 } }
+				add_culture_tradition = agot_tradition_north_valyrian_1
+			}
+		}
+
+		# Give Old Blood modifiers to Volantene dynasties
+        dynasty:dynn_Maegyr = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Paenymion = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Qhaedar = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Vaelaros = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Staegone = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Tagaros = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Nogarys = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Votar = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+        dynasty:dynn_Qoheros = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+    }
+}
+
+agot_EE_ruins = {
+    effect = {
+        # Volantene Ruins
+		if = {
+			limit = { game_start_date >= 7300.1.1 }
+			title:b_sarhoy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+            title:b_sar_mell.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+			title:b_mestoy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_ar_voleys.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:c_sarhoy = { set_coa = ruins_coa }
+            title:c_sar_mell = { set_coa = ruins_coa }
+			title:c_mestoy = { set_coa = ruins_coa }
+            title:c_ar_voleys = { set_coa = ruins_coa }
+		}
+        # Rhoyne Ruins
+        if = {
+			limit = { game_start_date >= 7300.1.1 }
+			title:b_ghoyan_drohe.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_golhuru.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_sar_moyhan.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_ar_noy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_sar_erilidyes.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_glohulu.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_palace_of_love.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+            title:b_nor_salis.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_rhoyne_vale.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_ar_muhoy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_gloomy_gate.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_nymeria_palace.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+            title:b_sar_drea.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_ar_geryas.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_nyssa.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_sar_rhoy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_kolaut.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_garinoy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_northfields.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_ar_selrys.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_sobyrha.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:c_ghoyan_drohe = { set_coa = ruins_coa }
+            title:c_golhuru = { set_coa = ruins_coa }
+            title:c_sar_moyhan = { set_coa = ruins_coa }
+            title:c_ar_noy = { set_coa = ruins_coa }
+            title:c_sar_erilidyes = { set_coa = ruins_coa }
+            title:c_glohulu = { set_coa = ruins_coa }
+            title:c_chroyane = { set_coa = ruins_coa }
+            title:c_nor_salis = { set_coa = ruins_coa }
+            title:c_rhoyne_vale = { set_coa = ruins_coa }
+            title:c_ar_muhoy = { set_coa = ruins_coa }
+            title:c_gloomy_gate = { set_coa = ruins_coa }
+            title:c_ny_sar = { set_coa = ruins_coa }
+            title:c_sar_drea = { set_coa = ruins_coa }
+            title:c_ar_geryas = { set_coa = ruins_coa }
+            title:c_nyssa = { set_coa = ruins_coa }
+            title:c_sar_rhoy = { set_coa = ruins_coa }
+            title:c_kolaut = { set_coa = ruins_coa }
+            title:c_garinoy = { set_coa = ruins_coa }
+            title:c_northfields = { set_coa = ruins_coa }
+            title:c_ar_selrys = { set_coa = ruins_coa }
+            title:c_sobyrha = { set_coa = ruins_coa }
+		}
+        # Northern Valyrian Ruins
+        if = {
+			limit = { game_start_date >= 7800.1.1 }
+			title:b_draconys.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+            # Valenys
+            title:b_draconys1.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            # Vysarion
+            title:b_draconys23.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:b_anogaria.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            # Anyros
+            title:b_anogaria15.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            # Aelyra
+            title:b_anogaria19.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            # Vasrion
+            title:b_anogaria27.title_province = {
+				set_holding_type = ruin_holding
+				add_building = small_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:c_draconys = { set_coa = ruins_coa }
+            title:c_valenys = { set_coa = ruins_coa }
+            title:c_vysarion = { set_coa = ruins_coa }
+            title:c_howling_bogs = { set_coa = ruins_coa }
+            title:c_volandrys = { set_coa = ruins_coa }
+            title:c_anogaria = { set_coa = ruins_coa }
+            title:c_anyros = { set_coa = ruins_coa }
+            title:c_aelyra = { set_coa = ruins_coa }
+            title:c_vasrion = { set_coa = ruins_coa }
+		}
+        # Bhorash Ruins
+        if = {
+			limit = { game_start_date >= 7800.1.1 }
+			title:b_bhorash.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+            title:b_vezenkarys.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_desolate_01
+			}
+            title:c_bhorash = { set_coa = ruins_coa }
+            title:c_vezenkarys = { set_coa = ruins_coa }
+		}
+	}
+}
