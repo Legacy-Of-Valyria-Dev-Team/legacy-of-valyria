@@ -1,0 +1,195 @@
+﻿namespace = zz_valyria_colonisation
+
+# SEDUCTION EVENT
+zz_valyria_colonisation.0301 = {
+	type = activity_event
+	title = zz_valyria_colonisation.0301.t
+	desc = { 
+		desc = zz_valyria_colonisation.0301.desc
+	
+	}
+	theme = seduction
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+	center_portrait = {
+		character = scope:zz_seduction_target
+		animation = flirtation
+		camera = camera_event_right_pointing_right
+		outfit_tags = { dna_change_zz_seduction_modifier_tags_1 }
+	}
+	
+	trigger = {
+		scope:host = {
+			num_of_relation_soulmate = 0
+			NOT = { 
+				OR = {
+					has_trait = eunuch_1
+					has_trait = beardless_eunuch
+					has_trait = infirm
+					has_trait = incapable
+				}
+			}
+			NOT = { has_sexuality = asexual }
+		} 
+	}
+	
+	immediate = {
+		IF = {
+			limit = {
+				scope:host = { 
+					has_sexuality = heterosexual 
+				}
+			}
+			create_character = {
+				opposite_gender = scope:host
+				culture = root.culture
+				faith = root.faith
+				age = 20
+				dynasty = none
+				random_traits = yes
+				location = scope:location
+				outfit_tags = 
+				
+				trait = seducer
+				trait = beauty_good_3
+				trait = lustful
+
+				save_scope_as = zz_seduction_target
+			}
+		}
+		
+		IF = {
+			limit = {
+				scope:host = { 
+					has_sexuality = homosexual 
+				}
+			}
+			create_character = {
+				gender = scope:host
+				culture = root.culture
+				faith = root.faith
+				age = 20
+				dynasty = none
+				random_traits = yes
+				location = scope:location
+				
+				
+				trait = seducer
+				trait = beauty_good_3
+				trait = lustful
+
+				save_scope_as = zz_seduction_target
+			}
+		}
+		
+		IF = {
+			limit = {
+				scope:host = { 
+					has_sexuality = bisexual 
+				}
+			}
+			create_character = {
+				culture = root.culture
+				faith = root.faith
+				age = 20
+				dynasty = none
+				random_traits = yes
+				location = scope:location
+				
+				
+				trait = seducer
+				trait = beauty_good_3
+				trait = lustful
+
+				save_scope_as = zz_seduction_target
+			}
+		}
+	}
+	
+	option = { #Say yes to the seducer
+		name = zz_valyria_colonisation.0301.seduction_succesful
+		trigger = {
+			NOT = {
+				has_trait = celibate
+			}
+		}
+		
+		custom_tooltip = zz_valyria_colonisation.0301.seduction_succesful_tt
+		
+		scope:host = {
+			set_relation_lover = { 
+				target = scope:zz_seduction_target 
+			}
+		}			
+		
+		hidden_effect = {
+			IF = {
+				limit = {
+					is_female = yes
+					scope:zz_seduction_target = {
+						is_female = no
+					}
+				}	
+				random_list = {
+					75 = { # host is pregnant
+						scope:host = {
+							make_pregnant = {
+                                father = scope:zz_seduction_target
+                                number_of_children = 1
+                            }
+						}
+					}
+					25 = { # host isn't pregnant
+					}
+					
+				}
+			}
+			IF = {
+				limit = {
+					is_female = no
+					scope:zz_seduction_target = {
+						is_female = yes
+					}
+				}	
+				random_list = {
+					75 = { # zz_seduction_target is pregnant
+						scope:zz_seduction_target = {
+							make_pregnant = {
+                                father = scope:host
+                                number_of_children = 1
+                            }
+						}
+					}
+					25 = { # zz_seduction_target isn't pregnant
+					}
+					
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = zz_valyria_colonisation.0301.seduction_refused
+		
+		custom_tooltip = zz_valyria_colonisation.0301.seduction_refused_tt
+		
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	after = {
+		hidden_effect = {
+			remove_character_flag = perfect_reward
+			remove_character_flag = high_reward
+			remove_character_flag = ok_reward
+		}
+	}
+}
