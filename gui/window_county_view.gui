@@ -1072,6 +1072,7 @@ window = {
 					expand = {
 						#visible = "[Not(And(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ))]"
 					}
+					
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						
@@ -1139,6 +1140,28 @@ window = {
 						}
 						expand = {}
 					}
+					### start ADD BUILDING SLOT ###
+					button_standard = {
+						name = "expand_holding_slots"
+						datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+						datacontext = "[HoldingView.GetTitle]"
+						datacontext = "[HoldingView.GetHolder]"
+						oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+						clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+						enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+						tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
+						onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+
+						#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
+						size = { 55 55 }
+
+						button_feudalize_tribe = {
+							size = { 35 35 }
+							parentanchor = center
+							alwaystransparent = yes
+						}
+					}
+					### end ADD BUILDING SLOT ###
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						margin = { 5 0 }
@@ -1795,30 +1818,7 @@ window = {
 						}
 						
 					}
-					### start ADD BUILDING SLOT ###
-					button_standard = {
-						name = "expand_holding_slots"
-						datacontext = "[HoldingView.GetGUIHoldingBuilding]"
-						datacontext = "[HoldingView.GetTitle]"
-						datacontext = "[HoldingView.GetHolder]"
-						oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
-						clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
-						#enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
-						onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
-
-						#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
-						size = { 55 55 }
-						enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
-						
-						
-
-						button_feudalize_tribe = {
-							size = { 35 35 }
-							parentanchor = center
-							alwaystransparent = yes
-						}
-					}
-					### end ADD BUILDING SLOT ###
+					
 
 					flowcontainer = {
 						visible = "[Or(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot )]"

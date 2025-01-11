@@ -1,4 +1,64 @@
-﻿zz_valyria_create_magic_ring_effect = {
+﻿agot_create_artifact_vs_mages_fyre_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = vs_mages_fyre_name
+		visuals = vs_mages_fyre_visuals
+		description = vs_mages_fyre_description
+		type = sword
+		wealth = scope:wealth
+		quality = scope:quality
+		template = vs_mages_fyre_template
+		history = {
+			type = created_before_history
+			date = 1649.1.1
+		}
+		modifier = vs_blackfyre_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		equip_artifact_to_owner_replace = yes
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+
+		add_artifact_modifier = zz_valyria_magic_xp_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_xp_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_xp_gain_modifier_01_stacking
+		add_artifact_modifier = zz_valyria_magic_xp_gain_passive_modifier
+		add_artifact_modifier = zz_valyria_higher_mysteries_xp_gain_modifier_01_stacking
+		set_variable = {
+			name = valyrian_steel
+			value = yes
+		}
+		set_variable = {
+			name = historical_unique_artifact
+			value = yes
+		}
+		set_variable = {
+			name = traditional_house_owner
+			value = dynasty:dynn_Setenon.dynasty_founder.house
+		}
+		agot_add_artifact_history = {
+			ARTIFACT = this
+			TYPE = created
+			DATE = 1649.1.1
+			RECIPIENT = character:Setenon_01
+		}
+	}
+}
+
+zz_valyria_create_magic_ring_effect = {
 	$OWNER$ = { save_scope_as = owner }
 	set_artifact_rarity_illustrious = yes
 
@@ -27,6 +87,18 @@
 		scope:newly_created_artifact = {
 
 			clear_artifact_modifiers = yes
+			if = { 
+				limit = {
+					scope:ring_modifier = flag:magic
+				}
+				add_artifact_modifier = zz_valyria_magic_xp_gain_modifier_01_stacking
+			}
+			if = { 
+				limit = {
+					scope:ring_modifier = flag:higher_mysteries
+				}
+				add_artifact_modifier = zz_valyria_higher_mysteries_xp_gain_modifier_01_stacking
+			}
 			if = { 
 				limit = {
 					scope:ring_modifier = flag:blood_magic
@@ -158,6 +230,14 @@ zz_item_craft_zz_valyria_crafting_magic_ring_06 = {
 zz_item_craft_zz_valyria_crafting_magic_ring_07 = {
 	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = water_magic   }
 }
+
+zz_item_craft_zz_valyria_crafting_magic_ring_08 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = higher_mysteries   }
+}
+
+zz_item_craft_zz_valyria_crafting_magic_ring_09 = {
+	zz_valyria_create_magic_ring_effect ={ OWNER = root RING_MODIFIER = magic   }
+}
 zz_item_craft_zz_valyria_crafting_dragon_saddle_01 = {
 	cv_create_artifact_dragon_saddle_effect ={ OWNER = root TYPE = brown_common   }
 }
@@ -285,6 +365,14 @@ zz_valyria_crafting_calculate_crafting_cost_item_effect = {
 		COST = 75
 	}
 	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_08
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_09
+		COST = 75
+	}
+	zz_item_calculate_cost_effect = {
 		ITEM = zz_valyria_crafting_dragon_saddle_01
 		COST = 90
 	}
@@ -319,6 +407,10 @@ zz_valyria_crafting_calculate_crafting_cost_modifier_effect = {
 	}
 	zz_modifier_calculate_effect = {
 		MODIFIER = zz_valyria_magic_xp_gain_modifier_01_stacking
+		COST = 50
+	}
+	zz_modifier_calculate_effect = {
+		MODIFIER = zz_valyria_higher_mysteries_xp_gain_modifier_01_stacking
 		COST = 50
 	}
 	zz_modifier_calculate_effect = {
@@ -421,6 +513,12 @@ zz_valyria_crafting_item_construct_effect = {
 		ITEM = zz_valyria_crafting_magic_ring_07
 	}
 	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_08
+	}
+	zz_craft_item_effect = {
+		ITEM = zz_valyria_crafting_magic_ring_09
+	}
+	zz_craft_item_effect = {
 		ITEM = zz_valyria_crafting_dragon_saddle_01
 	}
 	zz_craft_item_effect = {
@@ -440,6 +538,9 @@ zz_valyria_crafting_item_construct_effect = {
 	}
 	zz_craft_item_apply_modifier_effect = {
 		MODIFIER = zz_valyria_magic_xp_gain_modifier_01_stacking
+	}
+		zz_craft_item_apply_modifier_effect = {
+		MODIFIER = zz_valyria_higher_mysteries_xp_gain_modifier_01_stacking
 	}
 	zz_craft_item_apply_modifier_effect = {
 		MODIFIER = zz_valyria_blood_magic_xp_gain_modifier_01_stacking

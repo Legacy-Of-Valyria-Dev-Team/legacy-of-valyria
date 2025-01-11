@@ -1,6 +1,4 @@
 ﻿poi_valyria_magic = {
-
-	
 	build_province_list = {
 		every_province = { 
 			limit = {
@@ -17,14 +15,26 @@
 		}
 	}
 	
-	
-
 	on_visit = {
 		send_interface_toast = {
 			title = poi_magic.visit
 			left_icon = root
+			custom_tooltip = poi_valyria_magic.effect
 			add_character_flag = dragon_training
-			trigger_event =  zz_valyria_magic.9000
+			if = { 
+				limit = { 
+					NOT = {
+						has_trait = zz_magister
+					}
+				}
+				trigger_event =  zz_valyria_magic.9000
+			}
+			else = {
+				random = {
+					chance = 75
+					trigger_event =  zz_valyria_magic.9000
+				}
+			}
 			
 			traveler_travel_xp_effect = {
 				MIN = 3
@@ -33,8 +43,6 @@
 		}
 	}
 }
-
-
 poi_valyria_blackstone_secrets = {
 	build_province_list = {
 		every_province = {
@@ -45,12 +53,11 @@ poi_valyria_blackstone_secrets = {
 		}
 	}
 	
-	
-
 	on_visit = {
 		send_interface_toast = {
 			title = poi_blackstone.visit
 			left_icon = root
+			custom_tooltip = poi_valyria_blackstone_secrets.effect
 			root.location = {
 				save_scope_as = blackstone_location
 			}
@@ -74,6 +81,7 @@ poi_valyria_magic_volcano = {
 		send_interface_toast = {
 			title = poi_valyria_magic_volcano.visit
 			left_icon = root
+			custom_tooltip = poi_valyria_magic_volcano.effect
 			root.location = {
 				save_scope_as = doom_location
 			}

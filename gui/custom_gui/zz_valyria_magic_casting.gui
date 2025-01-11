@@ -1,4 +1,4 @@
-types magic_casting {
+﻿types magic_casting {
 	type magic_casting_window_open = window {
 		name = "magic_casting_window_open"
 		allow_outside = yes
@@ -16,7 +16,7 @@ types magic_casting {
 		layer = top
 		using = Window_Background
 		parentanchor = center
-		size = { 1100 800 }
+		size = { 1200 800 }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_casting')]"
 		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 
@@ -56,53 +56,66 @@ types magic_casting {
 
 						layoutpolicy_horizontal = expanding
 						expand = {}
-						button_standard = { 
-							layoutpolicy_horizontal = expanding 
-							layoutpolicy_vertical = expanding
-							align = center
-							minimumsize = { 100 38 }
-							vbox = {
-								layoutpolicy_horizontal = expanding
+						vbox = {
+							button_standard = { 
+								name = "mage_casting_tab"
+								layoutpolicy_horizontal = expanding 
 								layoutpolicy_vertical = expanding
-								spacing = 5
-								margin = { 5 5 }
-								text_single = {
-									raw_text = "Mage Casting"
-								}
+								align = center
+								minimumsize = { 100 38 }
+								vbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									spacing = 5
+									margin = { 5 5 }
+									text_single = {
+										raw_text = "Mage Casting"
+										alwaystransparent = yes
+									}
+								}							
+								datacontext = "[GetScriptedGui('zz_valyria_magic_casting_mystery')]"
+								#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+								visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								onclick = "[GetScriptedGui('zz_valyria_magic_casting_mystery_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 							}
-							datacontext = "[GetVariableSystem]"
-							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
-							onclick = "[GetScriptedGui('zz_valyria_magic_casting_mystery').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-							down = "[GetVariableSystem.HasValue( 'gui_tabs', 'tab_1' )]"
-							enabled = "[GetScriptedGui('zz_valyria_magic_casting_mystery').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
 						}
-						button_standard = { 
-							layoutpolicy_horizontal = expanding 
-							layoutpolicy_vertical = expanding
-							align = center
-							minimumsize = { 100 38 }
-							vbox = {
-								layoutpolicy_horizontal = expanding
+						vbox = {
+							button_standard = { 
+								name = "scroll_casting_tab"
+								layoutpolicy_horizontal = expanding 
 								layoutpolicy_vertical = expanding
-								spacing = 5
-								margin = { 5 5 }
-								text_single = {
-									raw_text = "Scroll Casting"
+								align = center
+								minimumsize = { 100 38 }
+								vbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									spacing = 5
+									margin = { 5 5 }
+									text_single = {
+										raw_text = "Scroll Casting"
+										alwaystransparent = yes
+									}
+
 								}
+								
+								datacontext = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting')]"
+								#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+								visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								#enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								onclick = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 							}
-							datacontext = "[GetVariableSystem]"
-							onclick = "[GetVariableSystem.Set( 'gui_tabs', 'tab_2' )]"
-							onclick = "[GetScriptedGui('zz_valyria_magic_casting_scroll').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-							down = "[GetVariableSystem.HasValue( 'gui_tabs', 'tab_2' )]"
-							enabled = "[GetScriptedGui('zz_valyria_magic_casting_scroll').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
 						}
+
 						expand = {}
 					}
 					expand = {}
 					spacer = { size = { 00 5 } }
 					hbox = { 
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
-						visible = "[GetVariableSystem.HasValue( 'gui_tabs', 'tab_1' )]"
+						visible = "[GetScriptedGui('zz_valyria_magic_casting_mystery').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						
 						datacontext = "[GetPlayer.MakeScope]"
 
@@ -313,7 +326,7 @@ types magic_casting {
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							max_width = 550
 							text_single = {
 								text = game_concept_zz_mystery
 								fontsize = 24
@@ -325,8 +338,8 @@ types magic_casting {
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 450
-								max_height = 450
+								max_width = 500
+								max_height = 500
 								blockoverride "scrollbox_content"
 								{
 									dynamicgridbox = {
@@ -336,7 +349,7 @@ types magic_casting {
 										item = {
 											button_standard = {
 												datacontext = "[Scope.CharacterMemory]"
-												minimumsize = { 400 38 }
+												minimumsize = { 500 38 }
 												text_single = {
 													minimumsize = { 100 38 }
 													margin = { 15 15 }
@@ -383,7 +396,7 @@ types magic_casting {
 					}
 					hbox = { 
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
-						visible = "[GetVariableSystem.HasValue( 'gui_tabs', 'tab_2' )]"
+						visible = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						
 						datacontext = "[GetPlayer.MakeScope]"
 
@@ -546,7 +559,7 @@ types magic_casting {
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							max_width = 550
 							text_single = {
 								text = game_concept_zz_mystery
 								fontsize = 24
