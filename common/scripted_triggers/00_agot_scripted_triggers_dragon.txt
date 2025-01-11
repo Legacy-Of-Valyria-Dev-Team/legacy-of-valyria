@@ -1,0 +1,916 @@
+﻿is_current_dragonrider = {
+	is_alive = yes # If you're dead, you can't ride a dragon
+	is_incapable = no # Incapable characters can't ride dragons
+	is_imprisoned = no # Imprisoned characters can't ride dragons
+	is_hostage = no # Hostages that ride dragons would just leave
+	has_trait = dragonrider
+	any_relation = { type = agot_dragon is_alive = yes }
+}
+
+is_current_dragonrider_warfare = {
+	age >= 14
+	is_current_dragonrider = yes
+	NOT = { has_character_flag = agot_not_using_dragon }
+}
+
+can_be_warrior_trigger_no_dragon = {
+	is_adult = yes
+	NOT = { has_trait = maester }
+	OR = {
+		can_be_combatant_based_on_gender_trigger = { ARMY_OWNER = $ARMY_OWNER$ }
+		AND = {
+			$ARMY_OWNER$.culture = {
+				has_cultural_parameter = high_prowess_ignores_knight_restrictions
+			}
+			prowess >= 12
+		}
+		has_trait = education_martial_prowess
+	}
+}
+
+can_start_dragon_combat_trigger = {
+	# Check for the usual stuff.
+	can_start_dragon_combat_eligibility_checks_trigger = yes
+	# And filter out those who can never be in dragon combat.
+	can_start_dragon_combat_banned_checks_trigger = no
+}
+
+can_start_dragon_combat_eligibility_checks_trigger = {
+	# Remove children, non-dragonriders, and the cripplingly-old.
+	is_adult = yes
+	has_trait = dragonrider
+	custom_description = {
+		text = banned_from_combat_old_and_frail
+		NOT = {
+			AND = {
+				age >= 70
+				prowess < 10
+			}
+		}
+	}
+	# Filter out traits.
+	NOR = {
+		has_trait = incapable
+		has_trait = blind
+	}
+	# Check other scripted triggers
+	has_contagious_deadly_disease_trigger = no
+}
+
+can_start_dragon_combat_banned_checks_trigger = {
+	OR = {
+		# Currently, we just *always* filter anyone who's already in a bout.
+		exists = var:engaged_in_single_combat
+		# or a dragon bout.
+		exists = var:engaged_in_dragon_combat
+	}
+}
+
+agot_can_use_dragonpit_amenities = {
+	any_held_county = {
+		OR = {
+			any_county_province = {
+				has_holding_type = castle_holding
+				has_building_or_higher = generic_dragon_pit_01
+			}
+			any_county_province = {
+				OR = {
+					has_building_or_higher = dragonpit_01 # Historical Version
+					has_building = dragonpit_ruins_03 # Fully Restored Ruin Version
+					has_building = agot_dragonmont_01 # Dragonmont Version
+				}
+			}
+		}
+		has_variable = has_dragonkeeper_order
+	}
+}
+
+# Used for character checks
+agot_has_an_active_dragonpit = {
+	any_held_county = {
+		OR = {
+			any_county_province = {
+				has_holding_type = castle_holding
+				has_building_or_higher = generic_dragon_pit_01
+			}
+			any_county_province = {
+				OR = {
+					has_building_or_higher = dragonpit_01 # Historical Version
+					has_building = dragonpit_ruins_03 # Fully Restored Ruin Version
+					has_building = agot_dragonmont_01 # Dragonmont Version
+				}
+			}
+		}
+		has_variable = has_dragonkeeper_order
+	}
+}
+
+# Used for title checks
+agot_title_is_an_active_dragonpit = {
+	tier = tier_county
+	OR = {
+		any_county_province = {
+			has_holding_type = castle_holding
+			has_building_or_higher = generic_dragon_pit_01
+		}
+		any_county_province = {
+			OR = {
+				has_building_or_higher = dragonpit_01 # Historical Version
+				has_building = dragonpit_ruins_03 # Fully Restored Ruin Version
+				has_building = agot_dragonmont_01 # Dragonmont Version
+			}
+		}
+	}
+	has_variable = has_dragonkeeper_order
+}
+
+# Use to check for dragonmont
+has_dragonmont_dragonpit = {
+	any_held_county = {
+		any_county_province = {
+			has_building = agot_dragonmont_01 # Dragonmont costs nothing / less
+		}
+	}
+}
+
+# Used in events etc, usually inside location check
+has_any_dragonpits = {
+	OR = {
+		has_building = generic_dragon_pit_01
+		has_building_or_higher = dragonpit_01
+		has_building = dragonpit_ruins_03 # Fully Restored Ruin Version
+		has_building = agot_dragonmont_01
+	}
+}
+
+allow_naming_of_dragon_trigger = {
+	save_temporary_scope_as = naming_parent
+	exists = $DRAGON$
+	is_ai = no
+	$DRAGON$.age < dragon_maturity_age
+	custom_tooltip = {
+		text = renaming_dragon_you_are_house_head_tt
+		OR = {
+			has_relation_agot_dragon = $DRAGON$
+			AND = {
+				is_house_head = yes
+				$DRAGON$ = {
+					any_relation = {
+						type = agot_dragon
+						is_alive = yes
+						is_ai = yes
+						house ?= scope:naming_parent.house
+					}
+				}
+			}
+		}
+	}
+}
+
+can_dragon_chomp = {
+	save_temporary_scope_value_as = {
+		name = chomp_difference_calc
+		value = {
+			value = 0
+			add = $CHOMPING_DRAGON$.dragon_combat_weight_class
+			subtract = $CHOMPED_DRAGON$.dragon_combat_weight_class
+		}
+	}
+
+	OR = {
+		AND = {
+			has_game_rule = agot_silly_mode
+			scope:chomp_difference_calc > 1 # If more than 1 weight difference, the dragon can chomp
+		}
+		scope:chomp_difference_calc > 2 # If more than 2 weight difference, the dragon can chomp
+	}
+}
+
+is_historical_dragon = {
+	OR = {
+		this = character:dragon_Anogres
+		# Five Dragons of Aenar
+		this = character:dragon_vermithrax
+		this = character:dragon_anogaros
+		this = character:dragon_nessarion
+		this = character:dragon_archonei
+		# Targaryen Named Dragons
+		this = character:dragon_balerion
+		this = character:dragon_meraxes
+		this = character:dragon_vhagar
+		this = character:dragon_quicksilver
+		this = character:dragon_dreamfyre
+		this = character:dragon_vermithor
+		this = character:dragon_silverwing
+		this = character:dragon_meleys
+		this = character:dragon_caraxes
+		this = character:dragon_seasmoke
+		this = character:dragon_syrax
+		this = character:dragon_sunfyre
+		this = character:dragon_tessarion
+		this = character:dragon_vermax
+		this = character:dragon_arrax
+		this = character:dragon_tyraxes
+		this = character:dragon_moondancer
+		this = character:dragon_stormcloud
+		this = character:dragon_morghul
+		this = character:dragon_shrykos
+		this = character:dragon_morning
+		this = character:dragon_the_last
+		# Three Wild Dragons
+		this = character:dragon_cannibal
+		this = character:dragon_sheepstealer
+		this = character:dragon_grey_ghost
+		# Aemond Rivers' Dragon
+		this = character:dragon_nightfyre
+		# Unnamed Hatchlings
+		this = character:dragon_serporoth
+		this = character:dragon_maegor_2
+		this = character:dragon_maegor_3
+		this = character:dragon_maegor_4
+		this = character:dragon_maegor_5
+		this = character:dragon_maegor_6
+		this = character:dragon_maegor_7
+		this = character:dragon_maegor_8
+		this = character:dragon_maegor_9
+		this = character:dragon_maegor_10
+		this = character:dragon_maegor_11
+		this = character:dragon_aenys_1
+		this = character:dragon_aenys_2
+		this = character:dragon_aerea_1
+		this = character:dragon_aerea_2
+		this = character:dragon_aerea_3
+		this = character:dragon_daenerys_1
+		this = character:dragon_aemond_1
+		this = character:dragon_aemond_2
+		this = character:dragon_aemond_3
+		this = character:dragon_rhaena_1
+		this = character:dragon_laena_1
+		# Semi-Canon Targaryen Dragons
+		this = character:dragon_essovius
+		this = character:dragon_valryon
+		this = character:dragon_ghiscar
+		# Daenerys' Dragons
+		this = character:dragon_drogon
+		this = character:dragon_rhaegal
+		this = character:dragon_viserion
+		# Other Valyrian Dragons
+		this = character:dragon_terrax
+		this = character:dragon_vassarion
+		this = character:dragon_rovax
+		this = character:dragon_neltharion
+		this = character:dragon_pythax
+		# Mythical Dragons
+		# Utility Ancestors
+		this = character:dragon_ancestor_1
+		this = character:dragon_ancestor_2
+		this = character:dragon_ancestor_3
+		this = character:dragon_ancestor_4
+		this = character:dragon_ancestor_5
+		this = character:dragon_ancestor_6
+		this = character:dragon_urrax
+		this = character:dragon_nagga
+	}
+}
+
+# Dragon siege triggers, called on location/province
+has_stationed_scorpions = { # This ideally would also check for MAA in raised armies so we know they're actually in the province, but that's not possible at this stage
+	has_stationed_regiment_of_base_type = anti_dragon
+	province_owner = {
+		number_maa_soldiers_of_base_type = {
+			type = anti_dragon
+			value > 0
+		}
+	}
+}
+
+agot_has_dragonblood_culture = {
+	culture = {
+		OR = {
+			any_parent_culture_or_above = {
+				#Call true for any cultures directly diverged from the 5 cultures listed below
+				OR = {
+					this = culture:high_valyrian
+					this = culture:westerosi_valyrian
+					this = culture:essosi_valyrian
+					this = culture:mantaryan
+					this = culture:tolosi
+				}
+			}
+			#call true if the culture matches the 5 cultures listed below
+			this = culture:high_valyrian
+			this = culture:westerosi_valyrian
+			this = culture:essosi_valyrian
+			this = culture:mantaryan
+			this = culture:tolosi
+		}
+	}
+	NOT = {
+		culture = {
+			#Call false for any cultures directly diverged from the 13 cultures listed below
+			OR = {
+				any_parent_culture_or_above = {
+					OR = {
+						this = culture:braavosi
+						this = culture:gogossosi
+						this = culture:volantene
+						this = culture:painted_clansman
+						this = culture:essarian
+						this = culture:lorathi
+						this = culture:lyseni
+						this = culture:myrish
+						this = culture:hartalari
+						this = culture:norvoshi
+						this = culture:pentoshi
+						this = culture:qohorik
+						this = culture:tyroshi
+					}
+				}
+				#call false for the 13 cultures listed below
+				this = culture:braavosi
+				this = culture:gogossosi
+				this = culture:volantene
+				this = culture:painted_clansman
+				this = culture:essarian
+				this = culture:lorathi
+				this = culture:lyseni
+				this = culture:myrish
+				this = culture:hartalari
+				this = culture:norvoshi
+				this = culture:pentoshi
+				this = culture:qohorik
+				this = culture:tyroshi
+			}
+		}
+	}
+}
+
+agot_is_dragonblood_character = {
+	NOT = {
+		has_character_flag = dragon_by_horn
+	}
+	OR = {
+		house ?= { has_house_modifier = dragonrider_house_modifier }
+		has_trait = dragonrider
+		has_trait = dragonless_dragonrider
+		has_trait = dragonwidowed
+		has_character_flag = historical_dragonseed
+		AND = {
+			any_relation = { type = agot_dragon }
+			is_human = yes
+		}
+		AND = {
+			OR = {
+				has_game_rule = dragon_valyrian_2_gen
+				has_game_rule = dragon_valyrian_3_gen
+			}
+			culture = { has_cultural_pillar = heritage_valyrian }
+		}
+	}
+}
+
+agot_has_dragonblood_heritage = {
+	NOT = {
+		has_character_flag = dragon_by_horn
+	}
+	OR = {
+		OR = {
+			has_trait = dragonrider
+			has_trait = dragonless_dragonrider
+			has_trait = dragonwidowed
+			has_character_flag = historical_dragonseed
+			any_relation = { type = agot_dragon }
+			has_character_flag = dragonseed_potential_low
+			has_character_flag = dragonseed_potential_medium
+			AND = {
+				real_father.dynasty ?= dynasty
+				house ?= { has_house_modifier = dragonrider_house_modifier }
+			}
+			AND = {
+				real_mother.dynasty ?= dynasty
+				house ?= { has_house_modifier = dragonrider_house_modifier }
+			}
+		}
+		real_father ?= { #
+			agot_is_dragonblood_character = yes #1 gen
+		}
+		real_father.real_mother ?= {
+			agot_is_dragonblood_character = yes #2 gen
+		}
+		real_father.real_father ?= {
+			agot_is_dragonblood_character = yes #2 gen
+		}
+		AND = {
+			OR = {
+				has_game_rule = dragon_dragonblood_3_gen
+				has_game_rule = dragon_valyrian_3_gen
+			}
+			OR = {
+				real_father.real_mother.real_mother ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+				real_father.real_mother.real_father ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+				real_father.real_father.real_mother ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+				real_father.real_father.real_father  ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+			}
+		}
+
+		real_mother ?= {
+			agot_is_dragonblood_character = yes #1 gen
+		}
+		real_mother.real_mother ?= {
+			agot_is_dragonblood_character = yes #2 gen
+		}
+		real_mother.real_father ?= {
+			agot_is_dragonblood_character = yes #2 gen
+		}
+		AND = {
+			OR = {
+				has_game_rule = dragon_dragonblood_3_gen
+				has_game_rule = dragon_valyrian_3_gen
+			}
+			OR = {
+				real_mother.real_mother.real_mother ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+				real_mother.real_mother.real_father ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+				real_mother.real_father.real_mother ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+				real_mother.real_father.real_father ?= {
+					agot_is_dragonblood_character = yes #3 gen
+				}
+			}
+		}
+		any_sibling = {
+			has_character_flag = historical_dragonseed
+		}
+	}
+}
+
+agot_has_relationship_dragon = {
+	custom_description = {
+		text = has_relation_dragon
+		NOT = {
+			any_relation = {
+				type = agot_dragon
+				count = 0
+			}
+		}
+	}
+}
+
+can_use_bond_with_dragon_scheme = {
+	$TARGET$ = { save_temporary_scope_as = dragon }
+	is_human = yes
+	agot_has_relationship_dragon = no
+	scope:dragon = {
+		has_trait = dragon
+		agot_has_relationship_dragon = no
+	}
+	trigger_if = {
+		limit = {
+			NOT = { has_game_rule = dragons_anyone }
+		}
+		agot_has_dragonblood_heritage = yes
+	}
+}
+
+
+can_use_deepen_bond_with_dragon_scheme = {
+	$TARGET$ = { save_temporary_scope_as = dragon }
+	has_trait = dragonrider
+	has_relation_agot_dragon = scope:dragon
+	has_trait_xp = {
+		trait = dragonrider
+		track = dragon_bond
+		value < 100
+	}
+	scope:dragon = { has_trait = dragon }
+}
+
+# Since on_actions are no longer hotloadable
+agot_unlanded_ai_tame_dragon_trigger = {
+	any_courtier_or_guest = {
+		is_landed = no
+		is_ai = yes
+		is_human = yes
+		age >= 10
+		NOT = { has_trait = dragonwidowed }
+		trigger_if = {
+			limit = {
+				NOT = { has_game_rule = dragons_anyone }
+			}
+			agot_has_dragonblood_heritage = yes
+		}
+		trigger_if = {
+			limit = {
+				NOR = {
+					house ?= { has_house_modifier = dragonrider_house_modifier }
+					any_ancestor = {
+						even_if_dead = yes
+						has_trait = dragonrider
+					}
+				}
+			}
+			ai_has_cautious_personality = no
+			OR = {
+				has_trait = ambitious
+				has_trait = brave
+				ai_boldness >= 50 # Bold characters or characters who are less rational (reckless) will be targeted
+				ai_rationality <= 25
+			}
+		}
+		NOR = {
+			has_trait = dragonrider
+			any_relation = {
+				type = agot_dragon
+			}
+			any_scheme = {
+				scheme_type = bond_with_dragon_scheme
+			}
+		}
+		save_temporary_scope_as = tamer
+		court_owner ?= {
+			any_courtier_or_guest = {
+				has_trait = dragon
+				NOR = {
+					has_variable = current_rider # No rider, no bonder
+					any_relation = {
+						type = agot_dragon
+					}
+				}
+				save_temporary_scope_as = dragon
+				agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+					DRAGON = scope:dragon ACTOR = scope:tamer
+				}
+			}
+		}
+	}
+}
+agot_unlanded_ai_bond_dragon_trigger = {
+	any_courtier_or_guest = {
+		is_landed = no
+		is_ai = yes
+		is_human = yes
+		age >= 10
+		NOT = { has_trait = dragonwidowed }
+		trigger_if = {
+			limit = {
+				NOT = { has_game_rule = dragons_anyone }
+			}
+			agot_has_dragonblood_heritage = yes
+		}
+		trigger_if = {
+			limit = {
+				NOR = {
+					house ?= { has_house_modifier = dragonrider_house_modifier }
+					any_ancestor = {
+						even_if_dead = yes
+						has_trait = dragonrider
+					}
+				}
+			}
+			ai_has_cautious_personality = no
+			OR = {
+				has_trait = ambitious
+				has_trait = brave
+				ai_boldness >= 50 # Bold characters or characters who are less rational (reckless) will be targeted
+				ai_rationality <= 25
+			}
+		}
+		NOR = {
+			has_trait = dragonrider
+			any_relation = {
+				type = agot_dragon
+			}
+		}
+		save_temporary_scope_as = tamer
+		court_owner ?= {
+			any_courtier_or_guest = {
+				has_trait = dragon
+				NOR = {
+					has_variable = current_rider # No rider, no bonder
+					any_relation = {
+						type = agot_dragon
+					}
+				}
+				save_temporary_scope_as = dragon
+				agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+					DRAGON = scope:dragon ACTOR = scope:tamer
+				}
+			}
+		}
+	}
+}
+agot_unlanded_ai_deepen_bond_dragon_trigger = {
+	is_landed = no
+	is_ai = yes
+	is_human = yes
+	any_relation = {
+		type = agot_dragon
+	}
+	has_trait = dragonrider
+	has_trait_xp = {
+		trait = dragonrider
+		track = dragon_bond
+		value < 100
+	}
+	save_temporary_scope_as = tamer
+	court_owner ?= {
+		any_courtier_or_guest = {
+			has_trait = dragon
+			var:current_rider ?= scope:tamer
+			any_relation = {
+				type = agot_dragon
+			}
+		}
+	}
+}
+
+agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+	trigger_if = {
+		limit = {
+			$DRAGON$ = {
+				has_character_flag = in_dragonpit
+				has_variable = pitted_dragon_location
+			}
+			$ACTOR$ = {
+				has_variable_list = banned_dragonpit_locations
+			}
+		}
+		custom_tooltip = {
+			text = YOU_ARE_BANNED_FROM_THIS_DRAGONS_PIT
+			$ACTOR$ = {
+				NOT = {
+					is_target_in_variable_list = {
+						name = banned_dragonpit_locations
+						target = $DRAGON$.var:pitted_dragon_location
+					}
+				}
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			$DRAGON$ = {
+				has_character_flag = in_dragonpit
+				has_variable = pitted_dragon_location
+			}
+			$ACTOR$ = {
+				has_variable = granted_access_to_dragonpit
+			}
+		}
+		OR = {
+			$ACTOR$.var:granted_access_to_dragonpit = $DRAGON$.var:pitted_dragon_location
+			$DRAGON$.var:pitted_dragon_location.holder = $ACTOR$
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			$DRAGON$ = {
+				has_character_flag = in_dragonpit
+				has_variable = pitted_dragon_location
+			}
+			$DRAGON$.var:pitted_dragon_location.holder = {
+				has_realm_law = dragonpit_close_family_law
+			}
+		}
+		NOT = {
+			$DRAGON$.var:pitted_dragon_location.holder = {
+				is_at_war_with = $ACTOR$
+			}
+		}
+		custom_tooltip = {
+			text = DRAGONPIT_CLOSE_FAMILY
+			$ACTOR$ = {
+				is_close_family_of = $DRAGON$.var:pitted_dragon_location.holder
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			$DRAGON$ = {
+				has_character_flag = in_dragonpit
+				has_variable = pitted_dragon_location
+			}
+			$DRAGON$.var:pitted_dragon_location.holder = {
+				has_realm_law = dragonpit_house_law
+			}
+		}
+		NOT = {
+			$DRAGON$.var:pitted_dragon_location.holder = {
+				is_at_war_with = $ACTOR$
+			}
+		}
+		custom_tooltip = {
+			text = DRAGONPIT_HOUSE
+			$ACTOR$.house = $DRAGON$.var:pitted_dragon_location.holder.house
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			$DRAGON$ = {
+				has_character_flag = in_dragonpit
+				has_variable = pitted_dragon_location
+			}
+			$DRAGON$.var:pitted_dragon_location.holder = {
+				has_realm_law = dragonpit_dynasty_law
+			}
+		}
+		NOT = {
+			$DRAGON$.var:pitted_dragon_location.holder = {
+				is_at_war_with = $ACTOR$
+			}
+		}
+		custom_tooltip = {
+			text = DRAGONPIT_DYNASTY
+			$ACTOR$.dynasty = $DRAGON$.var:pitted_dragon_location.holder.dynasty
+		}
+	}
+	trigger_else = {
+		always = yes
+	}
+}
+
+dragon_can_do_terror_campaign = { # Called on the dragon
+	custom_tooltip = {
+		text = conduct_terror_campaign_dragon_condition
+		dragon_combat_effectiveness >= 100
+	}
+}
+
+agot_dragon_population_low = {
+	any_living_dragon = {
+		is_female = yes
+		count = 1
+	}
+	any_artifact = {
+		has_variable = dragon_egg
+		NOT = { has_variable = dud_egg }
+		count < 5
+	}
+}
+agot_dragon_population_extinct = {
+	any_living_dragon = {
+		count = 0
+	}
+}
+
+agot_ruins_has_dragon_storage_system = {
+	title:c_ruins.holder = {
+		any_owned_story = {
+			story_type = story_dragon_variable_storage
+		}
+	}
+}
+
+agot_ruins_has_dragon_storage_system_editor_trigger = {
+	title:c_ruins.holder = {
+		any_owned_story = {
+			story_type = story_dragon_variable_storage
+			var:dragon_id ?= root.var:editing_dragon
+		}
+	}
+}
+
+is_available_for_dragonkeeper_flavor_events = {
+	any_held_title = {
+		has_variable_list = dragons_in_pit
+		var:has_dragonkeeper_order ?= yes
+	}
+	has_royal_court = yes
+	employs_court_position = head_dragonkeeper_court_position
+}
+
+dragonkeepers_315_child_eligible_for_egg_not_hatching_selection = {
+	trigger_if = {
+		limit = {
+			NOT = { has_game_rule = dragons_anyone }
+		}
+		agot_has_dragonblood_heritage = yes
+	}
+	court_owner ?= {
+		is_available_for_dragonkeeper_flavor_events = yes # Make sure the child's location is the pit's location
+	}
+	is_available = yes
+	age <= 13
+	age >= 5
+	NOR = {
+		has_trait = dragonrider
+		any_relation = {
+			type = agot_dragon
+		}
+		has_character_flag = agot_child_complained_about_cradled_egg
+		has_trait = content
+	}
+	any_character_artifact = {
+		has_variable = dragon_egg
+		has_variable = dud_egg
+	}
+}
+
+agot_cannot_use_dragon_egg = {
+	OR = {
+		AND = {
+			NOT = { has_game_rule = dragons_anyone }
+			agot_has_dragonblood_heritage = no
+		}
+		has_trait = dragonrider
+		has_trait = dragonwidowed
+		any_relation = {
+			type = agot_dragon
+		}
+		any_character_artifact = {
+			has_variable = cradled_egg
+		}
+	}
+}
+
+agot_has_dragonpit_requirements_trigger = {
+	OR = {
+		custom_tooltip = {
+			text = dragons_are_extant_desc_tooltip
+			any_living_dragon = {
+				count > 0
+			}
+		}
+		AND = { # You have an egg + You are Ambitious + You have Valyrian Cultural Heritage
+			custom_tooltip = {
+				text = has_a_dragon_egg_artifact_tooltip
+				any_character_artifact = {
+					has_variable = dragon_egg
+				}
+			}
+			has_trait = ambitious
+			culture = {
+				has_cultural_pillar = heritage_valyrian
+			}
+		}
+		AND = { # You have an egg + You are Eccentric
+			custom_tooltip = {
+				text = has_a_dragon_egg_artifact_tooltip
+				any_character_artifact = {
+					has_variable = dragon_egg
+				}
+			}
+			has_trait = eccentric
+		}
+	}
+}
+
+can_this_dragonpit_be_destroyed_when_dragonpit_building_is_replaced = {
+	has_variable = has_dragonkeeper_order
+	NOR = {
+		any_county_province = {
+			has_building_or_higher = generic_dragon_pit_01
+		}
+		any_county_province = {
+			OR = {
+				this = title:b_rhaenyss_hill.title_province
+				this = title:b_dragonstone.title_province
+			}
+		}
+	}
+}
+
+agot_has_any_dragonpit_access_law = {
+	OR = {
+		has_realm_law = dragonpit_close_family_law
+		has_realm_law = dragonpit_house_law
+		has_realm_law = dragonpit_dynasty_law
+		has_realm_law = dragonpit_everyone_law
+	}
+}
+
+agot_dragon_has_young_child_owner = {
+	$DRAGON$ = {
+		has_character_flag = owned_dragon
+		any_relation = {
+			type = agot_dragon
+			age <= 10
+			age >= 3
+			is_ruler = no
+		}
+	}
+}
+
+agot_dragon_is_wounded_or_ill_trigger = {
+	OR = {
+		has_trait = dragon_wounded_1
+		has_trait = dragon_wounded_2
+		has_trait = dragon_wounded_3
+		has_trait = dragon_wounded_4
+		has_trait = dragon_wounded_5
+		has_trait = dragon_burned
+		has_trait = dragon_ill
+	}
+}
