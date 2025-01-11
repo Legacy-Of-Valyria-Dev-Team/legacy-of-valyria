@@ -28,7 +28,7 @@ agot_on_game_start = {
 		# House Customizer Dummies Spawn
 		agot_house_customizer_spawn_dummies_effect = yes
 
-		### Murder Jalabhar for historical character setup
+		### Murder Historical characters before their spawn year
 		if = { # Jalabhar Xho
 			limit = { current_year < 8289 }
 			character:Xho_1 ?= { death = { death_reason = death_vanished } }
@@ -282,10 +282,6 @@ agot_on_game_start = {
 
 		#Dynasty Divided
 		house:house_Blackfyre ?= { add_house_modifier = divided_dynasty_house_modifier }
-		
-		#Bastard House Restoration
-		house:house_Brightflame ?= { set_variable = { name = bastard_house_of value = dynasty:dynn_Targaryen.dynasty_founder.house} }
-		house:house_Crossing ?= { set_variable = { name = bastard_house_of value = dynasty:dynn_Frey.dynasty_founder.house} }
 
 		# give Targaryen loyalist modifiers
 		every_ruler = {
@@ -395,7 +391,6 @@ agot_on_game_start = {
 				}
 			}
 		}
-
 		### Zara Changes 
 		#Kingsguard Stuff
 		title:d_dummy_kingsguard = {
@@ -1190,19 +1185,6 @@ agot_on_game_start = {
 					}
 					make_trait_inactive = surname_waters
 				}
-			}
-			if = { # Succession error log workaround
-				limit = { has_character_flag = unlegitimize_on_load }
-				if = { 
-					limit = { has_trait = legitimized_bastard }
-					remove_trait = legitimized_bastard
-				}
-				if = { 
-					limit = { has_trait = bastard_founder }
-					remove_trait = bastard_founder
-				}
-				add_trait = bastard
-				remove_character_flag = unlegitimize_on_load
 			}
 		}
 
