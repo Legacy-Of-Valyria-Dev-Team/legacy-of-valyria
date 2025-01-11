@@ -129,7 +129,7 @@ widget = {
 	}
 	widget = {
 		layer = hud_layer
-		size = { 100% 180 }
+		size = { 100% 75 }
 		position = { 0 -24 }
 
 		allow_outside = yes
@@ -5077,7 +5077,7 @@ types HUD
 				hbox = {
 					name = "spendables"
 					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = growing
+					layoutpolicy_vertical = growing					layoutpolicy_vertical = growing
 	
 					hbox = {
 						name = "tutorial_highlight_resources_bar"
@@ -5572,152 +5572,14 @@ types HUD
 							}
 						}
 					}
-	
-					hbox = {
-						name = "military"
-						datacontext = "[GetPlayer]"
-						
-						widget = {
-							button = {
-								size = { 112 45 }
-								onclick = "[ToggleGameViewData('military', GetPlayer.GetID)]"
-	
-								tooltip = "[InGameTopbar.GetMilitaryTooltip]"
-								using = tooltip_ne
-							}
-	
-							size = { 112 70 }
-	
-							background = {
-								texture = "gfx/interface/skinned/resource_panel_piece_light.dds"
-							}
-	
-							vbox = {
-								margin_top = 4
-	
-								hbox = {
-									layoutpolicy_horizontal = expanding
-									expand = {}
-	
-									hbox = {
-										spacing = 5
-										icon = {
-											name = "icon_soldier"
-											texture = "gfx/interface/icons/icon_soldier.dds"
-											size = { 25 25 }
-										}
-	
-										flowcontainer = {
-											direction = vertical
-											datacontext = "[GetPlayerArmyComposition]"
-	
-											flowcontainer = {
-												spacing = 2
-	
-												text_single = {
-													name = "strength"
-													text = "[InGameTopbar.GetCurrentTroopsCount]"
-													default_format = "#high"
-													align = nobaseline
-												}
-	
-												army_quality_icon = {}
-											}
-	
-											progressbar_standard = {
-												name = "soldiers_max"
-												size = { 40 8 }
-												visible = "[NotEqualTo_int32(ArmyComposition.GetMaxNumberOfSoldiers, '(int32)0')]"
-	
-												min = 0
-												max = "[IntToFloat(ArmyComposition.GetMaxNumberOfSoldiers)]"
-												value = "[IntToFloat(ArmyComposition.GetCurrentNumberOfSoldiers)]"
-											}
-										}
-									}
-	
-									expand = {}
-								}
-	
-								expand = {}
-							}
-						}
-	
-						widget = {
-							name = "domain_limit"
-							visible = "[Not( IsLandlessAdventurer( GetPlayer ) )]"
-	
-							layoutpolicy_vertical = expanding
-	
-							button = {
-								size = { 112 45 }
-								onclick = "[ToggleGameView('my_realm')]"
-	
-								tooltip = "[Character.GetDomainLimitTooltip]"
-								using = tooltip_ne
-							}
-	
-							size = { 112 70 }
-	
-							background = {
-								texture = "gfx/interface/skinned/resource_panel_end.dds"
-							}
-	
-							vbox = {
-								margin_top = 4
-	
-								hbox = {
-									margin_bottom = 16
-	
-									expand = {}
-									hbox = {
-										margin = { 5 5 }
-										spacing = 5
-	
-										background = {
-											visible = "[GreaterThan_int32( Character.GetDomainSize, Character.GetDomainLimit )]"
-											using = Status_Bad
-											margin_bottom = -3
-										}
-	
-										icon = {
-											texture = "gfx/interface/icons/icon_domain.dds"
-											size = { 25 25 }
-										}
-	
-										text_single = {
-											name = "value"
-											text = "[Character.GetDomainSize]/[Character.GetDomainLimit]"
-											align = nobaseline
-											margin_bottom = 1
-											max_width = 110
-										}
-									}
-									expand = {}
-								}
-								expand = {}
-							}
-						}
-					}
-				}
-			}
-			hbox = {
-				name = "natural_resources"
-				visible = "[Not( IsGameViewOpen('barbershop') )]"
-				hbox = {
-					name = "spendables"
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					margin_top = -18
+
 					hbox = {
 						name = "tutorial_highlight_resources_bar"
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = expanding
 	
 						widget = {
-							name = "iron"
-							size = { 144 70 }
-	
+							name = "iron"	
 							widget = {
 								size = { 144 45 }
 	
@@ -5850,7 +5712,7 @@ types HUD
 							}
 	
 							background = {
-								texture = "gfx/interface/skinned/resource_panel_start.dds"
+								texture = "gfx/interface/skinned/resource_panel_piece.dds"
 							}
 	
 							vbox = {
@@ -5902,131 +5764,129 @@ types HUD
 								size = { 112 45 }
 	
 								tooltipwidget = {
-									tooltipwidget = {
-										widget = {
-											alwaystransparent = no
-	
-											using = DefaultTooltipBackground
-									
+									widget = {
+										alwaystransparent = no
+
+										using = DefaultTooltipBackground
+								
+										vbox = {
+											name = "tooltip_container"
+											set_parent_size_to_minimum = yes
+											filter_mouse = all
+											margin = { 14 8 }
+											margin_bottom = 12
+								
 											vbox = {
-												name = "tooltip_container"
-												set_parent_size_to_minimum = yes
-												filter_mouse = all
-												margin = { 14 8 }
-												margin_bottom = 12
-									
-												vbox = {
+												layoutpolicy_horizontal = expanding
+												margin_bottom = 14
+												spacing = 5
+								
+												block "header" {}
+	
+												text_single = {
 													layoutpolicy_horizontal = expanding
-													margin_bottom = 14
-													spacing = 5
-									
-													block "header" {}
-		
-													text_single = {
-														layoutpolicy_horizontal = expanding
-														Raw_Text = "Steel"
-														default_format = "#high;bold"
-														using = Font_Size_Medium
-														fonttintcolor = "[TooltipInfo.GetTintColor]"
-									
-														background = {
-															using = Background_Area
-															margin = { 10 0 }
-															margin_bottom = 5
-														}
-													}
-									
-									
-													text_single = {
-														name = "total_label_no_tooltip"
-														layoutpolicy_horizontal = expanding
-														text = "TOTAL_BREAKDOWN_LABEL"
-														visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-													}
-									
-													text_single = {
-														name = "total_label"
-														layoutpolicy_horizontal = expanding
-														text = "TOTAL_BREAKDOWN_LABEL"
-														visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-														using = tooltip_ws
-									
-														datacontext = "[PlayerValueItem.GetBalanceGained]"
-														tooltip_visible = "[ValueBreakdown.HasTooltip]"
-									
-														tooltipwidget = {
-															widget_value_breakdown_tooltip = {
-																blockoverride "header" {}
-															}
-														}
+													Raw_Text = "Steel"
+													default_format = "#high;bold"
+													using = Font_Size_Medium
+													fonttintcolor = "[TooltipInfo.GetTintColor]"
+								
+													background = {
+														using = Background_Area
+														margin = { 10 0 }
+														margin_bottom = 5
 													}
 												}
-									
-												vbox = {
+								
+								
+												text_single = {
+													name = "total_label_no_tooltip"
 													layoutpolicy_horizontal = expanding
-													spacing = 15
-									
-													hbox = {
-														spacing = 5
-														layoutpolicy_horizontal = expanding
-									
-														background = {
-															using = Background_Area
-															margin = { 10 0 }
-															margin_bottom = 5
-														}
-									
-														text_single = {
-															text = "PLAYER_VALUE_LEVEL_LABEL"
-															layoutpolicy_horizontal = expanding
-									
-															default_format = "#T"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														text_single = {
-															name = "current_level"
-															layoutpolicy_horizontal = expanding
-									
-															text = "[PlayerValueItem.GetCurrentLevelName]"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														expand = {}
-													}
-									
-													vbox = {
-														visible = "[PlayerValueItem.HasNextLevel]"
-														layoutpolicy_horizontal = expanding
-														spacing = 5
-									
-														text_single = {
-															name = "progress_label"
-															layoutpolicy_horizontal = expanding
-									
-															text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														hbox = {
-															layoutpolicy_horizontal = expanding
-															margin_left = -3
-									
-															progressbar_standard = {
-																layoutpolicy_horizontal = expanding
-																size = { -1 15 }
-																tintcolor = "[TooltipInfo.GetTintColor]"
-																value = "[PlayerValueItem.GetProgressTowardNextLevel]"
-																tooltip = "[PlayerValueItem.GetProgressTooltip]"
-															}
-									
-															expand = {}
+													text = "TOTAL_BREAKDOWN_LABEL"
+													visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
+												}
+								
+												text_single = {
+													name = "total_label"
+													layoutpolicy_horizontal = expanding
+													text = "TOTAL_BREAKDOWN_LABEL"
+													visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
+													using = tooltip_ws
+								
+													datacontext = "[PlayerValueItem.GetBalanceGained]"
+													tooltip_visible = "[ValueBreakdown.HasTooltip]"
+								
+													tooltipwidget = {
+														widget_value_breakdown_tooltip = {
+															blockoverride "header" {}
 														}
 													}
 												}
 											}
-										}		
-									}
+								
+											vbox = {
+												layoutpolicy_horizontal = expanding
+												spacing = 15
+								
+												hbox = {
+													spacing = 5
+													layoutpolicy_horizontal = expanding
+								
+													background = {
+														using = Background_Area
+														margin = { 10 0 }
+														margin_bottom = 5
+													}
+								
+													text_single = {
+														text = "PLAYER_VALUE_LEVEL_LABEL"
+														layoutpolicy_horizontal = expanding
+								
+														default_format = "#T"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													text_single = {
+														name = "current_level"
+														layoutpolicy_horizontal = expanding
+								
+														text = "[PlayerValueItem.GetCurrentLevelName]"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													expand = {}
+												}
+								
+												vbox = {
+													visible = "[PlayerValueItem.HasNextLevel]"
+													layoutpolicy_horizontal = expanding
+													spacing = 5
+								
+													text_single = {
+														name = "progress_label"
+														layoutpolicy_horizontal = expanding
+								
+														text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													hbox = {
+														layoutpolicy_horizontal = expanding
+														margin_left = -3
+								
+														progressbar_standard = {
+															layoutpolicy_horizontal = expanding
+															size = { -1 15 }
+															tintcolor = "[TooltipInfo.GetTintColor]"
+															value = "[PlayerValueItem.GetProgressTowardNextLevel]"
+															tooltip = "[PlayerValueItem.GetProgressTooltip]"
+														}
+								
+														expand = {}
+													}
+												}
+											}
+										}
+									}		
 								}
 								using = tooltip_ne
 							}
@@ -6086,131 +5946,129 @@ types HUD
 								size = { 112 45 }
 	
 								tooltipwidget = {
-									tooltipwidget = {
-										widget = {
-											alwaystransparent = no
-	
-											using = DefaultTooltipBackground
-									
+									widget = {
+										alwaystransparent = no
+
+										using = DefaultTooltipBackground
+								
+										vbox = {
+											name = "tooltip_container"
+											set_parent_size_to_minimum = yes
+											filter_mouse = all
+											margin = { 14 8 }
+											margin_bottom = 12
+								
 											vbox = {
-												name = "tooltip_container"
-												set_parent_size_to_minimum = yes
-												filter_mouse = all
-												margin = { 14 8 }
-												margin_bottom = 12
-									
-												vbox = {
+												layoutpolicy_horizontal = expanding
+												margin_bottom = 14
+												spacing = 5
+								
+												block "header" {}
+	
+												text_single = {
 													layoutpolicy_horizontal = expanding
-													margin_bottom = 14
-													spacing = 5
-									
-													block "header" {}
-		
-													text_single = {
-														layoutpolicy_horizontal = expanding
-														Raw_Text = "Obsidian"
-														default_format = "#high;bold"
-														using = Font_Size_Medium
-														fonttintcolor = "[TooltipInfo.GetTintColor]"
-									
-														background = {
-															using = Background_Area
-															margin = { 10 0 }
-															margin_bottom = 5
-														}
-													}
-									
-									
-													text_single = {
-														name = "total_label_no_tooltip"
-														layoutpolicy_horizontal = expanding
-														text = "TOTAL_BREAKDOWN_LABEL"
-														visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-													}
-									
-													text_single = {
-														name = "total_label"
-														layoutpolicy_horizontal = expanding
-														text = "TOTAL_BREAKDOWN_LABEL"
-														visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-														using = tooltip_ws
-									
-														datacontext = "[PlayerValueItem.GetBalanceGained]"
-														tooltip_visible = "[ValueBreakdown.HasTooltip]"
-									
-														tooltipwidget = {
-															widget_value_breakdown_tooltip = {
-																blockoverride "header" {}
-															}
-														}
+													Raw_Text = "Obsidian"
+													default_format = "#high;bold"
+													using = Font_Size_Medium
+													fonttintcolor = "[TooltipInfo.GetTintColor]"
+								
+													background = {
+														using = Background_Area
+														margin = { 10 0 }
+														margin_bottom = 5
 													}
 												}
-									
-												vbox = {
+								
+								
+												text_single = {
+													name = "total_label_no_tooltip"
 													layoutpolicy_horizontal = expanding
-													spacing = 15
-									
-													hbox = {
-														spacing = 5
-														layoutpolicy_horizontal = expanding
-									
-														background = {
-															using = Background_Area
-															margin = { 10 0 }
-															margin_bottom = 5
-														}
-									
-														text_single = {
-															text = "PLAYER_VALUE_LEVEL_LABEL"
-															layoutpolicy_horizontal = expanding
-									
-															default_format = "#T"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														text_single = {
-															name = "current_level"
-															layoutpolicy_horizontal = expanding
-									
-															text = "[PlayerValueItem.GetCurrentLevelName]"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														expand = {}
-													}
-									
-													vbox = {
-														visible = "[PlayerValueItem.HasNextLevel]"
-														layoutpolicy_horizontal = expanding
-														spacing = 5
-									
-														text_single = {
-															name = "progress_label"
-															layoutpolicy_horizontal = expanding
-									
-															text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														hbox = {
-															layoutpolicy_horizontal = expanding
-															margin_left = -3
-									
-															progressbar_standard = {
-																layoutpolicy_horizontal = expanding
-																size = { -1 15 }
-																tintcolor = "[TooltipInfo.GetTintColor]"
-																value = "[PlayerValueItem.GetProgressTowardNextLevel]"
-																tooltip = "[PlayerValueItem.GetProgressTooltip]"
-															}
-									
-															expand = {}
+													text = "TOTAL_BREAKDOWN_LABEL"
+													visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
+												}
+								
+												text_single = {
+													name = "total_label"
+													layoutpolicy_horizontal = expanding
+													text = "TOTAL_BREAKDOWN_LABEL"
+													visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
+													using = tooltip_ws
+								
+													datacontext = "[PlayerValueItem.GetBalanceGained]"
+													tooltip_visible = "[ValueBreakdown.HasTooltip]"
+								
+													tooltipwidget = {
+														widget_value_breakdown_tooltip = {
+															blockoverride "header" {}
 														}
 													}
 												}
 											}
-										}		
-									}
+								
+											vbox = {
+												layoutpolicy_horizontal = expanding
+												spacing = 15
+								
+												hbox = {
+													spacing = 5
+													layoutpolicy_horizontal = expanding
+								
+													background = {
+														using = Background_Area
+														margin = { 10 0 }
+														margin_bottom = 5
+													}
+								
+													text_single = {
+														text = "PLAYER_VALUE_LEVEL_LABEL"
+														layoutpolicy_horizontal = expanding
+								
+														default_format = "#T"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													text_single = {
+														name = "current_level"
+														layoutpolicy_horizontal = expanding
+								
+														text = "[PlayerValueItem.GetCurrentLevelName]"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													expand = {}
+												}
+								
+												vbox = {
+													visible = "[PlayerValueItem.HasNextLevel]"
+													layoutpolicy_horizontal = expanding
+													spacing = 5
+								
+													text_single = {
+														name = "progress_label"
+														layoutpolicy_horizontal = expanding
+								
+														text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													hbox = {
+														layoutpolicy_horizontal = expanding
+														margin_left = -3
+								
+														progressbar_standard = {
+															layoutpolicy_horizontal = expanding
+															size = { -1 15 }
+															tintcolor = "[TooltipInfo.GetTintColor]"
+															value = "[PlayerValueItem.GetProgressTowardNextLevel]"
+															tooltip = "[PlayerValueItem.GetProgressTooltip]"
+														}
+								
+														expand = {}
+													}
+												}
+											}
+										}
+									}		
 								}
 								using = tooltip_ne
 							}
@@ -6270,131 +6128,129 @@ types HUD
 								size = { 112 45 }
 	
 								tooltipwidget = {
-									tooltipwidget = {
-										widget = {
-											alwaystransparent = no
-	
-											using = DefaultTooltipBackground
-									
+									widget = {
+										alwaystransparent = no
+
+										using = DefaultTooltipBackground
+								
+										vbox = {
+											name = "tooltip_container"
+											set_parent_size_to_minimum = yes
+											filter_mouse = all
+											margin = { 14 8 }
+											margin_bottom = 12
+								
 											vbox = {
-												name = "tooltip_container"
-												set_parent_size_to_minimum = yes
-												filter_mouse = all
-												margin = { 14 8 }
-												margin_bottom = 12
-									
-												vbox = {
+												layoutpolicy_horizontal = expanding
+												margin_bottom = 14
+												spacing = 5
+								
+												block "header" {}
+	
+												text_single = {
 													layoutpolicy_horizontal = expanding
-													margin_bottom = 14
-													spacing = 5
-									
-													block "header" {}
-		
-													text_single = {
-														layoutpolicy_horizontal = expanding
-														Raw_Text = "Valyrian Steel"
-														default_format = "#high;bold"
-														using = Font_Size_Medium
-														fonttintcolor = "[TooltipInfo.GetTintColor]"
-									
-														background = {
-															using = Background_Area
-															margin = { 10 0 }
-															margin_bottom = 5
-														}
-													}
-									
-									
-													text_single = {
-														name = "total_label_no_tooltip"
-														layoutpolicy_horizontal = expanding
-														text = "TOTAL_BREAKDOWN_LABEL"
-														visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-													}
-									
-													text_single = {
-														name = "total_label"
-														layoutpolicy_horizontal = expanding
-														text = "TOTAL_BREAKDOWN_LABEL"
-														visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-														using = tooltip_ws
-									
-														datacontext = "[PlayerValueItem.GetBalanceGained]"
-														tooltip_visible = "[ValueBreakdown.HasTooltip]"
-									
-														tooltipwidget = {
-															widget_value_breakdown_tooltip = {
-																blockoverride "header" {}
-															}
-														}
+													Raw_Text = "Valyrian Steel"
+													default_format = "#high;bold"
+													using = Font_Size_Medium
+													fonttintcolor = "[TooltipInfo.GetTintColor]"
+								
+													background = {
+														using = Background_Area
+														margin = { 10 0 }
+														margin_bottom = 5
 													}
 												}
-									
-												vbox = {
+								
+								
+												text_single = {
+													name = "total_label_no_tooltip"
 													layoutpolicy_horizontal = expanding
-													spacing = 15
-									
-													hbox = {
-														spacing = 5
-														layoutpolicy_horizontal = expanding
-									
-														background = {
-															using = Background_Area
-															margin = { 10 0 }
-															margin_bottom = 5
-														}
-									
-														text_single = {
-															text = "PLAYER_VALUE_LEVEL_LABEL"
-															layoutpolicy_horizontal = expanding
-									
-															default_format = "#T"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														text_single = {
-															name = "current_level"
-															layoutpolicy_horizontal = expanding
-									
-															text = "[PlayerValueItem.GetCurrentLevelName]"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														expand = {}
-													}
-									
-													vbox = {
-														visible = "[PlayerValueItem.HasNextLevel]"
-														layoutpolicy_horizontal = expanding
-														spacing = 5
-									
-														text_single = {
-															name = "progress_label"
-															layoutpolicy_horizontal = expanding
-									
-															text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
-															fonttintcolor = "[TooltipInfo.GetTintColor]"
-														}
-									
-														hbox = {
-															layoutpolicy_horizontal = expanding
-															margin_left = -3
-									
-															progressbar_standard = {
-																layoutpolicy_horizontal = expanding
-																size = { -1 15 }
-																tintcolor = "[TooltipInfo.GetTintColor]"
-																value = "[PlayerValueItem.GetProgressTowardNextLevel]"
-																tooltip = "[PlayerValueItem.GetProgressTooltip]"
-															}
-									
-															expand = {}
+													text = "TOTAL_BREAKDOWN_LABEL"
+													visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
+												}
+								
+												text_single = {
+													name = "total_label"
+													layoutpolicy_horizontal = expanding
+													text = "TOTAL_BREAKDOWN_LABEL"
+													visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
+													using = tooltip_ws
+								
+													datacontext = "[PlayerValueItem.GetBalanceGained]"
+													tooltip_visible = "[ValueBreakdown.HasTooltip]"
+								
+													tooltipwidget = {
+														widget_value_breakdown_tooltip = {
+															blockoverride "header" {}
 														}
 													}
 												}
 											}
-										}		
-									}
+								
+											vbox = {
+												layoutpolicy_horizontal = expanding
+												spacing = 15
+								
+												hbox = {
+													spacing = 5
+													layoutpolicy_horizontal = expanding
+								
+													background = {
+														using = Background_Area
+														margin = { 10 0 }
+														margin_bottom = 5
+													}
+								
+													text_single = {
+														text = "PLAYER_VALUE_LEVEL_LABEL"
+														layoutpolicy_horizontal = expanding
+								
+														default_format = "#T"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													text_single = {
+														name = "current_level"
+														layoutpolicy_horizontal = expanding
+								
+														text = "[PlayerValueItem.GetCurrentLevelName]"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													expand = {}
+												}
+								
+												vbox = {
+													visible = "[PlayerValueItem.HasNextLevel]"
+													layoutpolicy_horizontal = expanding
+													spacing = 5
+								
+													text_single = {
+														name = "progress_label"
+														layoutpolicy_horizontal = expanding
+								
+														text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
+														fonttintcolor = "[TooltipInfo.GetTintColor]"
+													}
+								
+													hbox = {
+														layoutpolicy_horizontal = expanding
+														margin_left = -3
+								
+														progressbar_standard = {
+															layoutpolicy_horizontal = expanding
+															size = { -1 15 }
+															tintcolor = "[TooltipInfo.GetTintColor]"
+															value = "[PlayerValueItem.GetProgressTowardNextLevel]"
+															tooltip = "[PlayerValueItem.GetProgressTooltip]"
+														}
+								
+														expand = {}
+													}
+												}
+											}
+										}
+									}		
 								}
 								using = tooltip_ne
 							}
@@ -6448,9 +6304,135 @@ types HUD
 							}
 						}
 					}
+	
+					hbox = {
+						name = "military"
+						datacontext = "[GetPlayer]"
+						
+						widget = {
+							button = {
+								size = { 112 45 }
+								onclick = "[ToggleGameViewData('military', GetPlayer.GetID)]"
+	
+								tooltip = "[InGameTopbar.GetMilitaryTooltip]"
+								using = tooltip_ne
+							}
+	
+							size = { 112 70 }
+	
+							background = {
+								texture = "gfx/interface/skinned/resource_panel_piece_light.dds"
+							}
+	
+							vbox = {
+								margin_top = 4
+	
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									expand = {}
+	
+									hbox = {
+										spacing = 5
+										icon = {
+											name = "icon_soldier"
+											texture = "gfx/interface/icons/icon_soldier.dds"
+											size = { 25 25 }
+										}
+	
+										flowcontainer = {
+											direction = vertical
+											datacontext = "[GetPlayerArmyComposition]"
+	
+											flowcontainer = {
+												spacing = 2
+	
+												text_single = {
+													name = "strength"
+													text = "[InGameTopbar.GetCurrentTroopsCount]"
+													default_format = "#high"
+													align = nobaseline
+												}
+	
+												army_quality_icon = {}
+											}
+	
+											progressbar_standard = {
+												name = "soldiers_max"
+												size = { 40 8 }
+												visible = "[NotEqualTo_int32(ArmyComposition.GetMaxNumberOfSoldiers, '(int32)0')]"
+	
+												min = 0
+												max = "[IntToFloat(ArmyComposition.GetMaxNumberOfSoldiers)]"
+												value = "[IntToFloat(ArmyComposition.GetCurrentNumberOfSoldiers)]"
+											}
+										}
+									}
+	
+									expand = {}
+								}
+	
+								expand = {}
+							}
+						}
+	
+						widget = {
+							name = "domain_limit"
+							visible = "[Not( IsLandlessAdventurer( GetPlayer ) )]"
+	
+							layoutpolicy_vertical = expanding
+	
+							button = {
+								size = { 112 45 }
+								onclick = "[ToggleGameView('my_realm')]"
+	
+								tooltip = "[Character.GetDomainLimitTooltip]"
+								using = tooltip_ne
+							}
+	
+							size = { 112 70 }
+	
+							background = {
+								texture = "gfx/interface/skinned/resource_panel_end.dds"
+							}
+	
+							vbox = {
+								margin_top = 4
+	
+								hbox = {
+									margin_bottom = 16
+	
+									expand = {}
+									hbox = {
+										margin = { 5 5 }
+										spacing = 5
+	
+										background = {
+											visible = "[GreaterThan_int32( Character.GetDomainSize, Character.GetDomainLimit )]"
+											using = Status_Bad
+											margin_bottom = -3
+										}
+	
+										icon = {
+											texture = "gfx/interface/icons/icon_domain.dds"
+											size = { 25 25 }
+										}
+	
+										text_single = {
+											name = "value"
+											text = "[Character.GetDomainSize]/[Character.GetDomainLimit]"
+											align = nobaseline
+											margin_bottom = 1
+											max_width = 110
+										}
+									}
+									expand = {}
+								}
+								expand = {}
+							}
+						}
+					}
 				}
 			}
-			expand = {}
 		}
 
 	}

@@ -1,4 +1,79 @@
-﻿agot_back_apply_dragon_aging_effect = { # Only apply this once on character creation, doing it later will massively inflate values
+﻿zz_agot_bond_dragon_relation_effect = {
+	agot_set_as_owned_dragon = { # Set as owned if not
+		OWNER = $ACTOR$
+		DRAGON = $DRAGON$
+	}
+	$ACTOR$ = { # Set relation
+		if = {
+			limit = {
+				is_alive = yes # Needed for history files
+				NOT = { has_relation_agot_dragon = $DRAGON$ }
+			}
+			set_relation_agot_dragon = { reason = test_friend_desc target = $DRAGON$ }
+			create_character_memory = {
+				type = agot_bonded_a_dragon
+				participants = { tamed_dragon = $DRAGON$ }
+			}
+		}
+
+		#Fucking Vaegon
+		if = {
+			limit = {
+				has_nickname = nick_the_dragonless
+			}
+			remove_nickname = yes
+		}
+	}
+}
+
+zz_agot_tame_dragon = {
+
+	agot_set_as_rider = { # Set rider
+		RIDER = $TAMER$
+		DRAGON = $DRAGON$
+	}
+	if = {
+		limit = {
+			$TAMER$ = {
+				has_relation_agot_dragon = $DRAGON$
+				$DRAGON$ = {
+					exists = var:cradlemate
+					var:cradlemate = $TAMER$
+					var:cradlemate = {
+						dynasty ?= { has_dynasty_perk = dragonrider_dynasty_legacy_1 }
+					}
+				}
+			}
+		}
+		$TAMER$ = {
+			add_trait_xp = {
+				trait = dragonrider
+				track = dragon_bond
+				value = 30
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			$TAMER$ = {
+				has_relation_agot_dragon = $DRAGON$
+			}
+		}
+		$TAMER$ = {
+			add_trait_xp = {
+				trait = dragonrider
+				track = dragon_bond
+				value = 100
+			}
+		}
+	}
+	agot_bond_dragon_relation_effect = { # Set as bonded if not
+		ACTOR = $TAMER$
+		DRAGON = $DRAGON$
+	}
+}
+
+agot_back_apply_dragon_aging_effect = { # Only apply this once on character creation, doing it later will massively inflate values
 	set_variable = {
 		name = dragon_age_counter
 		value = 0
