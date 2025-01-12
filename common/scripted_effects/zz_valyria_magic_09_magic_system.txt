@@ -79,6 +79,20 @@ zz_valyria_make_item_caster_list = {
 			}
 		}
 	}
+	every_spouse = {
+		limit = {
+			any_character_artifact = {
+				has_variable = spell
+				var:item_type ?= flag:scroll
+			}
+		}
+		scope:$MAGIC_USER$ = {
+			add_to_variable_list = {
+				name = item_caster_list
+				target = prev
+			}
+		}
+	}
 	every_courtier_or_guest = {
 		limit = {
 			any_character_artifact = {
@@ -120,7 +134,19 @@ zz_valyria_make_scroll_learner_list = {
 			name = zz_valyria_scroll_learner_list
 			target = prev
 		}
-
+		every_spouse = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_scroll_learner_list
+					target = prev
+				}
+			}
+		}
 		every_close_or_extended_family_member = {
 			limit = {
 				not = {
@@ -262,6 +288,20 @@ zz_valyria_make_magic_learner_list = {
 				target = prev
 			}
 		}
+		every_spouse = {
+			limit = {
+				nor = {
+					has_trait = zz_magister
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_learner_list
+					target = prev
+				}
+			}
+		}
 		every_close_or_extended_family_member = {
 			limit = {
 				nor = {
@@ -401,6 +441,19 @@ zz_valyria_make_magic_mystery_learner_list = {
 			add_to_variable_list = {
 				name = magic_mystery_learner_list
 				target = prev
+			}
+		}
+		every_spouse = {
+			limit = {
+				not = {
+					has_trait = dragon
+				}
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = magic_mystery_learner_list
+					target = prev
+				}
 			}
 		}
 		every_close_or_extended_family_member = {
