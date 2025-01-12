@@ -226,3 +226,46 @@ zz_valyria_magic_air_magic_04_mysteries_of_the_hurricane_effect = {
 		}
 	}
 }
+
+zz_valyria_magic_air_magic_05_mysteries_of_initiative_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_air_magic_05_mysteries_of_initiative.t
+		desc = zz_valyria_magic_air_magic_05_mysteries_of_initiative.desc
+		left_icon = scope:actor
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_air_magic_05_mysteries_of_initiative.tt
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = scope:recipient
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+
+		scope:recipient = {
+			zz_valyria_magic_apply_character_modifier_effect = { 
+				MODIFIER = zz_valyria_magic_air_magic_05_mysteries_of_initiative_modifier
+				DURATION = 1
+				BOOSTED_DURATION = 2
+			}
+				
+	
+			if = {
+				limit = {
+					NOT = { scope:actor = scope:recipient }
+				}
+				add_opinion = {
+					modifier  = grateful_opinion
+					target = scope:actor
+					opinion = 70
+				}
+			}
+		}
+	}
+}
