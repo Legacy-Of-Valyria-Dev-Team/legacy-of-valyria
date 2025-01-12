@@ -1,0 +1,215 @@
+﻿namespace = agot_coa_events
+
+agot_coa_events.0001 = {
+	hidden = yes
+
+	trigger = {
+		agot_is_valid_dyn_coa_target = yes
+		NOT = { primary_title = title:b_goldguard_heights }
+	}
+
+	immediate = {
+		every_held_title = {
+			limit = {
+				agot_is_a_republic_title = no
+				NAND = {
+					tier = tier_barony
+					title_province = { has_holding_type = ruin_holding }
+				}
+			}
+			if = {
+				limit = {
+					holder = {
+						#has_character_flag = has_personal_coa
+						has_character_flag = landed_coa_personalized
+					}
+				}
+				set_coa = holder.var:my_personal_coa.house
+			}
+			else = { set_coa = holder.house }
+		}
+		if = {
+			limit = {
+				has_title = title:e_pentos
+				agot_is_a_republic = yes
+			}
+			title:e_pentos = { set_coa = e_pentos }
+		}
+		if = {
+			limit = {
+				has_title = title:e_three_daughters
+				agot_is_a_republic = yes
+			}
+			title:e_three_daughters = { set_coa = e_three_daughters }
+		}
+		# LV Start
+		# There's probably a more elegant way to do all of this but eh it works
+		if = {
+			limit = {
+				has_title = title:e_braavos
+				agot_is_a_republic = yes
+			}
+			title:e_braavos = { set_coa = e_braavos }
+		}
+		if = {
+			limit = {
+				has_title = title:e_volantis
+				agot_is_a_republic = yes
+			}
+			title:e_volantis = { set_coa = e_volantis }
+		}
+		if = {
+			limit = {
+				has_title = title:e_ghiscar
+				agot_is_a_republic = yes
+			}
+			title:e_ghiscar = { set_coa = e_ghiscar }
+		}
+		if = {
+			limit = {
+				has_title = title:k_braavos
+				agot_is_a_republic = yes
+			}
+			title:k_braavos = { set_coa = k_braavos }
+		}
+		if = {
+			limit = {
+				has_title = title:k_volantis
+				agot_is_a_republic = yes
+			}
+			title:k_volantis = { set_coa = k_volantis }
+		}
+		if = {
+			limit = {
+				has_title = title:k_meereen
+				agot_is_a_republic = yes
+			}
+			title:k_meereen = { set_coa = k_meereen }
+		}
+		if = {
+			limit = {
+				has_title = title:k_yunkai
+				agot_is_a_republic = yes
+			}
+			title:k_yunkai = { set_coa = k_yunkai }
+		}
+		if = {
+			limit = {
+				has_title = title:k_astapor
+				agot_is_a_republic = yes
+			}
+			title:k_astapor = { set_coa = k_astapor }
+		}
+		if = {
+			limit = {
+				has_title = title:k_new_ghis
+				OR = {
+					agot_is_a_republic = yes
+					culture = culture:ghiscari
+				}
+			}
+			title:k_new_ghis = { set_coa = k_new_ghis }
+		}
+		# LV End
+		if = {
+			limit = {
+				has_title = title:k_tyrosh
+				agot_is_a_republic = yes
+			}
+			title:k_tyrosh = { set_coa = k_tyrosh }
+		}
+		if = {
+			limit = {
+				has_title = title:k_lys
+				agot_is_a_republic = yes
+			}
+			title:k_lys = { set_coa = k_lys }
+		}
+		if = {
+			limit = {
+				has_title = title:k_myr
+				agot_is_a_republic = yes
+			}
+			title:k_myr = { set_coa = k_myr }
+		}
+		if = {
+			limit = {
+				has_title = title:k_andalos
+				agot_is_a_republic = yes
+			}
+			title:k_andalos = { set_coa = k_andalos }
+		}
+		if = {
+			limit = {
+				has_title = title:k_pentos
+				agot_is_a_republic = yes
+			}
+			title:k_pentos = { set_coa = k_pentos }
+		}
+		if = {
+			limit = {
+				primary_title = title:d_kingsguard
+			}
+			title:d_kingsguard = { set_coa = d_kingsguard }
+		}
+		agot_set_laamp_coas = yes
+	}
+}
+
+#Personal CoA can be set as landed title CoA after declaring war
+agot_coa_events.0002 = {
+	title = agot_coa_events.0002.t
+	desc = agot_coa_events.0002.desc
+	theme = war
+	right_portrait = {
+		character = root
+		animation = war_attacker
+	}
+
+	override_background = {
+		reference = battlefield
+	}
+
+	trigger = {
+		agot_is_valid_dyn_coa_target = yes
+		NOT = { primary_title = title:b_goldguard_heights }
+		has_character_flag = has_personal_coa
+	}
+
+	option  = {
+		name = agot_coa_events.0002.a
+		custom_tooltip = agot_coa_events.0002.a.tt
+
+		every_held_title = {
+			limit = {
+				NAND = {
+					tier = tier_barony
+					title_province = { has_holding_type = ruin_holding }
+				}
+			}
+			set_coa = holder.var:my_personal_coa.house
+		}
+		add_character_flag = landed_coa_personalized
+
+		ai_chance = {
+			base = 50
+
+			ai_value_modifier = {
+				ai_boldness = 1
+			}
+			modifier = {
+				add = 50
+
+				scope:defender.house = scope:attacker.house
+			}
+		}
+	}
+
+	option  = {
+		name = agot_coa_events.0002.b
+
+		ai_chance = {
+			base = 50
+		}
+	}
+}
