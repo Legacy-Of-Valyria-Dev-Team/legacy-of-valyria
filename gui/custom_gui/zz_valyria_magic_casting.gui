@@ -24,12 +24,26 @@
 			name = _show
 			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
 		}
+		background = {
+			texture = "gfx/interface//illustrations/magic_casting/zz_magic_casting_background.dds"
+			margin = { -5 -5 }
+			fittype = centercrop
+			alpha = 1
+						
+			using = Mask_Rough_Edges
+
+			modify_texture = {
+				texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+				blend_mode = alphamultiply
+				mirror = vertical
+			}
+		}
 		margin_widget = {
 			size = { 100% 100% }
-			margin = { 0 26 }
+			margin = { 13 13 }
 			margin_right = 13
 			margin_left = 13
-
+			margin_bottom = 13
 			widget = {
 				size = { 100% 100% }
 
@@ -56,57 +70,53 @@
 
 						layoutpolicy_horizontal = expanding
 						expand = {}
-						vbox = {
-							button_standard = { 
-								name = "mage_casting_tab"
-								layoutpolicy_horizontal = expanding 
+						button_standard = { 
+							name = "mage_casting_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
 								layoutpolicy_vertical = expanding
-								align = center
-								minimumsize = { 100 38 }
-								vbox = {
-									layoutpolicy_horizontal = expanding
-									layoutpolicy_vertical = expanding
-									spacing = 5
-									margin = { 5 5 }
-									text_single = {
-										raw_text = "Mage Casting"
-										alwaystransparent = yes
-									}
-								}							
-								datacontext = "[GetScriptedGui('zz_valyria_magic_casting_mystery')]"
-								#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-								visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								onclick = "[GetScriptedGui('zz_valyria_magic_casting_mystery_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-							}
-						}
-						vbox = {
-							button_standard = { 
-								name = "scroll_casting_tab"
-								layoutpolicy_horizontal = expanding 
-								layoutpolicy_vertical = expanding
-								align = center
-								minimumsize = { 100 38 }
-								vbox = {
-									layoutpolicy_horizontal = expanding
-									layoutpolicy_vertical = expanding
-									spacing = 5
-									margin = { 5 5 }
-									text_single = {
-										raw_text = "Scroll Casting"
-										alwaystransparent = yes
-									}
-
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Mage Casting"
+									alwaystransparent = yes
 								}
-								
-								datacontext = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting')]"
-								#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-								visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								#enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								onclick = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							}							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_casting_mystery')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_casting_mystery_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						}
+						button_standard = { 
+							name = "scroll_casting_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Scroll Casting"
+									alwaystransparent = yes
+								}
+
 							}
+							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							#enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						}
 
 						expand = {}
@@ -118,7 +128,7 @@
 						visible = "[GetScriptedGui('zz_valyria_magic_casting_mystery').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						
 						datacontext = "[GetPlayer.MakeScope]"
-
+	
 						background = {
 							texture = "[Illustration.GetTexture( GetPlayer.MakeScope )]"
 							margin = { -5 0 }
@@ -132,6 +142,9 @@
 								blend_mode = alphamultiply
 								mirror = vertical
 							}
+						}
+						background = {
+							using = Background_Area_Dark
 						}
 						vbox = {
 							layoutpolicy_vertical = expanding
@@ -185,7 +198,10 @@
 						vbox = {
 							layoutpolicy_horizontal = growing 
 							layoutpolicy_vertical = growing
-							max_width = 300
+							background = {
+								using = Background_Area_Dark
+							}
+							max_width = 200
 							text_single = {
 								raw_text = "Magic Casting Stats"
 								fontsize = 24
@@ -270,57 +286,7 @@
 									align = left
 									raw_text = "Drops of Power - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_drops_of_power_stat_gui')|0]"
 								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 1 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_01_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 2 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_02_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 3 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_03_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 4 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_04_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 5 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_05_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 6 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_06_stat_gui')|0]"
-								}
-							}
-
-							
+							}							
 							expand = {}
 						}
 						vbox = {
@@ -332,13 +298,14 @@
 								fontsize = 24
 								align = center
 							}
+
 							spacer = { size = { 0 30 } }
 							
 							scrollbox = {
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 500
+								max_width = 550
 								max_height = 500
 								blockoverride "scrollbox_content"
 								{
@@ -414,6 +381,9 @@
 								mirror = vertical
 							}
 						}
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
@@ -466,7 +436,10 @@
 						vbox = {
 							layoutpolicy_horizontal = growing 
 							layoutpolicy_vertical = growing
-							max_width = 300
+							background = {
+								using = Background_Area_Dark
+							}
+							max_width = 200
 							text_single = {
 								raw_text = "Magic Casting Stats"
 								fontsize = 24
@@ -571,8 +544,8 @@
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 500
-								max_height = 450
+								max_width = 550
+								max_height = 500
 								blockoverride "scrollbox_content"
 								{
 									dynamicgridbox = {
