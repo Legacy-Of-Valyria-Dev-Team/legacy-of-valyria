@@ -964,22 +964,13 @@ zz_valyria_mana_gain = {
 zz_valyria_mana_spend = {
 	while = {
 		count = mana_cost_subtraction
-		if = {
-			limit = {
-				OR = {
-					has_character_modifier = zz_valyria_magic_drops_power
-				}
-			}
-			remove_character_modifier = zz_valyria_magic_drops_power
-		}
-		else_if  = { 
+		if  = { 
 			limit =  { 
 				has_trait = born_under_a_red_comet 
-				
 				has_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_06
-					value >= 1
+					value > 0
 				}
 			}
 			
@@ -997,7 +988,7 @@ zz_valyria_mana_spend = {
 				has_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_05
-					value >= 1
+					value > 0
 				}
 			}
 			
@@ -1005,7 +996,7 @@ zz_valyria_mana_spend = {
 				add_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_05
-					value = 1
+					value = -1
 				}
 			}
 		}
@@ -1015,7 +1006,7 @@ zz_valyria_mana_spend = {
 				has_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_04
-					value >= 1
+					value > 0
 				}
 			}
 			
@@ -1033,7 +1024,7 @@ zz_valyria_mana_spend = {
 				has_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_03
-					value >= 1
+					value > 0
 				}
 			}
 			hidden_effect = {
@@ -1050,7 +1041,7 @@ zz_valyria_mana_spend = {
 				has_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_02
-					value >= 1
+					value > 0
 				}
 			}
 			hidden_effect = {
@@ -1067,7 +1058,7 @@ zz_valyria_mana_spend = {
 				has_trait_xp = {
 					trait = born_under_a_red_comet
 					track = stores_of_power_01
-					value >= 1
+					value > 0
 				}
 			}
 			hidden_effect = {
@@ -1115,9 +1106,7 @@ zz_valyria_magic_cast_xp_gain = {
 }
 
 zz_valyria_magic_cast_effect = { 
-	#scope:secondary_recipient = {
-	#	remove_variable = casttype
-	#}
+
 	if = {
 		limit = {
 			OR = {
@@ -1129,6 +1118,7 @@ zz_valyria_magic_cast_effect = {
 
 		}
 		scope:secondary_recipient = {
+			remove_variable = casttype
 			zz_valyria_magic_cast_xp_gain = {
 				SKILL = $SKILL$
 			}
@@ -1167,6 +1157,7 @@ zz_valyria_magic_cast_effect = {
 						set_variable = {
 							name = casttype 
 							value = flag:scroll
+							days = 1
 						}
 						remove_variable = cast_potency
 						set_variable = {
