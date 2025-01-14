@@ -1,0 +1,186 @@
+agot_is_dragonblood_character = {
+	NOT = {
+		has_character_flag = dragon_by_horn
+	}
+	OR = {
+		house ?= { has_house_modifier = dragonrider_house_modifier }
+		has_trait = dragonrider
+		has_trait = dragonless_dragonrider
+		has_trait = dragonwidowed
+		has_character_flag = historical_dragonseed
+		AND = {
+			any_relation = { type = agot_dragon }
+			is_human = yes
+		}
+		AND = {
+			OR = {
+				has_game_rule = dragon_valyrian_2_gen
+				has_game_rule = dragon_valyrian_3_gen
+			}
+			culture = { has_cultural_pillar = heritage_valyrian }
+		}
+	}
+}
+
+agot_has_dragonblood_heritage = {
+	NOT = {
+		has_character_flag = dragon_by_horn
+	}
+	OR = {
+		OR = {
+			has_trait = dragonrider
+			has_trait = dragonless_dragonrider
+			has_trait = dragonwidowed
+			has_character_flag = historical_dragonseed
+			any_relation = { type = agot_dragon }
+			has_character_flag = dragonseed_potential_low
+			has_character_flag = dragonseed_potential_medium
+			AND = {
+				real_father.dynasty ?= dynasty
+				house ?= { has_house_modifier = dragonrider_house_modifier }
+			}
+			AND = {
+				real_mother.dynasty ?= dynasty
+				house ?= { has_house_modifier = dragonrider_house_modifier }
+			}
+		} 
+		if = {
+			limit = {
+				exists = real_father 
+			}
+			real_father ?= { #
+				agot_is_dragonblood_character = yes #1 gen
+			}
+		}
+		if = {
+			limit = {
+				exists = real_father.real_mother  
+			}
+			real_father.real_mother ?= {
+				agot_is_dragonblood_character = yes #2 gen
+			}
+		}
+		if = {
+			limit = {
+				exists = real_father.real_father 
+			}
+			real_father.real_father ?= {
+				agot_is_dragonblood_character = yes #2 gen
+			}
+		}
+
+
+		AND = {
+			OR = {
+				has_game_rule = dragon_dragonblood_3_gen
+				has_game_rule = dragon_valyrian_3_gen
+			}
+			OR = {
+				if = {
+					limit = {
+						exits = real_father.real_mother.real_mother
+					}
+					real_father.real_mother.real_mother?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+				if = {
+					limit = {
+						exists = real_father.real_mother.real_father
+					}
+					real_father.real_mother.real_father?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+				if = {
+					limit = {
+						exists = real_father.real_father.real_mother
+					}
+					real_father.real_father.real_mother ?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+				if = {
+					limit = {
+						exists = real_father.real_father.real_father 
+					}
+					real_father.real_father.real_father  ?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+			}
+		}
+
+
+		if = {
+			limit = {
+				exists = real_mother 
+			}
+			real_mother ?= { #
+				agot_is_dragonblood_character = yes #1 gen
+			}
+		}
+		if = {
+			limit = {
+				exists = real_mother.real_mother  
+			}
+			real_mother.real_mother ?= {
+				agot_is_dragonblood_character = yes #2 gen
+			}
+		}
+		if = {
+			limit = {
+				exists = real_mother.real_father 
+			}
+			real_mother.real_father ?= {
+				agot_is_dragonblood_character = yes #2 gen
+			}
+		}
+
+
+		AND = {
+			OR = {
+				has_game_rule = dragon_dragonblood_3_gen
+				has_game_rule = dragon_valyrian_3_gen
+			}
+			OR = {
+				if = {
+					limit = {
+						exits = real_mother.real_mother.real_mother
+					}
+					real_mother.real_mother.real_mother?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+				if = {
+					limit = {
+						exists = real_mother.real_mother.real_father
+					}
+					real_mother.real_mother.real_father?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+				if = {
+					limit = {
+						exists = real_mother.real_father.real_mother
+					}
+					real_mother.real_father.real_mother ?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+				if = {
+					limit = {
+						exists = real_mother.real_father.real_father 
+					}
+					real_mother.real_father.real_father  ?= {
+						agot_is_dragonblood_character = yes #2 gen
+					}
+				}
+			}
+		}
+
+		any_sibling = {
+			has_character_flag = historical_dragonseed
+		}
+	}
+}
