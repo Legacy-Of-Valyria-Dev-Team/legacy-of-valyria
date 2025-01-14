@@ -3,6 +3,7 @@ types zz_valyria_magic_crafting {
 	type zz_valyria_magic_crafting_window_open = window {
 		name = "zz_valyria_magic_crafting_window_open"
 		allow_outside = yes
+		layer = top
 		movable = yes
 		parentanchor = center
 		size = { 0 0 }
@@ -16,6 +17,7 @@ types zz_valyria_magic_crafting {
 		name = "zz_valyria_magic_crafting"
 		layer = top
 		using = Window_Background
+		
 		parentanchor = center
 		size = { 1800 1000 }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_crafting')]"
@@ -24,6 +26,20 @@ types zz_valyria_magic_crafting {
 		state = {
 			name = _show
 			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+		}
+		background = {
+			texture = "gfx/interface//illustrations/magic_casting/zz_magic_item_crafting_base.dds"
+			margin = { -5 -5 }
+			fittype = centercrop
+			alpha = 1
+						
+			using = Mask_Rough_Edges
+
+			modify_texture = {
+				texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+				blend_mode = alphamultiply
+				mirror = vertical
+			}
 		}
 		margin_widget = {
 			size = { 100% 100% }
@@ -51,6 +67,9 @@ types zz_valyria_magic_crafting {
 					}
 					hbox = { 
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_horizontal = growing 
 							layoutpolicy_vertical = growing
@@ -100,11 +119,14 @@ types zz_valyria_magic_crafting {
 									max_height = 450
 									blockoverride "scrollbox_content"
 									{
-										dynamicgridbox = {
+										fixedgridbox = {
+											addcolumn = 200
+											addrow = 125
 											datamodel = "[GetPlayer.MakeScope.GetList('mage_list')]"
 										
 											item = {
 												button_standard = {
+													parentanchor = top|left
 													size = { 200 120 }
 													align = left
 													datacontext = "[Scope.GetCharacter]"
@@ -151,10 +173,13 @@ types zz_valyria_magic_crafting {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 300
+										addrow = 55
 										datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_item_list')]"
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.Trait]"
 												minimumsize = { 300 38 }
 												text_single = {
@@ -215,10 +240,13 @@ types zz_valyria_magic_crafting {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 300
+										addrow = 55
 										datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_modifier_list')]"
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.Trait]"
 												minimumsize = { 300 38 }
 												text_single = {

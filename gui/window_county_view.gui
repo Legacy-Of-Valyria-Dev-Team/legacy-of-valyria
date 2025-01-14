@@ -1009,7 +1009,7 @@ window = {
 			### BOTTOM LEFT
 			widget = {
 				parentanchor = bottom|left
-				size = { 280 300 }
+				size = { 380 350 }
 				alwaystransparent = yes
 
 				background = {
@@ -1072,73 +1072,65 @@ window = {
 					expand = {
 						#visible = "[Not(And(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ))]"
 					}
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						
-						datacontext = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope)]"
+					
+					
+					vbox = {	
 
-						vbox = {
+						parentanchor = top|left		
+						layoutpolicy_vertical = expanding
+						layoutpolicy_horizontal = expanding
+						max_width = 350
+						max_height = 190
+						spacer = { size = { 0 30 } }
+						scrollbox = {
 							layoutpolicy_vertical = expanding
-							text_single = {
-								raw_text = "Iron"
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-							text_single = {
-								raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_iron')|0] "
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-						}
-						vbox = {
-							layoutpolicy_vertical = expanding
-							text_single = {
-								raw_text = "Steel"
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-							text_single = {
-								raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_steel')|0] "
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-						}
-						vbox = {
-							layoutpolicy_vertical = expanding
-							text_single = {
-								raw_text = "Obsidian"
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-							text_single = {
-								raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_obsidian')|0] "
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-						}
-						vbox = {
-							layoutpolicy_vertical = expanding
-							text_single = {
-								raw_text = "Valyrian Steel"
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
-							}
-							text_single = {
-								raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_valyrian_steel')|0] "
-								min_width = 100
-								align = center|nobaseline
-								default_format = "#high"
+							layoutpolicy_horizontal = expanding
+				
+				
+							blockoverride "scrollbox_content" {
+								fixedgridbox = {
+									addcolumn = 60
+									addrow = 65
+									datamodel_wrap = 5
+									flipdirection = yes
+				
+									datamodel = "[HoldingView.GetBuildings]"
+				
+									item = {
+										widget_building_item_01 = {}
+									}
+								}
 							}
 						}
 						expand = {}
+
 					}
+					### start ADD BUILDING SLOT ###
+					button_standard = {
+						name = "expand_holding_slots"
+						datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+						datacontext = "[HoldingView.GetTitle]"
+						datacontext = "[HoldingView.GetHolder]"
+						oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+						clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+						enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+						tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
+						onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+
+						#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
+						text_single = {
+							minimumsize = { 100 38 }
+							margin = { 10 10 }
+							raw_text = "Add Building Slot"
+							alwaystransparent = yes
+							resizeparent = yes
+							align = center|nobaseline
+							default_format = "#low"
+						}
+					}
+					### end ADD BUILDING SLOT ###
+
+					
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						margin = { 5 0 }
@@ -1606,6 +1598,94 @@ window = {
                         }
 					}
 
+					hbox = {
+						datacontext = "[Holding.GetProvince]"
+						layoutpolicy_horizontal = expanding
+						margin = { 2 0 }
+						spacing = 3
+
+						text_single = {
+							raw_text = "Iron"
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+
+						expand = {}
+
+						text_single = {
+							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_iron')|0] "
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+					}
+					hbox = {
+						datacontext = "[Holding.GetProvince]"
+						layoutpolicy_horizontal = expanding
+						margin = { 2 0 }
+						spacing = 3
+
+						text_single = {
+							raw_text = "Steel"
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+
+						expand = {}
+
+						text_single = {
+							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_steel')|0] "
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+					}
+					hbox = {
+						datacontext = "[Holding.GetProvince]"
+						layoutpolicy_horizontal = expanding
+						margin = { 2 0 }
+						spacing = 3
+
+						text_single = {
+							raw_text = "Obsidian"
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+
+						expand = {}
+
+						text_single = {
+							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_obsidian')|0] "
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+					}
+					hbox = {
+						datacontext = "[Holding.GetProvince]"
+						layoutpolicy_horizontal = expanding
+						margin = { 2 0 }
+						spacing = 3
+
+						text_single = {
+							raw_text = "Valyrian Steel"
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+
+						expand = {}
+
+						text_single = {
+							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_valyrian_steel')|0] "
+							min_width = 100
+							align = center|nobaseline
+							default_format = "#high"
+						}
+					}
 					expand = {}
 				}
 			}
@@ -1759,66 +1839,8 @@ window = {
 					margin_right = -3
 
 					# Upgraded buildings wrapper, this is added as building list can become quite long with extra slots
-					scrollarea = {
-						name = "buildings_grid_wrapper"
-						size = { 332 55 }
-						# layoutpolicy_horizontal = expanding
 
-						scrollbarpolicy_vertical = always_off
-						autoresizescrollarea = yes
-						maximumsize = { 332 55 }
-						
-
-						scrollbar_horizontal = {
-							using = Scrollbar_Horizontal
-							blockoverride "name"
-							{
-								name = legacy_scroll
-							}
-						}
-
-						scrollwidget = {
-							# Upgrade buildings
-							flowcontainer = {
-								name = "buildings_grid"
-								datamodel = "[HoldingView.GetBuildings]"
-								ignoreinvisible = yes
-								spacing = 3
-								margin_right = 3
-								righttoleft = yes
-
-								item = {
-									widget_building_item = {}
-								}
-							}
-							
-						}
-						
-					}
-					### start ADD BUILDING SLOT ###
-					button_standard = {
-						name = "expand_holding_slots"
-						datacontext = "[HoldingView.GetGUIHoldingBuilding]"
-						datacontext = "[HoldingView.GetTitle]"
-						datacontext = "[HoldingView.GetHolder]"
-						oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
-						clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
-						#enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
-						onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
-
-						#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
-						size = { 55 55 }
-						enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
-						
-						
-
-						button_feudalize_tribe = {
-							size = { 35 35 }
-							parentanchor = center
-							alwaystransparent = yes
-						}
-					}
-					### end ADD BUILDING SLOT ###
+					
 
 					flowcontainer = {
 						visible = "[Or(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot )]"
@@ -2978,6 +3000,96 @@ types CountyViewTypes
 {
 	type widget_building_item = widget {
 		parentanchor = bottom
+		size = { 55 55 }
+		enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
+		tooltip = "[GUIBuildingItem.GetTooltip]"
+		using = tooltip_ne
+
+		button_standard = {
+			name = "building_button"
+			size = { 100% 100% }
+			onclick = "[GUIBuildingItem.OnClick]"
+			down = "[GUIBuildingItem.IsHighlighted]"
+
+			highlight_icon = {
+				name = "build_new_icon"
+				visible = "[And(And(GUIBuildingItem.IsBuildNewIconShown, GUIBuildingItem.IsBuildingButtonEnabled), Not(GUIBuildingItem.HasLevel))]"
+				parentanchor = center
+				size = { 28 28 }
+				alpha = 0.7
+				texture = "gfx/interface/icons/symbols/icon_plus.dds"
+			}
+
+			icon_building = {
+				name = "building_icon"
+				visible = "[Not( GUIBuildingItem.CanUpgrade )]"
+				parentanchor = center
+				size = { 40 40 }
+				texture = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetTypeIcon]"
+			}
+
+			highlight_icon_building = {
+				name = "building_icon_can_upgrade"
+				visible = "[GUIBuildingItem.CanUpgrade]"
+				parentanchor = center
+				size = { 40 40 }
+				texture = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetTypeIcon]"
+			}
+
+			text_single= {
+				visible = "[GUIBuildingItem.HasLevel]"
+				text = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetLevel]"
+				parentanchor = bottom|right
+				position = { -6 -3 }
+				fontsize = 15
+				default_format = "#low;bold"
+				align = nobaseline
+
+				background = {
+					using = Background_Area_Dark
+					margin = { 5 0 }
+				}
+
+				background = {
+					using = Background_Area_Dark
+					margin = { 5 0 }
+				}
+
+				background = {
+					using = Background_Area_Dark
+					margin = { 5 0 }
+				}
+			}
+
+			warning_icon = {
+				name = "reduced_by_fixable_situation"
+				visible = "[GUIBuildingItem.IsBuildingDisabled]"
+				size = { 25 25 }
+			}
+		}
+
+		icon = {
+			name = "building_slot"
+			size = { 100% 100% }
+			using = Background_Area
+			visible = "[GUIBuildingItem.IsBuildingSlotShown]"
+		}
+
+		progressbar_standard = {
+			name = "construct_progressbar"
+			visible = "[GUIBuildingItem.IsConstructing]"
+			parentanchor = bottom
+			position = { 0 8 }
+			alwaystransparent = yes
+			size = { 100% 10 }
+			value = "[GUIBuildingItem.GetConstructingProgress]"
+			direction = horizontal
+			tooltip = "[GUIBuildingItem.GetTooltip]"
+		}
+	}
+
+	type widget_building_item_01 = widget {
+		parentanchor = top
 		size = { 55 55 }
 		enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
 		tooltip = "[GUIBuildingItem.GetTooltip]"

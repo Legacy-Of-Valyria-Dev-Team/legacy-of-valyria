@@ -2,6 +2,7 @@ types magic_scroll_learning {
 	type zz_valyria_magic_scroll_learning_window_open = window {
 		name = "zz_valyria_magic_scroll_learning_window_open"
 		allow_outside = yes
+		layer = top
 		movable = yes
 		parentanchor = center
 		size = { 0 0 }
@@ -16,13 +17,27 @@ types magic_scroll_learning {
 		layer = top
 		parentanchor = center
 		using = Window_Background
-		size = { 1500 800 }
+		size = { 1200 800 }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_learning')]"
 		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 
 		state = {
 			name = _show
 			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+		}
+		background = {
+			texture = "gfx/interface//illustrations/magic_casting/zz_magic_learning_background.dds"
+			margin = { -5 -5 }
+			fittype = centercrop
+			alpha = 1
+						
+			using = Mask_Rough_Edges
+
+			modify_texture = {
+				texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+				blend_mode = alphamultiply
+				mirror = vertical
+			}
 		}
 		margin_widget = {
 			size = { 100% 100% }
@@ -55,6 +70,7 @@ types magic_scroll_learning {
 
 						layoutpolicy_horizontal = expanding
 						expand = {}
+						
 						button_standard = { 
 							name = "mage_apprentice_tab"
 							layoutpolicy_horizontal = expanding 
@@ -134,7 +150,9 @@ types magic_scroll_learning {
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						visible = "[GetScriptedGui('zz_valyria_magic_learning_type_apprentice').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						datacontext = "[GetPlayer.MakeScope]"
-						
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
@@ -164,11 +182,14 @@ types magic_scroll_learning {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('magic_master_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -199,7 +220,8 @@ types magic_scroll_learning {
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							max_width = 550
+							spacer = { size = { 0 30 } }
 							text_single = {
 								raw_text = "Education Details"
 								fontsize = 24
@@ -256,11 +278,14 @@ types magic_scroll_learning {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('magic_learner_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -294,7 +319,9 @@ types magic_scroll_learning {
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						
 						datacontext = "[GetPlayer.MakeScope]"
-						
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
@@ -324,11 +351,14 @@ types magic_scroll_learning {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('magic_mystery_master_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -358,7 +388,8 @@ types magic_scroll_learning {
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							max_width = 600
+							spacer = { size = { 0 30 } }
 							text_single = {
 								text = game_concept_zz_mystery
 								fontsize = 24
@@ -376,18 +407,21 @@ types magic_scroll_learning {
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 450
+								max_width = 550
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 500
+										addrow = 55
 										datacontext = "[GetPlayer.MakeScope]"
 										datamodel = "[Scope.GetList('zz_valyria_teach_mystery_list')]"
 										
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.CharacterMemory]"
-												minimumsize = { 400 38 }
+												minimumsize = { 500 38 }
 												text_single = {
 													minimumsize = { 100 38 }
 													margin = { 15 15 }
@@ -461,11 +495,14 @@ types magic_scroll_learning {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('magic_mystery_learner_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -498,7 +535,9 @@ types magic_scroll_learning {
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						
 						datacontext = "[GetPlayer.MakeScope]"
-						
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
@@ -528,11 +567,14 @@ types magic_scroll_learning {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('item_caster_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -562,9 +604,10 @@ types magic_scroll_learning {
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							max_width = 600
+							spacer = { size = { 0 30 } }
 							text_single = {
-								text = game_concept_zz_mystery
+								raw_text = "Scroll"
 								fontsize = 24
 								align = center
 							}
@@ -580,16 +623,19 @@ types magic_scroll_learning {
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 500
+								max_width = 550
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 500
+										addrow = 55
 										datacontext = "[GetPlayer.MakeScope]"
 										datamodel = "[Scope.GetList('zz_valyria_scroll_list')]"
 										
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.Artifact]"
 												minimumsize = { 500 38 }
 												text_single = {
@@ -659,11 +705,14 @@ types magic_scroll_learning {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('zz_valyria_scroll_learner_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"

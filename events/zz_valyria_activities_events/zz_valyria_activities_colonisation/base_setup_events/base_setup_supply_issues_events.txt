@@ -1,0 +1,117 @@
+﻿namespace = zz_valyria_colonisation_base_setup
+
+zz_valyria_colonisation_base_setup.002 = { # Supply Issues
+	type = activity_event
+	title = zz_valyria_colonisation_base_setup.002.t
+	desc = {
+		desc = zz_valyria_colonisation.0020.supply.desc
+	}
+	theme = university
+
+	center_portrait = {
+		character = root
+		animation = personality_rational
+	}
+
+	trigger = {
+		always = yes
+	}
+	
+	########################################################## Supply Issues #################################################
+	
+	# Option A: Negotiate with Traders to Supply the Colony
+	option = {
+		name = zz_valyria_colonisation.0020.supply_issues.a
+		trigger = {
+			scope:host = {diplomacy > 16}
+			has_character_flag = colonization_supply_issues
+		}
+		zz_valyria_colonisation_skill_test = {
+			SKILL = diplomacy 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.a
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option B: Organise Supply Rationing
+	option = {
+		name = zz_valyria_colonisation.0020.supply_issues.b
+		trigger = {
+			scope:host = {stewardship > 16}
+			has_character_flag = colonization_supply_issues
+		}
+		zz_valyria_colonisation_skill_test = {
+			SKILL = stewardship 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.b
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option C: Organise Scavenging and Hunting Parties
+	option = {
+		name = zz_valyria_colonisation.0020.supply_issues.c
+		trigger = {
+			has_character_flag = colonization_supply_issues
+			scope:host = {martial > 16}
+		}
+		zz_valyria_colonisation_skill_test = {
+			SKILL = martial 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.c
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option D: Secretly replace supplies with substitutes
+	option = {
+		name = zz_valyria_colonisation.0020.supply_issues.d
+		trigger = {
+			has_character_flag = colonization_supply_issues
+			scope:host = {intrigue > 16}
+		}
+		zz_valyria_colonisation_skill_test = {
+			SKILL = intrigue 
+			ZZ_EVENT_OPTION_NAME = zz_valyria_colonisation.0020.d
+		}
+		
+		ai_chance = {
+			base = 100
+		}
+	}
+	
+	# Option E: Delegate Command
+	option = {
+		name = zz_valyria_colonisation.0020.supply_issues.f
+		trigger = {
+			has_character_flag = colonization_supply_issues
+		}
+		zz_valyria_colonisation_random_test = yes
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_trait = lazy
+				add = 100
+			}
+			modifier = {
+				has_trait = intellect_bad
+				add = 100
+			}
+			modifier = {
+				has_trait = dull
+				add = 100
+			}
+		}
+	}
+	
+	after = { 
+		remove_character_flag = colonization_supply_issues
+	}
+}

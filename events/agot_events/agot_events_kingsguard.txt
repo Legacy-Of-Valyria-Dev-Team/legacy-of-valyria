@@ -37,6 +37,20 @@ agot_kingsguard.1000 = { #Kingsguard Death Maintenance Event
 	}
 }
 
+scripted_trigger new_kg_trigger = {
+        any_courtier_or_guest = {
+                prowess >= 20
+                can_be_kingsguard_trigger = { COURT_OWNER = scope:king }        
+        }
+}
+scripted_trigger new_highborn_kg_trigger = {
+        any_courtier_or_guest = {
+                prowess >= 20
+                highborn_kingsguard_candidate = yes
+                can_be_kingsguard_trigger = { COURT_OWNER = scope:king }
+        }
+}
+
 agot_kingsguard.1001 = { # Standard KG Member Death / Removal
 	type = character_event
 	title = {
@@ -145,13 +159,12 @@ agot_kingsguard.1001 = { # Standard KG Member Death / Removal
 		trigger = {
 			custom_tooltip = {
 				text = agot_kingsguard.1001.a.tt # Avoid "consider using a custom_tooltip" warning
-				any_living_character = {
-					can_be_kingsguard_trigger = {
-						COURT_OWNER = scope:king
+				OR = {
+					any_vassal_or_below = {
+						primary_title = { tier >= tier_county }
+						new_kg_trigger = yes
 					}
-					prowess >= 20
-					top_liege = root
-					faith = root.faith
+					new_kg_trigger = yes
 				}
 			}
 		}
@@ -166,12 +179,10 @@ agot_kingsguard.1001 = { # Standard KG Member Death / Removal
 		trigger = {
 			custom_tooltip = {
 				text = agot_kingsguard.1001.b.tt # Avoid "consider using a custom_tooltip" warning
-				any_living_character = {
-					can_be_kingsguard_trigger = {
-						COURT_OWNER = scope:king
-					}
-					top_liege = root
-					highborn_kingsguard_candidate = yes
+				any_vassal_or_below = {
+					primary_title = { tier >= tier_county }
+					is_powerful_vassal = yes
+					new_highborn_kg_trigger = yes
 				}
 			}
 		}
@@ -236,16 +247,27 @@ agot_kingsguard.1002 = {  # Greatest Knights
 		court_position:zz_kingsguard_lord_commander_court_position = {
 			save_scope_as = lord_commander
 		}
-		every_living_character = {
+		every_courtier_or_guest = {
 			limit = {
-				can_be_kingsguard_trigger = {
-					COURT_OWNER = scope:king
-				}
 				prowess >= 20
-				top_liege = root
-				faith = root.faith
+				can_be_kingsguard_trigger = { COURT_OWNER = scope:king }
 			}
 			add_to_list = potential_kingsguard
+		}
+		every_vassal_or_below = {
+			limit = {
+				primary_title = {
+					tier >= tier_county
+				}
+				new_highborn_kg_trigger = yes
+			}
+			every_courtier_or_guest = {
+				limit = {
+					prowess >= 20
+					can_be_kingsguard_trigger = { COURT_OWNER = scope:king }
+				}
+				add_to_list = potential_kingsguard
+			}
 		}
 		ordered_in_list = {
 			list = potential_kingsguard
@@ -376,15 +398,30 @@ agot_kingsguard.1003 = { # Powerful Lordly Scions who will auto-accept
 		court_position:zz_kingsguard_lord_commander_court_position ?= {
 			save_scope_as = lord_commander
 		}
-		every_living_character = {
+		every_courtier_or_guest = {
 			limit = {
-				can_be_kingsguard_trigger = {
-					COURT_OWNER = scope:king
-				}
-				top_liege = root
+				prowess >= 20
 				highborn_kingsguard_candidate = yes
+				can_be_kingsguard_trigger = { COURT_OWNER = scope:king }
 			}
 			add_to_list = potential_kingsguard
+		}
+		every_vassal_or_below = {
+			limit = {
+				primary_title = {
+					tier >= tier_county
+				}
+				is_powerful_vassal = yes
+				new_highborn_kg_trigger = yes
+			}
+			every_courtier_or_guest = {
+				limit = {
+					prowess >= 20
+					highborn_kingsguard_candidate = yes
+					can_be_kingsguard_trigger = { COURT_OWNER = scope:king }
+				}
+				add_to_list = potential_kingsguard
+			}
 		}
 		random_in_list = {
 			list = potential_kingsguard
@@ -1668,7 +1705,6 @@ agot_kingsguard.1012 = { #New Kingsguard Set-up. Memory, prestige, knighthood / 
 							}
 						}
 					}
-					agot_become_a_knight_effect = yes
 					# Remove the knight relation
 					if = {
 						limit = {
@@ -1682,16 +1718,9 @@ agot_kingsguard.1012 = { #New Kingsguard Set-up. Memory, prestige, knighthood / 
 						}
 						remove_relation_agot_knight = scope:my_knight
 					}
-					# Add prestige
-					agot_add_become_a_knight_prestige_effect = {
+					agot_become_a_knight_effect = {
 						KNIGHT_MAKER = scope:king
 						KNIGHT_TO_BE = root
-					}
-					create_character_memory = {
-						type = agot_was_knighted
-						participants = {
-							knight = scope:king
-						}
 					}
 				}
 				5 = {
@@ -4669,6 +4698,27 @@ agot_kingsguard.9001 = {
 	}
 }
 
+scripted_trigger ai_kg_assignment_trigger = {
+	prowess >= 15
+	can_be_kingsguard_trigger = { COURT_OWNER = scope:king }
+	has_trait = education_martial_prowess
+	NOR = {
+		has_trait = kingsguard
+		AND = {
+			any_heir_title = { #AI don't use primary heirs
+				exists = this
+				place_in_line_of_succession = {
+					target = prev
+					value == 1
+				}
+			}
+			NOT = {
+				has_character_modifier = training_for_kingsguard
+			}
+		}
+	}
+}
+
 agot_kingsguard.9002 = {
 	# Dead Kingsguard Member AI
 	hidden = yes
@@ -4677,31 +4727,38 @@ agot_kingsguard.9002 = {
 	}
 	immediate = {
 		save_scope_as = king
-		every_living_character = {
+		if = {
 			limit = {
-				can_be_kingsguard_trigger = {
-					COURT_OWNER = scope:king
-				}
-				top_liege = root
-				prowess >= 15 # don't assign complete shitters
-				has_trait = education_martial_prowess # somebody with a sword trait for fuck sake
-				NOR = {
-					has_trait = kingsguard
-					AND = {
-						any_heir_title = { #AI don't use primary heirs
-							exists = this
-							place_in_line_of_succession = {
-								target = prev
-								value == 1
-							}
-						}
-						NOT = { #Unless they're specifically training for the Kingsguard
-							has_character_modifier = training_for_kingsguard
-						}
-					}
+				any_courtier_or_guest = {
+					ai_kg_assignment_trigger = yes
 				}
 			}
-			add_to_list = potential_kingsguard
+			every_courtier_or_guest = {
+				limit = {
+					ai_kg_assignment_trigger = yes
+				}
+				add_to_list = potential_kingsguard
+			}
+		}
+		if = {
+			limit = {
+				any_vassal_or_below = {
+					ai_kg_assignment_trigger = yes
+				}
+			}
+			every_vassal_or_below = {
+				limit = {
+					any_courtier_or_guest = {
+						ai_kg_assignment_trigger = yes
+					}
+				}
+				every_courtier_or_guest = {
+					limit = {
+						ai_kg_assignment_trigger = yes
+					}
+					add_to_list = potential_kingsguard
+				}
+			}
 		}
 		random_in_list = {
 			list = potential_kingsguard

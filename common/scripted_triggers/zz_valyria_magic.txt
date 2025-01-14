@@ -40,49 +40,12 @@ zz_valyria_has_artifact = {
 
 }
 
+
+
 zz_valyria_has_mana_to_cast = { 
 	OR = {
 		has_character_modifier = zz_valyria_magic_drops_power
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_04
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_03
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_02
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_01
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = zz_magister
-			has_trait_xp = {
-				trait = zz_magister
-				track = drops_of_power
-				value >= $MANACOST$
-			}
-		}
+		$MANACOST$ <= this.zz_valyria_drops_of_power_stat
 	}
 }
 
@@ -552,10 +515,13 @@ zz_valyria_mystery_dragon_only_trigger = {
 				MANACOST = scope:zz_valyria_mystery.var:manacost
 			}
 		}
-		custom_tooltip = {
-			text = zz_valyria_magic_cannot_cast_on_human
-			has_trait = dragon
+		var:zz_magic_target = { 
+			custom_tooltip = {
+				text = zz_valyria_magic_cannot_cast_on_human
+				has_trait = dragon
+			}
 		}
+
 	}
 }
 zz_valyria_mystery_dragon_female_only_trigger = {
@@ -570,13 +536,15 @@ zz_valyria_mystery_dragon_female_only_trigger = {
 				MANACOST = scope:zz_valyria_mystery.var:manacost
 			}
 		}
-		custom_tooltip = {
-			text = zz_valyria_magic_cannot_cast_on_human
-			has_trait = dragon
-		}
-		is_female = yes
-		NOT = { 
-			has_character_flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag
+		var:zz_magic_target = {
+			custom_tooltip = {
+				text = zz_valyria_magic_cannot_cast_on_human
+				has_trait = dragon
+			}
+			is_female = yes
+			NOT = { 
+				has_character_flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag
+			}
 		}
 	}
 }
@@ -664,12 +632,47 @@ zz_valyria_mystery_has_dead_dragon_egg_trigger = {
 				MANACOST = scope:zz_valyria_mystery.var:manacost
 			}
 		}
-		var:zz_magic_target = {
+		var:zz_magic_user = {
 			any_character_artifact = {
+				has_variable = dragon_egg
 				has_variable = dud_egg 
 				NOT = { has_variable = cradled_egg }
 				NOT = { has_variable = pitted_egg }
 			}
+		}
+		var:zz_magic_target = {
+
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+		}
+	}
+}
+zz_valyria_mystery_has_dragon_egg_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_mystery = {
+				has_memory_type = $SPELL$
+			}
+		}
+		var:zz_magic_caster = { 
+			zz_valyria_has_mana_to_cast = {
+				MANACOST = scope:zz_valyria_mystery.var:manacost
+			}
+		}
+		var:zz_magic_user = {
+			any_character_artifact = {
+				has_variable = dragon_egg
+				NOT = {has_variable = dud_egg}
+				NOT = { has_variable = cradled_egg }
+				NOT = { has_variable = pitted_egg }
+			}
+		}
+		var:zz_magic_target = {
+
 			NOT = {
 				custom_tooltip = {
 					text = zz_valyria_magic_cannot_cast_on_dragon
@@ -972,9 +975,11 @@ zz_valyria_scroll_dragon_only_trigger = {
 		}
 		var:zz_item_caster = { 
 		}
-		custom_tooltip = {
-			text = zz_valyria_magic_cannot_cast_on_human
-			has_trait = dragon
+		var:zz_magic_target = { 
+			custom_tooltip = {
+				text = zz_valyria_magic_cannot_cast_on_human
+				has_trait = dragon
+			}
 		}
 	}
 }
@@ -987,13 +992,15 @@ zz_valyria_scroll_dragon_female_only_trigger = {
 		}
 		var:zz_item_caster = { 
 		}
-		custom_tooltip = {
-			text = zz_valyria_magic_cannot_cast_on_human
-			has_trait = dragon
-		}
-		is_female = yes
-		NOT = { 
-			has_character_flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag
+		var:zz_magic_target = {
+			custom_tooltip = {
+				text = zz_valyria_magic_cannot_cast_on_human
+				has_trait = dragon
+			}
+			is_female = yes
+			NOT = { 
+				has_character_flag = zz_valyria_magic_blood_magic_08_mysteries_of_dragon_laying_effect_flag
+			}
 		}
 	}
 }
@@ -1069,12 +1076,44 @@ zz_valyria_scroll_has_dead_dragon_egg_trigger = {
 		}
 		var:zz_item_caster = { 
 		}
-		var:zz_magic_target = {
+		var:zz_magic_user = {
 			any_character_artifact = {
+				has_variable = dragon_egg
 				has_variable = dud_egg 
 				NOT = { has_variable = cradled_egg }
 				NOT = { has_variable = pitted_egg }
 			}
+		}
+		var:zz_magic_target = {
+
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+		}
+	}
+}
+zz_valyria_scroll_has_dragon_egg_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_scroll = {
+				var:spell ?= flag:$SPELL$
+			}
+		}
+		var:zz_item_caster = { 
+		}
+		var:zz_magic_user = {
+			any_character_artifact = {
+				has_variable = dragon_egg
+				NOT =  {has_variable = dud_egg }
+				NOT = { has_variable = cradled_egg }
+				NOT = { has_variable = pitted_egg }
+			}
+		}
+		var:zz_magic_target = {
+
 			NOT = {
 				custom_tooltip = {
 					text = zz_valyria_magic_cannot_cast_on_dragon
