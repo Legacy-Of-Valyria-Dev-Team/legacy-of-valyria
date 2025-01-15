@@ -3,9 +3,13 @@ types zz_valyria_magic_crafting {
 	type zz_valyria_magic_crafting_window_open = window {
 		name = "zz_valyria_magic_crafting_window_open"
 		allow_outside = yes
+		parentanchor = top|right
+		layer = windows_layer
+		#layer = top
 		movable = yes
-		parentanchor = center
-		size = { 0 0 }
+
+		size = { 100% 100% }
+		alwaystransparent = yes
 
 		visible = "[And( Not( IsPauseMenuShown ), And(Or(Not(IsObserver), GetPlayer.IsValid), IsDefaultGUIMode))]"
 
@@ -14,36 +18,53 @@ types zz_valyria_magic_crafting {
 
 	type zz_valyria_magic_crafting = window {
 		name = "zz_valyria_magic_crafting"
-		layer = top
+		layer = middle
 		using = Window_Background
-		parentanchor = center
-		size = { 1800 1000 }
+		parentanchor = top|right
+		#parentanchor = center#
+
+		movable = no
+		size = { 1800 100% }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_crafting')]"
 		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 
 		state = {
 			name = _show
-			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+			using = Animation_FadeIn_Quick
+			using = Sound_WindowShow_Standard
+			using = Window_Position_MainTab
+	
 		}
-		background = {
-			texture = "gfx/interface//illustrations/magic_casting/zz_magic_item_crafting_base.dds"
-			margin = { -5 -5 }
-			fittype = centercrop
-			alpha = 1
-						
-			using = Mask_Rough_Edges
+	
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Quick
+			using = Sound_WindowHide_Standard
+			using = Window_Position_MainTab_Hide
+		}
 
-			modify_texture = {
-				texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
-				blend_mode = alphamultiply
-				mirror = vertical
-			}
-		}
 		margin_widget = {
 			size = { 100% 100% }
-			margin = { 0 26 }
-			margin_right = 13
-
+			#margin = { 0 26 }
+			#margin_right = 13
+			margin_left = 40
+			margin_right = 53
+			margin_top = 44
+			margin_bottom = 20
+			background = {
+				texture = "gfx/interface//illustrations/magic_casting/zz_magic_item_crafting_base.dds"
+				margin = { -5 -5 }
+				fittype = centercrop
+				alpha = 1
+							
+				using = Mask_Rough_Edges
+	
+				modify_texture = {
+					texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+					blend_mode = alphamultiply
+					mirror = vertical
+				}
+			}
 			widget = {
 				size = { 100% 100% }
 
@@ -117,11 +138,14 @@ types zz_valyria_magic_crafting {
 									max_height = 450
 									blockoverride "scrollbox_content"
 									{
-										dynamicgridbox = {
+										fixedgridbox = {
+											addcolumn = 200
+											addrow = 125
 											datamodel = "[GetPlayer.MakeScope.GetList('mage_list')]"
 										
 											item = {
 												button_standard = {
+													parentanchor = top|left
 													size = { 200 120 }
 													align = left
 													datacontext = "[Scope.GetCharacter]"
@@ -168,10 +192,13 @@ types zz_valyria_magic_crafting {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 300
+										addrow = 55
 										datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_item_list')]"
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.Trait]"
 												minimumsize = { 300 38 }
 												text_single = {
@@ -206,6 +233,9 @@ types zz_valyria_magic_crafting {
 								layoutpolicy_horizontal = expanding 
 								layoutpolicy_vertical = expanding
 								text_multi = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									minimumsize = { 300 300 }
 									max_width = 300
 									min_width = 300
 									autoresize = yes
@@ -225,17 +255,20 @@ types zz_valyria_magic_crafting {
 							}
 							spacer = { size = { 0 30 } }
 							scrollbox = {
-								name = "modifier-_scrollarea"
+								name = "modifier_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
 								max_width = 350
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 300
+										addrow = 55
 										datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_modifier_list')]"
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.Trait]"
 												minimumsize = { 300 38 }
 												text_single = {
@@ -259,8 +292,6 @@ types zz_valyria_magic_crafting {
 								}
 							}
 							spacer = { size = { 0 10 } }
-							
-
 							vbox = {
 								text_single = {
 									align = left
@@ -271,6 +302,9 @@ types zz_valyria_magic_crafting {
 								layoutpolicy_horizontal = expanding 
 								layoutpolicy_vertical = expanding
 								text_multi = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									minimumsize = { 300 300 }
 									max_width = 300
 									min_width = 300
 									autoresize = yes
@@ -289,265 +323,253 @@ types zz_valyria_magic_crafting {
 								align = center
 							}
 							spacer = { size = { 0 30 } }
+							widget = {
+								size = { 400 300}
+								vbox  = {
+									layoutpolicy_horizontal = expanding 
+									layoutpolicy_vertical = expanding
 
-							hbox = {
-								layoutpolicy_horizontal = growing 
-								layoutpolicy_vertical = growing
-								widget = {
-									text_single = {
-										Raw_Text = "Iron"
-										fontsize = 18
-										min_width = 125
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
+									hbox = {
+										layoutpolicy_horizontal = expanding 
+										layoutpolicy_vertical = expanding
+										widget = {
+											text_single = {
+												Raw_Text = "Iron"
+												fontsize = 18
+												min_width = 125
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}				
+										widget = {
+											text_single = {
+												raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_iron')|0] "
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										widget = {
+											text_single = {
+												raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_iron')|0]"
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_iron')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " +1 " 
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										spacer = { size = { 5 0 } }
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_iron')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " -1 "
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										expand = {}
 									}
-								}
-								
-								spacer = { size = { 5 0 } }						
-								widget = {
-									text_single = {
-										raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_iron')|0] "
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
+									spacer = { size = { 0 10 } }
+									hbox = {
+										layoutpolicy_horizontal = expanding 
+										layoutpolicy_vertical = expanding
+										widget = {
+											text_single = {
+												Raw_Text = "Steel"
+												fontsize = 18
+												min_width = 125
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+											
+										widget = {
+											text_single = {
+												raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_steel')|0] "
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										widget = {
+											text_single = {
+												raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_steel')|0]"
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_steel')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " +1 " 
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										spacer = { size = { 5 0 } }
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_steel')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " -1 "
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										expand = {}
 									}
-								}
-								spacer = { size = { 5 0 } }
-								widget = {
-									text_single = {
-										raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_iron')|0]"
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
+									spacer = { size = { 0 10 } }
+									hbox = {
+										layoutpolicy_horizontal = expanding 
+										layoutpolicy_vertical = expanding
+										widget = {
+											text_single = {
+												Raw_Text = "Obsidian"
+												fontsize = 18
+												min_width = 125
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}								
+										widget = {
+											text_single = {
+												raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_obsidian')|0] "
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										widget = {
+											text_single = {
+												raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_obsidian')|0]"
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_obsidian')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " +1 " 
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										spacer = { size = { 5 0 } }
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_obsidian')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " -1 "
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										expand = {}
 									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_iron')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " +1 " 
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
+									spacer = { size = { 0 10 } }
+									hbox = {
+										layoutpolicy_horizontal = expanding 
+										layoutpolicy_vertical = expanding
+										widget = {
+											text_single = {
+												Raw_Text = "Valyrian Steel"
+												fontsize = 18
+												min_width = 125
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}											
+										widget = {
+											text_single = {
+												raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0] "
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										widget = {
+											text_single = {
+												raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_valyrian_steel')|0]"
+												min_width = 100
+												resizeparent = yes
+												align = center|nobaseline
+												default_format = "#low"
+											}
+										}
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_valyrian_steel')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " +1 " 
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										spacer = { size = { 5 0 } }
+										button_standard = {
+											maximumsize = {30 30}
+											datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_valyrian_steel')]"
+											enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+											text_single = {
+												Raw_Text = " -1 "
+												align = center|nobaseline
+												default_format = "#low"
+												alwaystransparent = yes
+											}	
+										}
+										expand = {}
 									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_iron')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " -1 "
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
-								}
-							}
-							spacer = { size = { 0 10 } }
-							hbox = {
-								layoutpolicy_horizontal = growing 
-								layoutpolicy_vertical = growing
-								max_width = 500
-								widget = {
-									text_single = {
-										Raw_Text = "Steel"
-										fontsize = 18
-										min_width = 125
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								
-								spacer = { size = { 5 0 } }						
-								widget = {
-									text_single = {
-										raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_steel')|0] "
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								spacer = { size = { 5 0 } }
-								widget = {
-									text_single = {
-										raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_steel')|0]"
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_steel')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " +1 " 
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_steel')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " -1 "
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
-								}
-							}
-							spacer = { size = { 0 10 } }
-							hbox = {
-								layoutpolicy_horizontal = growing 
-								layoutpolicy_vertical = growing
-								max_width = 500
-								widget = {
-									text_single = {
-										Raw_Text = "Obsidian"
-										fontsize = 18
-										min_width = 125
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}			
-								spacer = { size = { 5 0 } }						
-								widget = {
-									text_single = {
-										raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_obsidian')|0] "
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								spacer = { size = { 5 0 } }
-								widget = {
-									text_single = {
-										raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_obsidian')|0]"
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_obsidian')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " +1 " 
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_obsidian')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " -1 "
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
-								}
-							}
-							spacer = { size = { 0 10 } }
-							hbox = {
-								layoutpolicy_horizontal = growing 
-								layoutpolicy_vertical = growing
-								max_width = 500
-								widget = {
-									text_single = {
-										Raw_Text = "Valyrian Steel"
-										fontsize = 18
-										min_width = 125
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}								
-								spacer = { size = { 5 0 } }						
-								widget = {
-									text_single = {
-										raw_text = " Stockpile [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0] "
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								spacer = { size = { 5 0 } }
-								widget = {
-									text_single = {
-										raw_text = "In use [GetPlayer.MakeScope.ScriptValue('zz_valyria_current_use_valyrian_steel')|0]"
-										min_width = 100
-										resizeparent = yes
-										align = center|nobaseline
-										default_format = "#low"
-									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_add_one_valyrian_steel')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " +1 " 
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
-								}
-								spacer = { size = { 5 0 } }
-								vbox = {
-									button_standard = {
-										datacontext = "[GetScriptedGui('zz_valyria_magic_item_craft_minus_one_valyrian_steel')]"
-										enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-										text_single = {
-											Raw_Text = " -1 "
-											resizeparent = yes
-											align = center|nobaseline
-											default_format = "#low"
-										}	
-									}
+									expand = {}
 								}
 							}
+
 							spacer = { size = { 0 30 } }
-
 							text_single = {
 								Raw_Text = "Magic Regeants"
 								fontsize = 24
