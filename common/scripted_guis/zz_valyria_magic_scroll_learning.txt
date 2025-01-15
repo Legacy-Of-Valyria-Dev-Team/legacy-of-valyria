@@ -31,13 +31,90 @@ zz_valyria_magic_management = {
 				limit = {
 					zz_valyria_is_mage = yes 
 				}
-				zz_valyria_make_mages_list =  {MAGIC_USER = zz_magic_user}
+				
 				zz_valyria_make_magic_master_list = {MAGIC_USER = zz_magic_user}
 				zz_valyria_make_magic_learner_list = {MAGIC_USER = zz_magic_user}
 				
 				zz_valyria_make_magic_mystery_master_list = {MAGIC_USER = zz_magic_user}
 				zz_valyria_make_magic_mystery_learner_list = {MAGIC_USER = zz_magic_user}
 				zz_valyria_make_master_spell_list = {MAGIC_USER = zz_magic_user MAGIC_TEACHER = zz_magic_mystery_master}	
+				zz_valyria_make_mages_list =  {MAGIC_USER = zz_magic_user}
+				zz_valyria_make_scroll_maker_list =  {MAGIC_USER = zz_magic_user}
+				zz_valyria_make_scroll_maker_spell_list = {MAGIC_USER = zz_magic_user SCROLL_MAKER = zz_scroll_maker } 
+
+
+				scope:actor = {
+					remove_variable = zz_scroll_maker
+					clear_variable_list = scroll_maker_list
+					set_variable = {
+						name = zz_scroll_maker
+						value = scope:zz_magic_user
+					}
+					if = { 
+						limit = {
+							has_trait = zz_magister
+						}
+						scope:actor = {
+							add_to_variable_list = {
+								name = scroll_maker_list
+								target = prev
+							}
+						}
+					}
+					every_spouse = {
+						limit = {
+							has_trait = zz_magister
+						}
+						scope:actor = {
+							add_to_variable_list = {
+								name = scroll_maker_list
+								target = prev
+							}
+						}
+					}
+					every_living_mage = {
+						limit = {
+							liege_or_court_owner ?= scope:actor
+						}
+						scope:actor = {
+							add_to_variable_list = {
+								name = scroll_maker_list
+								target = prev
+							}
+						}
+					}
+					ordered_in_list = {
+						variable = scroll_maker_list
+						position = 0
+						order_by = learning
+						save_scope_as = zz_scroll_maker
+					}
+					set_variable = {
+						name = zz_scroll_maker
+						value = scope:zz_scroll_maker
+					}
+					clear_variable_list ?= zz_valyria_spell_list
+			
+					scope:zz_scroll_maker ?= {
+						every_memory = {
+							limit = { 
+								has_memory_category = magic
+							}
+							scope:actor = {
+								add_to_variable_list = {
+									name = zz_valyria_spell_list
+									target = prev
+								}
+								if = {
+									limit = {
+										NOT = { has_variable = zz_valyria_mystery }
+									}
+									set_variable = { name = zz_valyria_mystery value = prev }
+								}
+							}
+						}
+					}
+				}
 			}
 			if = { 
 				limit = {
@@ -65,78 +142,6 @@ zz_valyria_magic_management = {
 			set_variable = {
 				name = zz_magic_ui
 				value = flag:scroll_learning
-			}
-			scope:actor = {
-				remove_variable = zz_scroll_maker
-				clear_variable_list = scroll_maker_list
-				set_variable = {
-					name = zz_scroll_maker
-					value = scope:zz_magic_user
-				}
-				if = { 
-					limit = {
-						has_trait = zz_magister
-					}
-					scope:actor = {
-						add_to_variable_list = {
-							name = scroll_maker_list
-							target = prev
-						}
-					}
-				}
-				every_spouse = {
-					limit = {
-						has_trait = zz_magister
-					}
-					scope:actor = {
-						add_to_variable_list = {
-							name = scroll_maker_list
-							target = prev
-						}
-					}
-				}
-				every_living_mage = {
-					limit = {
-						liege_or_court_owner ?= scope:actor
-					}
-					scope:actor = {
-						add_to_variable_list = {
-							name = scroll_maker_list
-							target = prev
-						}
-					}
-				}
-				ordered_in_list = {
-					variable = scroll_maker_list
-					position = 0
-					order_by = learning
-					save_scope_as = zz_scroll_maker
-				}
-				set_variable = {
-					name = zz_scroll_maker
-					value = scope:zz_scroll_maker
-				}
-				clear_variable_list ?= zz_valyria_spell_list
-		
-				scope:zz_scroll_maker ?= {
-					every_memory = {
-						limit = { 
-							has_memory_category = magic
-						}
-						scope:actor = {
-							add_to_variable_list = {
-								name = zz_valyria_spell_list
-								target = prev
-							}
-							if = {
-								limit = {
-									NOT = { has_variable = zz_valyria_mystery }
-								}
-								set_variable = { name = zz_valyria_mystery value = prev }
-							}
-						}
-					}
-				}
 			}
 		}
 		else = {
@@ -318,7 +323,7 @@ zz_valyria_magic_learning_type_apprentice_click = {
 	}
 }
 
-zz_valyria_mages = {
+zz_valyria_mages_selection = {
 	scope = character
 	saved_scopes = {
 		zz_mage
