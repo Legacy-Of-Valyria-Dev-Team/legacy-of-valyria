@@ -16,3 +16,73 @@
 		}
 	}
 }
+
+zz_valyria_province_holding_list = {
+	scope = character 
+	effect = {
+		clear_variable_list = zz_valyria_holding_list
+		trait:holding_type_01 = {
+			root = {
+				add_to_variable_list = {
+					name = zz_valyria_holding_list
+					target = prev
+				}
+			}
+		}
+		trait:holding_type_02 = {
+			root = {
+				add_to_variable_list = {
+					name = zz_valyria_holding_list
+					target = prev
+				}
+			}
+		}
+		trait:holding_type_03 = {
+			root = {
+				add_to_variable_list = {
+					name = zz_valyria_holding_list
+					target = prev
+				}
+			}
+		}
+	}
+}
+zz_valyria_swap_holding_type ={
+	scope = province 	
+	saved_scopes = {
+		holding_type 
+		player
+	}
+	is_valid = {
+		scope:player = {
+			gold >= 1500
+		}
+	}
+	effect = {
+		if = { 
+			limit = { 
+				trait:holding_type_03 = scope:holding_type
+			}
+			set_holding_type = city_holding
+		}
+		if = { 
+			limit = { 
+				trait:holding_type_02 = scope:holding_type
+			}
+			set_holding_type = church_holding
+		}
+		if = { 
+			limit = { 
+				trait:holding_type_01 = scope:holding_type 
+			}
+			set_holding_type = castle_holding
+		}
+		scope:player = {
+			remove_short_term_gold = {
+				gold = {
+					value = 1500
+				}
+			}
+		}
+	}
+}

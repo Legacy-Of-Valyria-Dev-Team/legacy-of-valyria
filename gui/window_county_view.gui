@@ -1106,30 +1106,59 @@ window = {
 
 					}
 					### start ADD BUILDING SLOT ###
-					button_standard = {
-						name = "expand_holding_slots"
-						datacontext = "[HoldingView.GetGUIHoldingBuilding]"
-						datacontext = "[HoldingView.GetTitle]"
-						datacontext = "[HoldingView.GetHolder]"
-						oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
-						clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
-						enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
-						tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
-						onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
-
-						#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
-						text_single = {
-							minimumsize = { 100 38 }
-							margin = { 10 10 }
-							raw_text = "Add Building Slot"
-							alwaystransparent = yes
-							resizeparent = yes
-							align = center|nobaseline
-							default_format = "#low"
+					hbox = {
+						layoutpolicy_vertical = expanding
+						layoutpolicy_horizontal = expanding
+						button_standard = {
+							name = "expand_holding_slots"
+							datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+							datacontext = "[HoldingView.GetTitle]"
+							datacontext = "[HoldingView.GetHolder]"
+							oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+							clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+							enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+							tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+	
+							#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 10 10 }
+								raw_text = "Add Building Slot"
+								alwaystransparent = yes
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
+						}
+						button_standard = {
+							name = "swap_holding_type"
+							datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+							datacontext = "[HoldingView.GetTitle]"
+							datacontext = "[HoldingView.GetHolder]"
+							oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+							clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+							#enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+							#tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
+							#onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+							#onclick = "[HoldingView.OnConstructHoldingClick]"
+							onclick = "[GetScriptedGui('zz_valyria_province_holding_list').Execute( GuiScope.SetRoot(GetPlayer.MakeScope).End )]"
+							onclick = "[GetVariableSystem.Set('swap_holding','open')]"
+							#onclick = "[Character.OpenPlayerInteractionWithTargetTitle('adding_building_slot_interaction', Title.Self)]"
+							text_single = {
+								minimumsize = { 100 38 }
+								margin = { 10 10 }
+								raw_text = "Swap Holding"
+								alwaystransparent = yes
+								resizeparent = yes
+								align = center|nobaseline
+								default_format = "#low"
+							}
 						}
 					}
-					### end ADD BUILDING SLOT ###
 
+					### end ADD BUILDING SLOT ###
+					
 					
 					hbox = {
 						layoutpolicy_horizontal = expanding
@@ -1888,6 +1917,7 @@ window = {
 	#AGOT Added
 	agot_county_view_ruins_blocker = {}
 	agot_county_view_ruins_reconstruct_confirm = {}
+	holding_type_swap_selection_view = {}
 }
 
 ######################################################
@@ -2896,6 +2926,11 @@ window = {
 ############ HOLDING TYPE SELECTION VIEW #############
 ######################################################
 
+
+######################################################
+############ HOLDING TYPE SELECTION VIEW #############
+######################################################
+
 window = {
 	name = "holding_type_selection_view"
 	movable = no
@@ -3300,5 +3335,105 @@ types CountyViewTypes
 			}
 		}
 	}
+
+	type holding_type_swap_selection_view = window
+	{
+		name = "holding_type_swap_selection_view"
+		movable = no
+		layer = windows_layer
+		parentanchor = bottom|hcenter
+		position = { 600 -50 }
+		using = Animation_ShowHide_Quick
+		
+		using = Window_Background_Subwindow
+		visible = "[GetVariableSystem.HasValue('swap_holding','open')]"
+		vbox = {
+			set_parent_size_to_minimum = yes
+			margin = { 4 4 }
+			margin_bottom = 15
+			spacing = 15
+
+			header_pattern = {
+				layoutpolicy_horizontal = expanding
+
+				blockoverride "header_text"
+				{
+					text = "SWAP_HOLDING_HEADING"
+				}
+
+				blockoverride "button_close"
+				{
+					#onclick = "[GetVariableSystem.Clear('swap_holding')]"
+					onclick = "[GetVariableSystem.Set('swap_holding','closed')]"
+				}
+			}
+
+			building_in_vassal_warning_hbox = {}
+
+			hbox = {
+				name = "holding_types"
+				#datamodel = "[HoldingView.GetHoldingTypeItems]"
+				datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_holding_list')]"
+				layoutpolicy_horizontal = expanding
+				spacing = 10
+				margin = { 10 10 }
+
+				item = {
+					vbox = {
+						spacing = 5
+
+						button_standard = {
+							size = { 250 148 }
+							#enabled = "[HoldingTypeItem.CanConstructBuilding]"
+						
+							datacontext = "[Scope.Trait]"		
+							onclick = "[GetScriptedGui('zz_valyria_swap_holding_type').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).AddScope( 'holding_type', Trait.MakeScope ).End)]"
+												
+							#onclick = "[GetScriptedGui('zz_valyria_swap_holding_type').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('holding_type', Scope.HoldingTypeItem.GetHoldingType.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+	
+							#onclick = "[HoldingTypeItem.OnClick]"
+							#tooltip = "[HoldingTypeItem.GetTooltip]"
+							#datacontext = "[HoldingTypeItem.GetProvince]"
+
+							widget = {
+								scissor = yes
+								size = { 247 146 }
+
+								icon = {
+									#visible = "[HoldingTypeItem.CanConstructBuilding]"
+									size = { 320 146 }
+									texture = "[Trait.GetIcon( GetPlayer )]"
+									texture = "[HoldingTypeItem.GetBuilding.GetIllustration(Province.Self)]"
+									using = Mask_Rough_Edges
+									alpha = 0.7
+								}
+							}
+
+							flowcontainer = {
+								parentanchor = bottom|right
+								ignoreinvisible = yes
+								margin = { 5 5 }
+
+								warning_icon = {
+									name = "wrong_type"
+									#visible = "[Not(HoldingTypeItem.IsValidForPlayer)]"
+									size = { 35 35 }
+									tooltip = HOLDING_SELECTION_VIEW_WRONG_HOLDING_TYPE
+								}
+							}
+						}
+
+						text_label_center = {
+							layoutpolicy_horizontal = expanding
+							text = "[Trait.GetNameNoTooltip( GetPlayer )]"
+							#text = "[HoldingTypeItem.GetHoldingType.GetName]"
+						}
+					}
+				}
+			}
+		}
+	}
 }
+
+
 
