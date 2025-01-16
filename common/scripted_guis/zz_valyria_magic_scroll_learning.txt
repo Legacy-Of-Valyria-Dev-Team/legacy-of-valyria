@@ -1344,24 +1344,33 @@ zz_valyria_magic_school_selection_water_magic = {
 	}
 }
 
-zz_valyria_magic_school_selection_water_study_magic = {
+zz_valyria_magic_school_study_magic = {
 	scope = character
 	saved_scopes = {
 	}
 	is_valid = {
+		exists = var:zz_magic_caster.var:current_school_of_magic
 		not = {
-			var:zz_magic_caster.var:current_school_of_magic ?= flag:water_magic
+			var:zz_magic_caster = {
+				any_scheme = {
+					scheme_type = further_magical_education_scheme
+				}
+ 			}
 		}
 	}
 	is_shown = {
-		var:zz_magic_caster.var:current_school_of_magic ?= flag:water_magic
+		var:zz_magic_caster = {
+			any_scheme = {
+				scheme_type = further_magical_education_scheme
+			}
+		}
 	}
 	effect = {
 		save_scope_as = zz_magic_user 
 		var:zz_magic_caster = {
 			start_scheme = {
 				type = further_magical_education_scheme
-				target_character = var:zz_magic_caster
+				target_character = scope:zz_magic_user.var:zz_magic_caster
 			}
 		}
 	}
