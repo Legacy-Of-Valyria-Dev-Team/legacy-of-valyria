@@ -3,9 +3,10 @@ types scroll_making {
 	type zz_valyria_magic_scroll_making_window_open = window {
 		name = "zz_valyria_magic_scroll_making_window_open"
 		allow_outside = yes
-		layer = top
+		parentanchor = top|right
+		layer = windows_layer
 		movable = yes
-		parentanchor = center
+
 		size = { 0 0 }
 
 		visible = "[And( Not( IsPauseMenuShown ), And(Or(Not(IsObserver), GetPlayer.IsValid), IsDefaultGUIMode))]"
@@ -15,39 +16,52 @@ types scroll_making {
 
 	type zz_valyria_magic_scroll_making = window {
 		name = "zz_valyria_magic_scroll_making"
-		layer = top
-		parentanchor = center
+		layer = middle
+		parentanchor = top|right
 		using = Window_Background
-		size = { 1200 800 }
+		size = { 1200 100% }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_making')]"
 		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 
 		state = {
 			name = _show
-			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+			using = Animation_FadeIn_Quick
+			using = Sound_WindowShow_Standard
+			using = Window_Position_MainTab
+	
 		}
-		background = {
-			texture = "gfx/interface//illustrations/magic_casting/zz_magic_scroll_background.dds"
-			margin = { -5 -5 }
-			fittype = centercrop
-			alpha = 1
-						
-			using = Mask_Rough_Edges
+	
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Quick
+			using = Sound_WindowHide_Standard
+			using = Window_Position_MainTab_Hide
+		}
 
-			modify_texture = {
-				texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
-				blend_mode = alphamultiply
-				mirror = vertical
-			}
-		}
 		margin_widget = {
 			size = { 100% 100% }
-			margin = { 0 26 }
-			margin_right = 13
-
+			#margin = { 0 26 }
+			#margin_right = 13
+			margin_left = 40
+			margin_right = 53
+			margin_top = 44
+			margin_bottom = 20
 			widget = {
 				size = { 100% 100% }
-
+				background = {
+					texture = "gfx/interface//illustrations/magic_casting/zz_magic_scroll_background.dds"
+					margin = { -5 -5 }
+					fittype = centercrop
+					alpha = 1
+								
+					using = Mask_Rough_Edges
+		
+					modify_texture = {
+						texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+						blend_mode = alphamultiply
+						mirror = vertical
+					}
+				}
 				vbox = {
 					using = Window_Margins
 
