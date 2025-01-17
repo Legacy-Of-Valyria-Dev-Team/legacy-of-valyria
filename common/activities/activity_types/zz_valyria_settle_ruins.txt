@@ -1,6 +1,1303 @@
 ﻿activity_valyria_settle_ruins = {
 	is_shown = {
 		zz_valyria_settlement_colonisation_is_shown = yes
+		has_dlc_feature = tours_and_tournaments
+		has_dlc_feature = advanced_activities
+	}
+
+	can_start_showing_failures_only = {
+		is_available_adult = yes
+		zz_valyria_settlement_colonisation_is_valid = yes 
+	}
+
+	is_valid = {
+		scope:host = {
+			zz_valyria_settlement_colonisation_is_valid = yes 
+		}
+	}
+
+	on_invalidated = {
+		# Host becomes unlanded
+		# Host becomes incapable
+		if = {
+			limit = {
+				scope:host = { is_incapable = yes }
+			}
+			scope:activity = {
+				activity_type = { save_scope_as = activity_type }
+			}
+			scope:host = {
+				trigger_event = activity_system.0330
+			}
+			every_attending_character = {
+				limit = { NOT = { this = scope:host } }
+				trigger_event = activity_system.0331
+			}
+		}
+		# Host is imprisoned
+		else_if = {
+			limit = {
+				scope:host = { is_imprisoned = yes } 
+			}
+			scope:host = { trigger_event = bp2_adult_education.0005 }
+		}
+	}
+
+	on_host_death = {
+		#cancel the activity by not setting a new host
+		#free the students
+		scope:activity = {
+			every_attending_character = {
+				limit = {
+					has_character_flag = student_1
+				}
+				remove_character_flag = student_1
+			}
+			every_attending_character = {
+				limit = {
+					has_character_flag = student_2
+				}
+				remove_character_flag = student_2
+			}
+			every_attending_character = {
+				limit = {
+					has_character_flag = generated_character_uni
+				}
+				remove_character_flag = generated_character_uni
+			}
+		}
+		# Send your entourage home
+		scope:host = {
+			current_travel_plan = {
+				every_entourage_character = { set_location_to_default = yes }
+			}
+		}
+	}
+
+	is_location_valid = {
+		custom_tooltip = {
+			text = colonisation_valyria
+			has_holding_type = ruin_holding
+			zz_world_location_province = yes 
+			county.holder = scope:host
+		}
+
+		# If you are supposed to be the realm's reserve ruler, then you can't take a multi-year foreign trip.
+		trigger_if = {
+			limit = {
+				scope:host = { bannable_serving_diarch_trigger = yes }
+			}
+			custom_tooltip = {
+				text = activity_pilgrimage.serving_diarch
+				county.holder = {
+					any_liege_or_above = { this = scope:host.liege }
+				}
+			}
+		}
+	}
+
+	province_description = {
+	}
+
+	province_score = {
+		value = 0
+		if = {
+			limit = { zz_valyria_has_volcano = yes }
+			add = 100
+		}
+	}
+
+	# desc is only shown in debug AI watch window
+	ai_will_do = {
+		value = 1
+		add = learning
+		add = {
+            value = ai_greed
+            multiply = -0.25
+            desc = "ai_greed"
+        }
+        add = {
+        	value = ai_sociability
+        	multiply = 0.25
+        	desc = "ai_sociability"
+        }
+        add = {
+        	value = ai_rationality
+        	multiply = 0.25
+        	desc = "ai_rationality"
+        }
+		if = {
+			limit = {
+				ai_energy < 0
+			}
+			add = {
+				add = ai_energy
+				desc = "ai_energy"
+			}
+		}
+		if = {
+			limit = {
+				liege = { has_ongoing_grand_activity_trigger = yes }
+			}
+			desc = "Liege grand activities"
+			add = -1000
+		}
+		# Personality
+		if = {
+			limit = { has_trait = greedy }
+			add = {
+				value = -20
+				desc = greedy
+			}
+		}
+		if = {
+			limit = { has_trait = impatient }
+			add = {
+				value = -20
+				desc = impatient
+			}
+		}
+		if = {
+			limit = { has_trait = lazy }
+			add = {
+				value = -100
+				desc = lazy
+			}
+		}
+		if = {
+			limit = {
+				government_has_flag = government_is_tribal
+			}
+			add = {
+				value = -50
+				desc = government_is_tribal
+			}
+		}
+		if = {
+			limit = { has_trait = reclusive }
+			add = {
+				value = -100
+				desc = lazy
+			}
+		}
+        # Economic Archetypes
+        if = {
+        	limit = {
+				ai_has_warlike_personality = yes
+			}
+        	add = {
+            	value = -25
+            	desc = "Warlike"
+            }
+        }
+        if = {
+        	limit = {
+				ai_has_warlike_personality = yes
+			}
+        	add = {
+            	value = -25
+            	desc = "Warlike"
+            }
+        }
+        if = {
+        	limit = {
+				ai_has_warlike_personality = yes
+				war_chest_gold < war_chest_gold_maximum
+			}
+        	multiply = {
+            	value = -50
+            	desc = "Warlike, no war chest"
+            }
+        }
+		if = {
+            limit = {
+                OR = {
+                    ai_has_economical_boom_personality = yes
+                    has_character_flag = ai_boom
+                }
+            }
+            add = {
+            	value = -50
+            	desc = "Builder"
+            }
+        }
+	}
+
+	ai_check_interval = 60
+
+	ai_will_select_province = {
+		value = 50
+		if = {
+			limit = { "scope:host.capital_province.squared_distance(root)" <= squared_distance_small }
+			multiply = {
+				value = 8
+				desc = "super close 8"
+			}
+		}
+		else_if = {
+			limit = {
+				"scope:host.capital_province.squared_distance(root)" > squared_distance_small
+				"scope:host.capital_province.squared_distance(root)" <= squared_distance_medium
+			}
+			multiply = {
+				value = 7
+				desc = "pretty close 7"
+			}
+		}
+		else_if = {
+			limit = {
+				"scope:host.capital_province.squared_distance(root)" > squared_distance_medium
+				"scope:host.capital_province.squared_distance(root)" <= squared_distance_large
+			}
+			multiply = {
+				value = 6
+				desc = "OK close 6"
+			}
+		}
+		else_if = {
+			limit = {
+				"scope:host.capital_province.squared_distance(root)" > squared_distance_large
+				"scope:host.capital_province.squared_distance(root)" <= squared_distance_huge
+			}
+			multiply = {
+				value = 5
+				desc = "intermediately far away 5"
+			}
+		}
+		else_if = {
+			limit = {
+				"scope:host.capital_province.squared_distance(root)" > squared_distance_huge
+				"scope:host.capital_province.squared_distance(root)" <= squared_distance_almost_massive
+			}
+			multiply = {
+				value = 4
+				desc = "quite far away 4"
+			}
+		}
+		else_if = {
+			limit = {
+				"scope:host.capital_province.squared_distance(root)" > squared_distance_almost_massive
+				"scope:host.capital_province.squared_distance(root)" <= squared_distance_massive
+			}
+			multiply = {
+				value = 3
+				desc = "far away 3"
+			}
+		}
+		#Klingenberg -> Jerusalem
+		else_if = {
+			limit = {
+				"scope:host.capital_province.squared_distance(root)" > squared_distance_massive
+				"scope:host.capital_province.squared_distance(root)" <= squared_distance_monstrous
+			}
+			multiply = {
+				value = 2
+				desc = "very far away 2"
+			}
+		}
+		#Klingenberg -> Kanchipuram
+		else_if = {
+			limit = { "scope:host.capital_province.squared_distance(root)" > squared_distance_monstrous }
+			multiply = {
+				value = 1
+				desc = "super far away 1"
+			}
+		}
+		#Hostile faith
+		if = {
+			limit = { 
+				this.faith = {
+					faith_hostility_level = {
+						target = scope:host.faith
+						value >= faith_hostile_level
+					}
+				}
+			}
+			multiply = {
+				value = -1
+				desc = "hostile faith"
+			}
+		}
+	}
+
+	###################
+	# PARAMETERS
+	###################
+
+	is_grand_activity = no
+
+	is_single_location = yes
+
+	province_filter = top_realm
+
+	ai_province_filter = holy_sites
+
+	cooldown = {
+		months = 3
+	}
+
+	max_route_deviation_mult = 3.0
+
+
+
+	ui_predicted_cost = {
+		gold = {
+			add = { # Base Cost, scaled by era
+				value = zz_valyria_colonisation_activity_cost
+				multiply = activity_cost_scale_by_era
+				multiply = 2
+				if = {
+					limit = {
+						scope:province ?= {
+							zz_valyria_has_volcano = yes
+						}
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 6
+					}
+				}
+			}
+			
+
+			
+			# Make it a multiple of 5 (rounded up)
+			divide = 5
+			ceiling = yes 
+			multiply = 5
+		}
+	}
+
+	###################
+	# OPTIONS
+	###################
+
+
+	###################
+	# PHASES
+	###################
+	num_pickable_phases = 5
+
+	phases = {
+		#Study!
+		settlement_arrival_phase = {
+			is_predefined = yes
+
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+
+			#This is when you arrive at the university
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { weeks = 2 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					#Arrival event
+					trigger_event = { on_action = settlement_arrival_events }
+				}
+			}
+		}
+		settlement_phase = {
+			order = 2
+			number_of_picks = 5
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			cost = {
+				gold = {
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						desc = pilgrimage_base_cost
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 2
+						subtract = root.zz_valyria_colonisation_activity_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					add = {
+						if = {
+							limit = { 
+								scope:province ?= {
+									zz_valyria_has_volcano = yes
+								}
+							 }
+							 value = zz_valyria_colonisation_activity_cost
+							 multiply = activity_cost_scale_by_era
+							 multiply = 6
+						}
+					}
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { months = 1 } }
+				}
+			}
+
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 12 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 3
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 6
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 9
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 12
+					}
+				}
+			}
+
+			#Events that happen while we're on site
+			on_monthly_pulse = {
+			}
+
+			on_end = {
+				scope:host = {
+				}
+			}
+		}
+		magic_settlement_phase = {
+			is_predefined = no
+			order = 3
+			number_of_picks = 3
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			is_shown = {
+				has_trait = zz_magister
+			}
+			is_valid = {
+				scope:host = {
+					has_trait = zz_magister
+					zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+				}
+				
+			}
+			can_pick = {
+				has_trait = zz_magister
+				zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+			}
+			cost = {
+				gold = {
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						desc = pilgrimage_base_cost
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 2
+						subtract = root.zz_valyria_colonisation_activity_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					add = {
+						if = {
+							limit = { 
+								scope:province ?= {
+									zz_valyria_has_volcano = yes
+								}
+							 }
+							 value = zz_valyria_colonisation_activity_cost
+							 multiply = activity_cost_scale_by_era
+							 multiply = 6
+						}
+					}
+					multiply = 5
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { weeks = 1 } }
+				}
+			}
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 1 }
+					}
+				}
+			}
+			on_end = {
+				scope:host = {
+					set_variable = {
+						name = zz_manacost 
+						value = 100
+					}
+					zz_valyria_mana_spend = yes
+				}
+				scope:activity = {
+					#Phase progression
+					activity_special_type_progression_massive = yes
+				}
+			}
+		}
+		
+		settlement_conclusion_phase = {
+			is_predefined = yes 
+			order = 5
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { weeks = 1 } }
+				}
+			}
+			#This is when you arrive at the university
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 1 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					#Arrival event
+				}
+			}
+
+			#Events that happen while we're on site
+			on_monthly_pulse = {
+			}
+
+			on_end = {		
+				if = {
+					limit = { this = scope:host }
+					resolve_valyria_settlement_success_reward_effect = yes 
+					valyria_settlement_completed_log_entry_effect = yes
+					trigger_event = zz_valyria_settlement.0009 	
+					create_character_memory = {
+						type = completed_settlement
+					}
+					scope:new_memory = {
+						set_variable = {
+							name = education_destination
+							value = scope:activity.activity_location
+						}
+					}
+				}
+			}
+		}
+	}
+
+	###################
+	# GUEST HANDLING
+	###################
+
+	allow_zero_guest_invites = yes
+
+	can_be_activity_guest = {
+		is_adult = yes
+		# exclude travel leaders, travel companions, mercenaries, and sea captains
+		NOT = { current_travel_plan ?= scope:host.current_travel_plan }
+	}
+
+	max_guests = 20
+
+	host_intents = {
+		intents = { settle_castle settle_city settle_temple }
+		default = settle_castle
+	}
+
+	guest_intents = {
+		intents = { settle_castle settle_city settle_temple }
+		default = settle_castle
+	}
+
+	travel_entourage_selection = {
+		weight = standard_travel_entourage_additions
+		max = 5
+		invite_rule_order = 1
+	}
+
+	###################
+	# ACTIVITY-SPECIFIC PULSES
+	###################
+
+	pulse_actions = {
+		entries = {
+			zz_valyria_weevils_in_the_granaries
+			zz_valyria_food_riots
+			zz_valyria_rotting_lumber
+			zz_valyria_disgruntled_labourers
+			zz_valyria_hunting_small_game
+			zz_valyria_fruitfull_harvests
+			zz_valyria_happy_labourers
+			zz_valyria_sturdy_foundations
+			zz_valyria_surplus_stone_slabs
+			zz_valyria_find_gold
+		}
+		chance_of_no_event = 25
+	}
+
+	on_start = {
+		
+		
+		scope:host = {
+		}
+		scope:activity ?= {
+			#Counter for the Activity Success Progress bar
+			activity_setup_special_type_progression_effect = yes
+			#if = {
+			#	limit = {
+			#		has_activity_option = {
+			#			category = settlement_program
+			#			option = settlement_program_normal
+			#		}
+			#	}
+			#	activity_special_type_progression_major = yes
+			#}
+			activity_location = { save_scope_as = location }
+		}
+	}
+	
+	on_enter_travel_state = {
+	
+	}
+
+	on_travel_state_pulse = {
+		
+	}
+
+	on_enter_passive_state = {
+		
+	}
+
+	on_passive_state_pulse = { }
+
+	on_enter_active_state = { }
+
+	on_active_state_pulse = { }
+
+	on_complete = {
+		#Conclusion/reward event is run in the phase on_end
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:host = { is_ai = yes }
+				}
+				# To reduce inflaction of generic characters
+				scope:activity = {
+				}
+			}
+			else = {
+				scope:activity = {
+				}
+			}
+		}
+	}
+
+	###################
+	# GRAPHICS
+	###################
+
+	# Travel
+	background = { # Bridge
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				is_riverside_province = yes
+				OR = {
+					terrain = farmlands
+					terrain = plains
+					terrain = mountains
+					terrain = hills
+				}
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_bridge.dds"
+		environment = "environment_travel_bridge"
+		ambience = "event:/SFX/Events/Backgrounds/mountains_day"
+	}
+	
+	background = { # Farmland, settled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				terrain = farmlands
+				exists = province_owner
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_farm.dds"
+		environment = "environment_travel_farmlands"
+		ambience = "event:/SFX/Events/Backgrounds/fields_farms_day"
+	}
+	background = { # Farmland, unsettled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				terrain = farmlands
+				NOT = { exists = province_owner }
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/farms.dds"
+		environment = "environment_event_farms"
+		ambience = "event:/SFX/Events/Backgrounds/fields_farms_day"
+	}
+
+	background = { #Desert, settled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_desert_trigger = yes
+				exists = province_owner
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_desert.dds"
+		environment = "environment_travel_desert"
+		ambience = "event:/SFX/Events/Backgrounds/desert_day"
+	}
+	background = { #Desert, unsettled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_desert_trigger = yes
+				NOT = { exists = province_owner }
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/desert.dds"
+		environment = "environment_event_bp1_desert"
+		ambience = "event:/SFX/Events/Backgrounds/desert_day"
+	}
+
+	background = { #forest snowy
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location ?= { hunt_snowy_forest_trigger = yes }
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_hunt_snowy_forest.dds"
+		environment = "environment_hunt_snowy_forest"
+		ambience = "event:/SFX/Events/Backgrounds/mountains_day"
+	}
+
+	background = { #forest_pine
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_forest_pine_trigger = yes
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/forest_pine.dds"
+		environment = "environment_event_forest_pine"
+		ambience = "event:/SFX/Events/Backgrounds/coniferous_forest_day"
+	}
+
+	background = { #forest
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_forest_trigger = yes
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/forest.dds"
+		environment = "environment_event_forest"
+		ambience = "event:/SFX/Events/Backgrounds/deciduous_forest_day"
+	}
+
+	background = { #mountains, settled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_mountains_trigger = yes
+				exists = province_owner
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_mountains.dds"
+		environment = "environment_travel_mountain_settlement"
+		ambience = "event:/SFX/Events/Backgrounds/mountains_day"
+	}
+	background = { #mountains, unsettled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_mountains_trigger = yes
+				NOT = { exists = province_owner }
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/mountains.dds"
+		environment = "environment_event_mountains"
+		ambience = "event:/SFX/Events/Backgrounds/mountains_day"
+	}
+
+	background = { #steppe, settled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_steppe_trigger = yes
+				exists = province_owner
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_steppe.dds"
+		environment = "environment_travel_steppe_settlement"
+		ambience = "event:/SFX/Events/Backgrounds/steppe_day"
+	}
+	background = { #steppe, unsettled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_steppe_trigger = yes
+				NOT = { exists = province_owner }
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/steppe.dds"
+		environment = "environment_event_steppe"
+		ambience = "event:/SFX/Events/Backgrounds/steppe_day"
+	}
+
+	background = { #drylands (formerly desert)
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_drylands_trigger = yes
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/drylands.dds"
+		environment = "environment_event_desert"
+		ambience = "event:/SFX/Events/Backgrounds/desert_day"
+	}
+
+	background = { #wetlands
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_wetlands_trigger = yes
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/bp1_wetlands.dds"
+		environment = "environment_event_bp1_wetlands" 
+		ambience = "event:/SFX/Events/Backgrounds/deciduous_forest_day"
+	}
+
+	background = { #jungle
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_wilderness_jungle_trigger = yes
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/bp1_jungle.dds"
+		environment = "environment_event_bp1_jungle"
+		ambience = "event:/SFX/Events/Backgrounds/deciduous_forest_day"
+	}
+
+	background = { #plains, settled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_plains_trigger = yes
+				exists = province_owner
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_hills.dds"
+		environment = "environment_travel_hills_settlement"
+		ambience = "event:/SFX/Events/Backgrounds/fields_farms_day"
+	}
+	background = { #plains, unsettled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_plains_trigger = yes
+				NOT = { exists = province_owner }
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/bp1_plains.dds"
+		environment = "environment_event_bp1_plains"
+		ambience = "event:/SFX/Events/Backgrounds/fields_farms_day"
+	}
+
+	background = { #hills, settled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_hills_trigger = yes
+				exists = province_owner
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/ep2_travel_hills.dds"
+		environment = "environment_travel_hills_settlement"
+		ambience = "event:/SFX/Events/Backgrounds/fields_farms_day"
+	}
+	background = { #hills, unsettled
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				graphical_hills_trigger = yes
+				NOT = { exists = province_owner }
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/bp1_hills.dds"
+		environment = "environment_event_bp1_hills"
+		ambience = "event:/SFX/Events/Backgrounds/fields_farms_day"
+	}
+
+	background = { #sea
+		trigger = {
+			NOT = { scope:host.location = scope:activity.activity_location }
+			scope:host.location = {
+				is_sea_province = yes
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/fp1_ocean.dds"
+		environment = "environment_event_fp1_ocean"
+		ambience = "event:/DLC/FP1/SFX/Events/event_ocean_longship"
+	}
+	# End Travel
+	background = {	#Western-ish University
+		trigger = {
+			scope:host.location = scope:activity.activity_location
+			scope:host.location.culture = {
+				OR = {
+					has_graphical_western_culture_group_trigger = yes
+					has_graphical_norse_culture_group_trigger = yes
+					has_graphical_iberian_culture_group_trigger = yes
+					has_graphical_mediterranean_culture_group_trigger = yes
+				}
+			}
+		}
+		texture = "gfx/interface/illustrations/event_scenes/bp2_university.dds"
+		environment = "environment_bp2_university"
+		ambience = "event:/SFX/Events/Backgrounds/BP2/bp2_university"
+	}
+	background = {	#Indian garden
+		trigger = {
+			scope:host.location = scope:activity.activity_location
+			scope:host.location.culture = { has_graphical_india_culture_group_trigger = yes }
+		}
+		texture = "gfx/interface/illustrations/event_scenes/bp2_indian_garden.dds"
+		environment = "environment_bp2_garden_india_day"
+		ambience = "event:/SFX/Events/Backgrounds/castle_garden_day"
+	}
+	background = {	#Fallback: Madrasa
+		texture = "gfx/interface/illustrations/event_scenes/bp2_university_mena.dds"
+		environment = environment_bp2_university_mena
+		ambience = "event:/SFX/Events/Backgrounds/meetingchamber_western"
+	}
+
+	### Plug in widgets
+	activity_window_widgets = {
+		activity_special_type_progression = "activity_plugin_widgets_summary"
+		artifact_rewards = "activity_plugin_widgets_conclusion"
+		trait_rewards = "activity_plugin_widgets_conclusion"
+	}
+
+	window_characters = {
+		
+		teacher = {
+			camera = camera_event_center
+
+			effect = {
+				if = {
+					limit = {
+						scope:host.location = scope:activity.activity_location
+					}
+					every_attending_character = {
+						limit = {
+							has_character_flag = teacher_1
+						}
+						add_to_list = characters
+					}
+				}
+			}
+
+			scripted_animation = {
+				triggered_animation = {
+					trigger = {
+						scope:host = {
+							has_activity_intent = university_revelry_intent
+						}
+						scope:character = {
+							NOR = {
+								has_trait = lifestyle_reveler
+								has_trait = drunkard
+							}
+						}
+					}
+					animation = { stress disapproval eyeroll }
+				}
+				triggered_animation = {
+					trigger = {
+						scope:host = {
+							has_activity_intent = university_revelry_intent
+						}
+						scope:character = {
+							OR = {
+								has_trait = lifestyle_reveler
+								has_trait = drunkard
+							}
+						}
+					}
+					animation = { laugh happiness }
+				}
+				#Fallback
+				animation = happy_teacher
+			}
+		}
+		
+		student = {
+			camera = camera_event_left
+
+			effect = {
+				if = {
+					limit = {
+						scope:host.location = scope:activity.activity_location
+					}
+					every_attending_character = {
+						limit = {
+							has_character_flag = student_1
+						}
+						add_to_list = characters
+					}
+				}
+			}
+
+			scripted_animation = {
+				triggered_animation = {
+					trigger = {
+						OR = {
+							scope:host = {
+								has_activity_intent = university_revelry_intent
+							}
+							scope:character = {
+								OR = {
+									has_trait = drunkard
+									has_trait = lifestyle_reveler
+								}
+							}
+						}
+					}
+					animation = { wedding_drunk drink }
+				}
+				triggered_animation = {
+					trigger = {
+						scope:character = {
+							NOR = {
+								has_trait = drunkard
+								has_trait = lifestyle_reveler
+							}
+						}
+					}
+					animation = { worry admiration beg }
+				}
+				#Fallback
+				animation = chancellor
+			}
+		}
+		
+		noble_student = {
+			camera = camera_event_center
+			
+			effect = {
+				if = {
+					limit = {
+						scope:host.location = scope:activity.activity_location
+					}
+					scope:host = { add_to_list = characters }
+				}
+			}
+			scripted_animation = {
+				triggered_animation = {
+					trigger = {
+						scope:host = {
+							has_activity_intent = university_revelry_intent
+						}
+					}
+					animation = toast_goblet
+				}			
+				#Fallback
+				animation = reading
+			}
+		}
+
+		travel_noble_student = {
+			camera = camera_event_center
+			
+			effect = {
+				if = {
+					limit = {
+						NOT = {
+							scope:host.location = scope:activity.activity_location
+						}
+					}
+					scope:host = {
+						add_to_list = characters
+					}
+				}
+			}
+
+			scripted_animation = {
+				triggered_animation = {
+					trigger = {
+						scope:character.location = { is_sea_province = yes }
+					}
+					animation = { idle }
+				}
+				triggered_animation = {
+					trigger = { scope:character = { has_trait = impatient } }
+					animation = { jockey_gallop }
+				}
+				animation = jockey_walk
+			}
+		}
+		
+		student = {
+			camera = camera_event_center
+
+			effect = {
+				if = {
+					limit = {
+						scope:host.location = scope:activity.activity_location
+					}
+					every_attending_character = {
+						limit = {
+							has_character_flag = student_2
+						}
+						add_to_list = characters
+					}
+				}
+			}
+
+			scripted_animation = {
+				triggered_animation = {
+					trigger = {
+						OR = {
+							scope:host = {
+								has_activity_intent = university_revelry_intent
+							}
+							scope:character = {
+								OR = {
+									has_trait = drunkard
+									has_trait = lifestyle_reveler
+								}
+							}
+						}
+					}
+					animation = { flirtation drink_goblet }
+				}
+				triggered_animation = {
+					trigger = {
+						scope:character = {
+							NOR = {
+								has_trait = drunkard
+								has_trait = lifestyle_reveler
+							}
+						}
+					}
+					animation = { stress happiness shame }
+				}
+				#Fallback
+				animation = chancellor
+			}
+		}
+		
+		teacher = {
+			camera = camera_event_center
+
+			effect = {
+				if = {
+					limit = {
+						scope:host.location = scope:activity.activity_location
+					}
+					every_attending_character = {
+						limit = {
+							has_character_flag = teacher_2
+						}
+						add_to_list = characters
+					}
+				}
+			}
+
+			scripted_animation = {
+				triggered_animation = {
+					trigger = {
+						scope:host = {
+							has_activity_intent = university_revelry_intent
+						}
+						scope:character = {
+							NOR = {
+								has_trait = lifestyle_reveler
+								has_trait = drunkard
+							}
+						}
+					}
+					animation = stressed_teacher
+				}
+				triggered_animation = {
+					trigger = {
+						scope:host = {
+							has_activity_intent = university_revelry_intent
+						}
+						scope:character = {
+							OR = {
+								has_trait = lifestyle_reveler
+								has_trait = drunkard
+							}
+						}
+					}
+					animation = { happy_teacher }
+				}
+				#Fallback
+				animation = throne_room_writer
+			}
+		}
+	}
+}
+
+
+activity_valyria_settle_ruins_for_cheapskates = {
+	is_shown = {
+		zz_valyria_settlement_colonisation_is_shown = yes
+		not = {
+			has_dlc_feature = tours_and_tournaments
+			has_dlc_feature = advanced_activities
+		}
 	}
 
 	can_start_showing_failures_only = {
@@ -336,67 +1633,33 @@
 
 	max_route_deviation_mult = 3.0
 
-	cost = {
-		gold = {
-			add = {
-				value = root.adult_education_activity_cost
-				desc = pilgrimage_base_cost
-			}
-			add = {
-				value = root.adult_education_activity_cost
-				multiply = activity_cost_scale_by_era
-				subtract = root.adult_education_activity_cost
-				desc = activity_cost_scale_by_era_desc
-			}
-		}
 
-	}
 
 	ui_predicted_cost = {
 		gold = {
-			add = { # Base Cost, scaled by era
-				value = adult_education_activity_cost
-				multiply = activity_cost_scale_by_era
+			add = {
+				value = zz_valyria_colonisation_activity_cost
+				desc = pilgrimage_base_cost
 			}
-			
-			# Options 
-			add = { # Books Option 
-				value = 0
-				subtract = minor_gold_value_static_max
-				add = {
-					value = medium_gold_value_static_max
-					min = 150
-				}
-				add = {
-					value = major_gold_value_static_max
-					min = 300
-				}
-				# Scale option costs by era
+			add = {
+				value = zz_valyria_colonisation_activity_cost
 				multiply = activity_cost_scale_by_era
-				# Divide by the number of option levels to get an average option cost
-				divide = 4
+				multiply = 2
+				subtract = root.zz_valyria_colonisation_activity_cost
+				desc = activity_cost_scale_by_era_desc
 			}
-			add = { # Books Option 
-				value = 0
-				subtract = minor_gold_value_static_max
-				add = {
-					value = medium_gold_value_static_max
-					min = 150
+			add = {
+				if = {
+					limit = { 
+						scope:province ?= {
+							zz_valyria_has_volcano = yes
+						}
+					 }
+					 value = zz_valyria_colonisation_activity_cost
+					 multiply = activity_cost_scale_by_era
+					 multiply = 6
 				}
-				add = {
-					value = major_gold_value_static_max
-					min = 300
-				}
-				# Scale option costs by era
-				multiply = activity_cost_scale_by_era
-				# Divide by the number of option levels to get an average option cost
-				divide = 4
 			}
-			
-			# Make it a multiple of 5 (rounded up)
-			divide = 5
-			ceiling = yes 
-			multiply = 5
 		}
 	}
 
@@ -447,6 +1710,142 @@
 
 			on_end = {
 				
+				if = {
+					limit = { this = scope:host }
+					resolve_valyria_settlement_success_reward_effect = yes 
+					valyria_settlement_completed_log_entry_effect = yes
+					trigger_event = zz_valyria_settlement.0009 	
+					create_character_memory = {
+						type = completed_settlement
+					}
+					scope:new_memory = {
+						set_variable = {
+							name = education_destination
+							value = scope:activity.activity_location
+						}
+					}
+				}
+			}
+		}
+		settlement_phase = {
+			is_predefined = yes 
+			order = 2
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			cost = {
+				gold = {
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						desc = pilgrimage_base_cost
+					}
+					add = {
+						value = zz_valyria_colonisation_activity_cost
+						multiply = activity_cost_scale_by_era
+						multiply = 2
+						subtract = root.zz_valyria_colonisation_activity_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					add = {
+						if = {
+							limit = { 
+								scope:province ?= {
+									zz_valyria_has_volcano = yes
+								}
+							 }
+							 value = zz_valyria_colonisation_activity_cost
+							 multiply = activity_cost_scale_by_era
+							 multiply = 6
+						}
+					}
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { months = 1 } }
+				}
+			}
+
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 12 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 3
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 6
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 9
+					}
+					trigger_event = {
+						on_action = settlement_destination_events 
+						months = 12
+					}
+				}
+			}
+
+			#Events that happen while we're on site
+			on_monthly_pulse = {
+			}
+
+			on_end = {
+				scope:host = {
+				}
+			}
+		}
+		settlement_conclusion_phase = {
+			is_predefined = yes 
+			order = 3
+			ai_will_do = {
+				value = 0
+				add = {
+					value = 30
+					desc = "Base test value"
+				}
+			}
+			on_enter_phase = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = { progress_activity_phase_after = { weeks = 1 } }
+				}
+			}
+			#This is when you arrive at the university
+			on_phase_active = {
+				if = {
+					limit = { this = scope:host }
+					scope:activity = {
+						#Phase progression
+						progress_activity_phase_after = { months = 1 }
+						#Loc
+						activity_location = { save_scope_as = location }
+					}
+					#Arrival event
+				}
+			}
+
+			#Events that happen while we're on site
+			on_monthly_pulse = {
+			}
+
+			on_end = {		
 				if = {
 					limit = { this = scope:host }
 					resolve_valyria_settlement_success_reward_effect = yes 
