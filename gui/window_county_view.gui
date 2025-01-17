@@ -1117,6 +1117,7 @@ window = {
 							oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
 							clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
 							enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+							visible  = "[GetScriptedGui('zz_valyria_province').IsShown( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
 							tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
 							onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
 	
@@ -1138,7 +1139,8 @@ window = {
 							datacontext = "[HoldingView.GetHolder]"
 							oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
 							clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
-							#enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+							enabled = "[GetScriptedGui('zz_valyria_province').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
+							visible  = "[GetScriptedGui('zz_valyria_province').IsShown( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
 							#tooltip = "[GetScriptedGui('zz_valyria_province').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
 							#onclick = "[GetScriptedGui('zz_valyria_province').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
 							#onclick = "[HoldingView.OnConstructHoldingClick]"
@@ -2926,11 +2928,6 @@ window = {
 ############ HOLDING TYPE SELECTION VIEW #############
 ######################################################
 
-
-######################################################
-############ HOLDING TYPE SELECTION VIEW #############
-######################################################
-
 window = {
 	name = "holding_type_selection_view"
 	movable = no
@@ -3342,7 +3339,7 @@ types CountyViewTypes
 		movable = no
 		layer = windows_layer
 		parentanchor = bottom|hcenter
-		position = { 600 -50 }
+		position = { 800 -50 }
 		using = Animation_ShowHide_Quick
 		
 		using = Window_Background_Subwindow
@@ -3386,9 +3383,11 @@ types CountyViewTypes
 							size = { 250 148 }
 							#enabled = "[HoldingTypeItem.CanConstructBuilding]"
 						
-							datacontext = "[Scope.Trait]"		
+							datacontext = "[Scope.Trait]"	
+							enabled = "[GetScriptedGui('zz_valyria_swap_holding_type').IsValid( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).AddScope( 'holding_type', Trait.MakeScope ).End)]"	
+							tooltip = "[GetScriptedGui('zz_valyria_swap_holding_type').BuildTooltip( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).End)]"
 							onclick = "[GetScriptedGui('zz_valyria_swap_holding_type').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('player', GetPlayer.MakeScope).AddScope( 'holding_type', Trait.MakeScope ).End)]"
-												
+							onclick = "[GetVariableSystem.Set('swap_holding','closed')]"				
 							#onclick = "[GetScriptedGui('zz_valyria_swap_holding_type').Execute( GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('holding_type', Scope.HoldingTypeItem.GetHoldingType.MakeScope).AddScope('player', GetPlayer.MakeScope).End )]"
 	
 							#onclick = "[HoldingTypeItem.OnClick]"
@@ -3408,7 +3407,6 @@ types CountyViewTypes
 									alpha = 0.7
 								}
 							}
-
 							flowcontainer = {
 								parentanchor = bottom|right
 								ignoreinvisible = yes
@@ -3421,12 +3419,11 @@ types CountyViewTypes
 									tooltip = HOLDING_SELECTION_VIEW_WRONG_HOLDING_TYPE
 								}
 							}
-						}
-
-						text_label_center = {
-							layoutpolicy_horizontal = expanding
-							text = "[Trait.GetNameNoTooltip( GetPlayer )]"
-							#text = "[HoldingTypeItem.GetHoldingType.GetName]"
+							text_label_center = {
+								layoutpolicy_horizontal = expanding
+								text = "[Trait.GetNameNoTooltip( GetPlayer )]"
+								#text = "[HoldingTypeItem.GetHoldingType.GetName]"
+							}
 						}
 					}
 				}
