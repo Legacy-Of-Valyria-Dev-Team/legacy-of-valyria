@@ -7,9 +7,81 @@
 
 zz_valyria_on_game_start_after_lobby = {
 	effect = { 
+		character:Setenon_01 = {
+			if = { 
+				limit = {
+					NOT = {
+						has_game_rule = debug_mode_on
+					}
+				}
+				death = {
+					death_reason = death_ascension_magic
+					killer = character:Setenon_01 
+				}
+			}
+			else = {
+				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
+				scope:newly_created_artifact = {
+					agot_dudify_egg = yes
+				}
+				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
+				scope:newly_created_artifact = {
+					agot_dudify_egg = yes
+				}
+				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
+				scope:newly_created_artifact = {
+					agot_dudify_egg = yes
+				}
+				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
+				scope:newly_created_artifact = {
+					agot_dudify_egg = yes
+				}
+				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
+				scope:newly_created_artifact = {
+					agot_dudify_egg = yes
+				}
+				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
+				scope:newly_created_artifact = {
+					agot_dudify_egg = yes
+				}
+			}
+		}
+		character:dragon_Anogres = {
+			if = { 
+				limit = {
+					NOT = {
+						has_game_rule = debug_mode_on
+					}
+				}
+				death = {
+					death_reason = death_ascension_magic
+					killer = character:dragon_Anogres  
+				}
+			}
+		}
+
 		dynasty:dynn_Nezdareon = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+		dynasty:dynn_Setenon = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+		dynasty:dynn_Setenon = { set_variable = agot_allow_adelphogamous_incest }
+		dynasty:dynn_Setenon.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+		dynasty:dynn_Setenon = {
+			agot_safe_add_dynasty_perk_history_effect = { PERK = dragonrider_dynasty_legacy_1 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = dragonrider_dynasty_legacy_2 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = dragonrider_dynasty_legacy_3 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = dragonrider_dynasty_legacy_4 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = dragonrider_dynasty_legacy_5 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = erudition_legacy_1 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = erudition_legacy_2 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = erudition_legacy_3 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = erudition_legacy_4 }
+			agot_safe_add_dynasty_perk_history_effect = { PERK = erudition_legacy_5 }
+		}
 		set_global_variable = {
 			name = CV_is_loaded
+			value = yes 
+		}
+		set_global_variable = {
+			name = LOV_Ver_1_01_02
 			value = yes 
 		}
 	}
@@ -34,11 +106,14 @@ random_yearly_everyone_pulse = {
 		zz_valyria_mana_gain_on_actions
 		zz_valyria_building_mine_pulse 
 		zz_valyria_asshai_religion_scroll_generation
+		zz_valyria_dynn_setenon_scroll_generation
+		zz_valyria_torment_removal
 	}
 }
 
 zz_valyria_mana_gain_on_actions = {
 	on_actions = {
+		zz_valyria_mana_gain_dynn_setenon_on_action
 		zz_valyria_mana_gain_nick_the_mage_on_action
 		zz_valyria_mana_gain_red_comet_on_action
 		zz_valyria_mana_gain_items_on_action
@@ -54,18 +129,19 @@ zz_valyria_magic_dragon_life_extension = {
 			geographical_region = world_valyria
 		}
 		
-		NOT = { 
-			has_trait = immortal 
+		NOR = { 
+			has_trait = zz_draconic_longevity 
+			has_trait = immortal
 		}
 	}
 	effect = { 
-		add_trait_force_tooltip = immortal 
+		add_trait_force_tooltip = zz_draconic_longevity 
 	}
 }
 zz_valyria_magic_dragon_life_extension_lost = {
 	trigger = {
 		has_trait = dragon 
-		has_trait = immortal 
+		has_trait = zz_draconic_longevity 
 		NOT = { 
 			liege_or_court_owner.capital_province ?= { 
 				geographical_region = world_valyria
@@ -73,7 +149,7 @@ zz_valyria_magic_dragon_life_extension_lost = {
 		}
 	}
 	effect = { 
-		remove_trait  = immortal 
+		remove_trait  = zz_draconic_longevity 
 	}
 }
 
@@ -91,6 +167,17 @@ zz_valyria_mana_gain_red_comet_on_action = {
 zz_valyria_mana_gain_nick_the_mage_on_action = {
 	trigger = {
 		has_nickname = nick_the_mage
+	}
+	effect = {
+		zz_valyria_mana_gain = {
+			MANAGAIN = 1
+		}
+	}
+}
+
+zz_valyria_mana_gain_dynn_setenon_on_action = {
+	trigger = {
+		root.dynasty =dynasty:dynn_Setenon
 	}
 	effect = {
 		zz_valyria_mana_gain = {
@@ -372,8 +459,54 @@ zz_valyria_asshai_religion_scroll_generation = {
 	}
 	effect = { 
 		random = {
-			chance = 45 
+			chance = 15 
 			zz_random_gain_magic_scroll = yes
 		}
+	}
+}
+
+zz_valyria_dynn_setenon_scroll_generation = {
+	trigger = {
+		root.dynasty =dynasty:dynn_Setenon
+	}
+	effect = { 
+		random = {
+			chance = 15 
+			zz_random_gain_magic_scroll = yes
+		}
+	}
+}
+
+
+zz_valyria_torment_removal = {
+	trigger = {
+		any_character_artifact = { 
+			has_artifact_modifier = vs_torment_modifier
+		}
+		NOT = {
+			has_title = title:k_lokiria
+		}
+	}
+	effect = { 
+		every_character_artifact ?= {
+			limit = {
+				has_artifact_modifier = vs_torment_modifier
+			}
+			destroy_artifact = this
+		}
+	}
+}
+
+
+
+valryia_study_magic_ongoing = {
+	trigger = {
+		exists = scope:scheme
+	}
+	random_events = { # Any added events must set and remove scheme_event_active_flag to prevent simultaneous firing in MP
+		500 = 0 # No Event Will Fire
+		100 = zz_valyria_magic_further_education.1000 # consult written lore
+		100 = zz_valyria_magic_further_education.1001 # practice encantations
+		100 = zz_valyria_magic_further_education.1002 # study the valyrian language
 	}
 }

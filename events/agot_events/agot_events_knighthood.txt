@@ -42,19 +42,7 @@ agot_knighthood.0016 = {
 	}
 
 	weight_multiplier = {
-		base = 0.25 # Weighted more rarely
-		modifier = {
-			add = 0.5
-			ai_boldness >= low_positive_boldness
-		}
-		modifier = {
-			add = 0.5
-			ai_energy >= low_positive_energy
-		}
-		modifier = {
-			add = 0.5
-			ai_honor >= low_positive_honor
-		}
+		base = 0.25
 		modifier = {
 			add = 0.5
 			OR = {
@@ -96,68 +84,25 @@ agot_knighthood.0016 = {
 	option = {
 		name = agot_knighthood.0016.a
 		add_courtier = scope:hedge_knight
+		agot_set_squire_effect = {
+			KNIGHT = scope:hedge_knight
+			SQUIRE = scope:potential_child_squire
+		}
 		scope:hedge_knight = {
 			add_prestige = medium_prestige_gain
-			set_relation_agot_squire = scope:potential_child_squire
-			create_character_memory = {
-				type = agot_got_squire
-				participants = {
-					squire = scope:potential_child_squire
-				}
-			}
 			save_scope_as = my_knight
 		}
-		scope:potential_child_squire = {
-			add_trait = squire
-			add_prestige = medium_prestige_gain
-			create_character_memory = {
-				type = agot_became_squire
-				participants = {
-					knight = scope:hedge_knight
-				}
-			}
-
-			if = {
-				limit = {
-					has_character_flag = agot_knighthood_knightless_squire_flag
-				}
-				remove_character_flag = agot_knighthood_knightless_squire_flag
-			}
-
-			agot_init_squire_story_cycle_effect = yes
-		}
 		ai_chance = {
-			base = 0
+			base = 20
 			modifier = {
-				has_trait = humble
-				add = 15
-			}
-			modifier = {
-				has_trait = calm
-				add = 1
-			}
-			modifier = {
-				has_trait = trusting
-				add = 25
+				OR = {
+					has_trait = humble
+					has_trait = trusting
+				}
+				add = 10
 			}
 			modifier = {
 				highest_held_title_tier = tier_county
-				add = 10
-			}
-			modifier = {
-				ai_boldness >= low_positive_boldness
-				add = 15
-			}
-			modifier = {
-				ai_energy >= low_positive_energy
-				add = 15
-			}
-			modifier = {
-				ai_compassion >= low_positive_compassion
-				add = 10
-			}
-			modifier = {
-				ai_honor >= low_positive_honor
 				add = 10
 			}
 		}
@@ -168,50 +113,18 @@ agot_knighthood.0016 = {
 		name = agot_knighthood.0016.b
 		custom_tooltip = agot_knighthood.0016.b.tt
 		ai_chance = {
-			base = 0
+			base = 80
 			modifier = {
-				has_trait = lazy
-				add = 15
-			}
-			modifier = {
-				has_trait = content
-				add = 10
+				OR = {
+					has_trait = lazy
+					has_trait = content
+					has_trait = arrogant
+				}
+				add = 50
 			}
 			modifier = {
 				has_trait = paranoid
-				add = 75
-			}
-			modifier = {
-				has_trait = shy
-				add = 33
-			}
-			modifier = {
-				has_trait = arrogant
-				add = 33
-			}
-			modifier = {
-				has_trait = cynical
-				add = 20
-			}
-			modifier = {
-				has_trait = fickle
-				add = 10
-			}
-			modifier = {
-				ai_boldness <= low_negative_boldness
-				add = 10
-			}
-			modifier = {
-				ai_energy <= low_negative_energy
-				add = 25
-			}
-			modifier = {
-				ai_compassion >= low_negative_compassion
-				add = 10
-			}
-			modifier = {
-				ai_honor >= low_negative_honor
-				add = 5
+				add = 50
 			}
 		}
 	}
@@ -258,22 +171,14 @@ agot_knighthood.0017 = {
 	}
 
 	weight_multiplier = {
-		base = 0.25 # Weighted more rarely; more likely that a lord will get offered a squire from another lord.
-		modifier = {
-			add = 0.5
-			ai_boldness >= low_positive_boldness #If the AI's boldness is greater than or equal to 10
-		}
+		base = 0.25
 		modifier = {
 			add = 0.5
 			ai_energy >= low_positive_energy
 		}
 		modifier = {
-			add = 0.5
-			ai_honor >= low_positive_honor
-		}
-		modifier = {
 			add = 0.15
-			agot_can_take_squire_trigger = yes #Being eligible to take a squire increases the odds
+			agot_can_take_squire_trigger = yes
 		}
 	}
 
@@ -293,7 +198,7 @@ agot_knighthood.0017 = {
 		}
 	}
 
-	#Ask them if they are interested #AGOT TODO, this needs to scope to their guardian if they are underage
+	#Ask them if they are interested
 	option = {
 		name = agot_knighthood.0017.a
 		custom_tooltip = agot_knighthood.0017.a.tt
@@ -303,26 +208,10 @@ agot_knighthood.0017 = {
 			}
 		}
 		ai_chance = {
-			base = 75
-			modifier = { #More likely depending on the following traits
+			base = 60
+			modifier = {
 				add = 30
 				has_trait = family_first
-			}
-			modifier = {
-				ai_boldness >= low_positive_boldness
-				add = 10
-			}
-			modifier = {
-				ai_energy >= low_positive_energy
-				add = 25
-			}
-			modifier = {
-				ai_compassion >= low_positive_compassion
-				add = 15
-			}
-			modifier = {
-				ai_honor >= low_positive_honor
-				add = 5
 			}
 		}
 	}
@@ -332,38 +221,15 @@ agot_knighthood.0017 = {
 		name = agot_knighthood.0017.b
 		custom_tooltip = agot_knighthood.0017.b.tt
 		ai_chance = {
-			base = 25
+			base = 40
 			modifier = {
-				has_trait = lazy
-				add = 25
-			}
-			modifier = {
-				has_trait = content
-				add = 15
-			}
-			modifier = {
-				has_trait = shy
-				add = 15
-			}
-			modifier = {
-				has_trait = fickle
-				add = 15
-			}
-			modifier = {
-				has_trait = arrogant
-				add = 15
-			}
-			modifier = {
-				has_trait = arbitrary
-				add = 15
-			}
-			modifier = {
-				ai_boldness <= low_negative_boldness
-				add = 15
-			}
-			modifier = {
-				ai_energy <= low_negative_energy
-				add = 25
+				OR = {
+					has_trait = lazy
+					has_trait = content
+					has_trait = arbitrary
+					has_trait = fickle
+				}
+				add = 30
 			}
 		}
 	}
@@ -379,64 +245,21 @@ agot_knighthood.0018 = {
 	#Yes, I would love to be your squire.
 	option = {
 		name = agot_knighthood.0018.a
-		add_prestige = medium_prestige_gain
-		add_trait = squire
-		create_character_memory = {
-			type = agot_became_squire
-			participants = {
-				knight = scope:knight_offerer
-			}
+		agot_set_squire_effect = {
+			KNIGHT = scope:knight_offerer
+			SQUIRE = root
 		}
+		add_prestige = medium_prestige_gain
 		scope:knight_offerer = {
-			set_relation_agot_squire = scope:potential_squire
-			add_prestige = medium_prestige_gain
-			create_character_memory = {
-				type = agot_got_squire
-				participants = {
-					squire = scope:potential_squire
-				}
-			}
 			trigger_event = {
 				id = agot_knighthood.0019
 			}
 			save_scope_as = my_knight
 		}
-		agot_init_squire_story_cycle_effect = yes
-		if = {
-			limit = {
-				has_character_flag = agot_knighthood_knightless_squire_flag
-			}
-			remove_character_flag = agot_knighthood_knightless_squire_flag
-		}
 		ai_chance = {
-			base = 75
-			modifier = {
-				has_trait = ambitious
-				add = 30
-			}
-			modifier = {
-				has_trait = diligent
-				add = 15
-			}
-			modifier = {
-				has_trait = trusting
-				add = 5
-			}
-			modifier = {
-				has_trait = authoritative
-				add = 10
-			}
-			modifier = {
-				ai_boldness >= low_positive_boldness
-				add = 10
-			}
-			modifier = {
-				ai_energy >= low_positive_energy
-				add = 25
-			}
-			modifier = {
-				ai_honor >= low_positive_honor
-				add = 10
+			base = 70
+			opinion_modifier = {
+				opinion_target = scope:knight_offerer
 			}
 		}
 	}
@@ -454,54 +277,19 @@ agot_knighthood.0018 = {
 			}
 		}
 		ai_chance = {
-			base = 25
+			base = 30
 			modifier = {
-				has_trait = lazy
+				OR = {
+					has_trait = lazy
+					has_trait = content
+				}
 				add = 25
 			}
 			modifier = {
-				has_trait = content
-				add = 25
-			}
-			modifier = {
-				has_trait = shy
-				add = 15
-			}
-			modifier = {
-				has_trait = fickle
-				add = 10
-			}
-			modifier = {
-				has_trait = pensive
-				add = 10
-			}
-			modifier = {
-				has_trait = rude
-				add = 10
-			}
-			modifier = { #More likely depending on the following traits
-				add = 15
-				has_trait = arrogant
-			}
-			modifier = {
-				has_trait = arbitrary
-				add = 10
-			}
-			modifier = {
-				ai_boldness <= low_negative_boldness
-				add = 25
-			}
-			modifier = {
-				ai_energy <= low_negative_energy
-				add = 25
-			}
-			modifier = {
-				ai_compassion <= low_negative_compassion
-				add = 10
-			}
-			modifier = {
-				ai_honor <= low_negative_honor
-				add = 15
+				NOT = {
+					has_focus = education_martial
+				}
+				add = 30
 			}
 		}
 	}
@@ -518,18 +306,11 @@ agot_knighthood.0019 = {
 	option = {
 		name = agot_knighthood.0019.a
 		show_as_tooltip = {
-			set_relation_agot_squire = scope:potential_squire
-			add_prestige = medium_prestige_gain
-			scope:potential_squire = {
-				add_prestige = medium_prestige_gain
-				add_trait = squire
-				if = {
-					limit = {
-						has_character_flag = agot_knighthood_knightless_squire_flag
-					}
-					remove_character_flag = agot_knighthood_knightless_squire_flag
-				 }
+			agot_set_squire_effect = {
+				KNIGHT = root
+				SQUIRE = scope:potential_squire
 			}
+			add_prestige = medium_prestige_gain
 		}
 	}
 
@@ -560,6 +341,16 @@ agot_knighthood.0300 = {
 	immediate = {
 		random_relation = {
 			type = agot_squire
+			limit = {
+				AND = {
+					has_trait = squire
+					has_trait_xp = {
+						trait = squire
+						track = knight
+						value >= 66
+					}
+				}
+			}
 			save_scope_as = my_squire
 		}
 	}
@@ -568,60 +359,12 @@ agot_knighthood.0300 = {
 	option = {
 		name = agot_knighthood.0300.a
 		custom_tooltip = agot_knighthood.0300.a.tt
-		if = {
-			limit = {
-				has_relation_agot_squire = scope:my_squire
-				OR = {
-					is_foreign_court_guest_of = scope:my_squire
-					AND = {
-						exists = scope:my_squire.host
-						is_foreign_court_guest_of = scope:my_squire.host
-					}
-					AND = {
-						exists = scope:my_squire.liege
-						is_foreign_court_guest_of = scope:my_squire.liege
-					}
-				}
-			}
-			return_to_court = yes
-		}
-		remove_relation_agot_squire = scope:my_squire
-		create_character_memory = {
-			type = agot_knighted_someone
-			participants = {
-				squire = scope:my_squire
-			}
-		}
-		if = { #If you have the knighthood religious tenet, you can get some piety since knights are linked to fervor.
-			limit = {
-				faith = {
-					has_doctrine = tenet_knighthood
-				}
-			}
-			add_piety = 25
-		}
 		scope:my_squire = {
 			save_scope_as = knight_to_be
-
-			#Add Prestige
-			agot_add_become_a_knight_prestige_effect = {
+			agot_become_a_knight_effect = {
 				KNIGHT_MAKER = root
 				KNIGHT_TO_BE = scope:my_squire
 			}
-			#Create a memory
-			create_character_memory = {
-				type = agot_was_knighted
-				participants = {
-					knight = root
-				}
-			}
-			#Improve opinion
-			add_opinion = {
-				target = root
-				modifier = knighted_me_opinion
-				opinion = 50
-			}
-			agot_become_a_knight_effect = yes
 		}
 	}
 }
@@ -678,61 +421,37 @@ agot_knighthood.0320 = {
 
 #Knight a battlefield participant (from the winning side, randomly)
 
-#This event sets up scopes
 agot_knighthood.0600 = {
 	scope = combat_side
 	hidden = yes
 
+	trigger = {
+		side_commander ?= {
+			is_agot_knight_trigger = yes
+		}
+		any_side_knight = {
+			is_agot_knight_trigger = no
+			is_squire_with_trait_xp = no
+			agot_can_become_a_knight_trigger = yes
+		}
+	}
+
 	immediate = {
-		save_scope_as = winning_side
-		if = {
+		combat.location = {
+			save_scope_as = battle_province
+		}
+		side_commander = {
+			save_scope_as = side_commander
+		}
+		random_side_knight = {
 			limit = {
-				exists = side_commander
-				side_commander = {
-					is_agot_knight_trigger = yes
-				}
-				scope:winning_side = {
-					any_side_knight = {
-						NOR = {
-							is_agot_knight_trigger = yes
-							AND = { # NOT a squire
-								has_trait_xp = {
-									trait = squire
-									track = knight
-									value < 100
-								}
-							}
-						}
-						agot_can_become_a_knight_trigger = yes
-					}
-				}
+				is_agot_knight_trigger = no
+				is_squire_with_trait_xp = no
+				agot_can_become_a_knight_trigger = yes
 			}
-			combat.location = {
-				save_scope_as = battle_province
-			}
-			side_commander = {
-				save_scope_as = side_commander
-			}
-			scope:winning_side = {
-				random_side_knight = {
-					limit = {
-						NOR = {
-							is_agot_knight_trigger = yes
-							AND = {
-								has_trait_xp = {
-									trait = squire
-									track = knight
-									value < 100
-								}
-							}
-						}
-						agot_can_become_a_knight_trigger = yes
-					}
-					save_scope_as = soldier_to_be_knighted
-					scope:side_commander = {
-						trigger_event = agot_knighthood.0601 #Event asking if the side_commander wants to impromptu knight a handful of soldiers, including the scoped random_knight
-					}
-				}
+			save_scope_as = soldier_to_be_knighted
+			scope:side_commander = {
+				trigger_event = agot_knighthood.0601 #Event asking if the side_commander wants to impromptu knight a handful of soldiers, including the scoped random_knight
 			}
 		}
 	}
@@ -751,16 +470,14 @@ agot_knighthood.0601 = {
 
 	immediate = {}
 
-	left_portrait = {
-		character = root
-	}
+	left_portrait = root
 
 	right_portrait = {
 		character = scope:soldier_to_be_knighted
 		animation = ecstasy
 	}
 
-	#Yes, I will knight them.
+	#Yes, I will knight them
 	option = {
 		name = agot_knighthood.0601.a
 		custom_tooltip = agot_knighthood.0601.a.tt
@@ -769,66 +486,26 @@ agot_knighthood.0601 = {
 			trigger_event = agot_knighthood.0602
 		}
 		ai_chance = {
-			base = 66
-			modifier = {
-				has_trait = ambitious
-				add = 25
-			}
-			modifier = {
-				has_trait = gregarious
-				add = 25
-			}
-			modifier = {
-				has_trait = generous
-				add = 25
-			}
-			modifier = {
-				has_trait = compassionate
-				add = 10
-			}
-			modifier = {
-				has_trait = impatient
-				add = 5
-			}
-			modifier = {
-				ai_energy >= low_positive_energy
-				add = 10
-			}
-			modifier = {
-				ai_energy >= low_positive_compassion
-				add = 10
-			}
+			base = 70
 		}
 	}
 
-	#No, it's not deserved here.
+	#No, it's not deserved
 	option = {
 		name = agot_knighthood.0601.b
 		ai_chance = {
-			base = 34
+			base = 30
 			modifier = {
-				has_trait = stubborn
-				add = 25
-			}
-			modifier = {
-				has_trait = patient
-				add = 25
-			}
-			modifier = {
-				has_trait = honest
-				add = 33
-			}
-			modifier = {
-				has_trait = cynical
-				add = 5
-			}
-			modifier = {
-				ai_energy <= low_negative_energy
-				add = 10
-			}
-			modifier = {
-				ai_energy <= low_negative_compassion
-				add = 10
+				trigger_if = {
+					limit = {
+						is_lowborn = no
+						scope:soldier_to_be_knighted = {
+							is_lowborn = yes
+						}
+					}
+					has_trait = arrogant
+				}
+				add = 30
 			}
 		}
 	}
@@ -841,9 +518,7 @@ agot_knighthood.0602 = {
 
 	theme = faith
 
-	override_background = {
-		reference = army_camp
-	}
+	override_background = { reference = battlefield }
 
 	immediate = {
 		save_scope_as = knight_to_be
@@ -862,73 +537,12 @@ agot_knighthood.0602 = {
 	option = {
 		name = agot_knighthood.0602.a
 		custom_tooltip = agot_knighthood.0602.a.tt
-		add_trait = knight
-		if = {
-			limit = {
-				has_character_flag = had_ongoing_squire_story
-			}
-			random_owned_story = {
-				limit = {
-					story_type = story_agot_squire_ongoing
-				}
-				end_story = yes
-			}
-		}
-		agot_add_become_a_knight_prestige_effect = {
+		agot_become_a_knight_effect = {
 			KNIGHT_MAKER = scope:side_commander
-			KNIGHT_TO_BE = scope:knight_to_be
+			KNIGHT_TO_BE =  scope:soldier_to_be_knighted
 		}
 		scope:side_commander = {
 			add_prestige = 50
-			send_interface_toast = {
-				title = agot_knighthood_made_a_knight_generic_toast
-				left_icon = root
-				right_icon = scope:soldier_to_be_knighted
-				custom_tooltip = agot_knighthood_made_a_knight_generic_toast.tt
-			}
-			create_character_memory = {
-				type = agot_knighted_someone
-				participants = {
-					squire = scope:knight_to_be
-				}
-			}
-		}
-		add_opinion = {
-			modifier = knighted_me_opinion
-			opinion = 50
-			target = scope:side_commander
-		}
-		reverse_add_opinion = {
-			target = scope:side_commander
-			modifier = pleased_opinion
-			opinion = 5
-		}
-		create_character_memory = {
-			type = agot_was_knighted
-			participants = {
-				knight = scope:side_commander
-			}
-		}
-		#Chain that notifies your immediate family of you becoming a knight
-		save_scope_as = my_relation
-		if = {
-			limit = {
-				any_close_family_member = {
-					exists = yes
-				}
-			}
-			every_close_family_member = {
-				limit = {
-					opinion = {
-						target = root
-						value >= 10 #Minimum of 10 opinion here.
-					}
-				}
-				trigger_event = {
-					id = agot_knighthood.0320
-					days = 1
-				}
-			}
 		}
 	}
 }
@@ -990,19 +604,7 @@ agot_knighthood.0700 = {
 	}
 
 	weight_multiplier = {
-		base = 0.1 # Weighted more rarely
-		modifier = {
-			add = 0.5
-			ai_boldness >= low_positive_boldness #If the AI's boldness is greater than or equal to 10
-		}
-		modifier = {
-			add = 0.5
-			ai_energy >= low_positive_energy
-		}
-		modifier = {
-			add = 0.5
-			ai_honor >= low_positive_honor
-		}
+		base = 0.1
 		modifier = {
 			add = 0.5
 			ai_greed <= low_negative_greed
@@ -1011,25 +613,21 @@ agot_knighthood.0700 = {
 			add = 0.7
 			OR = {
 				is_agot_knight_trigger = no
-				is_female = yes #Because you can't knight your  own child as a woman (in 99% cases)
+				is_female = yes
 			}
 		}
 		modifier = {
 			add = 0.65
 			any_relation = {
-				type = agot_squire #If you have a squire already
+				type = agot_squire
 			}
 		}
 		modifier = {
-			add = -4.5 # Should be very unlikely for Kings to recieve this event
-			highest_held_title_tier = tier_empire
+			add = -5
+			highest_held_title_tier >= tier_kingdom
 		}
 		modifier = {
-			add = -5 # Should be very unlikely for LPs to recieve this event
-			highest_held_title_tier = tier_kingdom
-		}
-		modifier = {
-			add = -1 # Should be very unlikely for LPs to recieve this event
+			add = -1
 			faith = {
 				NOT = {
 					has_doctrine = tenet_knighthood
@@ -1068,72 +666,12 @@ agot_knighthood.0700 = {
 	option = {
 		name = agot_knighthood.0700.a
 		add_courtier = scope:hedge_knight
-		scope:hedge_knight = {
-			add_prestige = 50
-			if = {
-				limit = {
-					faith = {
-						has_doctrine = tenet_knighthood
-					}
-				}
-				add_piety = minor_piety_gain
-			}
-		}
-		scope:potential_child_knight = {
-			agot_add_become_a_knight_prestige_effect = {
-				KNIGHT_MAKER = scope:hedge_knight
-				KNIGHT_TO_BE = scope:potential_child_knight
-			}
-			add_opinion = {
-				modifier = knighted_me_opinion
-				opinion = 50
-				target = scope:hedge_knight
-			}
-			reverse_add_opinion = {
-				target = scope:hedge_knight
-				modifier = pleased_opinion
-				opinion = 5
-			}
-			create_character_memory = {
-				type = agot_was_knighted
-				participants = {
-					knight = scope:hedge_knight
-				}
-			}
-			create_character_memory = {
-				type = agot_knighted_someone
-				participants = {
-					squire = scope:potential_child_knight
-				}
-			}
-			agot_become_a_knight_effect = yes
+		agot_become_a_knight_effect = {
+			KNIGHT_MAKER = scope:hedge_knight
+			KNIGHT_TO_BE = scope:potential_child_knight
 		}
 		ai_chance = {
-			base = 25
-			modifier = {
-				has_trait = humble
-				add = 25
-			}
-			modifier = {
-				has_trait = trusting
-				add = 25
-			}
-			modifier = {
-				ai_boldness >= low_positive_boldness
-				add = 15
-			}
-			modifier = {
-				ai_energy >= low_positive_energy
-				add = 15
-			}
-			modifier = {
-				ai_compassion >= low_positive_compassion
-				add = 10
-			}
-			modifier = {
-				ai_honor >= low_positive_honor
-				add = 5
-			}
+			base = 30
 		}
 	}
 
@@ -1148,51 +686,7 @@ agot_knighthood.0700 = {
 			}
 		}
 		ai_chance = {
-			base = 0
-			modifier = {
-				has_trait = lazy
-				add = 10
-			}
-			modifier = {
-				has_trait = content
-				add = 25
-			}
-			modifier = {
-				has_trait = paranoid
-				add = 75
-			}
-			modifier = {
-				has_trait = shy
-				add = 25
-			}
-			modifier = {
-				has_trait = arrogant
-				add = 30
-			}
-			modifier = {
-				has_trait = cynical
-				add = 15
-			}
-			modifier = {
-				has_trait = fickle
-				add = 10
-			}
-			modifier = {
-				ai_boldness <= low_negative_boldness
-				add = 10
-			}
-			modifier = {
-				ai_energy <= low_negative_energy
-				add = 25
-			}
-			modifier = {
-				ai_compassion >= low_negative_compassion
-				add = 10
-			}
-			modifier = {
-				ai_honor >= low_negative_honor
-				add = 5
-			}
+			base = 70
 			modifier = {
 				faith = {
 					NOT = {
@@ -1245,21 +739,13 @@ agot_knighthood.0701 = {
 	}
 
 	weight_multiplier = {
-		base = 0.125 # Weighted more rarely
+		base = 0.125
 		modifier = {
-			add = 0.5
-			ai_boldness >= low_positive_boldness #If the AI's boldness is greater than or equal to 10
+			add = -5
+			highest_held_title_tier >= tier_kingdom
 		}
 		modifier = {
-			add = 0.5
-			ai_energy >= low_positive_energy
-		}
-		modifier = {
-			add = 0.5
-			ai_greed <= low_negative_greed
-		}
-		modifier = {
-			add = -1 # Should be very unlikely for LPs to recieve this event
+			add = -1
 			faith = {
 				NOT = {
 					has_doctrine = tenet_knighthood
@@ -1281,47 +767,15 @@ agot_knighthood.0701 = {
 	option = {
 		name = agot_knighthood.0701.a
 		#custom_tooltip = agot_knighthood.0700.a.tt
+		scope:potential_child_knight = {
+			remove_short_term_gold = medium_gold_value
+		}
 		scope:hedge_knight = {
 			add_prestige = 50
-			if = {
-				limit = {
-					faith = {
-						has_doctrine = tenet_knighthood
-					}
-				}
-				add_piety = minor_piety_gain
-			}
-			create_character_memory = {
-				type = agot_knighted_someone
-				participants = {
-					squire = root
-				}
-			}
-
 		}
-		scope:potential_knight = {
-			remove_short_term_gold = medium_gold_value
-			agot_add_become_a_knight_prestige_effect = {
-				KNIGHT_MAKER = scope:hedge_knight
-				KNIGHT_TO_BE = scope:potential_knight
-			}
-			add_opinion = {
-				modifier = knighted_me_opinion
-				opinion = 50
-				target = scope:hedge_knight
-			}
-			reverse_add_opinion = {
-				target = scope:hedge_knight
-				modifier = pleased_opinion
-				opinion = 5
-			}
-			create_character_memory = {
-				type = agot_was_knighted
-				participants = {
-					knight = scope:hedge_knight
-				}
-			}
-			agot_become_a_knight_effect = yes
+		agot_become_a_knight_effect = {
+			KNIGHT_MAKER = scope:hedge_knight
+			KNIGHT_TO_BE = scope:potential_knight
 		}
 		hidden_effect = {
 			scope:hedge_knight = {
@@ -1335,22 +789,6 @@ agot_knighthood.0701 = {
 			modifier = {
 				has_trait = humble
 				add = 25
-			}
-			modifier = {
-				has_trait = trusting
-				add = 25
-			}
-			modifier = {
-				ai_boldness >= low_positive_boldness
-				add = 15
-			}
-			modifier = {
-				ai_energy >= low_positive_energy
-				add = 15
-			}
-			modifier = {
-				ai_compassion >= low_positive_compassion
-				add = 10
 			}
 			modifier = {
 				ai_honor >= low_positive_honor
@@ -1372,48 +810,8 @@ agot_knighthood.0701 = {
 		ai_chance = {
 			base = 0
 			modifier = {
-				has_trait = lazy
-				add = 10
-			}
-			modifier = {
-				has_trait = content
-				add = 10
-			}
-			modifier = {
-				has_trait = paranoid
-				add = 75
-			}
-			modifier = {
-				has_trait = shy
-				add = 25
-			}
-			modifier = {
 				has_trait = arrogant
-				add = 30
-			}
-			modifier = {
-				has_trait = cynical
-				add = 15
-			}
-			modifier = {
-				has_trait = fickle
-				add = 10
-			}
-			modifier = {
-				ai_boldness <= low_negative_boldness
-				add = 10
-			}
-			modifier = {
-				ai_energy <= low_negative_energy
-				add = 25
-			}
-			modifier = {
-				ai_compassion >= low_negative_compassion
-				add = 10
-			}
-			modifier = {
-				ai_honor >= low_negative_honor
-				add = 5
+				add = 50
 			}
 			modifier = {
 				faith = {
@@ -1447,6 +845,20 @@ scripted_trigger agot_knighthood_801_trigger = {
 	NOT = { has_any_bad_relationship_with_character_trigger = { CHARACTER = root } }
 }
 
+scripted_trigger child_for_squiring_trigger = {
+	is_eligible_for_agot_squirehood_trigger = yes
+	is_male = yes
+	OR = {
+		has_focus = education_martial
+		has_trait = rowdy
+		has_character_modifier = training_for_kingsguard
+	}
+	NOR = {
+		has_trait = nightswatch
+		has_character_flag = agot_knighthood_800_event_cd_flag
+	}
+	is_imprisoned = no
+}
 
 # An eligible kingsguard member is picked to squire your son
 agot_knighthood.0800 = {
@@ -1485,6 +897,8 @@ agot_knighthood.0800 = {
 		}
 	}
 
+	cooldown = { years = 2 }
+
 	trigger = {
 		is_ruler = yes
 		primary_title = { has_variable = kingsguard }
@@ -1495,25 +909,21 @@ agot_knighthood.0800 = {
 			government_has_flag = government_is_nw
 		}
 		any_child = {
-			is_eligible_for_agot_squirehood_trigger = yes 
-			is_male = yes #Targets sons
-			NOT = {
-				has_trait = nightswatch
-				has_character_flag = agot_knighthood_800_event_cd_flag
-			}
-			is_imprisoned = no
+			child_for_squiring_trigger = yes
 		}
 	}
 
 	immediate = {
 		random_child = {
 			limit = {
-				is_eligible_for_agot_squirehood_trigger = yes 
-				is_male = yes #Targets sons
-				NOT = {
-					has_trait = nightswatch
+				child_for_squiring_trigger = yes
+			}
+			weight = {
+				base = 1
+				modifier = {
+					has_character_modifier = training_for_kingsguard
+					add = 50
 				}
-				is_imprisoned = no
 			}
 			add_character_flag = {
 				flag = agot_knighthood_800_event_cd_flag
@@ -1616,7 +1026,7 @@ agot_knighthood.0801 = {
 	}
 
 	weight_multiplier = {
-		base = 0.25 # Weighted more rarely
+		base = 0.25
 		modifier = {
 			add = -1.0
 			faith = {
@@ -1633,6 +1043,7 @@ agot_knighthood.0801 = {
 		}
 	}
 
+	cooldown = { years = 2 }
 
 	trigger = {
 		is_ruler = yes
@@ -1644,27 +1055,21 @@ agot_knighthood.0801 = {
 		}
 		any_vassal_or_below = { agot_knighthood_801_trigger = yes	}
 		any_child = {
-			is_eligible_for_agot_squirehood_trigger = yes 
-			is_male = yes #Targets sons
-			is_landed = no
-			NOT = {
-				has_trait = nightswatch
-				has_character_flag = agot_knighthood_800_event_cd_flag
-			}
-			is_imprisoned = no
+			child_for_squiring_trigger = yes
 		}
 	}
 
 	immediate = {
 		random_child = {
 			limit = {
-				is_eligible_for_agot_squirehood_trigger = yes 
-				is_landed = no
-				is_male = yes #Targets sons
-				NOT = {
-					has_trait = nightswatch
+				child_for_squiring_trigger = yes
+			}
+			weight = {
+				base = 1
+				modifier = {
+					has_character_modifier = training_for_kingsguard
+					add = 50
 				}
-				is_imprisoned = no
 			}
 			add_character_flag = {
 				flag = agot_knighthood_800_event_cd_flag
@@ -1675,6 +1080,18 @@ agot_knighthood.0801 = {
 		random_vassal_or_below = {
 			limit = {
 				agot_knighthood_801_trigger = yes
+			}
+			weight = {
+				base = 1
+				modifier = {
+					trigger_if = {
+						limit = {
+							root.highest_held_title_tier = tier_empire
+						}
+						highest_held_title_tier = tier_kingdom
+					}
+					add = 75
+				}
 			}
 			save_scope_as = knight
 		}
