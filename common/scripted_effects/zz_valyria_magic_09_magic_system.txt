@@ -689,6 +689,41 @@ zz_valyria_spell_failure_effect = {
 		right_icon = scope:recipient
 		custom_tooltip = spell_failure_txt
 		scope:secondary_recipient  = {
+			if = { 
+				limit = { exists = zz_miscast_count}
+				if = { 
+					limit = { 
+						var:zz_miscast_count = 3
+					}
+					death = {
+						death_reason = death_miscast_magic
+						killer = scope:secondary_recipient
+					}
+				}
+				random_list = {
+					50 = {
+						modifier = {
+							has_trait = zz_magister 
+							add = 25
+						}
+					}
+					50 = {
+						change_variable = {
+							name =  zz_miscast_count
+							add = 1
+						}
+					}
+				}
+
+			}
+			else = { 
+				set_variable = {
+					name = zz_miscast_count 
+					value = 1
+					months = { 1 600}
+				}
+			}
+
 			random_list = {
 				50 = {
 					increase_wounds_effect = { REASON = fire_magic }
