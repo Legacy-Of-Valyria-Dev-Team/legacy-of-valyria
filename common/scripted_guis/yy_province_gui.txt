@@ -1,5 +1,8 @@
 ﻿yy_province_window = {
 	scope = character
+	is_shown = {
+		has_variable = yy_province_window
+	}
 	effect = {
 		if = {
 			limit = {
@@ -16,6 +19,22 @@
 			remove_variable = yy_selected_province
 			clear_variable_list = yy_counties
 			clear_variable_list = yy_selected_county_baronies
+		}
+		else = {
+			save_scope_as = yy_province_owner
+			set_variable = {
+				name = yy_province_window
+				value = yes
+			}
+			every_realm_county = {
+				limit = { holder = scope:yy_province_owner }
+				scope:yy_province_owner = {
+					add_to_variable_list = {
+						name = yy_counties
+						target = prev
+					}
+				}
+			}
 		}
 	}
 }

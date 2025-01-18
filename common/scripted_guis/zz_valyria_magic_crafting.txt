@@ -1,4 +1,174 @@
-﻿zz_valyria_magic_crafting = {
+﻿zz_magic_crafting_open = {
+	scope = character
+	is_valid = {
+		zz_valyria_is_mage = yes
+	}
+	effect = {
+		custom_tooltip = order_item_crafting_decision_effect_tooltip
+		if = {
+			limit = {
+				not = {
+					exists = var:zz_item_crafter
+				}
+			}
+			root = {
+				save_scope_as = actor
+				save_scope_as = zz_magic_user
+			}
+			scope:actor = {
+				remove_variable = zz_item_crafter
+				remove_variable = zz_magic_user
+				remove_variable = zz_current_use_iron
+				remove_variable = zz_current_use_steel
+				remove_variable = zz_current_use_obsidian
+				remove_variable = zz_current_use_valyrian_steel
+				remove_variable = zz_current_cost_item
+				remove_variable = zz_current_cost_modifier
+				remove_variable = zz_current_spend
+				remove_variable = zz_current_magic_reagent
+				remove_variable = zz_selected_item
+				remove_variable = zz_selected_modifier
+	
+				set_variable = {
+					name = zz_current_use_iron
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_use_steel
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_use_obsidian
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_use_valyrian_steel
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_cost_item
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_cost_modifier
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_spend
+					value = 0
+				}
+				set_variable = {
+					name = zz_current_magic_reagent
+					value = flag:none
+				}
+				set_variable = {
+					name = zz_magic_user
+					value = scope:zz_magic_user
+				}
+				
+				if = { 
+					limit = {
+						has_trait = zz_magister
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = mage_list
+							target = prev
+						}
+					}
+				}
+				every_living_mage = {
+					limit = {
+						liege_or_court_owner ?= scope:actor
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = mage_list
+							target = prev
+						}
+					}
+				}
+				ordered_in_list = {
+					variable = mage_list
+					position = 0
+					order_by = learning
+					save_scope_as = zz_item_crafter
+				}
+				set_variable = {
+					name = zz_item_crafter
+					value = scope:zz_item_crafter
+				}
+				clear_variable_list = zz_valyria_item_list
+				trait:zz_valyria_magic_none_modifier_01_stacking = {
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_item_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_selected_item }
+							}
+							set_variable = { name = zz_selected_item value = prev }
+						}
+					}
+				}
+				every_trait = {
+					limit = {
+						has_trait_flag = zz_item_template
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_item_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_selected_item }
+							}
+							set_variable = { name = zz_selected_item value = prev }
+						}
+					}
+				}
+				clear_variable_list = zz_valyria_modifier_list
+				trait:zz_valyria_magic_none_modifier_01_stacking = {
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_modifier_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_selected_modifier }
+							}
+							set_variable = { name = zz_selected_modifier value = prev }
+						}
+					}
+				}
+				every_trait = {
+					limit = {
+						has_trait_flag = zz_item_modifier
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_modifier_list
+							target = prev
+						}
+					}
+				}
+			}
+		}
+		else = {
+			remove_variable = zz_item_crafter
+			clear_variable_list = zz_valyria_item_list
+			clear_variable_list = zz_valyria_modifier_list
+			#clear_variable_list = zz_valyria_province_list
+			clear_variable_list = mage_list	
+		}
+	}
+}
+
+zz_valyria_magic_crafting = {
 	scope = character
 	saved_scopes = {
 	}
@@ -24,7 +194,7 @@ zz_valyria_magic_crafting_close = {
 		remove_variable = zz_item_crafter
 		clear_variable_list = zz_valyria_item_list
 		clear_variable_list = zz_valyria_modifier_list
-		clear_variable_list = zz_valyria_province_list
+		#clear_variable_list = zz_valyria_province_list
 		clear_variable_list = mage_list
 	}
 }
@@ -309,6 +479,14 @@ zz_valyria_magic_item_craft = {
 		set_variable = {
 			name = zz_current_magic_reagent
 			value = flag:none
+		}
+		set_variable = { 
+			name = zz_selected_item 
+			value = trait:zz_valyria_magic_none_modifier_01_stacking
+		}
+		set_variable = { 
+			name = zz_selected_modifier
+			value = trait:zz_valyria_magic_none_modifier_01_stacking
 		}
 	}
 }
