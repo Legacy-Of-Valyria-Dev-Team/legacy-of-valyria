@@ -1,0 +1,128 @@
+﻿# Form New Valyria
+LV_form_pretender_empire_effect = {
+	custom_tooltip = {
+		text = LV_form_pretender_empire_effect_form_title
+		create_title_and_vassal_change = {
+			type = created
+			save_scope_as = change
+			add_claim_on_loss = no
+		}
+		create_dynamic_title = {
+			tier = empire
+			name = LV_NEW_PRETENDER_EMPIRE_NAME
+		}
+		scope:new_title = {
+			set_coa = root.primary_title
+			set_color_from_title = title:e_valyria
+			set_capital_county = root.primary_title.title_capital_county
+			change_title_holder = {
+				holder = root
+				change = scope:change
+			}
+			set_variable = lv_pretender_empire
+			set_delete_on_destroy = yes
+		}
+		resolve_title_and_vassal_change = scope:change
+		hidden_effect = { set_primary_title_to = scope:new_title }
+		every_held_title = { #Should destroy all other Empires owned at the time.
+			limit = {
+				tier = tier_empire
+				NOT = { this = scope:new_title }
+			}
+			root = { destroy_title = prev }
+		}
+	}
+	
+	#hidden_effect = {
+	#	add_character_flag = flag_restorer_of_rome #used for Eulogy.
+	#	title:e_roman_empire = {
+	#		set_variable = rome_was_restored_by_byzantium
+	#	}
+	#}
+	custom_tooltip = {
+		text = LV_form_pretender_empire_effect_warning
+
+		ordered_independent_ruler = {
+			limit = {
+				NOT = { this = root }
+				OR = {
+					has_government = free_city_government
+				}
+			}
+			order_by = "scope:pretender.capital_province.squared_distance(root.capital_province)"
+			position = 0
+			trigger_event = {
+				id = lv_pretender_empire.2
+				days = { 2 5 }
+			}
+		}
+	}
+}
+
+LV_pretender_war_truce_break_effect = {
+	if = {
+		limit = { has_truce = scope:pretender }
+		custom_description_no_bullet = {
+			text = attack_breaking_truce_text
+		}
+
+		# Remove the war target from the bought_truce_list if they're in it
+		if = {
+			limit = {
+				has_purchased_truce_with_char = { TARGET = scope:defender }
+			}
+			remove_list_variable = {
+				name = bought_truce_list
+				target = scope:recipient
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = { has_perk = flexible_truces_perk }
+			}
+			add_prestige = break_truce_prestige_loss
+			add_prestige_level = break_truce_prestige_level_loss
+		}
+		add_legitimacy = {
+			value = medium_legitimacy_loss
+			multiply = primary_title.tier
+		}
+		add_character_modifier = {
+			modifier = broke_truce
+			years = 3
+		}
+	}
+
+	if = {
+		limit = { any_home_court_hostage = { is_hostage_of = scope:pretender } }
+		add_prestige = break_truce_prestige_loss
+		add_prestige_level = break_truce_prestige_level_loss
+		add_character_modifier = {
+			modifier = attacked_warden
+			years = 5
+		}
+		# Hostages they hold (yours)
+		every_home_court_hostage = {
+			save_scope_as = hostage
+			every_close_family_member = {
+				limit = {
+					NOT = { this = root }
+				}
+				custom = attacked_warden_tt
+				add_opinion = {
+					modifier = attacked_warden
+					target = root
+				}
+			}
+			if = {
+				limit = { is_hostage_of = scope:pretender }
+				custom_description_no_bullet = {
+					text = attack_breaking_truce_hostage
+					subject = scope:pretender
+					object = scope:hostage
+				}
+			}
+		}
+	}
+}
