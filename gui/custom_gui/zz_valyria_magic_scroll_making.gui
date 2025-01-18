@@ -3,8 +3,10 @@ types scroll_making {
 	type zz_valyria_magic_scroll_making_window_open = window {
 		name = "zz_valyria_magic_scroll_making_window_open"
 		allow_outside = yes
+		parentanchor = top|right
+		layer = windows_layer
 		movable = yes
-		parentanchor = center
+
 		size = { 0 0 }
 
 		visible = "[And( Not( IsPauseMenuShown ), And(Or(Not(IsObserver), GetPlayer.IsValid), IsDefaultGUIMode))]"
@@ -14,25 +16,52 @@ types scroll_making {
 
 	type zz_valyria_magic_scroll_making = window {
 		name = "zz_valyria_magic_scroll_making"
-		layer = top
-		parentanchor = center
+		layer = middle
+		parentanchor = top|right
 		using = Window_Background
-		size = { 1200 800 }
+		size = { 1200 100% }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_scroll_making')]"
 		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 
 		state = {
 			name = _show
-			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+			using = Animation_FadeIn_Quick
+			using = Sound_WindowShow_Standard
+			using = Window_Position_MainTab
+	
 		}
+	
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Quick
+			using = Sound_WindowHide_Standard
+			using = Window_Position_MainTab_Hide
+		}
+
 		margin_widget = {
 			size = { 100% 100% }
-			margin = { 0 26 }
-			margin_right = 13
-
+			#margin = { 0 26 }
+			#margin_right = 13
+			margin_left = 40
+			margin_right = 53
+			margin_top = 44
+			margin_bottom = 20
 			widget = {
 				size = { 100% 100% }
-
+				background = {
+					texture = "gfx/interface//illustrations/magic_casting/zz_magic_scroll_background.dds"
+					margin = { -5 -5 }
+					fittype = centercrop
+					alpha = 1
+								
+					using = Mask_Rough_Edges
+		
+					modify_texture = {
+						texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+						blend_mode = alphamultiply
+						mirror = vertical
+					}
+				}
 				vbox = {
 					using = Window_Margins
 
@@ -51,10 +80,14 @@ types scroll_making {
 					}
 					hbox = { 
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = expanding
 							max_width = 300
+							spacer = { size = { 00 30 } }
 							text_single = {
 								raw_text = "Mages"
 								fontsize = 24
@@ -69,11 +102,14 @@ types scroll_making {
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[GetPlayer.MakeScope.GetList('mage_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -103,18 +139,13 @@ types scroll_making {
 							layoutpolicy_horizontal = growing 
 							layoutpolicy_vertical = growing
 							max_width = 300
+							spacer = { size = { 00 30 } }
 							text_single = {
-								raw_text = "Scroll Scriber Stats"
+								raw_text = "Scroll Scribe"
 								fontsize = 24
 								align = top
 							}
 							spacer = { size = { 00 30 } }
-							text_single = {
-								raw_text = "Scroll Scribe"
-								fontsize = 18
-								align = left
-							}
-							spacer = { size = { 00 15 } }
 
 							vbox = {
 								size = { 200 120 }
@@ -138,6 +169,7 @@ types scroll_making {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
 							max_width = 550
+							spacer = { size = { 00 30 } }
 							text_single = {
 								text = game_concept_zz_mystery
 								fontsize = 24
@@ -148,14 +180,17 @@ types scroll_making {
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 500
+								max_width = 550
 								max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 500
+										addrow = 55
 										datamodel = "[GetPlayer.MakeScope.GetList('zz_valyria_spell_list')]"
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.CharacterMemory]"
 												minimumsize = { 500 38 }
 												text_single = {
