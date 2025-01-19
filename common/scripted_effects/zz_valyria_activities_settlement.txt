@@ -44,6 +44,7 @@
 	}
 }
 zz_valyria_settlement_skill_test = {
+	add_character_flag = $ZZ_EVENT_OPTION_NAME$
 	duel = {
 		skill = $SKILL$
 		value = high_skill_rating
@@ -80,7 +81,7 @@ zz_valyria_settlement_skill_test = {
 		20 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 4
+				multiplier = 2.5
 				min = -49
 			}
 			send_interface_toast = {
@@ -95,7 +96,7 @@ zz_valyria_settlement_skill_test = {
 		20 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 2
+				multiplier = 1.5
 				min = -49
 			}
 			send_interface_toast = {
@@ -110,7 +111,7 @@ zz_valyria_settlement_skill_test = {
 		40 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = -3.5
+				multiplier = -5
 				min = -49
 			}
 			send_interface_toast = {
@@ -223,9 +224,16 @@ resolve_valyria_settlement_success_reward_effect = {
 		
 		#Perfect settlement - 75-100
 		if = {
-			limit = { var:activity_special_type_progression >= 75 }
+			limit = { var:activity_special_type_progression >= 100 }
 			scope:host = {
 				add_character_flag = perfect_settlement_reward
+			}
+		}
+		#major settlement 
+		if = {
+			limit = { var:activity_special_type_progression >= 75 }
+			scope:host = {
+				add_character_flag = major_settlement_reward
 			}
 		}
 		#High-end settlement - 50-75
@@ -235,7 +243,7 @@ resolve_valyria_settlement_success_reward_effect = {
 				var:activity_special_type_progression >= 50
 			} 
 			scope:host = {
-				add_character_flag = high_settlement_reward
+				add_character_flag = good_settlement_reward
 			}
 		}
 		#OK settlement - 25-50
@@ -281,18 +289,30 @@ disburse_valyria_settlement_reward_effect = {
 			has_character_flag = perfect_settlement_reward
 		}
 		zz_valyria_settlement_effect = {
-			NUM = 03
+			NUM = 04
+			DEV = 20
 		}
 		remove_character_flag = perfect_settlement_reward
 	}
+	if = { 
+		limit = {
+			has_character_flag = major_settlement_reward
+		}
+		zz_valyria_settlement_effect = {
+			NUM = 03
+			DEV = 10
+		}
+		remove_character_flag = major_settlement_reward
+	}
 	else_if = { 
 		limit = {
-			has_character_flag = high_settlement_reward
+			has_character_flag = good_settlement_reward
 		}
 		zz_valyria_settlement_effect = {
 			NUM = 02
+			DEV = 5
 		}
-		remove_character_flag = high_settlement_reward
+		remove_character_flag = good_settlement_reward
 	}
 	else_if = { 
 		limit = {
@@ -300,6 +320,7 @@ disburse_valyria_settlement_reward_effect = {
 		}
 		zz_valyria_settlement_effect = {
 			NUM = 01
+			DEV = 0
 		}
 		remove_character_flag = mid_settlement_reward
 	}
@@ -323,6 +344,9 @@ zz_valyria_settlement_effect = {
 			scope:province = {
 				set_holding_type = castle_holding	
 				add_building = castle_$NUM$
+				county = {
+					change_development_level = $DEV$
+				}
 			}
 			remove_character_flag = settle_castle
 		}
@@ -333,7 +357,9 @@ zz_valyria_settlement_effect = {
 			scope:province  = {
 				set_holding_type = city_holding
 				add_building = city_$NUM$
-				
+				county = {
+					change_development_level = $DEV$
+				}
 			}
 			remove_character_flag = settle_city
 		}
@@ -341,6 +367,9 @@ zz_valyria_settlement_effect = {
 			scope:province = {
 				set_holding_type = church_holding
 				add_building = temple_$NUM$
+				county = {
+					change_development_level = $DEV$
+				}
 			}
 			remove_character_flag = settle_temple
 		}
