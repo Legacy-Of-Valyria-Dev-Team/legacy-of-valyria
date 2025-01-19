@@ -591,6 +591,8 @@ widget = {
 						}
 					}
 				}
+
+				# LoV Added
 				widget_hud_main_tab = {
 					name = "tab_crafting"
 					visible = "[GetScriptedGui('zz_magic_crafting_open').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
@@ -651,8 +653,6 @@ widget = {
 						}
 					}
 				}
-
-				# LoV Added
 				widget_hud_main_tab = {
 					name = "tab_province_window"
 
@@ -696,6 +696,7 @@ widget = {
 						}
 					}
 				}
+				# LoV End
 			}
 		}
 
@@ -5735,7 +5736,7 @@ types HUD
 	
 												text_single = {
 													layoutpolicy_horizontal = expanding
-													Raw_Text = "Iron"
+													text = "[resources]"
 													default_format = "#high;bold"
 													using = Font_Size_Medium
 													fonttintcolor = "[TooltipInfo.GetTintColor]"
@@ -5753,7 +5754,7 @@ types HUD
 														name = "iron_icon"
 														size = { 30 30 }
 														texture = "gfx/interface/icons/lov_icon_iron.dds"
-														tooltip = "Iron"
+														tooltip = "[zz_iron]"
 													}
 													expand = {}
 			
@@ -5769,7 +5770,7 @@ types HUD
 														name = "steel_icon"
 														size = { 30 30 }
 														texture = "gfx/interface/icons/lov_icon_steel.dds"
-														tooltip = "Steel"
+														tooltip = "[zz_steel]"
 													}
 													expand = {}
 													text_single = {
@@ -5785,7 +5786,7 @@ types HUD
 														name = "obsidian_icon"
 														size = { 30 30 }
 														texture = "gfx/interface/icons/lov_icon_obsidian.dds"
-														tooltip = "Obsidian"
+														tooltip = "[zz_obsidian]"
 													}
 													expand = {}
 													text_single = {
@@ -5800,101 +5801,13 @@ types HUD
 														name = "valyrian_steel_icon"
 														size = { 30 30 }
 														texture = "gfx/interface/icons/lov_icon_valyrian_steel.dds"
-														tooltip = "Valyrian Steel"
+														tooltip = "[zz_valyrian_steel]"
 													}
 													expand = {}
 													text_single = {
 														raw_text = "[GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0]"
 														min_width = 50
 														default_format = "#high"
-													}
-												}
-								
-								
-												text_single = {
-													name = "total_label_no_tooltip"
-													layoutpolicy_horizontal = expanding
-													text = "TOTAL_BREAKDOWN_LABEL"
-													visible = "[EqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-												}
-								
-												text_single = {
-													name = "total_label"
-													layoutpolicy_horizontal = expanding
-													text = "TOTAL_BREAKDOWN_LABEL"
-													visible = "[NotEqualTo_CFixedPoint(PlayerValueItem.GetBalance, '(CFixedPoint)0')]"
-													using = tooltip_ws
-								
-													datacontext = "[PlayerValueItem.GetBalanceGained]"
-													tooltip_visible = "[ValueBreakdown.HasTooltip]"
-								
-													tooltipwidget = {
-														widget_value_breakdown_tooltip = {
-															blockoverride "header" {}
-														}
-													}
-												}
-											}
-								
-											vbox = {
-												layoutpolicy_horizontal = expanding
-												spacing = 15
-								
-												hbox = {
-													spacing = 5
-													layoutpolicy_horizontal = expanding
-								
-													background = {
-														using = Background_Area
-														margin = { 10 0 }
-														margin_bottom = 5
-													}
-								
-													text_single = {
-														text = "PLAYER_VALUE_LEVEL_LABEL"
-														layoutpolicy_horizontal = expanding
-								
-														default_format = "#T"
-														fonttintcolor = "[TooltipInfo.GetTintColor]"
-													}
-								
-													text_single = {
-														name = "current_level"
-														layoutpolicy_horizontal = expanding
-								
-														text = "[PlayerValueItem.GetCurrentLevelName]"
-														fonttintcolor = "[TooltipInfo.GetTintColor]"
-													}
-								
-													expand = {}
-												}
-								
-												vbox = {
-													visible = "[PlayerValueItem.HasNextLevel]"
-													layoutpolicy_horizontal = expanding
-													spacing = 5
-								
-													text_single = {
-														name = "progress_label"
-														layoutpolicy_horizontal = expanding
-								
-														text = "[PlayerValueItem.GetProgressTowardNextLevelLabel]"
-														fonttintcolor = "[TooltipInfo.GetTintColor]"
-													}
-								
-													hbox = {
-														layoutpolicy_horizontal = expanding
-														margin_left = -3
-								
-														progressbar_standard = {
-															layoutpolicy_horizontal = expanding
-															size = { -1 15 }
-															tintcolor = "[TooltipInfo.GetTintColor]"
-															value = "[PlayerValueItem.GetProgressTowardNextLevel]"
-															tooltip = "[PlayerValueItem.GetProgressTooltip]"
-														}
-								
-														expand = {}
 													}
 												}
 											}
@@ -5918,11 +5831,11 @@ types HUD
 									hbox = {
 										spacing = 7
 										
-										icon = {
-											name = "prestige_icon"
-											size = { 30 30 }
-											texture = "[GetPlayer.GetPrestigeLevelTexture]"
-										}
+										#icon = {
+										#	name = "prestige_icon"
+										#	size = { 30 30 }
+										#	texture = "[GetPlayer.GetPrestigeLevelTexture]"
+										#}
 										
 										flowcontainer = {
 											margin_bottom = 7
@@ -5930,12 +5843,12 @@ types HUD
 											direction = vertical
 	
 											text_single = {
-												raw_text = "Resources"
-												min_width = 50
+												text = "[resources|V]"
+												#min_width = 50
 												resizeparent = yes
 												align = center|nobaseline
-												default_format = "#low"
-											}						
+												#default_format = "#low"
+											}
 											container_resource_balance = {}
 										}
 									}
