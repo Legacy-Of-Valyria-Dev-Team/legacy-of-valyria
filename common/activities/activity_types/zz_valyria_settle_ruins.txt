@@ -79,7 +79,10 @@
 			text = colonisation_valyria
 			has_holding_type = ruin_holding
 			zz_world_location_province = yes 
-			county.holder = scope:host
+			OR = {
+				county.holder = scope:host
+				county.holder.top_liege = scope:host
+			}
 		}
 
 		# If you are supposed to be the realm's reserve ruler, then you can't take a multi-year foreign trip.
@@ -461,23 +464,27 @@
 						activity_location = { save_scope_as = location }
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
+						on_action = settlement_phase_events 
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
+						on_action = settlment_destination_flavour_events 
+						months = 1
+					}
+					trigger_event = {
+						on_action = settlement_phase_events 
 						months = 3
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
+						on_action = settlement_phase_events 
 						months = 6
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
-						months = 9
+						on_action = settlment_destination_flavour_events 
+						months = 8
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
-						months = 12
+						on_action = settlement_phase_events 
+						months = 9
 					}
 				}
 			}
@@ -553,6 +560,10 @@
 			on_phase_active = {
 				if = {
 					limit = { this = scope:host }
+					trigger_event = {
+						id = settlement_magic_phase_core.0001
+						weeks = 2
+					}
 					scope:activity = {
 						#Phase progression
 						progress_activity_phase_after = { months = 1 }
@@ -596,7 +607,7 @@
 					limit = { this = scope:host }
 					scope:activity = {
 						#Phase progression
-						progress_activity_phase_after = { months = 1 }
+						progress_activity_phase_after = { weeks = 2 }
 						#Loc
 						activity_location = { save_scope_as = location }
 					}
@@ -1374,7 +1385,10 @@ activity_valyria_settle_ruins_for_cheapskates = {
 			text = colonisation_valyria
 			has_holding_type = ruin_holding
 			zz_world_location_province = yes 
-			county.holder = scope:host
+			OR = {
+				county.holder = scope:host
+				county.holder.top_liege = scope:host
+			}
 		}
 
 		# If you are supposed to be the realm's reserve ruler, then you can't take a multi-year foreign trip.
@@ -1674,7 +1688,7 @@ activity_valyria_settle_ruins_for_cheapskates = {
 
 	phases = {
 		#Study!
-		colonisation_phase = {
+		settlement_arrival_phase = {
 			is_predefined = yes
 
 			ai_will_do = {
@@ -1691,39 +1705,12 @@ activity_valyria_settle_ruins_for_cheapskates = {
 					limit = { this = scope:host }
 					scope:activity = {
 						#Phase progression
-						progress_activity_phase_after = { months = 9 }
+						progress_activity_phase_after = { weeks = 2 }
 						#Loc
 						activity_location = { save_scope_as = location }
 					}
 					#Arrival event
 					trigger_event = { on_action = settlement_arrival_events }
-				}
-			}
-
-			#Events that happen while we're on site
-			on_monthly_pulse = {
-				if = {
-					limit = { this = scope:host }
-					trigger_event = { on_action = settlement_destination_events }			
-				}
-			}
-
-			on_end = {
-				
-				if = {
-					limit = { this = scope:host }
-					resolve_valyria_settlement_success_reward_effect = yes 
-					valyria_settlement_completed_log_entry_effect = yes
-					trigger_event = zz_valyria_settlement.0009 	
-					create_character_memory = {
-						type = completed_settlement
-					}
-					scope:new_memory = {
-						set_variable = {
-							name = education_destination
-							value = scope:activity.activity_location
-						}
-					}
 				}
 			}
 		}
@@ -1781,23 +1768,27 @@ activity_valyria_settle_ruins_for_cheapskates = {
 						activity_location = { save_scope_as = location }
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
+						on_action = settlement_phase_events 
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
+						on_action = settlment_destination_flavour_events 
+						months = 1
+					}
+					trigger_event = {
+						on_action = settlement_phase_events 
 						months = 3
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
+						on_action = settlement_phase_events 
 						months = 6
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
-						months = 9
+						on_action = settlment_destination_flavour_events 
+						months = 8
 					}
 					trigger_event = {
-						on_action = settlement_destination_events 
-						months = 12
+						on_action = settlement_phase_events 
+						months = 9
 					}
 				}
 			}

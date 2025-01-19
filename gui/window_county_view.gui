@@ -11,7 +11,7 @@ window = {
 	layer = windows_layer
 	#AGOT Modified
 	#size = { 625 620 }
-	size = { 647 745 }
+	size = { 647 795 }
 
 	background = {
 		texture = "gfx/interface/component_tiles/tile_window_background_subwindow.dds"
@@ -221,6 +221,36 @@ window = {
 			hbox = {
 				name = "county_modifiers_grid"
 				datamodel = "[HoldingView.GetCountyModifiers]"
+
+				button_round = {
+					name = "move_domcicle_button"
+					datacontext = "[GetPlayer.GetDomicile]"
+					datacontext = "[HoldingView.GetProvince]"
+					visible = "[IsLandlessAdventurer( GetPlayer )]"
+					widgetid = "move_domcicle_button"
+					size = { 50 50 }
+
+					enabled = "[Domicile.CanMoveTo( Province.Self )]"
+					onclick = "[OpenGameViewData( 'move_domicile_planner', Province.Self )]"
+
+					tooltip = "[Domicile.GetType.GetMoveTooltip( Character.Self )]"
+					tooltip_when_disabled = "[Domicile.GetMoveToTooltip( Province.Self )]"
+					using = tooltip_ne
+
+					button_icon = {
+						alwaystransparent = yes
+						parentanchor = center
+						size = { 30 30 }
+						texture = "gfx/interface/icons/flat_icons/move_camp.dds"
+					}
+				}
+
+				expand = {}
+
+				spacer = {
+					visible = "[Or( IsLandlessAdventurer( GetPlayer ), County.IsFullyOccupied )]"
+					size = { 8 0 }
+				}
 
 				item = {
 					modifier_item_icon = {
@@ -1628,7 +1658,6 @@ window = {
                             widget_value_breakdown_tooltip = {}
                         }
 					}
-
 					hbox = {
 						datacontext = "[Holding.GetProvince]"
 						layoutpolicy_horizontal = expanding
@@ -1636,20 +1665,20 @@ window = {
 						spacing = 3
 
 						text_single = {
-							raw_text = "Iron"
-							min_width = 75
+							layoutpolicy_horizontal = expanding
+							raw_text = "[zz_iron|E]:"
 							default_format = "#high"
 						}
 						expand = {}
 						icon = {
 							name = "iron_icon"
-							size = { 30 30 }
+							size = { 25 25 }
 							texture = "gfx/interface/icons/lov_icon_iron.dds"
+							tooltip = "[zz_iron]"
 						}
-						expand = {}
 						text_single = {
 							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_iron_gain')|0] "
-							min_width = 75
+							#min_width = 75
 							default_format = "#high"
 							align = right
 						}
@@ -1661,20 +1690,20 @@ window = {
 						spacing = 3
 
 						text_single = {
-							raw_text = "Steel"
-							min_width = 75
+							layoutpolicy_horizontal = expanding
+							raw_text = "[zz_steel|E]:"
 							default_format = "#high"
 						}
 						expand = {}
 						icon = {
 							name = "steel_icon"
-							size = { 30 30 }
+							size = { 25 25 }
 							texture = "gfx/interface/icons/lov_icon_steel.dds"
+							tooltip = "[zz_steel]"
 						}
-						expand = {}
 						text_single = {
 							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_steel_gain')|0] "
-							min_width = 75
+							#min_width = 75
 							default_format = "#high"
 							align = right							
 						}
@@ -1686,25 +1715,24 @@ window = {
 						spacing = 3
 
 						text_single = {
-							raw_text = "Obsidian"
-							min_width = 75
+							layoutpolicy_horizontal = expanding
+							raw_text = "[zz_obsidian|E]:"
 							default_format = "#high"
 						}
 						expand = {}
 						icon = {
 							name = "obsidian_icon"
-							size = { 30 30 }
+							size = { 25 25 }
 							texture = "gfx/interface/icons/lov_icon_obsidian.dds"
+							tooltip = "[zz_obsidian]"
 						}
-						expand = {}
 						text_single = {
 							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_obsidian_gain')|0] "
-							min_width = 75
+							#min_width = 75
 							default_format = "#high"
 							align = right
 						}
 					}
-					
 					hbox = {
 						datacontext = "[Holding.GetProvince]"
 						layoutpolicy_horizontal = expanding
@@ -1712,20 +1740,20 @@ window = {
 						spacing = 3
 
 						text_single = {
-							raw_text = "Valyrian Steel"
-							min_width = 75
+							layoutpolicy_horizontal = expanding
+							raw_text = "[zz_v_steel|E]:"
 							default_format = "#high"
 						}
 						expand = {}
 						icon = {
 							name = "valyrian_steel_icon"
-							size = { 30 30 }
+							size = { 25 25 }
 							texture = "gfx/interface/icons/lov_icon_valyrian_steel.dds"
+							tooltip = "[zz_valyrian_steel]"
 						}
-						expand = {}
 						text_single = {
 							raw_text = "[GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).ScriptValue('zz_valyria_province_resource_valyrian_steel_gain')|0] "
-							min_width = 75
+							#min_width = 75
 							default_format = "#high"
 							align = right
 						}
