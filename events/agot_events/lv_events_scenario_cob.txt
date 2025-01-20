@@ -6,37 +6,15 @@ lv_scenario_cob.0001 = { #Arrec Durrandon
 	desc = lv_scenario_cob.0001.desc
 
 	override_background = {
-		reference = agot_iron_throne
+		reference = agot_storms_end
 	}
 	theme = realm
 	left_portrait = {
 		character = root
-		animation = grief
+		animation = marshal
 	}
-	right_portrait = {
-		character = scope:valarr
-		animation = personality_honorable
-	}
-	lower_right_portrait = scope:breakspear
-	lower_left_portrait = scope:maekar
-
-	immediate = {
-		character:Targaryen_107 = {
-			save_scope_as = breakspear
-		}
-		character:Targaryen_111 = {
-			save_scope_as = valarr
-		}
-		character:Targaryen_110 = {
-			save_scope_as = maekar
-		}
-		character:Targaryen_95 = {
-			save_scope_as = bittersteel
-		}
-		character:Blackfyre_5 = {
-			save_scope_as = daemon
-		}
-	}
+	lower_right_portrait = character:Hoare_25
+	lower_left_portrait = character:Justman_cob_2
 
 	option = {
 		name = lv_scenario_cob.0001.a
@@ -89,26 +67,21 @@ lv_scenario_cob.0003 = { #Qhorwyn Hoare
 	desc = lv_scenario_cob.0003.desc
 
 	override_background = {
-		reference = throne_room
+		reference = agot_pyke
 	}
 	theme = intrigue
 	left_portrait = {
 		character = root
-		animation = personality_bold
 	}
-	right_portrait = {
-		character = scope:bittersteel
-		animation = disapproval
-	}
-	lower_left_portrait = character:Targaryen_94
-	lower_right_portrait = scope:breakspear
+	lower_center_portrait = character:Hoare_27
+	lower_right_portrait = character:Hoare_28
 
 	immediate = {
-		character:Targaryen_95 = {
-			save_scope_as = bittersteel
+		character:Hoare_27 = {
+			save_scope_as = harlan
 		}
-		character:Targaryen_107 = {
-			save_scope_as = breakspear
+		character:Hoare_28 = {
+			save_scope_as = harwyn
 		}
 	}
 
@@ -123,7 +96,7 @@ lv_scenario_cob.0004 = { #Tommen II Lannister
 	desc = lv_scenario_cob.0004.desc
 
 	override_background = {
-		reference = throne_room
+		reference = agot_casterly_rock
 	}
 	theme = realm
 	left_portrait = root
@@ -161,39 +134,8 @@ lv_scenario_cob.0005 = { #Aurion Varezys
 	}
 	theme = landless_adventurer
 	left_portrait = root
-	lower_center_portrait = character:Targaryen_110
-	right_portrait = character:Targaryen_122
 
-	immediate = {
-		play_music_cue = mood_the_hedge_knight
-		character:Targaryen_110 = {
-			save_scope_as = maekar
-		}
-		character:Targaryen_122 = {
-			save_scope_as = aegonfive
-		}
-		character:Tall_1 = {
-			save_scope_as = duncan
-		}
-		hidden_effect = {
-			if = {
-				limit = {
-					scope:aegonfive = {
-						NOT = { is_courtier_of = scope:duncan }
-					}
-				}
-				scope:duncan = {
-					add_courtier = scope:aegonfive
-					scope:aegonfive = {
-						return_to_court = yes
-					}
-				}
-			}
-			add_character_modifier = { modifier = laamp_provisions_forgiveness_travel_modifier years = 1 }
-		}
-	}
-
-    # To Dorne, the kin of my squire
+    # To Valyria
 	option = {
 		name = lv_scenario_cob.0005.a
 		custom_tooltip = lv_scenario_cob.0005.a_tt
@@ -206,11 +148,11 @@ lv_scenario_cob.0005 = { #Aurion Varezys
 				}
 			}
 		}		
-		title:k_dorne.holder.capital_province = {
-			save_scope_as = relocation_destination
+		title:k_volantis.holder.capital_province = {
+			save_scope_as = relocation_destination_seyrith
 		}
 		start_travel_plan = {
-			destination = scope:relocation_destination
+			destination = scope:relocation_destination_seyrith
 			on_start_on_action = on_travel_relocation_start
 			on_arrival_on_action = on_travel_relocation_end
 			on_arrival_destinations = last
@@ -251,32 +193,137 @@ lv_scenario_cob.0006 = { #Lucifer Justman
 	desc = lv_scenario_cob.0006.desc
 
 	override_background = {
-		reference = throne_room
+		reference = ep3_campfire
 	}
-	theme = family
-	left_portrait = {character = root animation = grief}
-	lower_left_portrait = character:Tall_1
-	lower_right_portrait = character:Targaryen_122
-	lower_center_portrait = character:Targaryen_119
-	right_portrait = character:Targaryen_107
+	theme = landless_adventurer
+	left_portrait = root
+	lower_left_portrait = character:Justman_1
+	lower_right_portrait = character:Justman_12
 
 	immediate = {
-		character:Targaryen_107 = {
-			save_scope_as = baelor
+		play_music_cue = mood_the_hedge_knight
+		character:Justman_1 = {
+			save_scope_as = benedict
 		}
-		character:Targaryen_119 = {
-			save_scope_as = aerion
+		character:Justman_12 = {
+			save_scope_as = lucifer
 		}
-		character:Targaryen_122 = {
-			save_scope_as = aegonfive
-		}
-		character:Tall_1 = {
-			save_scope_as = duncan
+		character:Durrandon_70 = {
+			save_scope_as = arlan
 		}
 	}
 
+    # To Highgarden
 	option = {
 		name = lv_scenario_cob.0006.a
-		add_stress = major_stress_gain
+		custom_tooltip = lv_scenario_cob.0006.a_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 1000
+				}
+			}
+		}		
+		title:e_the_reach.holder.capital_province = {
+			save_scope_as = relocation_destination_reach
+		}
+		start_travel_plan = {
+			destination = scope:relocation_destination_reach
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_historic_chain_outcome
+			}
+		}
+	}
+    # To Casterly Rock
+	option = {
+		name = lv_scenario_cob.0006.b
+		custom_tooltip = lv_scenario_cob.0006.b_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 1000
+				}
+			}
+		}		
+		title:e_the_westerlands.holder.capital_province = {
+			save_scope_as = relocation_destination_rock
+		}
+		start_travel_plan = {
+			destination = scope:relocation_destination_rock
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_historic_chain_outcome
+			}
+		}
+	}
+    # To The Eyrie
+	option = {
+		name = lv_scenario_cob.0006.c
+		custom_tooltip = lv_scenario_cob.0006.c_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 1000
+				}
+			}
+		}		
+		title:e_the_vale.holder.capital_province = {
+			save_scope_as = relocation_destination_eyrie
+		}
+		start_travel_plan = {
+			destination = scope:relocation_destination_eyrie
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_historic_chain_outcome
+			}
+		}
+	}
+    # I will decide my own path
+	option = {
+		name = lv_scenario_cob.0006.d
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 1000
+				}
+			}
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_nonhistoric_chain_outcome
+			}
+		}
 	}
 }
+
