@@ -1,0 +1,80 @@
+zz_valyria_dragon_pit_view = {
+	scope = character
+	saved_scopes = {
+		zz_county
+	}
+	is_shown = {
+	}
+	is_valid = {
+	}
+	effect = {
+		scope:zz_county.county.holder = {
+			clear_variable_list = dragon_pit_list
+			clear_variable_list = dragonseed_list
+			every_courtier = {
+				limit = {
+					has_character_flag = in_dragonpit
+					var:pitted_dragon_location = scope:zz_county.county
+				}
+				prev = {
+					add_to_variable_list = {
+						name = dragon_pit_list
+						target = prev
+					}
+				}
+			}
+			every_courtier = {
+				limit = {
+					this.dragonblood_percent > 0
+					not = {
+						has_trait = dragonrider
+					}
+				}
+				prev = {
+					add_to_variable_list = {
+						name = dragonseed_list
+						target = prev
+					}
+				}
+			}
+		}
+	}
+}
+
+zz_dragonpit_dragon = {
+	scope = character
+	saved_scopes = {
+		zz_dragonpit_dragon
+	}
+	is_shown = {
+		var:zz_dragonpit_dragon ?= scope:zz_dragonpit_dragon
+	}
+	
+	effect = {
+		save_scope_as = zz_dragonlord
+		set_variable = {
+			name = zz_dragonpit_dragon
+			value = scope:zz_dragonpit_dragon
+		}
+	}
+}
+
+zz_dragonpit_dragonseed = {
+	scope = character
+	saved_scopes = {
+		zz_dragonseed
+	}
+	is_shown = {
+		var:zz_dragonseed ?= scope:zz_dragonseed
+	}
+	
+	effect = {
+		save_scope_as = zz_dragonlord
+		set_variable = {
+			name = zz_dragonseed
+			value = scope:zz_dragonseed
+		}
+	}
+}
+
+
