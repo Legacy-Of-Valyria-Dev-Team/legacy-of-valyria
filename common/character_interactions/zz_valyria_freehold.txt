@@ -80,7 +80,233 @@
 	}
 }
 
+zz_adopt_interaction = {
+	icon = icon_adopt_house_member
+	category = interaction_category_diplomacy
+	interface_priority = 60
+	cooldown = { years = 2 }
 
+	desc = adventurer_adopt_interaction_desc
+	use_diplomatic_range = yes
+	
+	is_shown = {
+		scope:actor = { this = character:Setenon_01 }
+		scope:recipient = {
+			is_ruler = no
+			# They don't already belong to your dynasty
+			NOT = { dynasty = scope:actor.dynasty }
+			#AGOT ADDED
+			is_human = yes
+		}
+	}
+
+	#is_valid = {}
+
+	is_valid_showing_failures_only = {
+		# Don't get imprisoned children and so on
+		scope:recipient = {
+			is_available = yes
+			is_courtier_of = scope:actor
+			opinion = {
+				value >= 40 # sync with define:NDomicile|TEMPERAMENT_THRESHOLD_HIGH
+				target = scope:actor
+			}
+		}
+		scope:recipient = {
+			NOT = { has_trait = devoted }
+		}
+		scope:recipient = {
+			NOT = { has_trait = gallivanter }
+		}
+	}
+	
+	on_accept = {
+		show_as_tooltip = {
+			adventurer_adopt_effect = {
+				CHILD = scope:recipient
+				ADOPTER = scope:actor
+			}
+			scope:actor = { set_designated_heir = scope:recipient }
+		}
+		hidden_effect = {
+			scope:actor = { trigger_event = adoption.0002 }
+		}
+	}
+	
+	cost = {
+		prestige = {
+			value = {
+				add = medium_prestige_value
+				if = {
+					limit = {
+						scope:actor = {
+							OR = {
+								culture = { has_cultural_parameter = free_adoption }
+								has_game_rule = adoption_always_allowed
+							}
+						}
+					}
+					multiply = 0
+				}
+			}
+		}
+	}
+	
+	ai_accept = {
+		base = 0
+		modifier = { # My parents are alive
+			add = -15
+			desc = parents_are_alive_tt
+			OR = {
+				father ?= { is_alive = yes }
+				mother ?= { is_alive = yes }
+			}
+		}
+		modifier = { # I hate my mother
+			add = 10
+			desc = i_hate_my_mother_tt
+			exists = mother
+			mother = { is_alive = yes }
+			opinion = {
+				value <= medium_negative_opinion
+				target = mother
+			}
+		}
+		modifier = { # I hate my father
+			add = 10
+			desc = i_hate_my_father_tt
+			exists = father
+			father = { is_alive = yes }
+			opinion = {
+				value <= medium_negative_opinion
+				target = father
+			}
+		}
+		modifier = { # I like my mother
+			add = -10
+			desc = i_like_my_mother_tt
+			exists = mother
+			mother = { is_alive = yes }
+			opinion = {
+				value >= medium_positive_opinion
+				target = mother
+			}
+		}
+		modifier = { # I like my father
+			add = -10
+			desc = i_like_my_father_tt
+			exists = father
+			father = { is_alive = yes }
+			opinion = {
+				value >= medium_positive_opinion
+				target = father
+			}
+		}
+		modifier = { # I like you
+			add = {
+				value = 5
+				if = {
+					limit = {
+						opinion = {
+							value >= high_positive_opinion
+							target = scope:actor
+						}
+					}
+					add = 10
+				}
+				if = {
+					limit = {
+						opinion = {
+							value >= very_high_positive_opinion
+							target = scope:actor
+						}
+					}
+					add = 10
+				}
+			}
+			desc = i_like_you_tt
+			opinion = {
+				value >= medium_positive_opinion
+				target = scope:actor
+			}
+		}
+		modifier = { # You're my friend :)
+			add = 10
+			desc = youre_my_friend_tt
+			has_relation_friend = scope:actor
+		}
+		modifier = { # You're my guardian
+			add = 10
+			desc = youre_my_guardian_tt
+			has_relation_guardian = scope:actor
+		}
+		modifier = { # I have no mother
+			add = 5
+			desc = i_want_a_mother_tt
+			scope:actor = { is_female = yes }
+			OR = {
+				NOT = { exists = mother }
+				mother = { is_alive = no }
+			}
+		}
+		modifier = { # I have no father
+			add = 5
+			desc = i_want_a_father_tt
+			scope:actor = { is_male = yes }
+			OR = {
+				NOT = { exists = father }
+				father = { is_alive = no }
+			}
+		}
+		modifier = { # I am a noble!
+			add = -15
+			desc = i_am_noble_tt
+			has_no_particular_noble_roots_trigger = no
+		}
+		modifier = { # We are so alike ^^
+			add = { 
+				value = 5
+				if = {
+					limit = {
+						number_of_personality_traits_in_common = {
+							target = scope:actor
+							value = 2
+						}
+					}
+					multiply = 2
+				}
+				else_if = {
+					limit = {
+						number_of_personality_traits_in_common = {
+							target = scope:actor
+							value = 3
+						}
+					}
+					multiply = 3
+				}
+				else_if = {
+					limit = {
+						number_of_personality_traits_in_common = {
+							target = scope:actor
+							value = 4
+						}
+					}
+					multiply = 4
+				}
+			}
+			desc = we_are_alike_tt
+			number_of_personality_traits_in_common = {
+				target = scope:actor
+				value >= 1
+			}
+		}
+		modifier = { # Yo, you're offering me a place in a landed house? Sick.
+			add = 10
+			desc = ambition_tt
+			has_trait = ambitious
+		}
+	}
+}
 zz_create_cadet_branch = {
 
 	category = interaction_category_vassal
@@ -89,13 +315,14 @@ zz_create_cadet_branch = {
 	cost = {
 		prestige = 1000
 		influence = {
-			add =  scope:actor.medium_influence_value
+			add =  scope:actor.massive_influence_value
 		}
 	}
 	is_shown = {
 		#always = no 
 		scope:actor = {
 			government_has_flag = government_is_freehold 
+			is_ai = no
 		}
 		
 		scope:recipient = {
@@ -103,7 +330,6 @@ zz_create_cadet_branch = {
 			exists = house.house_head
 			is_house_head = no
 			liege = scope:actor
-			is_ruler = yes
 			#has_trait = dragonrider
 		}
 	}
@@ -147,6 +373,9 @@ zz_create_cadet_branch = {
 	}
 }
 
+
+
+
 zz_establish_dragon_rider_house = {
 
 	category = interaction_category_vassal
@@ -157,6 +386,7 @@ zz_establish_dragon_rider_house = {
 		#always = no 
 		scope:actor = {
 			government_has_flag = government_is_freehold 
+			is_ai = no
 		}
 		
 		scope:recipient = {
