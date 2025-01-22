@@ -1378,3 +1378,83 @@ zz_valyria_magic_school_study_magic = {
 		}
 	}
 }
+
+zz_valyria_magic_school_blood_offering = {
+	scope = character
+	saved_scopes = {
+	}
+	is_valid = {
+		not = {
+			var:zz_magic_caster.var:blood_sacrifice ?= flag:true
+		}
+	}
+	is_shown = {
+		var:zz_magic_caster.var:blood_sacrifice ?= flag:true
+	}
+	effect = {
+		save_scope_as = zz_magic_user 
+		var:zz_magic_caster = {
+			set_variable = {
+				name = blood_sacrifice
+				value = flag:true
+				days = 45 
+			}
+			random = {
+				chance = 50
+				increase_wounds_effect = { REASON = blood_magic }
+			}				
+			if = {
+				limit = {
+					this.dragonblood_percent > 0
+				}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 3
+				}
+			}
+			else ={
+				zz_valyria_mana_gain = {
+					MANAGAIN = 1
+				}
+			}
+		}
+	}
+}
+
+zz_valyria_magic_school_piety_offering = {
+	scope = character
+	saved_scopes = {
+	}
+	is_valid = {
+		piety > 2000
+		not = {
+			var:zz_magic_caster.var:piety_sacrifice ?= flag:true
+		}
+	}
+	is_shown = {
+		var:zz_magic_caster.var:piety_sacrifice ?= flag:true
+	}
+	effect = {
+		save_scope_as = zz_magic_user 
+		add_piety = -2000
+		var:zz_magic_caster = {
+			set_variable = {
+				name = piety_sacrifice
+				value = flag:true
+				days = 45 
+			}			
+			if = {
+				limit = {
+					this.dragonblood_percent > 0
+				}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 3
+				}
+			}
+			else ={
+				zz_valyria_mana_gain = {
+					MANAGAIN = 1
+				}
+			}
+		}
+	}
+}

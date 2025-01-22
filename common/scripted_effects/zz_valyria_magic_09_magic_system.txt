@@ -96,6 +96,13 @@ zz_valyria_make_mage_list = {
 zz_valyria_make_spell_list = {
 	remove_variable ?= zz_valyria_mystery
 	clear_variable_list ?= zz_valyria_spell_list
+	clear_variable_list ?= zz_valyria_spell_blood_list
+	clear_variable_list ?= zz_valyria_spell_shadow_list
+	clear_variable_list ?= zz_valyria_spell_dream_list
+	clear_variable_list ?= zz_valyria_spell_alchemy_list
+	clear_variable_list ?= zz_valyria_spell_fire_list
+	clear_variable_list ?= zz_valyria_spell_air_list
+	clear_variable_list ?= zz_valyria_spell_water_list
 
 	scope:$MAGIC_CASTER$ = {
 		every_memory = {
@@ -107,11 +114,82 @@ zz_valyria_make_spell_list = {
 					name = zz_valyria_spell_list
 					target = prev
 				}
-				if = {
-					limit = {
-						NOT = { has_variable = zz_valyria_mystery }
-					}
-					set_variable = { name = zz_valyria_mystery value = prev }
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = blood_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_blood_list
+					target = prev
+				}
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = shadow_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_shadow_list
+					target = prev
+				}
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = dream_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_dream_list
+					target = prev
+				}
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = alchemy_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_alchemy_list
+					target = prev
+				}
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = fire_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_fire_list
+					target = prev
+				}
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = air_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_air_list
+					target = prev
+				}
+			}
+		}
+		every_memory = {
+			limit = { 
+				has_memory_category = water_magic
+			}
+			scope:$MAGIC_USER$ = {
+				add_to_variable_list = {
+					name = zz_valyria_spell_water_list
+					target = prev
 				}
 			}
 		}
@@ -690,7 +768,7 @@ zz_valyria_spell_failure_effect = {
 		custom_tooltip = spell_failure_txt
 		scope:secondary_recipient  = {
 			if = { 
-				limit = { exists = zz_miscast_count}
+				limit = { exists = var:zz_miscast_count}
 				if = { 
 					limit = { 
 						var:zz_miscast_count = 3

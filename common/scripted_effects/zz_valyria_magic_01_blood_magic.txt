@@ -82,6 +82,62 @@
 }
 
 
+zz_valyria_blood_magic_trait_upgrade = {
+	if = {
+		limit = { 
+			has_trait = $TYPE$_bad 
+		}
+		change_trait_rank = {
+			trait = $TYPE$_bad
+			rank = -1
+		}
+	}
+	else = {
+		if = {
+			limit = {
+				NOT = {
+					has_trait = $TYPE$_good
+				}
+			}
+			add_trait_force_tooltip = $TYPE$_good_1
+		}
+		else = {
+			change_trait_rank = {
+				trait = $TYPE$_good
+				rank = 1
+			}
+		}
+	}
+}
+
+zz_valyria_blood_magic_trait_downgrade = {
+	if = {
+		limit = { 
+			has_trait = $TYPE$_good
+		}
+		change_trait_rank = {
+			trait = $TYPE$_good
+			rank = -1
+		}
+	}
+	else = {
+		if = {
+			limit = {
+				NOT = {
+					has_trait =  $TYPE$_bad 
+				}
+			}
+			add_trait_force_tooltip =  $TYPE$_bad_1
+		}
+		else = {
+			change_trait_rank = {
+				trait =  $TYPE$_bad
+				rank = 1
+			}
+		}
+	}
+}
+
 
 zz_valyria_magic_blood_magic_01_mysteries_of_restoration_effect = { 
 	send_interface_message = {
@@ -295,104 +351,32 @@ zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification_effect = {
 			count = zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification_value 
 			if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:add_intelligence
+					scope:option_01 ?= yes
 				}
 				
 				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = intellect_bad 
-						}
-						change_trait_rank = {
-							trait = intellect_bad
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = intellect_good
-								}
-							}
-							add_trait_force_tooltip = intellect_good_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = intellect_good
-								rank = 1
-							}
-						}
-					}
+					zz_valyria_blood_magic_trait_upgrade = { TYPE = intellect }
 				} 
 			}			
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:add_strength
+					scope:option_02 ?= yes
 				}
 				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = physique_bad 
-						}
-						change_trait_rank = {
-							trait = physique_bad
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = physique_good
-								}
-							}
-							add_trait_force_tooltip = physique_good_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = physique_good
-								rank = 1
-							}
-						}
-					}
+					zz_valyria_blood_magic_trait_upgrade = { TYPE = physique }
 				}
 			}			
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:add_beauty
+					scope:option_03 ?= yes
 				}
 				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = beauty_bad 
-						}
-						change_trait_rank = {
-							trait = beauty_bad
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = beauty_good
-								}
-							}
-							add_trait_force_tooltip = beauty_good_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = beauty_good
-								rank = 1
-							}
-						}
-					}
+					zz_valyria_blood_magic_trait_upgrade = { TYPE = beauty }
 				}
 			}			
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:remove_infertile
+					scope:option_04 ?= yes
 				}
 				scope:recipient = { 
 					remove_trait = infertile
@@ -400,110 +384,37 @@ zz_valyria_magic_blood_magic_02_mysteries_of_transmogrification_effect = {
 			}		
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:remove_intelligence
+					scope:option_05 ?= yes
 				}
 				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = intellect_good 
-						}
-						change_trait_rank = {
-							trait = intellect_good
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = intellect_bad
-								}
-							}
-							add_trait_force_tooltip = intellect_bad_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = intellect_good
-								rank = 1
-							}
-						}
-					}
+					zz_valyria_blood_magic_trait_downgrade = { TYPE = intellect }
 				} 
 			}			
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:remove_strength
+					scope:option_06 ?= yes
 				}
 				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = physique_good
-						}
-						change_trait_rank = {
-							trait = physique_good
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = physique_bad
-								}
-							}
-							add_trait_force_tooltip = physique_bad_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = physique_bad
-								rank = 1
-							}
-						}
-					}
+					zz_valyria_blood_magic_trait_downgrade = { TYPE = physique }
 				}
 			}			
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:remove_beauty
+					scope:option_07 ?= yes
 				}
 				scope:recipient = { 
-					if = {
-						limit = { 
-							has_trait = beauty_good 
-						}
-						change_trait_rank = {
-							trait = beauty_good
-							rank = -1
-						}
-					}
-					else = {
-						if = {
-							limit = {
-								NOT = {
-									has_trait = beauty_bad
-								}
-							}
-							add_trait_force_tooltip = beauty_bad_1
-						}
-						else = {
-							change_trait_rank = {
-								trait = beauty_bad
-								rank = 1
-							}
-						}
-					}
+					zz_valyria_blood_magic_trait_downgrade = { TYPE = beauty }
 				}
 			}			
 			else_if = {
 				limit = {
-					var:zz_valyria_magic_blood_magic_spells002 ?= flag:add_infertile
+					scope:option_08 ?= yes
 				}
 				scope:recipient = { 
 					add_trait_force_tooltip  = infertile
 				} 		
 			}		
 		}
-		remove_variable = zz_valyria_magic_blood_magic_spells002 
 		scope:recipient = {				
 			if = {
 				limit = {
@@ -586,10 +497,8 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 				}
 				if = { 
 					limit = {
-						var:zz_valyria_magic_blood_magic_spells005 ?= flag:make_clone_adult
+						scope:option_01 ?= yes
 					}
-					remove_variable = zz_valyria_magic_blood_magic_spells005 
-
 					destroy_artifact = scope:target 
 					create_character = {
 						age = var:si_selected_character.age
@@ -630,10 +539,8 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 				}
 				else_if = { 
 					limit = {
-						var:zz_valyria_magic_blood_magic_spells005 ?= flag:make_clone_child
+						scope:option_02 ?= yes
 					}
-					remove_variable = zz_valyria_magic_blood_magic_spells005 
-
 					destroy_artifact = scope:target 
 					create_character = {
 						age = 1
@@ -674,9 +581,8 @@ zz_valyria_magic_blood_magic_05_mysteries_of_replication_effect = {
 				}
 				else_if = { 
 					limit = {
-						var:zz_valyria_magic_blood_magic_spells005 ?= flag:make_clone_genderswap
+						scope:option_03 ?= yes
 					}
-					remove_variable = zz_valyria_magic_blood_magic_spells005 
 					destroy_artifact = scope:target 
 					create_character = {
 						age = var:si_selected_character.age
@@ -1204,9 +1110,8 @@ zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption_effect = {
 		zz_valyria_magic_duel_stress_effect = yes 
 		if = {
 			limit = {
-				var:zz_valyria_magic_blood_magic_spells017 ?= flag:weaken_power
+				scope:option_01 ?= yes
 			}
-			remove_variable = zz_valyria_magic_blood_magic_spells017
 			scope:secondary_recipient = {
 				duel = {
 					skill = learning 
@@ -1244,9 +1149,8 @@ zz_valyria_magic_blood_magic_17_mysteries_of_vital_consumption_effect = {
 		}	
 		if = {
 			limit = {
-				var:zz_valyria_magic_blood_magic_spells017 ?= flag:max_power
+				scope:option_01 ?= yes
 			}
-			remove_variable = zz_valyria_magic_blood_magic_spells017
 			scope:secondary_recipient = {
 				duel = {
 					skill = learning 
@@ -1560,12 +1464,13 @@ zz_valyria_magic_blood_magic_18_mysteries_of_draconic_genetics_effect = {
 						}
 					} 		
 				}
-				remove_variable = zz_valyria_magic_blood_magic_spells018
+				
 			}
 			50 = {
 
 			}
 		}
+		remove_variable = zz_valyria_magic_blood_magic_spells018
 	}
 }
 
@@ -1586,7 +1491,6 @@ zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection_effect = {
 					limit = {
 						var:zz_valyria_magic_blood_magic_spells019 ?= flag:force_male
 					}
-					remove_variable = zz_valyria_magic_blood_magic_spells019
 					scope:recipient = {
 						set_pregnancy_gender = male 
 					}
@@ -1595,7 +1499,6 @@ zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection_effect = {
 					limit = {
 						var:zz_valyria_magic_blood_magic_spells019 ?= flag:force_female
 					}
-					remove_variable = zz_valyria_magic_blood_magic_spells019
 					scope:recipient = {
 						set_pregnancy_gender = female 
 					}
@@ -1610,6 +1513,7 @@ zz_valyria_magic_blood_magic_19_mysteries_of_sex_selection_effect = {
 				}
 			}
 		}
+		remove_variable = zz_valyria_magic_blood_magic_spells019
 	}
 }
 
