@@ -728,6 +728,58 @@ zz_valyria_make_scroll_maker_spell_list = {
 	}
 }
 
+zz_targeted_character_province_selection_list_effect = {
+	clear_variable_list = possible_provinces
+	remove_variable = selected_province
+	scope:recipient = {
+		capital_province = {
+			root = {
+				add_to_variable_list = {
+					name = possible_provinces
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_province }
+					}
+					set_variable = { name = selected_province value = prev }
+				}
+			}
+		}
+		every_realm_province = {
+			limit = {
+				province_owner = prev
+			}
+			root = {
+				add_to_variable_list = {
+					name = possible_provinces
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_province }
+					}
+					set_variable = { name = selected_province value = prev }
+				}
+			}
+		}
+		every_realm_province = {
+			root = {
+				add_to_variable_list = {
+					name = possible_provinces
+					target = prev
+				}
+				if = {
+					limit = {
+						NOT = { has_variable = selected_province }
+					}
+					set_variable = { name = selected_province value = prev }
+				}
+			}
+		}
+	}
+}
+
 zz_valyria_magic_duel_stress_effect = { 
 	if = {
 		limit = {
