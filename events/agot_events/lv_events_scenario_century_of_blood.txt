@@ -178,42 +178,16 @@ lv_scenario_cob.0005 = { #Aurion Varezys
 				name = aurion_qohor_army
 			}
 			cv_create_artifact_vs_stormbringer_effect = { OWNER = root }	
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}	
 		start_travel_plan = {
-			destination = province:8983
+			destination = province:8692
 			on_start_on_action = on_travel_relocation_start
 			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0500
 			on_arrival_destinations = last
 			return_trip = no # One way
 			travel_with_domicile = yes
-		}
-	}
-    # Declare a New Valyria
-	option = {
-		name = lv_scenario_cob.0005.b
-		add_prestige = 100
-		domicile = {
-			if = {
-				limit = { provisions < max_provisions }
-				change_provisions = {
-					value = 1000
-				}
-			}
-		}
-		character:Varezys_1 = {
-			#Aurion needs his host
-			spawn_army = {
-				levies = 27000
-				location = character:Varezys_1.location
-				name = aurion_qohor_army
-			}
-			cv_create_artifact_vs_stormbringer_effect = { OWNER = root }	
-		}
-		start_war = {
-			casus_belli = aurion_new_valyria
-			target = title:k_volantis.holder
-			claimant = root
-			target_title = title:k_volantis
 		}
 	}
 }
@@ -335,7 +309,7 @@ lv_scenario_cob.0006 = { #Lucifer Justman
 }
 
 ### Aurion New Valyria Chain
-lv_scenario_cob.0500 = { #Aurion Varezys arrives in Volantis
+lv_scenario_cob.0500 = { #Aurion Varezys arrives in Ny Sar
 	type = character_event
 	title = lv_scenario_cob.0500.t
 	desc = lv_scenario_cob.0500.desc
@@ -360,9 +334,12 @@ lv_scenario_cob.0500 = { #Aurion Varezys arrives in Volantis
 		outfit_tags = { linear_camera_zoom }
 	}
 	
+	immediate = {
+	}
+	
 	option = {
 		name = lv_scenario_cob.0500.a
-		custom_tooltip = lv_scenario_cob.0005.a_tt
+		custom_tooltip = lv_scenario_cob.0500.a_tt
 		add_prestige = 100
 		domicile = {
 			if = {
@@ -372,17 +349,19 @@ lv_scenario_cob.0500 = { #Aurion Varezys arrives in Volantis
 				}
 			}
 		}	
+		add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		start_travel_plan = {
-			destination = province:8194
+			destination = province:8860
 			on_start_on_action = on_travel_relocation_start
 			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0501
 			on_arrival_destinations = last
 			return_trip = no # One way
 			travel_with_domicile = yes
 		}
 	}
 }
-lv_scenario_cob.0501 = { #Aurion Varezys arrives in Volantis
+lv_scenario_cob.0501 = { #Aurion Varezys decides his path
 	type = character_event
 	title = lv_scenario_cob.0501.t
 	desc = lv_scenario_cob.0501.desc
@@ -406,8 +385,11 @@ lv_scenario_cob.0501 = { #Aurion Varezys arrives in Volantis
 		#Add this so dragon fits within event window
 		outfit_tags = { linear_camera_zoom }
 	}
-	
-	option = {
+
+	immediate = {
+	}
+
+	option = { #Aurion decides his path
 		name = lv_scenario_cob.0501.a
 		custom_tooltip = lv_scenario_cob.0501.a_tt
 		add_prestige = 100
@@ -419,8 +401,143 @@ lv_scenario_cob.0501 = { #Aurion Varezys arrives in Volantis
 				}
 			}
 		}	
+		add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+		start_travel_plan = {
+			destination = province:8194
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0502
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+	# Declare a New Valyria
+	option = {
+		name = lv_scenario_cob.0005.b
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 1000
+				}
+			}
+		}
+		character:Varezys_1 = {
+			#Aurion needs his host
+			spawn_army = {
+				levies = 27000
+				location = character:Varezys_1.location
+				name = aurion_qohor_army
+			}
+			cv_create_artifact_vs_stormbringer_effect = { OWNER = root }	
+		}
+		start_war = {
+			casus_belli = aurion_new_valyria
+			target = title:k_volantis.holder
+			claimant = root
+			target_title = title:k_volantis
+		}
+	}
+}
+
+lv_scenario_cob.0502 = { #Aurion Varezys arrives in Volantis
+	type = character_event
+	title = lv_scenario_cob.0502.t
+	desc = lv_scenario_cob.0502.desc
+
+	override_background = {
+		reference = agot_dragon_forest_clearing
+	}
+
+	theme = landless_adventurer
+
+	left_portrait = {
+		character = root
+		animation = celebrate_sword
+	}
+
+	right_portrait = {
+		character = var:current_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = lv_scenario_cob.0502.a
+		custom_tooltip = lv_scenario_cob.0502.a_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13000
+				}
+			}
+		}	
+		add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		start_travel_plan = {
 			destination = province:8380
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0503
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+}
+
+lv_scenario_cob.0503 = { #Aurion Varezys arrives in Little Valyria
+	type = character_event
+	title = lv_scenario_cob.0502.t
+	desc = lv_scenario_cob.0502.desc
+
+	override_background = {
+		reference = agot_dragon_forest_clearing
+	}
+
+	theme = landless_adventurer
+
+	left_portrait = {
+		character = root
+		animation = celebrate_sword
+	}
+
+	right_portrait = {
+		character = var:current_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = lv_scenario_cob.0502.a
+		custom_tooltip = lv_scenario_cob.0502.a_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13000
+				}
+			}
+		}	
+		add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+		start_travel_plan = {
+			destination = province:8983
 			on_start_on_action = on_travel_relocation_start
 			on_arrival_on_action = on_travel_relocation_end
 			on_arrival_destinations = last
