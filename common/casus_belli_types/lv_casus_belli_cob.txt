@@ -113,7 +113,34 @@ aurion_new_valyria = {
 		}
 	}
 
-	on_victory = {
+	on_victory = {	
+		scope:attacker = {
+			if = {
+				limit = {
+					is_landless_adventurer = yes
+				}
+				hidden_effect = {
+					if = {
+						limit = {
+							NOT = { has_trait = adventurer }
+						}
+						add_trait = adventurer
+					}
+					save_scope_as = the_adventurer
+					every_courtier = {
+						limit = {
+							is_human = yes
+						}
+						set_variable = {
+							name = former_camp_leader
+							value = scope:the_adventurer
+						}
+						add_trait = adventurer_follower
+					}
+				}
+			}
+		}
+
 		scope:attacker = { show_pow_release_message_effect = yes }
 
 		# Legitimacy
@@ -206,7 +233,15 @@ aurion_new_valyria = {
 		scope:attacker = { fp1_remember_recent_conquest_victory_effect = yes }
 
 		scope:attacker = { 
-			trigger_event = lv_scenario_cob.0510
+			add_prestige = 500
+			add_gold = 1000 #for coronation
+			get_title = title:e_new_valyria
+			title:c_old_volantis = {
+				set_county_faith = root.faith
+				set_county_culture = root.culture
+				set_government = feudal_government
+			}
+			#trigger_event = lv_scenario_cob.0510
 		}
 	}
 
