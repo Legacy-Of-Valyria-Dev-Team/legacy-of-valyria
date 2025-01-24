@@ -508,37 +508,499 @@ lv_scenario_cob.0503 = { #Aurion Varezys arrives in Little Valyria
 }
 
 ### Varezys New Valyria arc
-lv_scenario_cob.0510 = { #Aurion Varezys declares himself Emperor of New Valyria
+
+lv_scenario_cob.0510 = { #Aurion Varezys takes Volantis and calls upon other Dragonlords
 	type = character_event
 	title = lv_scenario_cob.0510.t
 	desc = lv_scenario_cob.0510.desc
 
+	theme = war
 	override_background = {
 		reference = agot_pk_high_crownlands
 	}
-
-	theme = realm
-
 	left_portrait = {
 		character = root
-		animation = toast_goblet
+		animation = map_rage
+	}
+	right_portrait = {
+		character = scope:urnebar
+		animation = marshall
+	}
+
+	trigger = {
 	}
 
 	immediate = {
+		set_variable = dragonlord_of_valyria
+		hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		character:Urnebar_1 = {
+			save_scope_as = urnebar
+			set_variable = dragonlord_of_valyria
+			hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+		character:Mataeryon_1 = {
+			save_scope_as = mataeryon
+			set_variable = dragonlord_of_valyria
+			hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+		character:Sonaryen_1 = {
+			save_scope_as = sonaryen
+			set_variable = dragonlord_of_valyria
+			hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+		random_owned_story = {
+			limit = {
+				story_type = story_lv_century_of_blood_new_valyria
+			}
+			save_scope_as = new_valyria_story
+		}
 	}
 
-	option = {
+	option = { #Attack Tyrosh to Install Urnebar
 		name = lv_scenario_cob.0510.a
-		custom_tooltip = lv_scenario_cob.0510.a_tt
-		add_prestige = 500
-		add_gold = 1000 #for coronation
-		get_title = title:e_new_valyria
-		title:c_old_volantis = {
-			set_county_faith = root.faith
-			set_county_culture = root.culture
-			set_government = feudal_government
+		trigger = {
+			NOT = {
+				title:k_tyrosh.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
 		}
-		#trigger_event = lv_scenario_cob.0511
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_tyrosh.holder
+			claimant = character:Urnebar_1
+			target_title = title:k_tyrosh
+		}
+	}
+
+	option = { #Attack Lys to install Sonaryen
+		name = lv_scenario_cob.0510.b
+		trigger = {
+			NOT = {
+				title:k_lys = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_lys.holder
+			claimant = character:Sonaryen_1
+			target_title = title:k_lys
+		}
+	}
+
+	option = { #Attack Myr to install Mataeryon
+		name = lv_scenario_cob.0510.c
+		trigger = {
+			NOT = {
+				title:k_myr.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_myr.holder
+			claimant = character:Mataeryon_1
+			target_title = title:k_lys
+		}
+	}
+
+	#Dragonlords Join Together
+	after = {
+		root = {
+			every_character_war = {
+				limit = {
+					OR = {
+						using_cb = cob_new_valyria_conquest_cb
+					}
+					is_attacker = root
+				}
+				add_to_list = cob_new_valyria_wars
+			}
+		}
+		scope:new_valyria_story = {
+			every_in_list = {
+				variable = dragonlord_of_valyria
+				limit = {
+					is_alive = yes
+				}
+				every_in_list = {
+					list = cob_new_valyria_wars
+					limit = {
+						NOT = { is_participant = prev }
+					}
+					add_attacker = prev
+				}
+			}
+		}
 	}
 }
 
+# Recursive Maelys War Declaration Event
+agot_ninepenny.0002 = {
+	type = character_event
+	title = agot_ninepenny.0002.t
+	desc = {
+		first_valid = { #Variable set in the ninepenny conquest war
+			triggered_desc = {
+				trigger = {
+					scope:ninepenny_story = {
+						var:recent_conquest = title:k_tyrosh
+					}
+				}
+				desc = agot_ninepenny.0002.desc.tyrosh
+			}
+			triggered_desc = {
+				trigger = {
+					scope:ninepenny_story = {
+						var:recent_conquest = title:k_lys
+					}
+				}
+				desc = agot_ninepenny.0002.desc.lys
+			}
+			triggered_desc = {
+				trigger = {
+					scope:ninepenny_story = {
+						var:recent_conquest = title:k_pentos
+					}
+				}
+				desc = agot_ninepenny.0002.desc.pentos
+			}
+			triggered_desc = {
+				trigger = {
+					scope:ninepenny_story = {
+						var:recent_conquest = title:k_myr
+					}
+				}
+				desc = agot_ninepenny.0002.desc.myr
+			}
+			triggered_desc = {
+				trigger = {
+					scope:ninepenny_story = {
+						var:recent_conquest = title:k_the_stepstones
+					}
+				}
+				desc = agot_ninepenny.0002.desc.stepstones
+			}
+			desc = agot_ninepenny.0002.desc #Fallback for invalidated war
+		}
+	}
+
+	theme = war
+
+	left_portrait = {
+		character = root
+		animation = marshal
+	}
+
+	right_portrait = {
+		trigger = { #In case we run out of kings
+			exists = scope:ascendant
+		}
+		character = scope:ascendant #From the victorious war
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		character:Targaryen_94 = { #For loc
+			save_scope_as = daemon
+		}
+		character:Adarys_1 = {
+			save_scope_as = adarys
+			set_variable = dragonlord_of_valyria
+		}
+		character:Saan_1 = {
+			save_scope_as = saan
+			set_variable = dragonlord_of_valyria
+		}
+		character:Lashare_1 = {
+			save_scope_as = lashare
+		}
+		character:Nine_Eyes_1 = {
+			save_scope_as = nine_eyes
+		}
+		random_owned_story = {
+			limit = {
+				story_type = story_agot_dragonlord_of_valyrias
+			}
+			save_scope_as = ninepenny_story
+		}
+		#Save the appropriate king depending on the title claimed
+		if = {
+			limit = {
+				scope:ninepenny_story = {
+					var:recent_conquest = title:k_tyrosh
+				}
+			}
+			character:Adarys_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else_if = {
+			limit = {
+				scope:ninepenny_story = {
+					var:recent_conquest = title:k_lys
+				}
+			}
+			character:Saan_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else_if = {
+			limit = {
+				scope:ninepenny_story = {
+					var:recent_conquest = title:k_pentos
+				}
+			}
+			character:Nine_Eyes_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else_if = {
+			limit = {
+				scope:ninepenny_story = {
+					var:recent_conquest = title:k_myr
+				}
+			}
+			character:Lashare_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else = { #Fallback - Grab a random king
+			scope:ninepenny_story = {
+				random_in_list = {
+					variable = band_of_nine
+					limit = {
+						is_alive = yes
+						NOT = {
+							this = root
+						}
+					}
+					save_scope_as = ascendant
+				}
+			}
+		}
+	}
+
+	option = { #Attack Tyrosh to Install Adarys
+		name = agot_ninepenny.0001.a
+		trigger = {
+			NOT = {
+				title:k_tyrosh.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Adarys_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_tyrosh.holder
+			claimant = character:Adarys_1
+			target_title = title:k_tyrosh
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_nonhistoric_outcome_3
+			}
+		}
+	}
+
+	option = { #Attack Stepstones as a Staging ground to attack Westeros
+		name = agot_ninepenny.0001.b
+		trigger = {
+			NOT = {
+				title:k_the_stepstones.holder ?= {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			NOT = {
+				root = { has_title = title:e_the_iron_throne }
+			}
+		}
+		start_war = { #Make an event that causes the pirates to band together ?
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:d_first_stepstones.holder
+			claimant = character:Blackfyre_14
+			target_title = title:k_the_stepstones
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_historic_outcome_3
+			}
+		}
+	}
+
+	#Already Taken IT
+	option = {
+		name = agot_ninepenny.0001.b.alt
+		trigger = {
+			NOT = {
+				title:k_the_stepstones.holder ?= {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			root = { has_title = title:e_the_iron_throne }
+			character:Old_Mother_1 = { is_alive = yes }
+		}
+		start_war = { #Make an event that causes the pirates to band together ?
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:d_first_stepstones.holder
+			claimant = character:Old_Mother_1
+			target_title = title:k_the_stepstones
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_nonhistoric_outcome_3
+			}
+		}
+	}
+
+	option = { #Attack Lys Install Saan
+		name = agot_ninepenny.0001.c
+		trigger = {
+			NOT = {
+				title:k_lys.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Saan_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_lys.holder
+			claimant = character:Saan_1
+			target_title = title:k_lys
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_nonhistoric_outcome_3
+			}
+		}
+	}
+
+	option = { #Attack Myr install Lashare
+		name = agot_ninepenny.0001.d
+		trigger = {
+			NOT = {
+				title:k_myr.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Lashare_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_myr.holder
+			claimant = character:Lashare_1
+			target_title = title:k_myr
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_nonhistoric_outcome_3
+			}
+		}
+	}
+
+	option = { #Attack Pentos install Nine-Eyes
+		name = agot_ninepenny.0001.e
+		trigger = {
+			NOT = {
+				title:k_pentos.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			title:k_myr.holder = { #No marching through Myr to march back
+				has_variable = dragonlord_of_valyria
+			}
+			character:Nine_Eyes_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_pentos.holder
+			claimant = character:Nine_Eyes_1
+			target_title = title:k_pentos
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_nonhistoric_outcome_3
+			}
+		}
+	}
+
+	option = { #Attack Westeros to install Maelys
+		name = agot_ninepenny.0001.f
+		trigger = {
+			# Maelys cannot have the throne already
+			NOT = {
+				root = { has_title = title:e_the_iron_throne }
+			}
+			title:d_first_stepstones.holder ?= {
+				OR = {
+					has_variable = dragonlord_of_valyria
+					top_liege = { has_variable = dragonlord_of_valyria }
+				}
+			}
+		}
+		start_war = {
+			casus_belli = agot_blackfyre_claim
+			target = title:e_the_iron_throne.holder
+			claimant = root
+			target_title = title:e_the_iron_throne
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = agot_historic_outcome_3
+			}
+		}
+	}
+
+	#Ninepenny Kings all join together
+	after = {
+		root = {
+			every_character_war = {
+				limit = {
+					OR = {
+						using_cb = cob_new_valyria_conquest_cb
+						using_cb = agot_blackfyre_claim
+					}
+					is_attacker = root
+				}
+				add_to_list = ninepenny_wars
+			}
+		}
+		scope:ninepenny_story = {
+			every_in_list = {
+				variable = band_of_nine
+				limit = {
+					is_alive = yes
+				}
+				every_in_list = {
+					list = ninepenny_wars
+					limit = {
+						NOT = { is_participant = prev }
+					}
+					add_attacker = prev
+				}
+			}
+		}
+	}
+}

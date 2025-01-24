@@ -238,10 +238,53 @@ aurion_new_valyria = {
 			get_title = title:e_new_valyria
 			title:c_old_volantis = {
 				set_county_faith = root.faith
-				set_county_culture = root.culture
+				set_county_culture = root.culture	
 				set_government = feudal_government
+				if = {
+					limit = {
+						OR = {
+							has_title_law = volantene_triarchy_succession_law
+							has_title_law = volantene_triarchy_succession_attached_titles_law
+						}
+					}
+					if = {
+						limit = {
+							has_title_law = volantene_triarchy_succession_law
+						}
+						remove_title_law = volantene_triarchy_succession_law
+					}
+					else_if = {
+						limit = {
+							has_title_law = volantene_triarchy_succession_attached_titles_law
+						}
+						remove_title_law = volantene_triarchy_succession_attached_titles_law
+					}
+				}
 			}
-			#trigger_event = lv_scenario_cob.0510
+			title:k_volantis = {
+				set_government = feudal_government
+				if = {
+					limit = {
+						OR = {
+							has_title_law = volantene_triarchy_succession_law
+							has_title_law = volantene_triarchy_succession_attached_titles_law
+						}
+					}
+					if = {
+						limit = {
+							has_title_law = volantene_triarchy_succession_law
+						}
+						remove_title_law = volantene_triarchy_succession_law
+					}
+					else_if = {
+						limit = {
+							has_title_law = volantene_triarchy_succession_attached_titles_law
+						}
+						remove_title_law = volantene_triarchy_succession_attached_titles_law
+					}
+				}
+			}
+			trigger_event = lv_scenario_cob.0510
 		}
 	}
 
@@ -442,3 +485,421 @@ aurion_new_valyria = {
 	max_ai_diplo_distance_to_title = 1000
 }
 
+##########
+# New Valyria Conquest
+#########
+cob_new_valyria_conquest_cb = {
+	mutually_exclusive_titles = {
+		always = yes
+	}
+
+	allow_hostages = no
+	allowed_for_character = {
+		always = no
+	}
+	allowed_against_character = {
+		always = yes
+	}
+	target_titles = all
+	target_title_tier = all
+	target_de_jure_regions_above = yes
+	ignore_effect = change_title_holder
+	combine_into_one = yes
+
+
+	is_allowed_claim_title = {
+		scope:claimant =  {
+			is_human = yes
+			NOT = { has_trait = incapable }
+			is_imprisoned = no
+			OR = {
+				this = scope:attacker
+				AND = {
+					religion = scope:attacker.religion
+					dynasty = scope:attacker.dynasty
+				}
+			}
+		}
+	}
+
+	cost = {}
+
+	white_peace_possible = no
+
+	on_declaration = {
+		on_declared_war = yes
+	}
+
+	should_invalidate = {
+	}
+
+	on_invalidated = {
+		scope:attacker = { #Will only invalidate if the claimant dies - Write a New Event for this?
+			trigger_event = agot_ninepenny.0002
+		}
+	}
+	on_invalidated_desc = msg_claim_war_invalidated_message
+
+	on_victory_desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:defender = { is_local_player = yes } }
+				desc = ninepenny_conquest_cb_victory_desc_defender
+			}
+			triggered_desc = {
+				trigger = { scope:attacker = { is_local_player = yes } }
+				desc = ninepenny_conquest_cb_victory_desc_attacker
+			}
+			desc = ninepenny_conquest_cb_victory_desc
+		}
+	}
+
+	on_victory = {
+		scope:attacker = { show_pow_release_message_effect = yes }
+
+		#EP2 accolade glory gain for winning against higher ranked enemy
+		scope:attacker = { accolade_attacker_war_end_glory_gain_high_effect = yes }
+
+		# Set land acquisition type to conquest.
+		create_title_and_vassal_change = {
+			type = conquest
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
+
+		# This claim CB makes the claimant a vassal, not sure if necessary otherwise? If so reenable and make independent in an effect below
+		setup_claim_cb = {
+			titles = target_titles
+			attacker = scope:attacker
+			defender = scope:defender
+			claimant = scope:claimant
+			change = scope:change
+		}
+
+		scope:defender = {
+			every_held_title = {
+				limit = {
+					NOT = { tier = tier_barony }
+				}
+				change_title_holder = {
+					holder = scope:claimant
+					change = scope:change
+				}
+			}
+		}
+
+		resolve_title_and_vassal_change = scope:change
+
+		if = { #Create Stepstones if non existant
+			limit = {
+				any_in_list = {
+					list = target_titles
+					this = title:k_the_stepstones
+				}
+			}
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = stepstones
+				add_claim_on_loss = no
+			}
+			title:k_the_stepstones = {
+				change_title_holder = {
+					holder = scope:claimant
+					change = scope:stepstones
+				}
+			}
+			resolve_title_and_vassal_change = scope:stepstones
+		}
+
+		if = { #Return Dipsuted Lands Temp Titles to Holders
+			limit = {
+				exists = title:k_disputed_lands.holder
+			}
+			create_title_and_vassal_change = {
+				type = granted
+				save_scope_as = disputed_lands
+				add_claim_on_loss = no
+			}
+
+			title:k_disputed_lands = {
+				every_in_de_jure_hierarchy = {
+					limit = {
+						holder = scope:claimant
+						NOT = { tier = tier_barony }
+					}
+
+					change_title_holder_include_vassals = {
+						holder = title:k_disputed_lands.holder
+						change = scope:disputed_lands
+					}
+				}
+			}
+			resolve_title_and_vassal_change = scope:disputed_lands
+		}
+
+		modify_all_participants_fame_values = {
+			WINNER = scope:attacker
+			LOSER = scope:defender
+			FAME_BASE = scope:cb_prestige_factor # Set by 'setup_claim_cb'
+			IS_RELIGIOUS_WAR = no
+			WINNER_FAME_SCALE = 10
+			LOSER_FAME_SCALE = -10
+			WINNER_ALLY_FAME_SCALE = 10
+			LOSER_ALLY_FAME_SCALE = 10
+		}
+
+		# truce
+		add_truce_attacker_victory_effect = yes
+
+		#Ninepenny King Becomes Independent
+		create_title_and_vassal_change = {
+			type = independency
+			save_scope_as = change
+		}
+		scope:claimant = {
+			becomes_independent = { change = scope:change }
+			if = { #Tracking for later events
+				limit = {
+					is_alive = yes
+					is_landed = yes
+				}
+				add_character_flag = enthroned
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+
+		scope:claimant = {
+			create_band_of_nine_alliances_effect = yes
+		}
+
+		#Ninepenny King Assumes Correct Gov
+		if = {
+			limit = {
+				any_in_list = {
+					list = target_titles
+					OR = {
+						this = title:k_lys
+						this = title:k_pentos
+						this = title:k_tyrosh
+						this = title:k_myr
+					}
+				}
+			}
+			scope:claimant = {
+				set_realm_capital = primary_title.title_capital_county
+				change_government = free_city_government
+
+				every_held_title = {
+					if = {
+						limit = {
+							OR = {
+								has_title_law = magisterial_life_succession_law
+								has_title_law = magisterial_limited_succession_law
+							}
+						}
+						if = {
+							limit = { has_title_law = magisterial_life_succession_law }
+							remove_title_law = magisterial_life_succession_law
+						}
+						else_if = {
+							limit = { has_title_law = magisterial_limited_succession_law }
+							remove_title_law = magisterial_limited_succession_law
+						}
+						add_title_law = dictatorship_succession_law
+					}
+				}
+			}
+		}
+
+		# FP1: note the victory for future memorialisation via stele (if applicable).
+		scope:attacker = {
+			fp1_remember_recent_conquest_victory_effect = yes
+			#Add to Ninepenny Conquest Counter
+			random_owned_story = {
+				limit = {
+					story_type = story_agot_ninepenny_kings
+				}
+				save_scope_as = ninepenny_story
+				change_variable = {
+					name = band_of_nine_conquest
+					add	= 1
+				#Remember the most recent conquest
+				}
+				if = {
+					limit = {
+						scope:claimant = character:Blackfyre_14
+						any_in_list = {
+							list = target_titles
+							this = title:k_the_stepstones
+						}
+					}
+					set_variable = {
+						name = recent_conquest
+						value = title:k_the_stepstones
+					}
+				}
+				else = {
+					set_variable = {
+						name = recent_conquest
+						value = scope:claimant.primary_title
+					}
+				}
+			}
+
+			if = {
+				limit = {
+					scope:ninepenny_story = {
+						has_variable = band_of_nine_conquest
+						var:band_of_nine_conquest = 2
+						NOT = {
+							has_variable = second_npk_conquest
+						}
+					}
+				}
+			}
+			else_if = { #Second NPK Wars
+				limit = {
+					scope:ninepenny_story = {
+						has_variable = second_npk_conquest
+					}
+				}
+				trigger_event = agot_ninepenny.0021
+			}
+			else = { #Initial NPK Wars
+				trigger_event = agot_ninepenny.0002
+			}
+		}
+	}
+
+	on_white_peace_desc = {}
+
+	on_white_peace = {}
+
+	on_defeat_desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:defender = { is_local_player = yes } }
+				desc = ninepenny_conquest_cb_defeat_desc_defender
+			}
+			triggered_desc = {
+				trigger = { scope:attacker = { is_local_player = yes } }
+				desc = ninepenny_conquest_cb_defeat_desc_attacker
+			}
+			desc = ninepenny_conquest_cb_defeat_desc
+		}
+	}
+
+	on_defeat = {
+		scope:attacker = { show_pow_release_message_effect = yes }
+
+		#EP2 accolade glory gain for winning against higher ranked enemy
+		scope:defender = { accolade_defender_war_end_glory_gain_high_effect = yes }
+
+		# lose claims
+		if = {
+			limit = { scope:attacker = scope:claimant }
+			every_in_list = {
+				list = target_titles
+				scope:claimant = {
+					remove_claim = prev
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = { scope:claimant = scope:attacker }
+				scope:claimant = {
+					can_add_hook = {
+						type = favor_hook
+						target = scope:attacker
+					}
+				}
+			}
+			scope:claimant = {
+				add_hook = {
+					target = scope:attacker
+					type = favor_hook
+				}
+			}
+		}
+
+		# Award the appropriate amount of prestige to all participants in the war.
+		setup_claim_cb = {
+			titles = target_titles
+			attacker = scope:attacker
+			defender = scope:defender
+			claimant = scope:claimant
+			victory = no
+		}
+		modify_all_participants_fame_values = {
+			WINNER = scope:defender
+			LOSER = scope:attacker
+			FAME_BASE = scope:cb_prestige_factor # Set by 'setup_claim_cb'
+			IS_RELIGIOUS_WAR = no
+			WINNER_FAME_SCALE = scale_10_war_defender_win
+			LOSER_FAME_SCALE = -10
+			WINNER_ALLY_FAME_SCALE = 10
+			LOSER_ALLY_FAME_SCALE = 10
+		}
+
+		# Truce
+		add_truce_attacker_defeat_effect = yes
+
+		scope:attacker = {
+			save_temporary_scope_as = loser
+		}
+		on_lost_aggression_war_discontent_loss = yes
+
+		#NPK Effects
+		scope:attacker = {
+			random_owned_story = {
+				limit = {
+					story_type = story_agot_ninepenny_kings
+				}
+				save_scope_as = ninepenny_story
+			}
+		}
+		if = { #Second NPK Wars
+			limit = {
+				scope:ninepenny_story = {
+					has_variable = second_npk_conquest
+				}
+			}
+			scope:attacker = {
+				trigger_event = agot_ninepenny.0024 #Lost War momentum gone wah wah
+			}
+		}
+		else = {
+			#Implode the Band of the Nine
+			scope:attacker = { shatter_band_of_nine_alliances_effect = yes }
+			maelys_title_distribution_effect = {
+				MAELYS = scope:attacker
+			}
+		}
+	}
+
+
+	on_primary_attacker_death = inherit
+	on_primary_defender_death = inherit
+
+	transfer_behavior = transfer
+
+	attacker_allies_inherit = yes
+	defender_allies_inherit = yes
+
+	war_name = "NINEPENNY_WAR_NAME"
+	interface_priority = 60
+
+	should_show_war_goal_subview = yes
+
+	attacker_wargoal_percentage = 0.8
+
+	max_defender_score_from_occupation = 150
+	max_attacker_score_from_occupation = 150
+
+	max_attacker_score_from_battles = 200
+	max_defender_score_from_battles = 200
+
+	max_ai_diplo_distance_to_title = 1000
+}
