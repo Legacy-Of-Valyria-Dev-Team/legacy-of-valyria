@@ -191,22 +191,53 @@ zz_dragonpit_move_dragon = {
 	}	
 }
 
-zz_dragonpit_move_deepend_bond = {
+zz_dragonpit_deepen_bond = {
 	scope = character
 	saved_scopes = {
-		zz_dragonseed
+		zz_dragonpit_dragon
 	}
 	is_shown = {
-		var:zz_dragonseed ?= scope:zz_dragonseed
+		var:zz_dragonpit_dragon ?= scope:zz_dragonpit_dragon
 	}
 	is_valid =  { 
 		var:zz_dragonpit_dragon = {
-			has_trait = dragon
-			NOR = {
-				has_variable = current_rider
-				any_relation = {
-					type = agot_dragon
-					NOT = { this = var:zz_dragonseed } # They can't be bonded to someone else
+			has_variable = current_rider
+			var:current_rider = {
+				can_use_deepen_bond_with_dragon_scheme = { TARGET = var:zz_dragonpit_dragon }
+			}
+		}
+	}
+	effect = {
+		scope:zz_dragonpit_dragon = {
+			var:current_rider = {
+				start_scheme = {
+					type = deepen_bond_with_dragon_scheme
+					target_character = scope:zz_dragonpit_dragon
+				}
+			}
+		}
+	}
+}
+
+zz_dragonpit_bond_with_dragon = {
+	scope = character
+	saved_scopes = {
+		zz_dragonpit_dragon
+	}
+	is_shown = {
+		var:zz_dragonpit_dragon ?= scope:zz_dragonpit_dragon
+	}
+	is_valid =  { 
+		var:zz_dragonseed = {
+			can_use_bond_with_dragon_scheme = { TARGET = var:zz_dragonpit_dragon }
+		}
+	}
+	effect = {
+		scope:zz_dragonpit_dragon = {
+			var:current_rider = {
+				start_scheme = {
+					type = bond_with_dragon_scheme
+					target_character = scope:zz_dragonpit_dragon
 				}
 			}
 		}
