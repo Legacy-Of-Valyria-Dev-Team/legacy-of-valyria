@@ -68,19 +68,19 @@ zz_valyria_swap_holding_type ={
 	effect = {
 		if = { 
 			limit = { 
-				trait:holding_type_03 = scope:holding_type
+				scope:holding_type ?=  trait:holding_type_03 
 			}
 			set_holding_type = city_holding
 		}
 		if = { 
 			limit = { 
-				trait:holding_type_02 = scope:holding_type
+				scope:holding_type ?= trait:holding_type_02
 			}
 			set_holding_type = church_holding
 		}
 		if = { 
 			limit = { 
-				trait:holding_type_01 = scope:holding_type 
+				scope:holding_type ?= trait:holding_type_01
 			}
 			set_holding_type = castle_holding
 		}
@@ -90,6 +90,32 @@ zz_valyria_swap_holding_type ={
 					value = 2500
 				}
 			}
+		}
+	}
+}
+
+zz_valyria_trading_post_tab_enable ={
+	scope = character 	
+	saved_scopes = {
+	}
+	is_shown = {
+		government_has_flag = tradepost
+	}
+}
+
+zz_valyria_has_trading_post ={
+	scope = province 	
+	saved_scopes = {
+		zz_county
+	}
+	is_shown = {
+		scope:zz_county.county = {
+			var:trading_post ?= flag:true
+		}
+	}
+	is_valid = {
+		scope:player = {
+			gold >= 2500
 		}
 	}
 }
