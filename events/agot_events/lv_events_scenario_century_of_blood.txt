@@ -323,12 +323,17 @@ lv_scenario_cob.0500 = { #Aurion Varezys arrives in Ny Sar
 
 	left_portrait = {
 		character = root
-		animation = stunned
+		animation = personality_zealous
 	}
 	
+	lower_right_portrait = character:Nymeros_1
+
 	immediate = {
+		character:Nymeros_1 = {
+			save_scope_as = Nymeria
+		}
 	}
-	
+
 	option = {
 		name = lv_scenario_cob.0500.a
 		custom_tooltip = lv_scenario_cob.0500.a_tt
@@ -508,11 +513,50 @@ lv_scenario_cob.0503 = { #Aurion Varezys arrives in Little Valyria
 }
 
 ### Varezys New Valyria arc
-
-lv_scenario_cob.0510 = { #Aurion Varezys takes Volantis and calls upon other Dragonlords
+lv_scenario_cob.0510 = { #Aurion Varezys arrives in Volantis
 	type = character_event
 	title = lv_scenario_cob.0510.t
 	desc = lv_scenario_cob.0510.desc
+
+	override_background = {
+		reference = agot_pk_high_crownlands
+	}
+
+	theme = realm
+
+	left_portrait = {
+		character = root
+		animation = war_over_win
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = lv_scenario_cob.0510.a
+
+		hidden_effect = {
+			if = {
+				limit = { has_title = title:k_volantis }
+				destroy_title = title:k_volantis
+			}
+			title:c_old_volantis = {
+				set_county_faith = root.faith
+				set_county_culture = root.culture	
+			}
+		get_title = title:k_volantis
+		}
+		get_title = title:e_new_valyria
+#		remove_character_flag = not_had_coronation
+#		remove_character_modifier = uncoronated_modifier
+#		add_character_modifier = coronation_appropriate_modifier
+	}
+}
+
+lv_scenario_cob.0511 = { #Aurion Varezys takes Volantis and calls upon other Dragonlords
+	type = character_event
+	title = lv_scenario_cob.0511.t
+	desc = lv_scenario_cob.0511.desc
 
 	theme = war
 	override_background = {
@@ -557,7 +601,7 @@ lv_scenario_cob.0510 = { #Aurion Varezys takes Volantis and calls upon other Dra
 	}
 
 	option = { #Attack Tyrosh to Install Urnebar
-		name = lv_scenario_cob.0510.a
+		name = lv_scenario_cob.0511.a
 		trigger = {
 			NOT = {
 				title:k_tyrosh.holder = {
@@ -574,7 +618,7 @@ lv_scenario_cob.0510 = { #Aurion Varezys takes Volantis and calls upon other Dra
 	}
 
 	option = { #Attack Lys to install Sonaryen
-		name = lv_scenario_cob.0510.b
+		name = lv_scenario_cob.0511.b
 		trigger = {
 			NOT = {
 				title:k_lys = {
@@ -591,7 +635,7 @@ lv_scenario_cob.0510 = { #Aurion Varezys takes Volantis and calls upon other Dra
 	}
 
 	option = { #Attack Myr to install Mataeryon
-		name = lv_scenario_cob.0510.c
+		name = lv_scenario_cob.0511.c
 		trigger = {
 			NOT = {
 				title:k_myr.holder = {
