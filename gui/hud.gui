@@ -613,21 +613,48 @@ widget = {
 						onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 
 						onclick = "[GetScriptedGui('yy_province_window').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-						down = "[GetScriptedGui('yy_province_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						shortcut = "tab_province_window"
+						tooltip = "PROVINCEWINDOW_BUTTON"
+						down = "[GetScriptedGui('yy_province_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+					}
+				}
+				widget_hud_main_tab = {
+					name = "tab_triarchy_window"
+					visible = "[GetScriptedGui('lv_triarchy_window_hud').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+				
+					blockoverride "maintab_button"
+					{
+						texture = "gfx/interface/icons/point_of_interest_types/poi_special_buildings.dds"
+						onclick = "[CloseGameView( 'my_realm' )]"
+						onclick = "[CloseGameView( 'military' )]"
+						onclick = "[CloseGameView( 'council_window' )]"
+						onclick = "[CloseGameView( 'court_window' )]"
+						onclick = "[CloseGameView( 'intrigue_window' )]"
+						onclick = "[CloseGameView( 'factions_window' )]"
+						onclick = "[CloseGameView( 'decisions' )]"
+						onclick = "[CloseGameView( 'activity_list_window' )]"
+						onclick = "[CloseGameView( 'manage_tax_slots' )]"
+						onclick = "[CloseGameView( 'government_administration' )]"
+						onclick = "[GetScriptedGui('zz_valyria_magic_crafting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+				
+						onclick = "[GetScriptedGui('lv_triarchy_window').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+						down = "[GetScriptedGui('lv_triarchy_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+						#shortcut = "tab_province_window"
 						using = tooltip_ws
 						tooltipwidget = {
 							widget = {
 								alwaystransparent = no
 								datacontext = "[GetPlayer]"
-
+				
 								vbox = {
 									using = Background_Tooltip
 									spacing = 10
 									margin = { 20 10 }
 									parentanchor = right|vcenter
 									text_single = {
-										raw_text = "PROVINCEWINDOW_BUTTON"
+										#raw_text = "PROVINCEWINDOW_BUTTON"
+										raw_text = "TRIARCHY!!!"
 										layoutpolicy_horizontal = expanding
 									}
 									expand = {}
@@ -636,51 +663,6 @@ widget = {
 						}
 					}
 				}
-				#widget_hud_main_tab = {
-				#	name = "tab_triarchy_window"
-				#	visible = "[GetScriptedGui('lv_triarchy_window_hud').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-				#
-				#	blockoverride "maintab_button"
-				#	{
-				#		texture = "gfx/interface/icons/point_of_interest_types/poi_special_buildings.dds"
-				#		onclick = "[CloseGameView( 'my_realm' )]"
-				#		onclick = "[CloseGameView( 'military' )]"
-				#		onclick = "[CloseGameView( 'council_window' )]"
-				#		onclick = "[CloseGameView( 'court_window' )]"
-				#		onclick = "[CloseGameView( 'intrigue_window' )]"
-				#		onclick = "[CloseGameView( 'factions_window' )]"
-				#		onclick = "[CloseGameView( 'decisions' )]"
-				#		onclick = "[CloseGameView( 'activity_list_window' )]"
-				#		onclick = "[CloseGameView( 'manage_tax_slots' )]"
-				#		onclick = "[CloseGameView( 'government_administration' )]"
-				#		onclick = "[GetScriptedGui('zz_valyria_magic_crafting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-				#		onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-				#
-				#		onclick = "[GetScriptedGui('lv_triarchy_window').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-				#		down = "[GetScriptedGui('lv_triarchy_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-				#		#shortcut = "tab_province_window"
-				#		using = tooltip_ws
-				#		tooltipwidget = {
-				#			widget = {
-				#				alwaystransparent = no
-				#				datacontext = "[GetPlayer]"
-				#
-				#				vbox = {
-				#					using = Background_Tooltip
-				#					spacing = 10
-				#					margin = { 20 10 }
-				#					parentanchor = right|vcenter
-				#					text_single = {
-				#						#raw_text = "PROVINCEWINDOW_BUTTON"
-				#						raw_text = "TRIARCHY!!!"
-				#						layoutpolicy_horizontal = expanding
-				#					}
-				#					expand = {}
-				#				}
-				#			}
-				#		}
-				#	}
-				#}
 				widget_hud_main_tab = {
 					name = "tab_crafting"
 					visible = "[GetScriptedGui('zz_magic_crafting_open').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
@@ -734,11 +716,6 @@ widget = {
 						tooltip = "[GetScriptedGui('zz_valyria_magic_management').BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						onclick = "[GetScriptedGui('zz_valyria_magic_crafting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						down = "[IsGameViewOpen( 'government_administration' )]"
-
-						using = tooltip_ws
-						tooltipwidget = {
-							administrative_button_tooltip = {}
-						}
 					}
 				}
 				# LoV End
@@ -6775,7 +6752,7 @@ types LV_HUD {
 		spacing = 3
 
 		text_single = {
-			block "resource_text" = {
+			block "resource_text" {
 				raw_text = "[v_steel_tooltip] [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0] "
 			}
 			default_format = "#high"
@@ -6783,7 +6760,7 @@ types LV_HUD {
 		}
 		expand = {}
 		text_single = {
-			block "resource_amount" = {
+			block "resource_amount" {
 				text = "resource_gain_valyrian_steel_total"
 			}
 			align = right
