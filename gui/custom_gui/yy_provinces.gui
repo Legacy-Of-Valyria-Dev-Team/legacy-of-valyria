@@ -205,7 +205,7 @@ window = {
 													layoutpolicy_vertical = expanding
 													layoutpolicy_horizontal = expanding
 
-													button_tertiary = {
+													button_tertiary_push = {
 														layoutpolicy_vertical = expanding
 														layoutpolicy_horizontal = expanding
 														minimumsize = { 200 50 }
@@ -235,6 +235,7 @@ window = {
 
 														onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_province_overview')]"
 														onclick = "[GetScriptedGui('yy_province_window_province_selection').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Title.MakeScope).End)]"
+														down = "[ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_province').Title, Scope.GetProvince.GetTitle)]"
 													}
 												}
 											}
@@ -273,6 +274,79 @@ window = {
 }
 
 types ProvinceWindowTypes {
+	type widget_buyslaves = button_tertiary {
+		enabled = "[GetScriptedGui('yy_province_window_slavery_buy').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
+		#tooltip = "YY_PROVINCE_GUI_BuySlaves_tooltip"
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+
+		hbox = {
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				margin_bottom = 5
+				text = "YY_PROVINCE_GUI_BuySlaves"
+				align = center
+			}
+		}
+
+		tooltipwidget = {
+			widget = {
+				alwaystransparent = no
+
+				block "background" { #### needed to solve the hack for tooltip in Realm View
+					using = DefaultTooltipBackground
+				}
+
+				vbox = {
+					layoutpolicy_horizontal = expanding
+					set_parent_size_to_minimum = yes
+					margin = { 14 8 }
+					margin_bottom = 18
+					spacing = 14
+
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						
+
+						text_single = {
+							layoutpolicy_horizontal = expanding
+							text = "YY_PROVINCE_GUI_BuySlaves_tooltip"
+						}
+						vbox = {
+							margin = { 15 5 }
+							margin_right = 0
+							# Building Requirement
+							text_single = {
+								visible = "[GetScriptedGui('yy_province_window_slavery_building_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_building_pass"
+							}
+							text_single = {
+								visible = "[Not(GetScriptedGui('yy_province_window_slavery_building_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End))]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_building_fail"
+							}
+							# Gold Requirement
+							text_single = {
+								visible = "[GetScriptedGui('yy_province_window_slavery_gold_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_gold_pass"
+							}
+							text_single = {
+								visible = "[Not(GetScriptedGui('yy_province_window_slavery_gold_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End))]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_gold_fail"
+							}
+						}
+					}
+				}
+			}
+		}
+		using = tooltip_se
+
+		onclick = "[GetScriptedGui('yy_province_window_slavery_buy').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End )]"
+	}
+
 	type yy_province_view = vbox {
 		datacontext = "[GetPlayer.MakeScope]"
 		datacontext = "[Scope.Var('yy_selected_province').Title]"
@@ -358,7 +432,7 @@ types ProvinceWindowTypes {
 
 				button_tab = {
 					layoutpolicy_horizontal = expanding
-					raw_text = "Overview" #LOCALIZE!!!
+					text = "YY_PROVINCE_GUI_OVERVIEW"
 					using = tooltip_ne
 					default_format = "#low"
 
@@ -369,7 +443,7 @@ types ProvinceWindowTypes {
 				button_tab = {
 					#visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
 					layoutpolicy_horizontal = expanding
-					raw_text = "Resources" #LOCALIZE!!!
+					text = "YY_PROVINCE_GUI_RESOURCES"
 					using = tooltip_ne
 					default_format = "#low"
 
@@ -821,7 +895,7 @@ types ProvinceWindowTypes {
 
 				button_tab = {
 					layoutpolicy_horizontal = expanding
-					raw_text = "Overview" #LOCALIZE!!!
+					text = "YY_PROVINCE_GUI_OVERVIEW"
 					using = tooltip_ne
 					default_format = "#low"
 
@@ -830,9 +904,9 @@ types ProvinceWindowTypes {
 				}
 
 				button_tab = {
-					#visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+					visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
 					layoutpolicy_horizontal = expanding
-					raw_text = "Slaves" #LOCALIZE!!!
+					text = "YY_PROVINCE_GUI_SLAVES"
 					using = tooltip_ne
 					default_format = "#low"
 
@@ -990,51 +1064,32 @@ types ProvinceWindowTypes {
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					margin = { 15 15 }
-					margin_top = 0
+					spacing = 5
 
-					button_tertiary = {
-						enabled = "[GetScriptedGui('yy_province_window_slavery_buy').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
-						tooltip = "YY_PROVINCE_GUI_BuySlaves_tooltip"
-						tooltip_when_disabled = "YY_PROVINCE_GUI_BuySlaves_tooltip_disabled"
-						layoutpolicy_horizontal = expanding
+					widget_buyslaves = {}
 
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
-							margin_bottom = 5
-
-							text_single = {
-								layoutpolicy_horizontal = expanding
-								text = "YY_PROVINCE_GUI_BuySlaves"
-								align = center
-							}
-						}
-
-						onclick = "[GetScriptedGui('yy_province_window_slavery_buy').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End )]"
-					}
-					spacer = { size = { 5 0 } }
-							#button_tertiary = {
-							#	enabled = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)999')]"
-							#	layoutpolicy_horizontal = expanding
-							#
-							#	hbox = {
-							#		layoutpolicy_horizontal = expanding
-							#		layoutpolicy_vertical = expanding
-							#		margin_bottom = 5
-							#
-							#		text_single = {
-							#			layoutpolicy_horizontal = expanding
-							#			text = "YY_PROVINCE_GUI_RelocateSlaves"
-							#			align = center
-							#		}
-							#	}
-							#}
-					spacer = { size = { 5 0 } }
+					#button_tertiary = {
+					#	enabled = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)999')]"
+					#	layoutpolicy_horizontal = expanding
+					#
+					#	hbox = {
+					#		layoutpolicy_horizontal = expanding
+					#		layoutpolicy_vertical = expanding
+					#		margin_bottom = 5
+					#
+					#		text_single = {
+					#			layoutpolicy_horizontal = expanding
+					#			text = "YY_PROVINCE_GUI_RelocateSlaves"
+					#			align = center
+					#		}
+					#	}
+					#}
 					button_tertiary = {
 						enabled = "[GetScriptedGui('yy_province_window_slavery_sell').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
 						tooltip = "YY_PROVINCE_GUI_SellSlaves_tooltip"
 						tooltip_when_disabled = "YY_PROVINCE_GUI_SellSlaves_tooltip_disabled"
 						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
 
 						hbox = {
 							layoutpolicy_horizontal = expanding
