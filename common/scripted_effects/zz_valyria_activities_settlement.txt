@@ -44,6 +44,7 @@
 	}
 }
 zz_valyria_settlement_skill_test = {
+	add_character_flag = $ZZ_EVENT_OPTION_NAME$
 	duel = {
 		skill = $SKILL$
 		value = high_skill_rating
@@ -80,7 +81,7 @@ zz_valyria_settlement_skill_test = {
 		20 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 4
+				multiplier = 2.5
 				min = -49
 			}
 			send_interface_toast = {
@@ -95,7 +96,7 @@ zz_valyria_settlement_skill_test = {
 		20 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 2
+				multiplier = 1.5
 				min = -49
 			}
 			send_interface_toast = {
@@ -110,7 +111,7 @@ zz_valyria_settlement_skill_test = {
 		40 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = -3.5
+				multiplier = -5
 				min = -49
 			}
 			send_interface_toast = {
@@ -229,7 +230,7 @@ resolve_valyria_settlement_success_reward_effect = {
 			}
 		}
 		#major settlement 
-		if = {
+		else_if = {
 			limit = { var:activity_special_type_progression >= 75 }
 			scope:host = {
 				add_character_flag = major_settlement_reward
@@ -362,7 +363,10 @@ zz_valyria_settlement_effect = {
 			}
 			remove_character_flag = settle_city
 		}
-		else = {
+		else_if = { 
+			limit = {
+				has_character_flag = settle_temple
+			}
 			scope:province = {
 				set_holding_type = church_holding
 				add_building = temple_$NUM$
