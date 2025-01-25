@@ -1,9 +1,12 @@
 window = {
 	name = "yy_provinces_window_open"
 	layer = top
-	#using = Window_Background
-	#size = { 1000 900 } uncomment once we need more space for recruiting armies
-	size = { 1000 800 }
+	movable = no
+	
+	#size = { 1000 800 }
+	size = { 100% 100% }
+	#alwaystransparent = yes
+
 	datacontext = "[GetScriptedGui('yy_province_window')]"
 	visible = "[GetPlayer.MakeScope.Var('yy_province_window').IsSet]"
 
@@ -11,7 +14,8 @@ window = {
 		texture = "gfx/interface/component_tiles/tile_window_background_subwindow.dds"
 		spriteType = Corneredtiled
 		spriteborder = { 18 18 }
-		margin = { -23 -17 }
+		#margin = { -23 -17 }
+		margin = { 23 17 }
 		margin_top = 15
 		texture_density = 2
 
@@ -26,22 +30,25 @@ window = {
 
 	state = {
 		name = _show
+		using = Animation_FadeIn_Quick
+		using = Sound_WindowShow_Standard
 		on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_default' )]"
 		#on_start = "[PdxGuiTriggerAllAnimations('slave_army_refresh')]"
 	}
 	state = {
 		name = _hide
-		on_finish = "[GetVariableSystem.Clear('show_county_view')]"
-		on_finish = "[GetVariableSystem.Clear('show_province_view')]"
+		using = Animation_FadeOut_Quick
+		using = Sound_WindowHide_Standard
 	}
 
 	vbox = {
 		name = "window_content"
 		datacontext = "[GetPlayer.MakeScope]"
 		datacontext = "[Scope.Char]"
+		margin = { 15 15 }
 		margin_bottom = 35
-		margin_left = 40
-		margin_right = 40
+		#margin_left = 40
+		#margin_right = 40
 
 		hbox = {
 			name = "header"
@@ -124,7 +131,7 @@ window = {
 						blockoverride "scrollbox_content"
 						{
 							vbox = {
-								datamodel = "[Scope.GetList('yy_provinces')]"
+								datamodel = "[Scope.GetList('yy_counties')]"
 								layoutpolicy_horizontal = expanding
 								spacing = 5
 								
@@ -162,23 +169,25 @@ window = {
 															align = left
 														}
 
-														yy_slave_population_label = {
+														text_single = {
 															layoutpolicy_horizontal = expanding
+															text = "[Title.GetProvince.GetCountyCapitalProvince.GetHolding.GetPrimaryBuildingType.GetNameNoTooltip]"
+															align = left
+															default_format = "#low"
+															using = Font_Size_Small
 														}
 													}
 												}
 
-												onclick = "[GetVariableSystem.Clear('show_province_view')]"
-												onclick = "[GetScriptedGui('yy_province_window_data').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Scope.Title.MakeScope).End)]"
-												onclick = "[GetVariableSystem.SetOrToggle('show_county_view', Scope.Title.GetNameNoTooltip)]"
+												onclick = "[GetScriptedGui('yy_province_window_data').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Title.MakeScope).End)]"
 												onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_county_overview')]"
-												down = "[And(ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_province').Title, Scope.Title), GetVariableSystem.Exists('show_county_view'))]"
+												down = "[ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_county').Title, Scope.Title)]"
 											}
 										}
 
 										vbox = {
-											visible = "[ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_province').Title, Scope.Title)]"
-											datamodel = "[GetPlayer.MakeScope.GetList('yy_selected_province_baronies')]"
+											visible = "[ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_county').Title, Scope.Title)]"
+											datamodel = "[GetPlayer.MakeScope.GetList('yy_selected_county_baronies')]"
 											layoutpolicy_horizontal = expanding
 
 											vbox = {
@@ -196,7 +205,7 @@ window = {
 													layoutpolicy_vertical = expanding
 													layoutpolicy_horizontal = expanding
 
-													button_tertiary = {
+													button_tertiary_push = {
 														layoutpolicy_vertical = expanding
 														layoutpolicy_horizontal = expanding
 														minimumsize = { 200 50 }
@@ -221,15 +230,12 @@ window = {
 																	text = "[Title.GetNameNoTooltip]"
 																	align = left
 																}
-
-																#yy_slave_population_label = {
-																#	layoutpolicy_horizontal = expanding
-																#}
 															}
 														}
 
-														onclick = "[GetVariableSystem.Clear('show_county_view')]"
-														onclick = "[GetVariableSystem.SetOrToggle('show_province_view', Scope.Title.GetNameNoTooltip)]"
+														onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_province_overview')]"
+														onclick = "[GetScriptedGui('yy_province_window_province_selection').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Title.MakeScope).End)]"
+														down = "[ObjectsEqual(GetPlayer.MakeScope.Var('yy_selected_province').Title, Scope.GetProvince.GetTitle)]"
 													}
 												}
 											}
@@ -242,12 +248,12 @@ window = {
 				}
 			}
 
-			yy_county_view = {
-				visible = "[And(GetPlayer.MakeScope.Var('yy_selected_province').IsSet, GetVariableSystem.Exists('show_county_view'))]"
+			yy_province_view = {
+				visible = "[Scope.Var('yy_selected_province').IsSet]"
 			}
 
-			yy_province_view = {
-				visible = "[GetVariableSystem.Exists('show_province_view')]"
+			yy_county_view = {
+				visible = "[And(GetPlayer.MakeScope.Var('yy_selected_county').IsSet, Not(Scope.Var('yy_selected_province').IsSet))]"
 			}
 		}
 		
@@ -268,45 +274,117 @@ window = {
 }
 
 types ProvinceWindowTypes {
+	type widget_buyslaves = button_tertiary {
+		enabled = "[GetScriptedGui('yy_province_window_slavery_buy').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
+		#tooltip = "YY_PROVINCE_GUI_BuySlaves_tooltip"
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+
+		hbox = {
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				margin_bottom = 5
+				text = "YY_PROVINCE_GUI_BuySlaves"
+				align = center
+			}
+		}
+
+		tooltipwidget = {
+			widget = {
+				alwaystransparent = no
+
+				block "background" { #### needed to solve the hack for tooltip in Realm View
+					using = DefaultTooltipBackground
+				}
+
+				vbox = {
+					layoutpolicy_horizontal = expanding
+					set_parent_size_to_minimum = yes
+					margin = { 14 8 }
+					margin_bottom = 18
+					spacing = 14
+
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						
+
+						text_single = {
+							layoutpolicy_horizontal = expanding
+							text = "YY_PROVINCE_GUI_BuySlaves_tooltip"
+						}
+						vbox = {
+							margin = { 15 5 }
+							margin_right = 0
+							# Building Requirement
+							text_single = {
+								visible = "[GetScriptedGui('yy_province_window_slavery_building_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_building_pass"
+							}
+							text_single = {
+								visible = "[Not(GetScriptedGui('yy_province_window_slavery_building_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End))]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_building_fail"
+							}
+							# Gold Requirement
+							text_single = {
+								visible = "[GetScriptedGui('yy_province_window_slavery_gold_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_gold_pass"
+							}
+							text_single = {
+								visible = "[Not(GetScriptedGui('yy_province_window_slavery_gold_requirement').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End))]"
+								layoutpolicy_horizontal = expanding
+								text = "YY_PROVINCE_GUI_BuySlaves_tooltip_requirement_gold_fail"
+							}
+						}
+					}
+				}
+			}
+		}
+		using = tooltip_se
+
+		onclick = "[GetScriptedGui('yy_province_window_slavery_buy').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End )]"
+	}
+
 	type yy_province_view = vbox {
 		datacontext = "[GetPlayer.MakeScope]"
 		datacontext = "[Scope.Var('yy_selected_province').Title]"
 		visible = "[Scope.Var('yy_selected_province').IsSet]"
-		min_width = 550
-		max_width = 550
 		layoutpolicy_horizontal = expanding
 		layoutpolicy_vertical = expanding
+		#maximumsize = { 100% 100% }
 		margin = { 15 15 }
-
-		widget = {
-			datacontext = "[Title.GetProvince.GetCountyCapitalProvince]"
-			layoutpolicy_horizontal = fixed
-			layoutpolicy_vertical = fixed
-			minimumsize = { 0 200 }
-			scissor = yes
-
-			background = {
-				using = Background_Area_Dark
-				margin_left = 5
-				margin_top = 3
-			}
-
-			background = {
-				texture = "[Province.GetHolding.GetIllustration]"
-				alpha = 0.8
-
-				modify_texture = {
-					texture = "gfx/interface/window_county/mask_holding_illustration.dds"
-					blend_mode = alphamultiply
-					alpha = 0.95
-				}
-			}
-		}
-
+		
 		vbox = {
-			datacontext = "[Title.GetProvince.GetCountyCapitalProvince]"
+			datacontext = "[Title.GetProvince]"
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = expanding
+
+			widget = {
+				datacontext = "[Title.GetProvince]"
+				layoutpolicy_horizontal = fixed
+				layoutpolicy_vertical = fixed
+				minimumsize = { 0 500% }
+				scissor = yes
+
+				background = {
+					using = Background_Area_Dark
+					margin_left = 5
+					margin_top = 3
+				}
+
+				background = {
+					texture = "[Province.GetHolding.GetIllustration]"
+					alpha = 0.8
+
+					modify_texture = {
+						texture = "gfx/interface/window_county/mask_holding_illustration.dds"
+						blend_mode = alphamultiply
+						alpha = 0.95
+					}
+				}
+			}
 
 			flowcontainer = {
 				layoutpolicy_horizontal = expanding
@@ -348,208 +426,437 @@ types ProvinceWindowTypes {
 				}
 			}
 
-			vbox = {
+			hbox = {
+				name = "province_tabs"
 				layoutpolicy_horizontal = expanding
-						
+
+				button_tab = {
+					layoutpolicy_horizontal = expanding
+					text = "YY_PROVINCE_GUI_OVERVIEW"
+					using = tooltip_ne
+					default_format = "#low"
+
+					onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_province_overview')]"
+					down = "[GetVariableSystem.HasValue('gui_tabs', 'tab_province_overview')]"
+				}
+
+				button_tab = {
+					#visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+					layoutpolicy_horizontal = expanding
+					text = "YY_PROVINCE_GUI_RESOURCES"
+					using = tooltip_ne
+					default_format = "#low"
+
+					onclick = "[GetVariableSystem.Set('gui_tabs', 'tab_province_resources')]"
+					down = "[GetVariableSystem.HasValue('gui_tabs', 'tab_province_resources')]"
+				}
+			}
+
+			vbox = {
+				datacontext = "[Title.GetProvince]"
+				datacontext = "[Title.GetHolder]"
+				datacontext = "[Province.GetTerrain]"
+				datacontext = "[Province.GetHolding]"
+				visible = "[GetVariableSystem.HasValue('gui_tabs', 'tab_province_overview')]"
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				margin = { 15 15 }
+
 				background = {
-					using = Background_Area_Dark
-					margin_left = 5
-					margin_top = 3
-				}
+					texture = "[Terrain.GetIllustration]"
+					alpha = 0.7
 
-				hbox = {
-					datacontext = "[GetPlayer.MakeScope]"
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					margin = { 15 15 }
-
-					icon = {
-						size = { 120 104 }
-						texture = "gfx/interface/icons/building_types/icon_building_slave_camps.dds"
-						framesize = { 150 130 }
-						frame = 1
-
-						using = Master_Button_Modify_Texture
+					modify_texture = {
+						texture = "gfx/interface/window_county/mask_holding_illustration.dds"
+						blend_mode = alphamultiply
+						alpha = 0.95
 					}
-
-					yy_slave_population_info = { margin_left = 15 }
-							
-					expand = {}
 				}
 
-				hbox = {
+				vbox = {
 					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					margin = { 15 15 }
-					margin_top = 0
 
-					button_tertiary = {
-						enabled = "[GetScriptedGui('yy_province_window_slavery_buy').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Scope.Var('yy_selected_province').Title.MakeScope).End)]"
-						tooltip = "YY_PROVINCE_GUI_BuySlaves_tooltip"
-						tooltip_when_disabled = "YY_PROVINCE_GUI_BuySlaves_tooltip_disabled"
+					hbox = {
 						layoutpolicy_horizontal = expanding
 
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
-							margin_bottom = 5
+						icon = {
+							name = "terrain"
+							visible = "[HoldingStatus.IsTerrainType]"
+							datacontext = "[HoldingStatus.GetTerrainType]"
+							texture = "[Terrain.GetIcon]"
+							size = { 35 35 }
+							tooltip = "HOLDING_TERRAIN_TOOLTIP"
+						}
+						spacer = { size = { 5 0 } }
+						text_label_left = { text = "YY_PROVINCE_GUI_TERRAINHOLDING" }
+						expand = {}
+					}
+				}
 
-							text_single = {
+				vbox = {
+					layoutpolicy_horizontal = expanding
+
+					background = {
+						using = Background_Area_Dark
+						margin_bottom = -2
+					}
+
+					text_label_center = {
+						margin = { 10 0 }
+						margin_top = 5
+						text = "YY_PROVINCE_GUI_HOLDINGWITHNAME"
+					}
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						margin = { 5 5 }
+						
+						portrait_head_small = {
+							blockoverride "opinion_box" {}
+						}
+						spacer = { size = { 15 0 } }
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							margin_right = 15
+
+							hbox = {
 								layoutpolicy_horizontal = expanding
-								text = "YY_PROVINCE_GUI_BuySlaves"
-								align = center
+								text_single = { text = "[holder]" }
+								spacer = { size = { 15 0 } }
+								text_single = {
+									layoutpolicy_horizontal = expanding
+									text = "[Title.GetHolder.GetName]"
+									default_format = "#high"
+								}
+							}
+							hbox = {
+								visible = "[HoldingView.HasHolding]"
+								layoutpolicy_horizontal = expanding
+								margin = { 2 0 }
+								spacing = 3
+								tooltip = "[Holding.GetTaxTooltip]"
+
+								background = {
+									visible = "[Holding.LevyAndTaxIsAffectedByFixableSituation]"
+									using = Status_Bad
+								}
+
+								text_single = {
+									text = "HOLDING_TAX"
+									default_format = "#high"
+								}
+								spacer = { size = { 15 0 } }
+								text_single = {
+									text = "HOLDING_TAX_VALUE"
+									default_format = "#V"
+								}
+								expand = {}
+							}
+							hbox = {
+								visible = "[HoldingView.HasHolding]"
+								layoutpolicy_horizontal = expanding
+								margin = { 2 0 }
+								spacing = 3
+								tooltip = "[Holding.GetProvince.GetRaidLootTooltip]"
+
+								background = {
+									visible = "[Holding.GetProvince.IsRecentlyLooted]"
+									using = Status_Bad
+								}
+
+								text_single = {
+									text = "HOLDING_LOOT"
+									default_format = "#high"
+								}
+								spacer = { size = { 15 0 } }
+								text_single = {
+									text = "HOLDING_LOOT_VALUE"
+								}
+								expand = {}
 							}
 						}
-
-						onclick = "[GetScriptedGui('yy_province_window_slavery_buy').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End )]"
 					}
-					spacer = { size = { 5 0 } }
-							#button_tertiary = {
-							#	enabled = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)999')]"
+				}
+
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						margin = { 5 5 }
+
+						background = {
+							using = Background_Area_Dark
+							margin_bottom = -2
+						}
+
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							margin = { 5 5 }
+
+							hbox = {
+								text_single = {
+									text = "[Holding.GetPrimaryBuildingType.GetTypeName]"
+									align = nobaseline
+								}
+
+								text_single = {
+									visible = "[GUIBuildingItem.HasLevel]"
+									#text = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetLevel]"
+									text = "[Holding.GetPrimaryBuildingType.GetLevel]"
+									#HoldingView.GetGUIHoldingBuilding
+									size = { 15 20 }
+									margin = { 5 0 }
+									margin_bottom = 3
+									fontsize = 15
+									default_format = "#low;bold"
+									align = center;nobaseline
+
+									background = {
+										using = Background_Area_Dark
+									}
+
+									background = {
+										using = Background_Area_Dark
+									}
+
+									background = {
+										using = Background_Area_Dark
+									}
+								}
+							}
+
+							vbox = {
+								visible = "[Province.HasFort]"
+								layoutpolicy_horizontal = expanding
+								spacing = 2
+
+								vbox = {
+									#AGOT Added
+									using = agot_county_view_is_not_ruin
+									layoutpolicy_horizontal = expanding
+									tooltip = "[HoldingView.GetGarrisonTooltip]"
+									spacing = -4
+
+									hbox = {
+										layoutpolicy_horizontal = expanding
+										spacing = 2
+
+										icon = {
+											name = "icon_garrison"
+											texture = "gfx/interface/icons/icon_garrison.dds"
+											size = { 30 30 }
+										}
+
+										vbox = {
+											text_single = {
+												raw_text = "[garrison|E]: [Holding.GetCurrentGarrisonSize]"
+												default_format = "#high"
+												align = nobaseline
+											}
+
+											hbox = {
+												layoutpolicy_horizontal = expanding
+
+												progressbar_standard_transparent = {
+													layoutpolicy_horizontal = expanding
+
+													size = { 0 10 }
+													value = "[HoldingView.GetGarrisonRatio]"
+													direction = horizontal
+												}
+											}
+										}
+										hbox = {
+											layoutpolicy_horizontal = expanding
+											spacing = 3
+											tooltip = "[Province.GetFortLevelTooltip]"
+
+											expand = {}
+											icon = {
+												name = "icon_fort"
+												texture = "gfx/interface/window_siege/fort_icon.dds"
+												size = { 30 25 }
+											}
+											text_single = {
+												raw_text = "[fort_level|E]: [Province.GetFortLevel]"
+												default_format = "#high"
+												align = nobaseline
+											}
+											expand = {}
+										}
+									}
+								}
+							}
+
+							vbox = {
+								visible = "[HoldingView.HasHolding]"
+								layoutpolicy_horizontal = expanding
+								margin = { 5 0 }
+								spacing = 2
+
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									spacing = 3
+									margin = { 2 0 }
+
+									tooltip = "[Holding.GetLeviesTooltip]"
+
+									background = {
+										visible = "[Holding.LevyAndTaxIsAffectedByFixableSituation]"
+										using = Status_Bad
+									}
+
+									text_single = {
+										layoutpolicy_horizontal = expanding
+										text = "LEVIES"
+										default_format = "#high"
+									}
+
+									text_single = {
+										text = "HOLDING_LEVY_SIZE"
+										default_format = "#high"
+									}
+								}
+
+								hbox = {
+									layoutpolicy_horizontal = expanding
+
+									progressbar_standard_transparent = {
+										layoutpolicy_horizontal = expanding
+										size = { 0 10 }
+										value = "[Holding.GetUnraisedLevyRatioPercent]"
+										direction = horizontal
+									}
+								}
+							}
+						}
+						expand = {}
+					}
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						margin = { 5 5 }
+
+						background = {
+							using = Background_Area_Dark
+							margin_bottom = -2
+						}
+
+						text_label_center = {
+							#margin = { 10 0 }
+							text = "YY_PROVINCE_GUI_PROVINCEINFO"
+						}
+						
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							margin = { 5 5 }
+
+							#Commenting out the supply limit for now until I figure out how to get it to show
+							#Curse you HoldingView grrr
+							#hbox = {
+							#	tooltip = "[HoldingView.GetSupplyLimitTooltip]"
 							#	layoutpolicy_horizontal = expanding
+							#	margin = { 2 0 }
+							#	spacing = 3
 							#
-							#	hbox = {
+							#	text_single = {
 							#		layoutpolicy_horizontal = expanding
-							#		layoutpolicy_vertical = expanding
-							#		margin_bottom = 5
-							#
-							#		text_single = {
-							#			layoutpolicy_horizontal = expanding
-							#			text = "YY_PROVINCE_GUI_RelocateSlaves"
-							#			align = center
-							#		}
+							#		text = "SUPPLY_LIMIT"
+							#		default_format = "#high"
+							#	}
+							#	text_single = {
+							#		raw_text = "[Province.GetSupplyLimitFor(Province.AccessSelf)|V]"
+							#		default_format = "#high"
 							#	}
 							#}
-					spacer = { size = { 5 0 } }
-					button_tertiary = {
-						enabled = "[GetScriptedGui('yy_province_window_slavery_sell').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Scope.Var('yy_selected_province').Title.MakeScope).End)]"
-						tooltip = "YY_PROVINCE_GUI_SellSlaves_tooltip"
-						tooltip_when_disabled = "YY_PROVINCE_GUI_SellSlaves_tooltip_disabled"
-						layoutpolicy_horizontal = expanding
 
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
-							margin_bottom = 5
-
-							text_single = {
+							hbox = {
+								datacontext = "[Holding.GetProvince]"
 								layoutpolicy_horizontal = expanding
-								text = "YY_PROVINCE_GUI_SellSlaves"
-								align = center
+								margin = { 2 0 }
+								spacing = 3
+
+								text_single = {
+									layoutpolicy_horizontal = expanding
+									raw_text = "[terrain|E]:"
+									default_format = "#high"
+								}
+								expand = {}
+								text_single = {
+									layoutpolicy_horizontal = expanding
+									text = "[Terrain.GetName]"
+									align = right
+									default_format = "#high"
+								}
+							}
+
+							hbox = {
+								datacontext = "[Holding.GetProvince]"
+								layoutpolicy_horizontal = expanding
+								margin = { 2 0 }
+								spacing = 3
+
+								text_single = {
+									layoutpolicy_horizontal = expanding
+									text = "HOLDING_VIEW_EPIDEMIC_RESISTANCE"
+									default_format = "#high"
+								}
+								expand = {}
+								text_single = {
+									text = "HOLDING_VIEW_EPIDEMIC_RESISTANCE_VALUE"
+									default_format = "#high"
+								}
 							}
 						}
-
-						onclick = "[GetScriptedGui('yy_province_window_slavery_sell').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End )]"
+						expand = {}
 					}
 				}
-
 				expand = {}
 			}
 
-					#vbox = {
-					#	layoutpolicy_horizontal = expanding
-					#	margin = { 5 5 }
-					#
-					#	vbox = {
-					#		layoutpolicy_horizontal = expanding
-					#
-					#		hbox = {
-					#			layoutpolicy_horizontal = expanding
-					#			layoutpolicy_vertical = expanding
-					#
-					#			icon = {
-					#				size = { 40 40 }
-					#				texture = "gfx/interface/icons/icon_soldier.dds"
-					#				framesize = { 60 60 }
-					#				frame = 1
-					#			}
-					#
-					#			text_single = {
-					#				layoutpolicy_horizontal = expanding
-					#				layoutpolicy_vertical = expanding
-					#				margin_left = 5
-					#				#text = 
-					#				raw_text = "Slave Armies"
-					#				using = Font_Size_Big
-					#				font = TitleFont
-					#				fontsize_min = 16
-					#			}
-					#		}
-					#
-					#		expand = {}
-					#	}
-					#}
+			vbox = {
+				datacontext = "[Title.GetProvince]"
+				datacontext = "[Title.GetHolder]"
+				datacontext = "[Province.GetTerrain]"
+				datacontext = "[Province.GetHolding]"
+				visible = "[GetVariableSystem.HasValue('gui_tabs', 'tab_province_resources')]"
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				margin = { 15 15 }
 
-					#divider_light = { layoutpolicy_horizontal = expanding }
+				vbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					margin = { 5 5 }
 
-					#scrollarea = {
-					#	layoutpolicy_vertical = expanding
-					#	layoutpolicy_horizontal = expanding
-					#
-					#	state = {
-					#		name = "slave_army_refresh"
-					#		alpha = 0.5
-					#		next = b
-					#		duration = 1
-					#
-					#		on_finish = "[GetScriptedGui('yy_slavery_window_pulse').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End)]"
-					#	}
-					#	state = {
-					#		name = "b"
-					#		alpha = 1
-					#		next = slave_army_refresh
-					#		duration = 1
-					#	}
-					#
-					#	scrollbar_horizontal = { using = Scrollbar_Horizontal }
-					#	scrollbarpolicy_vertical = always_off
-					#	scrollwidget = {
-					#		hbox = {
-					#			datamodel = "[GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope.GetList('yy_slave_county_armies')]"
-					#			layoutpolicy_horizontal = expanding
-					#			margin = { 15 15 }
-					#			margin_bottom = 21
-					#			spacing = 5
-					#
-					#			item = {
-					#				vbox = {
-					#					layoutpolicy_horizontal = fixed
-					#					layoutpolicy_vertical = expanding
-					#					min_width = 200
-					#
-					#					background = { using = Background_Area_Dark }
-					#
-					#					text_single = {
-					#						layoutpolicy_horizontal = expanding
-					#						align = center
-					#						text = "[Scope.Regiment.GetName]"
-					#						default_format = "#low"
-					#						using = Font_Size_Small
-					#					}
-					#				}
-					#			}
-					#		}
-    				#	}
-					#}
-
-					#button_tertiary = {
-					#	enabled = "[GetScriptedGui('yy_slavery_window_recruit').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End)]"
-					#	layoutpolicy_horizontal = expanding
-					#
-					#	hbox = {
-					#		layoutpolicy_horizontal = expanding
-					#		layoutpolicy_vertical = expanding
-					#		margin_bottom = 5
-					#
-					#		text_single = {
-					#			layoutpolicy_horizontal = expanding
-					#			raw_text = "Recruit Slaves"
-					#			align = center
-					#		}
-					#	}
-					#
-					#	onclick = "[GetScriptedGui('yy_slavery_window_recruit').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End)]"
-					#}
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						raw_text = "[Holding.GetNameNoTooltip] produces the following resources:" #LOCALIZE!!!
+					}
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						#text = "YY_PROVINCE_GUI_SellSlaves"
+						raw_text = "[zz_iron]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_iron')|0] "
+					}
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						#text = "YY_PROVINCE_GUI_SellSlaves"
+						raw_text = "[zz_steel]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_steel')|0] "
+					}
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						#text = "YY_PROVINCE_GUI_SellSlaves"
+						raw_text = "[zz_obsidian]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_obsidian')|0] "
+					}
+					text_single = {
+						layoutpolicy_horizontal = expanding
+						#text = "YY_PROVINCE_GUI_SellSlaves"
+						raw_text = "[zz_valyrian_steel]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_valyrian_steel')|0] "
+					}
+					expand = {}
+				}
+			}
 
 			expand = {}
 		}
@@ -559,11 +866,9 @@ types ProvinceWindowTypes {
 
 	type yy_county_view = vbox  {
 		datacontext = "[GetPlayer.MakeScope]"
-		datacontext = "[Scope.Var('yy_selected_province').Title]"
+		datacontext = "[Scope.Var('yy_selected_county').Title]"
 		datacontext = "[Title.GetProvince.GetCountyCapitalProvince]"
-		visible = "[Scope.Var('yy_selected_province').IsSet]"
-		min_width = 550
-		max_width = 550
+		visible = "[Scope.Var('yy_selected_county').IsSet]"
 		layoutpolicy_horizontal = expanding
 		layoutpolicy_vertical = expanding
 		margin = { 15 15 }
@@ -590,7 +895,7 @@ types ProvinceWindowTypes {
 
 				button_tab = {
 					layoutpolicy_horizontal = expanding
-					raw_text = "Overview" #LOCALIZE!!!
+					text = "YY_PROVINCE_GUI_OVERVIEW"
 					using = tooltip_ne
 					default_format = "#low"
 
@@ -599,9 +904,9 @@ types ProvinceWindowTypes {
 				}
 
 				button_tab = {
-					#visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+					visible = "[GetScriptedGui('yy_province_window_slavery').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
 					layoutpolicy_horizontal = expanding
-					raw_text = "Slaves" #LOCALIZE!!!
+					text = "YY_PROVINCE_GUI_SLAVES"
 					using = tooltip_ne
 					default_format = "#low"
 
@@ -759,51 +1064,32 @@ types ProvinceWindowTypes {
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					margin = { 15 15 }
-					margin_top = 0
+					spacing = 5
 
+					widget_buyslaves = {}
+
+					#button_tertiary = {
+					#	enabled = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)999')]"
+					#	layoutpolicy_horizontal = expanding
+					#
+					#	hbox = {
+					#		layoutpolicy_horizontal = expanding
+					#		layoutpolicy_vertical = expanding
+					#		margin_bottom = 5
+					#
+					#		text_single = {
+					#			layoutpolicy_horizontal = expanding
+					#			text = "YY_PROVINCE_GUI_RelocateSlaves"
+					#			align = center
+					#		}
+					#	}
+					#}
 					button_tertiary = {
-						enabled = "[GetScriptedGui('yy_province_window_slavery_buy').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Scope.Var('yy_selected_province').Title.MakeScope).End)]"
-						tooltip = "YY_PROVINCE_GUI_BuySlaves_tooltip"
-						tooltip_when_disabled = "YY_PROVINCE_GUI_BuySlaves_tooltip_disabled"
-						layoutpolicy_horizontal = expanding
-
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
-							margin_bottom = 5
-
-							text_single = {
-								layoutpolicy_horizontal = expanding
-								text = "YY_PROVINCE_GUI_BuySlaves"
-								align = center
-							}
-						}
-
-						onclick = "[GetScriptedGui('yy_province_window_slavery_buy').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End )]"
-					}
-					spacer = { size = { 5 0 } }
-							#button_tertiary = {
-							#	enabled = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)999')]"
-							#	layoutpolicy_horizontal = expanding
-							#
-							#	hbox = {
-							#		layoutpolicy_horizontal = expanding
-							#		layoutpolicy_vertical = expanding
-							#		margin_bottom = 5
-							#
-							#		text_single = {
-							#			layoutpolicy_horizontal = expanding
-							#			text = "YY_PROVINCE_GUI_RelocateSlaves"
-							#			align = center
-							#		}
-							#	}
-							#}
-					spacer = { size = { 5 0 } }
-					button_tertiary = {
-						enabled = "[GetScriptedGui('yy_province_window_slavery_sell').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', Scope.Var('yy_selected_province').Title.MakeScope).End)]"
+						enabled = "[GetScriptedGui('yy_province_window_slavery_sell').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', Scope.Var('yy_selected_county').Title.MakeScope).End)]"
 						tooltip = "YY_PROVINCE_GUI_SellSlaves_tooltip"
 						tooltip_when_disabled = "YY_PROVINCE_GUI_SellSlaves_tooltip_disabled"
 						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
 
 						hbox = {
 							layoutpolicy_horizontal = expanding
@@ -817,7 +1103,7 @@ types ProvinceWindowTypes {
 							}
 						}
 
-						onclick = "[GetScriptedGui('yy_province_window_slavery_sell').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End )]"
+						onclick = "[GetScriptedGui('yy_province_window_slavery_sell').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End )]"
 					}
 				}
 
@@ -870,7 +1156,7 @@ types ProvinceWindowTypes {
 					#		next = b
 					#		duration = 1
 					#
-					#		on_finish = "[GetScriptedGui('yy_slavery_window_pulse').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End)]"
+					#		on_finish = "[GetScriptedGui('yy_slavery_window_pulse').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End)]"
 					#	}
 					#	state = {
 					#		name = "b"
@@ -883,7 +1169,7 @@ types ProvinceWindowTypes {
 					#	scrollbarpolicy_vertical = always_off
 					#	scrollwidget = {
 					#		hbox = {
-					#			datamodel = "[GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope.GetList('yy_slave_county_armies')]"
+					#			datamodel = "[GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope.GetList('yy_slave_county_armies')]"
 					#			layoutpolicy_horizontal = expanding
 					#			margin = { 15 15 }
 					#			margin_bottom = 21
@@ -911,7 +1197,7 @@ types ProvinceWindowTypes {
 					#}
 
 					#button_tertiary = {
-					#	enabled = "[GetScriptedGui('yy_slavery_window_recruit').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End)]"
+					#	enabled = "[GetScriptedGui('yy_slavery_window_recruit').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End)]"
 					#	layoutpolicy_horizontal = expanding
 					#
 					#	hbox = {
@@ -926,98 +1212,10 @@ types ProvinceWindowTypes {
 					#		}
 					#	}
 					#
-					#	onclick = "[GetScriptedGui('yy_slavery_window_recruit').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_province', GetPlayer.MakeScope.Var('yy_selected_province').Title.MakeScope).End)]"
+					#	onclick = "[GetScriptedGui('yy_slavery_window_recruit').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('yy_selected_county', GetPlayer.MakeScope.Var('yy_selected_county').Title.MakeScope).End)]"
 					#}
 
 			expand = {}
-		}
-
-		expand = {}
-	}
-
-	type yy_slave_population_label = hbox {
-		name = "yy_slave_population_label"
-		layoutpolicy_horizontal = expanding
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)0')]"
-			layoutpolicy_horizontal = expanding
-			text = "YY_PROVINCE_GUI_NOSLAVEPOPULATION"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)1')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_1').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)2')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_2').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)3')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_3').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)4')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_4').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)5')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_5').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)6')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_6').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)7')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_7').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
-		}
-
-		text_single = {
-			visible = "[EqualTo_CFixedPoint(Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)8')]"
-			layoutpolicy_horizontal = expanding
-			text = "[GetModifier('slave_pop_8').GetName]"
-			align = left
-			default_format = "#low"
-			using = Font_Size_Small
 		}
 
 		expand = {}
@@ -1028,7 +1226,7 @@ types ProvinceWindowTypes {
 		layoutpolicy_vertical = expanding
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)0')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)0')]"
 			layoutpolicy_horizontal = expanding
 			text = "YY_PROVINCE_GUI_NOSLAVEPOPULATION"
 			using = Font_Size_Big
@@ -1037,7 +1235,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)0')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)0')]"
 			layoutpolicy_horizontal = expanding
 			text = "YY_PROVINCE_GUI_NOSLAVEPOPULATION"
 			default_format = "#low"
@@ -1045,7 +1243,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)1')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)1')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_1').GetName]"
 			using = Font_Size_Big
@@ -1054,7 +1252,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)1')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)1')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_1').GetDescWithEffects]"
 			default_format = "#low"
@@ -1062,7 +1260,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)2')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)2')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_2').GetName]"
 			using = Font_Size_Big
@@ -1071,7 +1269,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)2')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)2')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_2').GetDescWithEffects]"
 			default_format = "#low"
@@ -1079,7 +1277,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)3')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)3')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_3').GetName]"
 			using = Font_Size_Big
@@ -1088,7 +1286,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)3')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)3')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_3').GetDescWithEffects]"
 			default_format = "#low"
@@ -1096,7 +1294,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)4')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)4')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_4').GetName]"
 			using = Font_Size_Big
@@ -1105,7 +1303,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)4')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)4')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_4').GetDescWithEffects]"
 			default_format = "#low"
@@ -1113,7 +1311,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)5')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)5')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_5').GetName]"
 			using = Font_Size_Big
@@ -1122,7 +1320,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)5')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)5')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_5').GetDescWithEffects]"
 			default_format = "#low"
@@ -1130,7 +1328,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)6')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)6')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_6').GetName]"
 			using = Font_Size_Big
@@ -1139,7 +1337,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)6')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)6')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_6').GetDescWithEffects]"
 			default_format = "#low"
@@ -1147,7 +1345,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)7')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)7')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_7').GetName]"
 			using = Font_Size_Big
@@ -1156,7 +1354,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)7')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)7')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_7').GetDescWithEffects]"
 			default_format = "#low"
@@ -1164,7 +1362,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)8')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)8')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_8').GetName]"
 			using = Font_Size_Big
@@ -1173,7 +1371,7 @@ types ProvinceWindowTypes {
 		}
 
 		text_single = {
-			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_province').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)8')]"
+			visible = "[EqualTo_CFixedPoint(Scope.Var('yy_selected_county').Title.MakeScope.ScriptValue('yy_slave_population_value'), '(CFixedPoint)8')]"
 			layoutpolicy_horizontal = expanding
 			text = "[GetModifier('slave_pop_8').GetDescWithEffects]"
 			default_format = "#low"

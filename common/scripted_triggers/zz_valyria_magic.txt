@@ -40,49 +40,12 @@ zz_valyria_has_artifact = {
 
 }
 
+
+
 zz_valyria_has_mana_to_cast = { 
 	OR = {
 		has_character_modifier = zz_valyria_magic_drops_power
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_04
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_03
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_02
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = born_under_a_red_comet
-			has_trait_xp = {
-				trait = born_under_a_red_comet
-				track = stores_of_power_01
-				value >= $MANACOST$
-			}
-		}
-		AND = {
-			has_trait = zz_magister
-			has_trait_xp = {
-				trait = zz_magister
-				track = drops_of_power
-				value >= $MANACOST$
-			}
-		}
+		$MANACOST$ <= this.zz_valyria_drops_of_power_stat
 	}
 }
 
@@ -440,6 +403,33 @@ zz_valyria_mystery_human_only_scheme_owner_trigger = {
 		}
 	}
 }
+zz_valyria_mystery_human_only_scheme_owner_has_agents_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_mystery = {
+				has_memory_type = $SPELL$
+			}
+		}
+		var:zz_magic_caster = { 
+			zz_valyria_has_mana_to_cast = {
+				MANACOST = scope:zz_valyria_mystery.var:manacost
+			}
+		}
+		var:zz_magic_target = {
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+			has_owned_scheme = yes 
+			any_scheme = {
+				exists = this
+				scheme_number_of_filled_agent_slots >= 1
+			}
+		}
+	}
+}
 zz_valyria_mystery_human_only_scheme_target_trigger = {
 	trigger_if  = { 
 		limit  = {
@@ -461,6 +451,32 @@ zz_valyria_mystery_human_only_scheme_target_trigger = {
 			}
 			any_targeting_scheme = {
 				exists = this
+			}
+		}
+	}
+}
+zz_valyria_mystery_human_only_scheme_target_has_agents_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_mystery = {
+				has_memory_type = $SPELL$
+			}
+		}
+		var:zz_magic_caster = { 
+			zz_valyria_has_mana_to_cast = {
+				MANACOST = scope:zz_valyria_mystery.var:manacost
+			}
+		}
+		var:zz_magic_target = {
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+			any_targeting_scheme = {
+				exists = this
+				scheme_number_of_filled_agent_slots >= 1
 			}
 		}
 	}
@@ -915,6 +931,30 @@ zz_valyria_scroll_human_only_scheme_owner_trigger = {
 		}
 	}
 }
+zz_valyria_scroll_human_only_scheme_owner_has_agents_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_scroll = {
+				var:spell ?= flag:$SPELL$
+			}
+		}
+		var:zz_item_caster = { 
+		}
+		var:zz_magic_target = {
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+			has_owned_scheme = yes 
+			any_scheme = {
+				exists = this
+				scheme_number_of_filled_agent_slots >= 1
+			}
+		}
+	}
+}
 zz_valyria_scroll_human_only_scheme_target_trigger = {
 	trigger_if  = { 
 		limit  = {
@@ -933,6 +973,29 @@ zz_valyria_scroll_human_only_scheme_target_trigger = {
 			}
 			any_targeting_scheme = {
 				exists = this
+			}
+		}
+	}
+}
+zz_valyria_scroll_human_only_scheme_target_has_agents_trigger = {
+	trigger_if  = { 
+		limit  = {
+			scope:zz_valyria_scroll = {
+				var:spell ?= flag:$SPELL$
+			}
+		}
+		var:zz_item_caster = { 
+		}
+		var:zz_magic_target = {
+			NOT = {
+				custom_tooltip = {
+					text = zz_valyria_magic_cannot_cast_on_dragon
+					has_trait = dragon
+				}
+			}
+			any_targeting_scheme = {
+				exists = this
+				scheme_number_of_filled_agent_slots >= 1
 			}
 		}
 	}
