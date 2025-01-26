@@ -1,85 +1,4 @@
-﻿zz_make_protector = {
-	desc = zz_make_protector_desc
-	icon = icon_magic
-	common_interaction = yes
-	interface_priority = 1999
-	category = interaction_category_admin
-
-
-	is_shown = {
-		scope:actor = {
-			any_court_position_holder = {
-				type = zz_valyria_champion_of_the_fourteen_court_position
-			}
-			is_imprisoned = no
-			is_ai = no
-		}
-		scope:recipient = {
-			NOT = { 
-				has_trait = dragon
-			}
-			any_courtier_or_guest = {
-				exists = dynasty
-				dynasty = scope:actor.dynasty
-				num_of_relation_bodyguard = 0
-			}
-		}	
-	}
-	is_valid_showing_failures_only = {
-		scope:actor = {
-			any_court_position_holder = {
-				type = zz_valyria_champion_of_the_fourteen_court_position
-				NOT = { 
-					has_character_flag = zz_valyria_made_protector
-				}
-			}
-		}
-	}
-	populate_recipient_list = {
-		scope:actor = { 
-			every_court_position_holder = {
-				type = zz_valyria_champion_of_the_fourteen_court_position
-				limit = {
-					NOT = { 
-						has_character_flag = zz_valyria_made_protector
-					}
-				}
-				add_to_list = characters
-			}
-		}
-	}
-
-	cooldown_against_recipient = { days = 0 } 
-	cooldown = { years = 0 } 
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = yes
-
-	on_accept = {
-		scope:secondary_recipient = {
-			agot_on_cancel_kingsguard_bodyguard = yes 
-			add_character_flag = { flag = zz_valyria_made_protector months = 1 } 
-			save_scope_as = councillor
-		}
-		scope:recipient = {
-			save_scope_as = target_character
-		}
-		scope:actor = {
-			save_scope_as = councillor_liege
-			trigger_event = agot_kingsguard.2001
-		}
-	}
-	auto_accept = yes
-	ai_targets = {
-		ai_recipients = self
-	}
-
-	ai_frequency = 12
-
-	ai_will_do = {
-		base = 0
-	}
-}
-
+﻿
 zz_adopt_interaction = {
 	icon = icon_adopt_house_member
 	category = interaction_category_diplomacy
@@ -90,13 +9,13 @@ zz_adopt_interaction = {
 	use_diplomatic_range = yes
 	
 	is_shown = {
-		scope:actor = { this = character:Setenon_01 }
+		scope:actor = character:Setenon_01 
 		scope:recipient = {
 			is_ruler = no
 			# They don't already belong to your dynasty
 			NOT = { dynasty = scope:actor.dynasty }
 			#AGOT ADDED
-			is_human = yes
+			#is_human = yes
 		}
 	}
 
@@ -445,6 +364,192 @@ zz_establish_dragon_rider_house = {
 				change_influence = major_influence_gain
 			}
 		}
+	}
+}
+
+demand_admin_interaction = {
+	category = interaction_category_admin
+	icon = demand_admin_interaction
+
+	ai_maybe = yes
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+	can_send_despite_rejection = yes
+	ai_accept_negotiation = yes
+	popup_on_receive = yes
+	common_interaction = yes
+
+	ai_targets = {
+		ai_recipients = vassals
+	}
+	ai_target_quick_trigger = {
+		adult = yes
+	}
+	ai_frequency = 12
+
+	desc = demand_admin_interaction_desc
+
+	is_shown = {
+		scope:actor = { government_allows = administrative }
+		scope:recipient = {
+			target_is_liege_or_above = scope:actor
+			is_ai = yes
+			is_ruler = yes
+			NOT = { government_allows = administrative }
+		}
+		trigger_if = {
+			limit = {
+				scope:actor = {
+					is_ai = yes
+				}
+			}
+			scope:recipient = {
+				highest_held_title_tier >= tier_county
+			}
+		}
+		#AGOT ADDED
+		scope:actor = {
+			is_human = yes
+			agot_can_be_ruler = yes
+		}
+		scope:recipient = {
+			is_human = yes
+			agot_can_be_ruler = yes
+		}
+	}
+
+	cooldown_against_recipient = { years = 10 }
+
+	is_valid_showing_failures_only = {
+		scope:recipient = { is_busy_in_events_localised = yes }
+		scope:recipient = { NOT = { has_strong_hook = scope:actor } }
+		scope:recipient = { is_at_war = no }
+		scope:actor = { is_at_war = no }
+		custom_tooltip = {
+			text = cannot_take_overt_hostile_actions_against_diarch.tt
+			NOT = { scope:recipient ?= scope:actor.diarch }
+		}
+		custom_tooltip = {
+			text = demand_admin_tribal
+			NOT = {
+				scope:recipient = { government_has_flag = government_is_tribal }
+			}
+		}
+		custom_tooltip = {
+			text = head_of_faith_unable_to_change_government_desc
+			NOT = {
+				scope:recipient = { faith.religious_head ?= this }
+			}
+		}
+	}
+
+	# Offer hereditary boost
+	send_option = {
+		is_valid = {
+			custom_tooltip = {
+				text = demand_admin_hereditary_tt
+				scope:recipient.house ?= {
+					any_house_member = { count > 1 }
+				}
+			}
+			custom_tooltip = {
+				text = demand_admin_hereditary_exists_tt
+				NOT = { exists = scope:recipient.primary_title.var:petition_house_rights }
+			}
+		}
+		flag = hereditary
+		localization = demand_admin_hereditary
+	}
+	#Spend influence
+	send_option = {
+		flag = influence
+		is_valid = {
+			scope:actor.influence >= massive_influence_value
+		}
+		localization = SPEND_INFLUENCE
+	}
+	#Use hook
+	send_option = {
+		is_valid = {
+			scope:actor = { has_usable_hook = scope:recipient }
+		}
+		flag = hook
+		localization = SCHEME_HOOK
+	}
+	should_use_extra_icon = {
+		scope:actor = { has_usable_hook = scope:recipient }
+	}
+	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
+
+	send_options_exclusive = no
+
+	auto_accept = {
+		custom_description = {
+			text = "spending_hook"
+			subject = scope:actor
+			object = scope:recipient
+			scope:hook = yes
+		}
+	}
+
+	on_send = {
+		scope:recipient = {
+			primary_title = { save_scope_as = demanded_administration }
+			trigger_event = {
+				id = ep3_interactions_events.0005
+				days = 5
+			}
+		}
+	}
+
+	on_accept = {
+		show_as_tooltip = {
+			if = { 
+				limit = {
+					scope:actor = {
+						government_has_flag = government_is_freehold 
+					}
+				}
+				change_to_freehold_interaction_effect = yes
+			}
+			else = {
+				change_to_administrative_interaction_effect = yes
+			}
+			
+		}
+	}
+
+	on_decline = {
+		scope:recipient = { custom_tooltip = demand_admin_interaction_vassal_refuses }
+	}
+
+	ai_potential = {
+		government_allows = administrative
+		is_adult = yes
+	}
+
+	ai_will_do = {
+		base = 100
+		modifier = {
+			factor = 0
+			scope:recipient = { highest_held_title_tier >= tier_county }
+			gold >= 300
+		}
+		modifier = {
+			factor = 0
+			scope:recipient = { highest_held_title_tier >= tier_duchy }
+			gold >= 600
+		}
+		modifier = {
+			factor = 0
+			scope:recipient = { highest_held_title_tier >= tier_kingdom }
+			gold >= 2000
+		}
+	}
+
+	ai_accept = {
+		base = 0
+		demand_admin_acceptance_modifier = yes
 	}
 }
 
