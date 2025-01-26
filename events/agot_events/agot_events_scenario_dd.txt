@@ -217,6 +217,7 @@ agot_scenario_dd.0001 = { # On Start of Defiance of Duskendale Scenario; Denys R
 		# Wear Your Armor
 		add_character_flag = wear_armor
 		add_character_flag = no_hat
+		agot_dd_remove_planning_flag = yes
 
 		ai_chance = {
 			base = 0
@@ -308,6 +309,7 @@ agot_scenario_dd.0002 = { # Tywin Accepted the Demands; Aerys Will Demand to Bre
 		# Wear Your Armor
 		add_character_flag = wear_armor
 		add_character_flag = no_hat
+		agot_dd_remove_planning_flag = yes
 
 		ai_chance = {
 			base = 0
@@ -492,6 +494,7 @@ agot_scenario_dd.0003 = { # Rhaegar Notified of Tywin Declining the King's Comma
 		# Wear Your Armor
 		add_character_flag = wear_armor
 		add_character_flag = no_hat
+		agot_dd_remove_planning_flag = yes
 
 		ai_chance = { base = 50 }
 	}
@@ -568,6 +571,7 @@ agot_scenario_dd.0004 = { # Great Council Summons; Sent to Direct Vassals of the
 			arrogant = minor_stress_impact_loss
 			diligent = minor_stress_impact_gain
 		}
+		remove_character_flag = planning_an_activity
 
 		ai_chance = { base = 0 }
 	}
@@ -945,11 +949,25 @@ agot_scenario_dd.0009 = { # The Results of the Great Council Vote; Aerys Chooses
 	desc = agot_scenario_dd.0009.desc
 
 	theme = corruption
-	override_background = { reference = dungeon }
+	override_background = {
+		trigger = { character:Targaryen_1 ?= { is_imprisoned = yes } }
+		reference = dungeon
+	}
+	override_background = {
+		trigger = { character:Targaryen_1 ?= { is_imprisoned = no } }
+		reference = bedchamber
+	}
 
 	left_portrait = {
 		character = root
-		animation = prison_house
+		triggered_animation = {
+			trigger = { character:Targaryen_1 ?= { is_imprisoned = yes } }
+			animation = prison_house
+		}
+		triggered_animation = {
+			trigger = { character:Targaryen_1 ?= { is_imprisoned = no } }
+			animation = rage
+		}
 	}
 	right_portrait = { character = title:k_dragonstone.holder }
 	lower_left_portrait = { character = title:k_the_north.holder }
@@ -957,15 +975,12 @@ agot_scenario_dd.0009 = { # The Results of the Great Council Vote; Aerys Chooses
 	lower_right_portrait = { character = title:k_the_riverlands.holder }
 
 	trigger = {
-		character:Targaryen_1 ?= {
-			is_alive = yes
-			is_imprisoned = yes
-		}
+		character:Targaryen_1 ?= { is_alive = yes }
 		title:e_the_iron_throne.holder ?= character:Targaryen_1
 	}
 
 	immediate = {
-		character:Targaryen_1 ?= {
+		title:e_the_iron_throne.holder ?= {
 			random_owned_story = {
 				limit = { story_type = story_agot_scenario_dd }
 				save_scope_as = scenario_dd_story
@@ -978,9 +993,6 @@ agot_scenario_dd.0009 = { # The Results of the Great Council Vote; Aerys Chooses
 
 		show_as_tooltip = { # Preview Aerys Out; Rhaegar In
 			depose = yes
-			character:Targaryen_3 ?= {
-				add_courtier = character:Targaryen_1
-			}
 		}
 		title:k_dragonstone.holder ?= {
 			trigger_event = {
@@ -1063,13 +1075,27 @@ agot_scenario_dd.0010 = { # Rhaegar Iron Throne Setup
 	immediate = {
 		if = {
 			limit = { title:e_the_iron_throne.holder ?= character:Targaryen_1 }
-			character:Targaryen_1 ?= { # Rhaegar Becomes King
+			character:Targaryen_1 ?= { # Rhaegar Becomes King; Aerys Bcomes Landless
 				depose = yes
+				if = {
+					limit = { is_imprisoned = no }
+					agot_dd_camping_dragons = yes # Fallback if Aerys is somehow free and the event still fires
+				}
+				trigger_event = {
+					id = agot_scenario_dd.0012
+					months = 6
+				}
 			}
 		}
-		character:Targaryen_3 ?= { # Adds Aerys to Court; Moves Capital Location
+		character:Targaryen_3 ?= { # Adds Aerys to Court Fallback; Moves Capital Location
 			if = {
-				limit = { character:Targaryen_1 ?= { NOT = { is_courtier_of = character:Targaryen_3 } } }
+				limit = {
+					character:Targaryen_1 ?= {
+						is_imprisoned = no
+						is_landless_adventurer = no
+						NOT = { is_courtier_of = character:Targaryen_3 }
+					}
+				}
 				add_courtier = character:Targaryen_1
 			}
 			set_realm_capital = title:c_kings_landing
@@ -1106,6 +1132,16 @@ agot_scenario_dd.0011 = { # Rhaegar Iron Throne Setup for Aerys Dying in Captivi
 	}
 }
 
+agot_scenario_dd.0012 = { # Give Aerys Uncouth
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = { NOT = { has_trait = uncouth } }
+			add_trait = uncouth
+		}
+	}
+}
 
 ##############################
 ########### Ready the Horses #
@@ -2709,7 +2745,7 @@ agot_scenario_dd.0200 = { # Selmy Fails; Tywin Asks Rhaegar to Put His Family in
 
 	immediate = {
 		character:Targaryen_1 ?= { save_scope_as = aerys }
-		character:Targaryen_3 ?= {
+		title:e_the_iron_throne.holder ?= {
 			random_owned_story = {
 				limit = { story_type = story_agot_scenario_dd }
 				save_scope_as = scenario_dd_story
@@ -3511,12 +3547,6 @@ agot_scenario_dd.0300 = { # Rhaegar Can Choose Spouse Unpressured
 	}
 
 	immediate = {
-		character:Targaryen_3 ?= {
-			random_owned_story = {
-				limit = { story_type = story_agot_scenario_dd }
-				save_scope_as = scenario_dd_story
-			}
-		}
 		hidden_effect = { # Remove Road Blocks
 			agot_rr_remove_cersei_infertility = yes
 			agot_dd_rhaegar_can_marry = yes
@@ -3620,15 +3650,6 @@ agot_scenario_dd.0300 = { # Rhaegar Can Choose Spouse Unpressured
 			modifier = { add = agot_nonhistoric_outcome_5 } # Non-historic Weight
 		}
 	}
-
-	after = {
-		scope:scenario_dd_story ?= { # The Marriage is Resolved
-			set_variable = {
-				name = agot_dd_rhaegar
-				value = flag:married
-			}
-		}
-	}
 }
 
 
@@ -3654,15 +3675,6 @@ agot_scenario_dd.0301 = { # Rhaegar Can Choose Spouse; Tywin Influences Marriage
 	}
 	lower_right_portrait = { character = character:Lannister_6 }
 
-	immediate = {
-		character:Targaryen_3 ?= {
-			random_owned_story = {
-				limit = { story_type = story_agot_scenario_dd }
-				save_scope_as = scenario_dd_story
-			}
-		}
-	}
-
 	option = { # Choose Cersei
 		name = agot_scenario_dd.0301.opt.a
 
@@ -3672,13 +3684,6 @@ agot_scenario_dd.0301 = { # Rhaegar Can Choose Spouse; Tywin Influences Marriage
 		}
 		# Become Betrothed
 		agot_scenario_dd_betrothe_cersei_effect = yes
-
-		scope:scenario_dd_story ?= { # The Marriage is Resolved
-			set_variable = {
-				name = agot_dd_rhaegar
-				value = flag:married
-			}
-		}
 
 		ai_chance = {
 			base = 0
@@ -3711,14 +3716,6 @@ agot_scenario_dd.0301 = { # Rhaegar Can Choose Spouse; Tywin Influences Marriage
 				trigger_event = {
 					id = agot_scenario_dd.0302
 					days = 7
-				}
-			}
-			else = {
-				scope:scenario_dd_story ?= { # The Marriage is Resolved
-					set_variable = {
-						name = agot_dd_rhaegar
-						value = flag:married
-					}
 				}
 			}
 		}
@@ -3896,6 +3893,12 @@ agot_scenario_dd.0302 = { # Rhaegar Can Choose Spouse; After Denying Tywin
 		animation = thinking
 	}
 	right_portrait = {
+		trigger = { # Check if Married
+			character:Dayne_4 ?= {
+				is_alive = yes
+				is_married = no
+			}
+		}
 		character = character:Dayne_4
 		animation = love
 	}
@@ -3919,12 +3922,6 @@ agot_scenario_dd.0302 = { # Rhaegar Can Choose Spouse; After Denying Tywin
 	}
 
 	immediate = {
-		character:Targaryen_3 ?= {
-			random_owned_story = {
-				limit = { story_type = story_agot_scenario_dd }
-				save_scope_as = scenario_dd_story
-			}
-		}
 		hidden_effect = { # Remove Road Blocks
 			agot_rr_remove_cersei_infertility = yes
 			agot_dd_rhaegar_can_marry = yes
@@ -3989,15 +3986,6 @@ agot_scenario_dd.0302 = { # Rhaegar Can Choose Spouse; After Denying Tywin
 		ai_chance = {
 			base = 0
 			modifier = { add = agot_nonhistoric_outcome_4 } # Non-historic Weight
-		}
-	}
-
-	after = {
-		scope:scenario_dd_story ?= { # The Marriage is Resolved
-			set_variable = {
-				name = agot_dd_rhaegar
-				value = flag:married
-			}
 		}
 	}
 }
@@ -4428,12 +4416,6 @@ agot_scenario_dd.0305 = { # Aerys Can Choose Spouse Unpressured
 	}
 
 	immediate = {
-		character:Targaryen_1 ?= {
-			random_owned_story = {
-				limit = { story_type = story_agot_scenario_dd }
-				save_scope_as = scenario_dd_story
-			}
-		}
 		hidden_effect = { # Remove Road Blocks
 			agot_rr_remove_cersei_infertility = yes
 			agot_dd_rhaegar_can_marry = yes
@@ -4537,15 +4519,6 @@ agot_scenario_dd.0305 = { # Aerys Can Choose Spouse Unpressured
 			modifier = { add = agot_nonhistoric_outcome_5 } # Non-historic Weight
 		}
 	}
-
-	after = {
-		scope:scenario_dd_story ?= { # The Marriage is Resolved
-			set_variable = {
-				name = agot_dd_rhaegar
-				value = flag:married
-			}
-		}
-	}
 }
 
 
@@ -4572,16 +4545,6 @@ agot_scenario_dd.0310 = { # Aerys Can Choose Spouse for Rhaegar; Tywin Influence
 	lower_left_portrait = { character = scope:bachelor }
 	lower_right_portrait = { character = character:Lannister_6 }
 
-	immediate = {
-		character:Targaryen_1 ?= {
-			random_owned_story = {
-				limit = { story_type = story_agot_scenario_dd }
-				save_scope_as = scenario_dd_story
-			}
-		}
-		character:Lannister_1 ?= { save_scope_as = tywin }
-	}
-
 	option = { # Choose Cersei
 		name = agot_scenario_dd.0310.opt.a
 
@@ -4591,13 +4554,6 @@ agot_scenario_dd.0310 = { # Aerys Can Choose Spouse for Rhaegar; Tywin Influence
 		}
 		# Become Betrothed
 		agot_scenario_dd_betrothe_cersei_effect = yes
-
-		scope:scenario_dd_story ?= { # The Marriage is Resolved
-			set_variable = {
-				name = agot_dd_rhaegar
-				value = flag:married
-			}
-		}
 
 		ai_chance = {
 			base = 0
@@ -4630,14 +4586,6 @@ agot_scenario_dd.0310 = { # Aerys Can Choose Spouse for Rhaegar; Tywin Influence
 				trigger_event = {
 					id = agot_scenario_dd.0311
 					days = 7
-				}
-			}
-			else = {
-				scope:scenario_dd_story ?= { # The Marriage is Resolved
-					set_variable = {
-						name = agot_dd_rhaegar
-						value = flag:married
-					}
 				}
 			}
 		}
@@ -4850,12 +4798,6 @@ agot_scenario_dd.0311 = { # Aerys Can Choose Spouse for Rhaegar; After Denying T
 	}
 
 	immediate = {
-		character:Targaryen_3 ?= {
-			random_owned_story = {
-				limit = { story_type = story_agot_scenario_dd }
-				save_scope_as = scenario_dd_story
-			}
-		}
 		hidden_effect = { # Remove Road Blocks
 			agot_rr_remove_cersei_infertility = yes
 			agot_dd_rhaegar_can_marry = yes
@@ -4923,15 +4865,6 @@ agot_scenario_dd.0311 = { # Aerys Can Choose Spouse for Rhaegar; After Denying T
 		ai_chance = {
 			base = 0
 			modifier = { add = agot_nonhistoric_outcome_4 } # Non-historic Weight
-		}
-	}
-
-	after = {
-		scope:scenario_dd_story ?= { # The Marriage is Resolved
-			set_variable = {
-				name = agot_dd_rhaegar
-				value = flag:married
-			}
 		}
 	}
 }
