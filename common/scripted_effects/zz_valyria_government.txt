@@ -195,9 +195,6 @@ convert_to_freehold_from_feudel_effect = {
 
 	if = {
 		limit = {
-			NOT = {
-				has_character_flag = latin_emp_force_admin_flag
-			}
 			is_independent_ruler = yes
 		}
 		add_character_modifier = {
@@ -267,6 +264,26 @@ create_noble_family_dragonrider_effect = {
 	debug_log_scopes = yes
 }
 
+change_to_freehold_hereditary_effect = {
+	scope:recipient = {
+		save_scope_as = petition_vassal
+		every_held_title = {
+			limit = {
+				tier = scope:petition_vassal.highest_held_title_tier
+				is_landless_type_title = no
+				is_noble_family_title = no
+			}
+			custom_tooltip = {
+				text = petition_liege_house_governorship_rights_tt
+				set_variable = {
+					name = petition_house_rights
+					value = scope:petition_vassal.house
+					years = 100
+				}
+			}
+		}
+	}
+}
 change_to_freehold_effect = {
 	save_scope_as = governor
 	if = {
@@ -305,6 +322,61 @@ change_to_freehold_effect = {
 	}
 }
 
+change_to_freehold_interaction_effect = {
+	scope:actor = {
+		pay_short_term_gold = {
+			target = scope:recipient
+			gold = {
+				value = 50
+				scope:recipient = {
+					if = {
+						limit = { highest_held_title_tier >= tier_kingdom }
+						multiply = 10
+					}
+					else_if = {
+						limit = { highest_held_title_tier >= tier_duchy }
+						multiply = 6
+					}
+					else_if = {
+						limit = { highest_held_title_tier >= tier_county }
+						multiply = 3
+					}
+				}
+				if = {
+					limit = { scope:gold ?= yes }
+					add = scope:actor.medium_gold_value
+				}
+				if = {
+					limit = {
+						scope:actor = { has_realm_law_flag = admin_change_vassal_gov_cheaper }
+					}
+					multiply = 0.5
+				}
+			}
+		}
+	}
+	scope:recipient = { change_to_freehold_effect = yes }
+	if = {
+		limit = {
+			scope:hook = yes
+			scope:actor = { has_usable_hook = scope:recipient }
+		}
+		scope:actor = { use_hook = scope:recipient }
+	}
+	if = {
+		limit = { scope:hereditary = yes }
+		scope:recipient = { save_scope_as = petition_vassal }
+		change_to_freehold_hereditary_effect = yes
+	}
+	if = {
+		limit = { scope:influence = yes }
+		scope:actor = {
+			change_influence = {
+				value = massive_influence_loss
+			}
+		}
+	}
+}
 
 create_valyrian_freehold_scripted_effect = {
 	add_trait = augustus

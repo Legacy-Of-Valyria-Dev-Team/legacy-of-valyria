@@ -1,101 +1,223 @@
 ﻿agot_become_a_knight_effect = {
-	# Add knight leveled trait
-	if = {
-		limit = {
-			has_trait = squire
-		}
-		add_trait_xp = {
-			trait = squire
-			track = knight
-			value = 100
-		}
-	}
-	else_if = {
-		limit = {
-			NOT = {
+	$KNIGHT_TO_BE$ = {
+		# Add knight leveled trait
+		if = {
+			limit = {
 				has_trait = squire
 			}
+			add_trait_xp = {
+				trait = squire
+				track = knight
+				value = 100
+			}
 		}
-		add_trait = squire
-		add_trait_xp = {
-			trait = squire
-			track = knight
-			value = 100
+		else_if = {
+			limit = {
+				NOT = {
+					has_trait = squire
+				}
+			}
+			add_trait = squire
+			add_trait_xp = {
+				trait = squire
+				track = knight
+				value = 100
+			}
 		}
-	}
-	# End the squire ongoing story
-	if = {
-		limit = {
-			OR = {
-				has_character_flag = had_ongoing_squire_story
-				any_owned_story = { # Fallback incase the character flag isn't registered
+		if = {
+			limit = {
+				has_character_flag = agot_knighthood_knightless_squire_flag
+			}
+			remove_character_flag = agot_knighthood_knightless_squire_flag
+		}
+		# Remove Relations Where Possible
+		if = {
+			limit = { has_relation_agot_knight = $KNIGHT_MAKER$ }
+			$KNIGHT_MAKER$ = {
+				if = {
+					limit = {
+						AND = {
+							is_away_from_court = yes
+							OR = {
+								is_foreign_court_guest_of = $KNIGHT_TO_BE$
+								AND = {
+									exists = $KNIGHT_TO_BE$.host
+									is_foreign_court_guest_of = $KNIGHT_TO_BE$.host
+								}
+								AND = {
+									exists = $KNIGHT_TO_BE$.liege
+									is_foreign_court_guest_of = $KNIGHT_TO_BE$.liege
+								}
+							}
+						}
+					}
+					return_to_court = yes
+				}
+				remove_relation_agot_squire = $KNIGHT_TO_BE$
+			}
+		}
+		# End the squire ongoing story
+		if = {
+			limit = {
+				OR = {
+					has_character_flag = had_ongoing_squire_story
+					any_owned_story = {
+						story_type = story_agot_squire_ongoing
+					}
+				}
+			}
+			random_owned_story = {
+				limit = {
 					story_type = story_agot_squire_ongoing
 				}
+				end_story = yes
 			}
 		}
-		random_owned_story = {
+		# Notify close family of your becoming of a knight
+		save_scope_as = my_relation
+		if = {
 			limit = {
-				story_type = story_agot_squire_ongoing
-			}
-			end_story = yes
-		}
-	}
-	# Notify close family of your becoming of a knight
-	save_scope_as = my_relation
-	if = {
-		limit = {
-			any_close_family_member = {
-				exists = yes
-			}
-		}
-		every_close_family_member = {
-			limit = {
-				opinion = {
-					target = scope:my_relation
-					value >= 10 #Minimum of 10 opinion here. Can increase or decrease if too spammy.
+				any_close_family_member = {
+					exists = yes
 				}
 			}
-			trigger_event = {
-				id = agot_knighthood.0320
-				days = 1
-			}
-		}
-	}
-	# Lowborns get Personal COA
-	if = {
-		limit = {
-			is_lowborn = yes
-		}
-		hidden_effect = {
-			random_list = {
-				25 = {
-					agot_create_personal_coa = yes
+			every_close_family_member = {
+				limit = {
+					opinion = {
+						target = scope:my_relation
+						value >= 10 #Minimum of 10 opinion here. Can increase or decrease if too spammy.
+					}
 				}
-				75 = {}
+				trigger_event = {
+					id = agot_knighthood.0320
+					days = 1
+				}
 			}
 		}
-	}
-	# Add Piety
-	if = {
-		limit = {
-			NOT = { has_character_flag = agot_bought_knighthood }
-			faith = {
-				has_doctrine = tenet_knighthood
+		# Add Memories & Prestige & Piety & Opinion
+		if = {
+			limit = {
+				has_character_flag = agot_bought_knighthood
+			}
+			add_prestige = 25
+			create_character_memory = {
+				type = agot_bought_knighthood
+				participants = {
+					purchaser = $KNIGHT_TO_BE$
+				}
 			}
 		}
-		add_piety = 75
-	}
-	# SOTM
-	if = {
-		limit = {
-			exists = dynasty
-			dynasty = dynasty:dynn_Dayne
-			NOT = { this = dynasty.dynast }
+		else = {
+			$KNIGHT_MAKER$ = {
+				if = {
+					limit = {
+						$KNIGHT_TO_BE$ = {
+							has_character_flag = agot_knighthood_as_tourney_prize
+						}
+					}
+					create_character_memory = {
+						type = agot_knighted_someone_as_tourney_prize
+						participants = {
+							squire = $KNIGHT_TO_BE$
+						}
+					}
+				}
+				else = {
+					create_character_memory = {
+						type = agot_knighted_someone
+						participants = {
+							squire = $KNIGHT_TO_BE$
+						}
+					}
+				}
+				if = {
+					limit = {
+						is_alive = yes # Stops RTE during death-bed knightings
+					}
+					add_opinion = {
+						target = $KNIGHT_TO_BE$
+						modifier = i_made_you_a_knight_opinion
+						opinion = 25
+					}
+					if = {
+						limit = {
+							faith = { has_doctrine = tenet_knighthood }
+						}
+						add_piety = 25
+					}
+				}
+			}
+			if = {
+				limit = {
+					$KNIGHT_MAKER$ = {
+						is_alive = yes
+					}
+				}
+				add_opinion = {
+					target = $KNIGHT_MAKER$
+					modifier = knighted_me_opinion
+					opinion = 50
+				}
+			}
+			if = {
+				limit = {
+					has_character_flag = agot_knighthood_as_tourney_prize
+				}
+				create_character_memory = {
+					type = agot_was_knighted_as_tourney_prize
+					participants = {
+						knight = $KNIGHT_MAKER$
+					}
+				}
+			}
+			else = {
+				create_character_memory = {
+					type = agot_was_knighted
+					participants = {
+						knight = $KNIGHT_MAKER$
+					}
+				}
+			}
+			# Add Prestige
+			agot_add_become_a_knight_prestige_effect = {
+				KNIGHT_MAKER = $KNIGHT_MAKER$
+				KNIGHT_TO_BE = $KNIGHT_TO_BE$
+			}
+			if = {
+				limit = {
+					faith = {
+						has_doctrine = tenet_knighthood
+					}
+				}
+				add_piety = 75
+			}
 		}
-		dynasty.dynast = {
-			trigger_event = {
-				id = agot_valyrian_steel.0001
-				days = 1
+		# Lowborns get Personal COA
+		if = {
+			limit = {
+				is_lowborn = yes
+			}
+			hidden_effect = {
+				random_list = {
+					25 = {
+						agot_create_personal_coa = yes
+					}
+					75 = {}
+				}
+			}
+		}
+		# SOTM
+		if = {
+			limit = {
+				exists = dynasty
+				dynasty = dynasty:dynn_Dayne
+				NOT = { this = dynasty.dynast }
+			}
+			dynasty.dynast = {
+				trigger_event = {
+					id = agot_valyrian_steel.0001
+					days = 1
+				}
 			}
 		}
 	}
@@ -232,19 +354,19 @@ agot_add_become_a_knight_prestige_effect = {
 }
 
 agot_offer_squire_interaction_effect = {
-	scope:knight = {
-		set_relation_agot_squire = scope:squire
+	$KNIGHT$ = {
+		set_relation_agot_squire = $SQUIRE$
 		create_character_memory = {
 			type = agot_got_squire
 			participants = {
-				squire = scope:squire
+				squire = $SQUIRE$
 			}
 		}
 	}
-	scope:squire = {
+	$SQUIRE$ = {
 		#Set relation and move character
 		add_trait = squire
-		scope:knight = {
+		$KNIGHT$ = {
 			save_scope_as = my_knight
 		}
 
@@ -253,7 +375,7 @@ agot_offer_squire_interaction_effect = {
 		create_character_memory = {
 			type = agot_became_squire
 			participants = {
-				knight = scope:knight
+				knight = $KNIGHT$
 			}
 		}
 
@@ -264,21 +386,24 @@ agot_offer_squire_interaction_effect = {
 			remove_character_flag = agot_knighthood_knightless_squire_flag
 		}
 
-		agot_move_knight_for_education_or_squiring_purposes = yes
+		agot_move_knight_for_education_or_squiring_purposes = {
+			KNIGHT = $KNIGHT$
+			SQUIRE = $SQUIRE$
+		}
 
 	}
 
-	scope:knight = {
+	$KNIGHT$ = {
 		add_opinion = {
-			target = scope:squire
+			target = $SQUIRE$
 			modifier = became_my_squire_opinion
 			opinion = 25
 		}
 	}
 
-	scope:squire = {
+	$SQUIRE$ = {
 		add_opinion = {
-			target = scope:knight
+			target = $KNIGHT$
 			modifier = made_me_squire_opinion
 			opinion = 25
 		}
@@ -286,7 +411,7 @@ agot_offer_squire_interaction_effect = {
 
 	scope:actor = {
 		if = {
-			limit = { 
+			limit = {
 				scope:hook = yes
 				has_usable_hook = scope:recipient
 			}
@@ -300,19 +425,19 @@ agot_offer_squire_interaction_effect = {
 }
 
 agot_offer_knight_education_interaction_effect = {
-	scope:knight = {
-		set_relation_agot_squire = scope:squire
+	$KNIGHT$ = {
+		set_relation_agot_squire = $SQUIRE$
 		create_character_memory = {
 			type = agot_got_squire
 			participants = {
-				squire = scope:squire
+				squire = $SQUIRE$
 			}
 		}
 	}
-	scope:squire = {
-		show_as_tooltip = { set_relation_agot_knight = scope:knight }
+	$SQUIRE$ = {
+		show_as_tooltip = { set_relation_agot_knight = $KNIGHT$ }
 		add_trait = squire
-		scope:knight = {
+		$KNIGHT$ = {
 			save_scope_as = my_knight
 		}
 
@@ -321,7 +446,7 @@ agot_offer_knight_education_interaction_effect = {
 		create_character_memory = {
 			type = agot_became_squire
 			participants = {
-				knight = scope:knight
+				knight = $KNIGHT$
 			}
 		}
 
@@ -332,13 +457,16 @@ agot_offer_knight_education_interaction_effect = {
 			remove_character_flag = agot_knighthood_knightless_squire_flag
 		}
 
-		agot_move_knight_for_education_or_squiring_purposes = yes
+		agot_move_knight_for_education_or_squiring_purposes = {
+			KNIGHT = $KNIGHT$
+			SQUIRE = $SQUIRE$
+		}
 
 	}
 
 	scope:actor = {
 		if = {
-			limit = { 
+			limit = {
 				scope:hook = yes
 				has_usable_hook = scope:recipient
 			}
@@ -362,7 +490,14 @@ agot_set_squire_effect = {
 		}
 	}
 	$SQUIRE$ = {
-		add_trait = squire
+		if = {
+			limit = {
+				NOT = {
+					has_trait = squire
+				}
+			}
+			add_trait = squire
+		}
 		save_scope_as = squire
 		$KNIGHT$ = {
 			save_scope_as = my_knight
@@ -383,67 +518,10 @@ agot_set_squire_effect = {
 			}
 			remove_character_flag = agot_knighthood_knightless_squire_flag
 		}
-
-		if = {
-			limit = {
-				scope:my_knight = { 
-					is_playable_character = yes
-				}
-				scope:squire = { 
-					is_playable_character = no
-				}
-				NOT = { # If they have a guardian they will not move
-					scope:squire = {
-						any_relation = {
-							type = guardian
-						}
-					}
-				}
-				NOT = {
-					scope:my_knight = scope:squire.host
-				}
-			}
-			visit_court_of = scope:my_knight
-		}
-		else_if = {
-			limit = {
-				scope:my_knight = { is_playable_character = no }
-				scope:squire = { is_playable_character = yes }
-				NOT = {
-					scope:squire = scope:my_knight.host
-				}
-			}
-			scope:my_knight = {
-				visit_court_of = scope:squire
-			}
-		}
-		else_if = {
-			limit = {
-				scope:my_knight = { is_playable_character = no }
-				scope:squire = {
-					is_playable_character = no
-					any_relation = {
-						type = guardian
-					}
-				}
-				NOT = {
-					scope:my_knight.host = scope:squire.host
-				}
-			}
-			scope:my_knight = {
-				visit_court_of = scope:squire.host
-			}
-		}
-		else_if = {
-			limit = {
-				scope:my_knight = { is_playable_character = no }
-				scope:squire = { is_playable_character = no }
-				NOT = {
-					scope:my_knight.host = scope:squire.host
-				}
-			}
-			visit_court_of = scope:my_knight.host
-		}
+	}
+	agot_move_knight_for_education_or_squiring_purposes = {
+		KNIGHT = $KNIGHT$
+		SQUIRE = $SQUIRE$
 	}
 }
 
@@ -515,90 +593,90 @@ agot_strip_knighthood_as_punishment_effect = {
 agot_move_knight_for_education_or_squiring_purposes = {
 	if = {
 		limit = {
-			scope:knight = { 
+			$KNIGHT$ = {
 				is_playable_character = yes
 			}
-			scope:squire = { 
+			$SQUIRE$ = {
 				is_playable_character = no
 			}
 			NOT = { # If they have a guardian they will not move
-				scope:squire = {
+				$SQUIRE$ = {
 						any_relation = {
 							type = guardian
 						}
 					}
 			}
 			NOT = {
-				scope:knight = scope:squire.host
+				$KNIGHT$ = $SQUIRE$.host
 			}
 		}
-		visit_court_of = scope:knight
+		visit_court_of = $KNIGHT$
 	}
 	else_if = {
 		limit = {
-			scope:knight = { 
+			$KNIGHT$ = {
 				is_playable_character = no
 			}
-			scope:squire = { 
-				is_playable_character = yes 
+			$SQUIRE$ = {
+				is_playable_character = yes
 			}
 			NOT = {
-				scope:knight = {
+				$KNIGHT$ = {
 					has_trait = kingsguard
 				}
 			}
 			NOT = {
-				scope:squire = scope:knight.host
+				$SQUIRE$ = $KNIGHT$.host
 			}
 		}
-		scope:knight = {
-			visit_court_of = scope:squire
+		$KNIGHT$ = {
+			visit_court_of = $SQUIRE$
 		}
 	}
 	else_if = {
 		limit = {
-			scope:knight = { 
+			$KNIGHT$ = {
 				is_playable_character = no
 			}
-			scope:squire = {
+			$SQUIRE$ = {
 				is_playable_character = no
 				any_relation = {
 					type = guardian
 				}
 			}
 			NOT = {
-				scope:knight = {
+				$KNIGHT$ = {
 					has_trait = kingsguard
 				}
 			}
 			NOT = {
-				scope:knight.host = scope:squire.host
+				$KNIGHT$.host = $SQUIRE$.host
 			}
 		}
-		scope:knight = {
-			visit_court_of = scope:squire.host
+		$KNIGHT$ = {
+			visit_court_of = $SQUIRE$.host
 		}
 	}
 	else_if = {
 		limit = {
-			scope:knight = { 
+			$KNIGHT$ = {
 				is_playable_character = no
 			}
-			scope:squire = { 
+			$SQUIRE$ = {
 				is_playable_character = no
 			}
 			NOT = { # If they have a guardian they will not move
-				scope:squire = {
+				$SQUIRE$ = {
 						any_relation = {
 							type = guardian
 						}
 					}
 			}
 			NOT = {
-				scope:knight.host = scope:squire.host
+				$KNIGHT$.host = $SQUIRE$.host
 			}
 		}
-		visit_court_of = scope:knight.host
+		visit_court_of = $KNIGHT$.host
 	}
 }
 
@@ -623,20 +701,10 @@ agot_init_squire_story_cycle_effect = {
 
 agot_tournament_reward_knighthood_prize = {
 	$WINNER$ = {
-		agot_become_a_knight_effect = yes
-		create_character_memory = {
-			type = agot_was_knighted_as_tourney_prize
-			participants = {
-				knight = $HOST$
-			}
-		}
-	}
-	$HOST$ = {
-		create_character_memory = {
-			type = agot_knighted_someone_as_tourney_prize
-			participants = {
-				squire = $WINNER$
-			}
+		add_character_flag = agot_knighthood_as_tourney_prize
+		agot_become_a_knight_effect = {
+			KNIGHT_MAKER = $HOST$
+			KNIGHT_TO_BE = $WINNER$
 		}
 	}
 }
@@ -659,6 +727,40 @@ agot_add_squire_trait_xp_effect = {
 					add = { 5 10 }
 				}
 			}
+		}
+	}
+}
+	
+agot_add_squire_trait_xp_skip_chiv_bonus_effect = {
+    add_trait_xp = {
+        trait = squire
+        track = knight
+        value = {
+            value = 0
+            add = {
+                integer_range = { min = $MIN_VALUE$ max = $MAX_VALUE$ }
+            }
+        }
+    }        
+}
+
+agot_knightless_squire_cleanup_timer_effect = {
+	if = {
+		limit = {
+			is_ai = yes
+		}
+		trigger_event = {
+			id = agot_knighthood_maintenance.0300
+			months = 4
+		}
+	}
+	else_if = {
+		limit = {
+			is_ai = no
+		}
+		trigger_event = {
+			id = agot_knighthood_maintenance.0300
+			years = 1
 		}
 	}
 }

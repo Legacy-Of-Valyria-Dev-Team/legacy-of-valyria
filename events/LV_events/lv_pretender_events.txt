@@ -1,0 +1,243 @@
+﻿namespace = lv_pretender_empire
+
+# Establish pretender empire
+lv_pretender_empire.1 = {
+	type = character_event
+	title = lv_pretender_empire.1.title
+	desc = lv_pretender_empire.1.desc
+	theme = crown
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+	
+	immediate = {
+		save_scope_as = pretender
+	}
+
+	option = {
+		name = lv_pretender_empire.1.a
+		add_prestige = -5000
+		LV_form_pretender_empire_effect = yes
+	}
+	option = {
+		name = lv_pretender_empire.1.b
+	}
+
+	after = {
+		remove_character_flag = lv_pretender_empire_decision_hide
+	}
+}
+
+# Closest Free City is alerted
+lv_pretender_empire.2 = {
+	type = character_event
+	title = lv_pretender_empire.2.title
+	desc = lv_pretender_empire.2.desc
+	theme = dread
+	left_portrait = {
+		character = root
+		animation = personality_cynical
+	}
+	right_portrait = {
+		character = scope:pretender
+		animation = war_defender
+	}
+
+	option = {
+		name = lv_pretender_empire.2.a
+		start_war = {
+			cb = dismantle_pretender_cb
+			target = scope:pretender
+		}
+		# Send invite to all eligible attackers
+		every_independent_ruler = {
+			limit = {
+				NOR = {
+					this = scope:pretender
+					this = root
+					is_allied_to = scope:pretender
+				}
+				in_diplomatic_range = root
+				is_landed = yes
+				is_human = yes
+			}
+			trigger_event = {
+				id = lv_pretender_empire.3
+				days = { 2 7 }
+			}
+		}
+	}
+	option = {
+		name = lv_pretender_empire.2.b
+
+		# Transfer to AI instead so they'll start the coalition
+		ordered_independent_ruler = {
+			limit = {
+				NOR = {
+					this = scope:pretender
+					this = root
+					is_allied_to = scope:pretender
+					has_truce = scope:pretender
+					any_home_court_hostage = { is_hostage_of = scope:pretender }
+				}
+				OR = {
+					has_government = free_city_government
+				}
+			}
+			order_by = "scope:pretender.capital_province.squared_distance(root.capital_province)"
+			position = 0
+			trigger_event = {
+				id = lv_pretender_empire.2
+			}
+		}
+
+		ai_chance = {
+			base = 0 # Fuck it, we ball
+		}
+	}
+}
+
+# Notify Free Cities of pretender
+lv_pretender_empire.3 = {
+	type = character_event
+	title = lv_pretender_empire.3.title
+	desc = lv_pretender_empire.3.desc
+	theme = dread
+	left_portrait = {
+		character = scope:pretender_opponent
+		animation = war_attacker
+	}
+	right_portrait = {
+		character = scope:pretender
+		animation = war_defender
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				scope:pretender = {
+					any_character_war = {
+						using_cb = dismantle_pretender_cb
+						is_defender = prev
+					}
+				}
+			}
+			scope:pretender = {
+				random_character_war = {
+					limit = {
+						using_cb = dismantle_pretender_cb
+						is_defender = prev
+					}
+					primary_attacker = { save_scope_as = pretender_opponent }
+					save_scope_as = dismantle_pretender_war
+				}
+			}
+		}
+	}
+
+	option = {
+		name = lv_pretender_empire.3.a
+		scope:dismantle_pretender_war = { add_attacker = root }
+		LV_pretender_war_truce_break_effect = yes
+
+		ai_chance = {
+			base = 50
+			opinion_modifier = { opinion_target = scope:pretender_opponent }
+			opinion_modifier = {
+				opinion_target = scope:pretender
+				multiplier = -1
+			}
+			# Free Cities will be much more compelled to band together against the pretender
+			modifier = {
+				add = 300
+				has_government = free_city_government
+			}
+			# Stance on slavery
+			modifier = {
+				add = 100
+				trigger_if = {
+					limit = { agot_slavery_allowed_trigger = yes }
+					scope:pretender = { agot_slavery_allowed_trigger = no }
+				}
+				trigger_else = {
+					scope:pretender = { agot_slavery_allowed_trigger = yes }
+				}
+			}
+			# AI stances
+			modifier = {
+				add = -150
+				ai_diplomacy_stance = {
+					target = scope:pretender
+					stance = friend
+				}
+			}
+			modifier = {
+				add = 100
+				ai_diplomacy_stance = {
+					target = scope:pretender
+					stance = threat
+				}
+			}
+			modifier = {
+				add = 200
+				ai_diplomacy_stance = {
+					target = scope:pretender
+					stance = enemy
+				}
+			}
+			# Dynasty and house members
+			modifier = {
+				add = -25
+				dynasty = scope:pretender.dynasty
+			}
+			modifier = {
+				add = -50
+				house = scope:pretender.house
+			}
+			# Less likely if the pretender has your hostages or has a truce
+			modifier = {
+				add = -300
+				any_home_court_hostage = { is_hostage_of = scope:pretender }
+			}
+			modifier = {
+				add = -150
+				has_truce = scope:pretender
+			}
+			# Reluctant if already in another war
+			modifier = {
+				add = -50
+				is_at_war = yes
+			}
+			# Reluctance to fight in a war abroad
+			modifier = {
+				add = -100
+				trigger_if = {
+					limit = { capital_province = { geographical_region = world_westeros } }
+					scope:pretender = { capital_province = { geographical_region = world_essos } }
+				}
+				trigger_else_if = {
+					limit = { capital_province = { geographical_region = world_essos } }
+					scope:pretender = { capital_province = { geographical_region = world_westeros } }
+				}
+				trigger_else = {
+					always = no
+				}
+			}
+			# Dragonrider or Valyrian is insulted
+			modifier = {
+				add = 100
+				OR = {
+					has_trait = dragonrider
+					culture = { has_cultural_pillar = heritage_valyrian }
+					dynasty = { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+					this.dragonblood_percent > 0
+				}
+				has_trait = arrogant
+			}
+		}
+	}
+	option = {
+		name = lv_pretender_empire.3.b
+	}
+}

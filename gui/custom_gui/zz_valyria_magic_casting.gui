@@ -2,9 +2,11 @@
 	type magic_casting_window_open = window {
 		name = "magic_casting_window_open"
 		allow_outside = yes
+		layer = windows_layer
 		movable = yes
-		parentanchor = center
-		size = { 0 0 }
+		parentanchor = top|right
+		alwaystransparent = yes
+		size = { 100% 100% }
 
 		visible = "[And( Not( IsPauseMenuShown ), And(Or(Not(IsObserver), GetPlayer.IsValid), IsDefaultGUIMode))]"
 
@@ -13,26 +15,51 @@
 
 	type zz_magic_window = window {
 		name = "zz_magic_window"
-		layer = top
+		layer = midde
 		using = Window_Background
-		parentanchor = center
-		size = { 1100 800 }
+		#parentanchor = center#
+		parentanchor = top|right
+		size = { 1400 100% }
 		datacontext = "[GetScriptedGui('zz_valyria_magic_casting')]"
 		visible = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-
+		movable = no
 		state = {
 			name = _show
-			on_start = "[GetVariableSystem.Set( 'gui_tabs', 'tab_1' )]"
+			using = Animation_FadeIn_Quick
+			using = Sound_WindowShow_Standard
+			using = Window_Position_MainTab
+			on_start  = "[GetVariableSystem.Set('magic_page','higher_mysteries')]"
+	
 		}
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Quick
+			using = Sound_WindowHide_Standard
+			using = Window_Position_MainTab_Hide
+		}
+
 		margin_widget = {
 			size = { 100% 100% }
-			margin = { 0 26 }
+			margin = { 13 13 }
 			margin_right = 13
 			margin_left = 13
-
+			margin_bottom = 13
 			widget = {
 				size = { 100% 100% }
-
+				background = {
+					texture = "gfx/interface//illustrations/magic_casting/zz_magic_casting_background.dds"
+					margin = { -5 -5 }
+					fittype = centercrop
+					alpha = 1
+								
+					using = Mask_Rough_Edges
+		
+					modify_texture = {
+						texture = "gfx/interface/component_masks/mask_fade_vertical.dds"
+						blend_mode = alphamultiply
+						mirror = vertical
+					}
+				}
 				vbox = {
 					using = Window_Margins
 
@@ -56,57 +83,53 @@
 
 						layoutpolicy_horizontal = expanding
 						expand = {}
-						vbox = {
-							button_standard = { 
-								name = "mage_casting_tab"
-								layoutpolicy_horizontal = expanding 
+						button_tab = { 
+							name = "mage_casting_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
 								layoutpolicy_vertical = expanding
-								align = center
-								minimumsize = { 100 38 }
-								vbox = {
-									layoutpolicy_horizontal = expanding
-									layoutpolicy_vertical = expanding
-									spacing = 5
-									margin = { 5 5 }
-									text_single = {
-										raw_text = "Mage Casting"
-										alwaystransparent = yes
-									}
-								}							
-								datacontext = "[GetScriptedGui('zz_valyria_magic_casting_mystery')]"
-								#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-								visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								onclick = "[GetScriptedGui('zz_valyria_magic_casting_mystery_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-							}
-						}
-						vbox = {
-							button_standard = { 
-								name = "scroll_casting_tab"
-								layoutpolicy_horizontal = expanding 
-								layoutpolicy_vertical = expanding
-								align = center
-								minimumsize = { 100 38 }
-								vbox = {
-									layoutpolicy_horizontal = expanding
-									layoutpolicy_vertical = expanding
-									spacing = 5
-									margin = { 5 5 }
-									text_single = {
-										raw_text = "Scroll Casting"
-										alwaystransparent = yes
-									}
-
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Mage Casting"
+									alwaystransparent = yes
 								}
-								
-								datacontext = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting')]"
-								#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-								visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								#enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-								onclick = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							}							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_casting_mystery')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_casting_mystery_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						}
+						button_tab = { 
+							name = "scroll_casting_tab"
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							align = center
+							minimumsize = { 100 38 }
+							vbox = {
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+								spacing = 5
+								margin = { 5 5 }
+								text_single = {
+									raw_text = "Scroll Casting"
+									alwaystransparent = yes
+								}
+
 							}
+							
+							datacontext = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting')]"
+							#onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+							visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							#enabled = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							down = "[ScriptedGui.IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							onclick = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting_click').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						}
 
 						expand = {}
@@ -114,11 +137,12 @@
 					expand = {}
 					spacer = { size = { 00 5 } }
 					hbox = { 
+						margin_bottom = 20
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						visible = "[GetScriptedGui('zz_valyria_magic_casting_mystery').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						
 						datacontext = "[GetPlayer.MakeScope]"
-
+	
 						background = {
 							texture = "[Illustration.GetTexture( GetPlayer.MakeScope )]"
 							margin = { -5 0 }
@@ -133,10 +157,14 @@
 								mirror = vertical
 							}
 						}
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
 							max_width = 300
+							spacer = { size = { 0 30 } }
 							text_single = {
 								raw_text = "Mages"
 								fontsize = 24
@@ -148,14 +176,17 @@
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
 								max_width = 250
-								max_height = 450
+								#max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('mage_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -183,22 +214,19 @@
 							expand = {}
 						}
 						vbox = {
-							layoutpolicy_horizontal = growing 
-							layoutpolicy_vertical = growing
-							max_width = 300
+							layoutpolicy_horizontal = expanding 
+							layoutpolicy_vertical = expanding
+							background = {
+								using = Background_Area_Dark
+							}
+							spacer = { size = { 0 30 } }
+							max_width = 200
 							text_single = {
-								raw_text = "Magic Casting Stats"
+								raw_text = "Magic Caster"
 								fontsize = 24
 								align = top
 							}
 							spacer = { size = { 00 30 } }
-							text_single = {
-								raw_text = "Magic Caster"
-								fontsize = 18
-								align = left
-							}
-							spacer = { size = { 00 15 } }
-
 							vbox = {
 								size = { 200 120 }
 								datacontext = "[GetPlayer.MakeScope.Var('zz_magic_caster').Char]"
@@ -270,86 +298,124 @@
 									align = left
 									raw_text = "Drops of Power - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_drops_of_power_stat_gui')|0]"
 								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 1 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_01_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 2 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_02_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 3 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_03_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 4 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_04_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 5 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_05_stat_gui')|0]"
-								}
-							}
-							spacer = { size = { 00 5 } }
-							flowcontainer = {
-								visible = "[Scope.Char.MakeScope.Var('zz_magic_caster').Char.HasTrait(GetTrait('born_under_a_red_comet'))]"
-								text_single = {
-									align = left
-									raw_text = "Stores of Power 6 - [Scope.Char.MakeScope.Var('zz_magic_caster').ScriptValue('zz_valyria_stores_of_power_06_stat_gui')|0]"
-								}
-							}
-
-							
+							}							
 							expand = {}
 						}
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							spacer = { size = { 0 30 } }
+							max_width = 550
 							text_single = {
 								text = game_concept_zz_mystery
 								fontsize = 24
 								align = center
 							}
 							spacer = { size = { 0 30 } }
-							
+							widget = {
+								size = { 300 40}
+								hbox = {
+									layoutpolicy_horizontal = expanding 
+									background = {
+										using = Background_Area_Dark
+									}
+									expand = {}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_higher_mysteries"
+											texture = "gfx/interface/icons/trait_level_tracks/secrets_of_the_higher_mysteries.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','higher_mysteries' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_blood_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/blood_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','blood_magic' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_shadow_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/shadow_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','shadow_magic' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_dream_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/dream_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','dream_magic' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_alchemy_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/alchemy_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','alchemy_magic' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_fire_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/fire_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','fire_magic' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_air_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/air_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','air_magic' ) ]"
+									}
+									button_normal = {
+										size = { 30 30}
+										icon = {
+											name = "icon_water_magic"
+											texture = "gfx/interface/icons/trait_level_tracks/water_magic.dds"
+											size = { 100% 100% }
+										}
+										onclick = "[GetVariableSystem.Set( 'magic_page','water_magic' ) ]"
+									}
+									expand = {}
+								}
+							}
+
 							scrollbox = {
 								name = "spell_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','higher_mysteries')]"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 450
-								max_height = 450
+								max_width = 550
+								#max_height = 500
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
 										datacontext = "[GetPlayer.MakeScope]"
 										datamodel = "[Scope.GetList('zz_valyria_spell_list')]"
 										
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.CharacterMemory]"
-												minimumsize = { 400 38 }
+												minimumsize = { 500 38 }
 												text_single = {
 													minimumsize = { 100 38 }
 													margin = { 15 15 }
@@ -358,6 +424,334 @@
 													resizeparent = yes
 													align = center|nobaseline
 													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_blood_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','blood_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_blood_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_shadow_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','shadow_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_shadow_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_dream_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','dream_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_dream_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_alchemy_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','alchemy_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_alchemy_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_fire_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','fire_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_fire_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_air_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','air_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_air_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
+												}
+												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
+												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												down = "[ScriptedGui.IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+												tooltip = "[ScriptedGui.BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
+											}	
+										}
+									}
+									expand = {}
+								}
+							}
+							scrollbox = {
+								name = "spell_water_scrollarea"
+								visible = "[GetVariableSystem.HasValue( 'magic_page','water_magic')]"
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+								max_width = 550
+								#max_height = 500
+								blockoverride "scrollbox_content"
+								{
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
+										datacontext = "[GetPlayer.MakeScope]"
+										datamodel = "[Scope.GetList('zz_valyria_spell_water_list')]"
+										
+										item = {
+											button_standard = {
+												parentanchor = top|left
+												datacontext = "[Scope.CharacterMemory]"
+												minimumsize = { 500 38 }
+												text_single = {
+													minimumsize = { 100 38 }
+													margin = { 15 15 }
+													text = "[CharacterMemory.GetName|U]"
+													alwaystransparent = yes
+													resizeparent = yes
+													align = center|nobaseline
+													default_format = "#low"
+												}
+												text_label_center = {
+													parentanchor = top|right
+													margin_right = 30
+													layoutpolicy_horizontal = expanding
+													text = "[CharacterMemory.MakeScope.ScriptValue('mystery_cost')|0]"
 												}
 												datacontext = "[GetScriptedGui('zz_valyria_blood_magic_01')]"
 												onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'zz_valyria_mystery', CharacterMemory.MakeScope ).End)]"
@@ -389,12 +783,14 @@
 									default_format = "#low"								
 								}
 								datacontext = "[GetScriptedGui('zz_valyria_magic_cast')]"
+								enabled = "[ScriptedGui.IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 								onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 							}
 							expand = {}
 						}
 					}
 					hbox = { 
+						margin_bottom = 20
 						layoutpolicy_horizontal = expanding   layoutpolicy_vertical = expanding
 						visible = "[GetScriptedGui('zz_valyria_magic_casting_scroll_casting').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 						
@@ -414,9 +810,13 @@
 								mirror = vertical
 							}
 						}
+						background = {
+							using = Background_Area_Dark
+						}
 						vbox = {
 							layoutpolicy_vertical = expanding
 							layoutpolicy_horizontal = expanding
+							spacer = { size = { 0 30 } }
 							max_width = 300
 							text_single = {
 								raw_text = "Item User"
@@ -429,14 +829,17 @@
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
 								max_width = 250
-								max_height = 450
+								#max_height = 450
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 200
+										addrow = 125
 										datamodel = "[Scope.GetList('item_caster_list')]"
 									
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												size = { 200 120 }
 												align = left
 												datacontext = "[Scope.GetCharacter]"
@@ -466,19 +869,17 @@
 						vbox = {
 							layoutpolicy_horizontal = growing 
 							layoutpolicy_vertical = growing
-							max_width = 300
+							background = {
+								using = Background_Area_Dark
+							}
+							spacer = { size = { 0 30 } }
+							max_width = 200
 							text_single = {
-								raw_text = "Magic Casting Stats"
+								raw_text = "Scrolll Caster"
 								fontsize = 24
 								align = top
 							}
 							spacer = { size = { 00 30 } }
-							text_single = {
-								raw_text = "Magic Caster"
-								fontsize = 18
-								align = left
-							}
-							spacer = { size = { 00 15 } }
 
 							vbox = {
 								size = { 200 120 }
@@ -559,9 +960,10 @@
 						vbox = {
 							layoutpolicy_horizontal = expanding 
 							layoutpolicy_vertical = expanding
-							max_width = 500
+							max_width = 550
+							spacer = { size = { 0 30 } }
 							text_single = {
-								text = game_concept_zz_mystery
+								raw_text = "Scroll"
 								fontsize = 24
 								align = center
 							}
@@ -571,16 +973,19 @@
 								name = "spell_scrollarea"
 								layoutpolicy_vertical = expanding
 								layoutpolicy_horizontal = expanding
-								max_width = 500
-								max_height = 450
+								max_width = 550
+								#max_height = 500
 								blockoverride "scrollbox_content"
 								{
-									dynamicgridbox = {
+									fixedgridbox = {
+										addcolumn = 500
+										addrow =55
 										datacontext = "[GetPlayer.MakeScope]"
 										datamodel = "[Scope.GetList('zz_valyria_scroll_list')]"
 										
 										item = {
 											button_standard = {
+												parentanchor = top|left
 												datacontext = "[Scope.Artifact]"
 												minimumsize = { 500 38 }
 												text_single = {
@@ -627,7 +1032,6 @@
 							expand = {}
 						}
 					}
-					expand = {}
 				}
 			}
 		}

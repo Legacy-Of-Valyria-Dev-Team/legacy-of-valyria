@@ -1,0 +1,201 @@
+﻿# FORM PRETENDER EMPIRE
+# If the Freehold isn't formed yet, any of the Free Cities can press their claim as a successor state
+# Upon formation, virtually all other Free Cities will wage war to dismantle you + others if they want to intervene (ala Argilac and Aegon during CoB)
+
+LV_form_pretender_empire_decision = {
+	picture = { reference = "gfx/interface/illustrations/decisions/ep3_decision_roman_restoration.dds" }
+	decision_group_type = major
+
+	ai_check_interval = 120
+
+	is_shown = {
+		highest_held_title_tier >= tier_kingdom
+		is_independent_ruler = yes
+		OR = {
+			# Claim by right of blood
+			OR = {
+				culture = { has_cultural_pillar = heritage_valyrian }
+				dynasty = { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+				this.dragonblood_percent > 0
+			}
+			
+			# Claim by right of faith
+			AND = {
+				has_religion = religion:valyrian_religion
+				OR = {
+					has_trait = zealous
+					has_trait = ambitious
+				}
+			}
+
+			# Claim by right of conquest (and dragons!)
+			AND = {
+				OR = {
+					has_trait = conqueror
+					has_trait = ambitious
+				}
+				OR = {
+					has_trait = dragonrider
+					any_held_title = {
+						OR = {
+							this = title:c_braavos
+							this = title:c_pentos
+							this = title:c_myr
+							this = title:c_tyrosh
+							this = title:c_lys
+							this = title:c_volantis
+							# Add a trigger_if here once Bear's Gogossos PR is merged
+						}
+					}
+				}
+			}
+		}
+		# Must not already be a pretender empire, the Iron Throne, or at least choosing to be one
+		NOR = {
+			any_held_title = {
+				OR = {
+					has_variable = lv_pretender_empire
+					this = title:e_the_iron_throne
+				}
+			}
+			has_character_flag = lv_pretender_empire_decision_hide
+		}
+	}
+
+	is_valid = {
+		OR = { # Legitimacy requirements - The higher your prestige level, the easier you can assert your claim
+			AND = {
+				prestige_level >= max_prestige_level
+				OR = {
+					custom_tooltip = {
+						text = LV_form_pretender_empire_legendary_dragonrider_requirement
+						AND = {
+							has_trait = dragonrider
+							any_held_title = {
+								tier = tier_kingdom
+							}
+						}
+					}
+					custom_tooltip = {
+						text = LV_form_pretender_empire_legendary_generic_requirement
+						AND = {
+							dynasty = { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+							any_held_title = {
+								tier = tier_empire
+							}
+						}
+					}
+				}
+			}
+			AND = {
+				prestige_level >= 4
+				custom_tooltip = {
+					text = LV_form_pretender_empire_generic_title_requirement
+					trigger_if = {
+						limit = { highest_held_title_tier = tier_empire }
+						OR = {
+							any_held_title = {
+								count >= 2
+								tier = tier_empire
+							}
+							primary_title = {
+								any_in_de_facto_hierarchy = {
+									count >= 3
+									tier = tier_kingdom
+								}
+							}
+						}
+					}
+					trigger_else = {
+						any_held_title = {
+							count >= 3
+							tier = tier_kingdom
+						}
+					}
+				}
+			}
+			AND = {
+				custom_tooltip = {
+					text = LV_form_pretender_empire_free_city_requirement
+					trigger_if = {
+						limit = { highest_held_title_tier = tier_empire }
+						primary_title = {
+							any_in_de_facto_hierarchy = {
+								count >= 3
+								tier = tier_kingdom
+								OR = {
+									this = title:k_braavos
+									this = title:k_pentos
+									this = title:k_myr
+									this = title:k_tyrosh
+									this = title:k_lys
+									this = title:k_volantis
+									# Add a trigger_if here once Bear's Gogossos PR is merged
+								}
+							}
+						}
+					}
+					trigger_else = {
+						any_held_title = {
+							count >= 3
+							tier = tier_kingdom
+							OR = {
+								this = title:k_braavos
+								this = title:k_pentos
+								this = title:k_myr
+								this = title:k_tyrosh
+								this = title:k_lys
+								this = title:k_volantis
+								# Add a trigger_if here once Bear's Gogossos PR is merged
+							}
+						}
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = LV_form_pretender_empire_capital_requirement
+
+			any_held_title = {
+				OR = { # Land requirements - Must control at least any of the Free City capitals or a site of Valyrian significance in Westeros (basically just Dragonstone)
+					this = title:c_braavos
+					this = title:c_pentos
+					this = title:c_myr
+					this = title:c_tyrosh
+					this = title:c_lys
+					this = title:c_volantis
+					# Add a trigger_if here once Bear's Gogossos PR is merged
+
+					this = title:c_dragonstone
+				}
+			}
+		}
+	}
+	is_valid_showing_failures_only = {
+		is_landed = yes
+		is_capable_adult = yes
+		is_imprisoned = no
+		is_at_war = no
+    }
+
+	minimum_cost = {
+		prestige = 5000
+	}
+
+	effect = {
+		#custom_tooltip = restore_roman_empire_decision_effect_tooltip
+		#show_as_tooltip = { LV_form_pretender_empire_effect = yes }
+		custom_tooltip = LV_form_pretender_empire_decision_effect
+		add_character_flag = lv_pretender_empire_decision_hide
+
+		trigger_event = lv_pretender_empire.1
+	}
+	
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 100
+	}
+}

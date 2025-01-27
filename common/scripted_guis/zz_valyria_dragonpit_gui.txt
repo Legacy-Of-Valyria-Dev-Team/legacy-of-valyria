@@ -1,0 +1,245 @@
+zz_valyria_dragon_pit_tab = {
+	scope = character
+	saved_scopes = {
+		zz_county
+	}
+	is_shown = {
+		scope:zz_county.county = {
+			has_variable = has_dragonkeeper_order 
+		}
+	}
+}
+
+zz_valyria_dragon_pit_view = {
+	scope = character
+	saved_scopes = {
+		zz_county
+	}
+	is_shown = {
+	}
+	is_valid = {
+	}
+	effect = {
+		scope:zz_county.county.holder = {
+			clear_variable_list = dragon_pit_list
+			clear_variable_list = dragonseed_list
+			clear_variable_list = dragonpit_county_list
+			every_courtier = {
+				limit = {
+					has_character_flag = in_dragonpit
+					var:pitted_dragon_location = scope:zz_county.county
+				}
+				prev = {
+					add_to_variable_list = {
+						name = dragon_pit_list
+						target = prev
+					}
+				}
+			}
+			every_courtier = {
+				limit = {
+					this.dragonblood_percent > 0
+					not = {
+						has_trait = dragonrider
+					}
+				}
+				prev = {
+					add_to_variable_list = {
+						name = dragonseed_list
+						target = prev
+					}
+				}
+			}
+			every_realm_county = {
+				limit = {
+					has_variable = has_dragonkeeper_order 
+				}
+				prev = {
+					add_to_variable_list = {
+						name = dragonpit_county_list
+						target = prev
+					}
+				}
+			}
+		}
+	}
+}
+
+zz_dragonpit_dragon = {
+	scope = character
+	saved_scopes = {
+		zz_dragonpit_dragon
+	}
+	is_shown = {
+		var:zz_dragonpit_dragon ?= scope:zz_dragonpit_dragon
+	}
+	
+	effect = {
+		save_scope_as = zz_dragonlord
+		set_variable = {
+			name = zz_dragonpit_dragon
+			value = scope:zz_dragonpit_dragon
+		}
+	}
+}
+
+zz_dragonpit_dragonseed = {
+	scope = character
+	saved_scopes = {
+		zz_dragonseed
+	}
+	is_shown = {
+		var:zz_dragonseed ?= scope:zz_dragonseed
+	}
+	
+	effect = {
+		save_scope_as = zz_dragonlord
+		set_variable = {
+			name = zz_dragonseed
+			value = scope:zz_dragonseed
+		}
+	}
+}
+
+
+zz_dragonpit_taming_scheme = {
+	scope = character
+	saved_scopes = {
+		zz_dragonseed
+	}
+	is_shown = {
+		var:zz_dragonseed ?= scope:zz_dragonseed
+	}
+	is_valid =  { 
+		var:zz_dragonpit_dragon ?= {
+			has_trait = dragon
+			NOR = {
+				has_variable = current_rider
+				any_relation = {
+					type = agot_dragon
+					NOT = { this = var:zz_dragonseed } # They can't be bonded to someone else
+				}
+			}
+		}
+	}
+	effect = {
+		save_scope_as = zz_dragonlord
+		var:zz_dragonseed = {
+			save_scope_as = zz_dragonseed
+		}
+		var:zz_dragonpit_dragon = {
+			save_scope_as= zz_dragonpit_dragon
+		}
+		hidden_effect = {
+			scope:zz_dragonseed = {
+				save_scope_as = tamer
+				scope:zz_dragonpit_dragon = { save_scope_as = dragon }
+				if = {
+					limit = {
+						NOT = { has_relation_agot_dragon = scope:zz_dragonpit_dragon }
+					}
+					trigger_event = {
+						id = dragon_taming_events.0100	# Handler for unbonded dragons
+					}
+				}
+				else = {
+					trigger_event = {
+						id = dragon_taming_events.0200 # Handler for bonded dragons
+					}
+				}
+				debug_log = "AI Tried to Tame Dragon"
+				debug_log_scopes = yes
+			}
+		}
+		scope:zz_dragonseed = {
+			custom_tooltip = tame_dragon_interaction_tt1
+		}
+		if = {
+			limit = {
+				NOT = {
+					scope:zz_dragonseed = {
+						has_relation_agot_dragon = scope:zz_dragonpit_dragon
+					}
+				}
+			}
+			custom_tooltip = tame_dragon_interaction_tt2
+		}
+	}
+
+}
+
+zz_dragonpit_move_dragon = {
+	scope = character
+	saved_scopes = {
+		zz_dragonpit_county
+	}
+	is_shown = {
+		var:zz_dragonseed ?= scope:zz_dragonseed
+	}
+	
+	effect = {
+		save_scope_as = zz_dragonlord
+		var:zz_dragonpit_dragon ?= {
+			save_scope_as= zz_dragonpit_dragon
+		}
+		scope:zz_dragonpit_dragon = {
+			set_variable = {
+				name = pitted_dragon_location 
+				value = scope:zz_dragonpit_county
+			}
+		}	
+	}	
+}
+
+zz_dragonpit_deepen_bond = {
+	scope = character
+	saved_scopes = {
+		zz_dragonpit_dragon
+	}
+	is_shown = {
+		var:zz_dragonpit_dragon ?= scope:zz_dragonpit_dragon
+	}
+	is_valid =  { 
+		var:zz_dragonpit_dragon ?= {
+			has_variable = current_rider
+			var:current_rider ?= {
+				can_use_deepen_bond_with_dragon_scheme = { TARGET = PREV }
+			}
+		}
+	}
+	effect = {
+		scope:zz_dragonpit_dragon ?= {
+			var:current_rider = {
+				start_scheme = {
+					type = deepen_bond_with_dragon_scheme
+					target_character = scope:zz_dragonpit_dragon
+				}
+			}
+		}
+	}
+}
+
+zz_dragonpit_bond_with_dragon = {
+	scope = character
+	saved_scopes = {
+		zz_dragonpit_dragon
+	}
+	is_shown = {
+		var:zz_dragonpit_dragon ?= scope:zz_dragonpit_dragon
+	}
+	is_valid =  { 
+		var:zz_dragonseed ?= {
+			can_use_bond_with_dragon_scheme = { TARGET = root.var:zz_dragonpit_dragon }
+		}
+	}
+	effect = {
+		scope:zz_dragonpit_dragon ?= {
+			var:current_rider = {
+				start_scheme = {
+					type = bond_with_dragon_scheme
+					target_character = scope:zz_dragonpit_dragon
+				}
+			}
+		}
+	}
+}

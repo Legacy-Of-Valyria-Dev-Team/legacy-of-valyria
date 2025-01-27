@@ -36,3 +36,58 @@
 #
 #    }
 #}
+
+## Gogossos 
+restore_gogossos = { #form gogossos free city
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_found_kingdom.dds"
+	}
+	decision_group_type = major
+
+	ai_check_interval = 120
+
+	desc = restore_gogossos_desc
+	
+	is_shown = {
+		is_independent_ruler = yes
+		primary_title.title_capital_county ?= {
+			title_province = {
+				geographical_region = world_gogossos
+			}
+		}
+		
+		NOR = {
+			exists = title:k_gogossos.holder
+			government_has_flag = government_is_pirate 
+		}
+	}
+	
+	is_valid = {
+		completely_controls_region = world_gogossos
+		has_title = title:d_gogossos
+		has_title = title:c_gogossos
+	}
+    is_valid_showing_failures_only = {
+		is_alive = yes
+		NOT = { exists = involved_activity }
+		is_imprisoned = no
+		#Can't already be a empire.
+		NOT = { highest_held_title_tier = tier_empire }
+		NOT = { exists = title:k_gogossos.holder }
+	}
+
+    cost = { gold = 250 }
+	
+	effect = {
+        custom_tooltip = restore_gogossos_choice
+		
+		trigger_event = gogossos_restoration.0001
+		
+		every_player = {
+			limit = { NOT = { this = scope:founder } }
+			trigger_event = {
+				id = gogossos_restoration.0002
+			}
+		}
+	}
+}

@@ -220,6 +220,7 @@ agot_assign_lord_commander_effect = {
 			set_owner = $COMMANDER$
 			save_scope_as = white_book
 		}
+
 		appoint_court_position = {
 			court_position = zz_kingsguard_lord_commander_court_position
 			recipient = $COMMANDER$
@@ -363,6 +364,43 @@ agot_remove_kingsguard_effect = {
 	title:e_the_iron_throne.holder = {
 		if = {
 			limit = {
+				exists = scope:kg_is_lord_commander
+			}
+			title:d_dummy_kingsguard = {
+				copy_title_history = title:d_kingsguard
+			}
+			destroy_title = title:d_kingsguard
+			title:d_kingsguard = {
+				copy_title_history = title:d_dummy_kingsguard
+			}
+			if = {
+				limit = {
+					any_court_position_holder = {
+						is_kingsguard_trigger = yes
+						has_trait = kingsguard
+						NOT = { this = scope:kg_is_lord_commander }
+					}
+				}
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					trigger_event = {
+						id = agot_kingsguard.9001
+						days = 3
+					}
+				}
+				else = {
+					trigger_event = {
+						id = agot_kingsguard.1010
+						delayed = yes
+					}
+				}
+			}
+		}
+
+		if = {
+			limit = {
 				is_ai = yes
 				exists = scope:kg_is_lord_commander
 			}
@@ -409,7 +447,13 @@ agot_remove_kingsguard_effect = {
 				days = 4
 			}
 		}
-		else = {
+		else_if = {
+			limit = {
+				is_ai = no
+				NOT = {
+					has_character_flag = skip_kg_replacement_event_flag
+				}
+			}
 			trigger_event = agot_kingsguard.1001
 		}
 	}
@@ -456,42 +500,42 @@ agot_on_get_kingsguard_lord_commander = {
 		if = {
 			limit = {
 				exists = var:kingsguard_1
-				var:kingsguard_1 = scope:employee
+				var:kingsguard_1 = root
 			}
 			remove_variable = kingsguard_1
 		}
 		else_if = {
 			limit = {
 				exists = var:kingsguard_2
-				var:kingsguard_2 = scope:employee
+				var:kingsguard_2 = root
 			}
 			remove_variable = kingsguard_2
 		}
 		else_if = {
 			limit = {
 				exists = var:kingsguard_3
-				var:kingsguard_3 = scope:employee
+				var:kingsguard_3 = root
 			}
 			remove_variable = kingsguard_3
 		}
 		else_if = {
 			limit = {
 				exists = var:kingsguard_4
-				var:kingsguard_4 = scope:employee
+				var:kingsguard_4 = root
 			}
 			remove_variable = kingsguard_4
 		}
 		else_if = {
 			limit = {
 				exists = var:kingsguard_5
-				var:kingsguard_5 = scope:employee
+				var:kingsguard_5 = root
 			}
 			remove_variable = kingsguard_5
 		}
 		else_if = {
 			limit = {
 				exists = var:kingsguard_6
-				var:kingsguard_6 = scope:employee
+				var:kingsguard_6 = root
 			}
 			remove_variable = kingsguard_6
 		}
