@@ -1505,12 +1505,12 @@ agot_kingsguard.1010 = { # Lord Commander Death / Removal
 		name = agot_kingsguard.1010.f
 		trigger = {
 			NOR = {
-				scope:kingsguard_1 ?= { is_alive = yes }
-				scope:kingsguard_2 ?= { is_alive = yes }
-				scope:kingsguard_3 ?= { is_alive = yes }
-				scope:kingsguard_4 ?= { is_alive = yes }
-				scope:kingsguard_5 ?= { is_alive = yes }
-				scope:kingsguard_6 ?= { is_alive = yes }
+				exists = scope:kingsguard_1
+				exists = scope:kingsguard_2
+				exists = scope:kingsguard_3
+				exists = scope:kingsguard_4
+				exists = scope:kingsguard_5
+				exists = scope:kingsguard_6
 			}
 		}
 		remove_character_flag = choosing_lord_commander
@@ -2284,7 +2284,7 @@ agot_kingsguard.2004 = { # Flee to Essos, KG edition
 				save_scope_as = exile_title
 			}
 		}
-		scope:exile_title.county.holder = {
+		scope:exile_title.county.holder ?= {
 			add_courtier = scope:fleeing_kingsguard
 		}
 	}
@@ -4615,85 +4615,95 @@ agot_kingsguard.9000 = {
 	}
 }
 
+# AI Dead Lord Commander
 agot_kingsguard.9001 = {
-	# AI Dead Lord Commander
 	hidden = yes
 	immediate = {
 		every_court_position_holder = {
 			type = zz_kingsguard_court_position
 			add_to_list = lord_commander_candidates
 		}
-		ordered_in_list = {
-			list = lord_commander_candidates
-			order_by = {
-				value = 0
-				max = 1
-				add = {
-					value = prowess
-					multiply = 2
-				}
-				if = {
-					#Extra for important lordly fams
-					limit = {
-						any_close_or_extended_family_member = {
-							is_landed = yes
-							highest_held_title_tier >= tier_duchy
-						}
-					}
-					add = 20
-				}
-				# More Likely to pick a Lord Commander they like
-				if = {
-					limit = {
-						opinion = {
-							target = root
-							value >= 80
-						}
-					}
-					add = 40
-				}
-				else_if = {
-					limit = {
-						opinion = {
-							target = root
-							value >= 50
-						}
-					}
-					add = 30
-				}
-				else_if = {
-					limit = {
-						opinion = {
-							target = root
-							value >= 30
-						}
-					}
-					add = 15
-				}
-			}
-			save_scope_as = new_lord_commander
-		}
 	}
-	option = {
-		scope:new_lord_commander = {
-			add_character_flag = can_fire_kingsguard
-		}
-		revoke_court_position = {
-			court_position = zz_kingsguard_lord_commander_court_position
-			recipient = scope:new_lord_commander
-		}
-		save_scope_as = king
-		agot_assign_lord_commander_effect = {
-			COMMANDER = scope:new_lord_commander
-			KING = scope:king
-		}
-		scope:new_lord_commander = {
-			add_opinion = {
-				target = ROOT
-				modifier = grateful_opinion
-				opinion = 20
+	after = {
+		if = {
+			limit = {
+				employs_court_position = zz_kingsguard_court_position
+				any_court_position_holder = {
+					type = zz_kingsguard_court_position
+				}
 			}
-			remove_character_flag = can_fire_kingsguard
+		}
+		else = {
+			ordered_in_list = {
+				list = lord_commander_candidates
+				order_by = {
+					value = 0
+					max = 1
+					add = {
+						value = prowess
+						multiply = 2
+					}
+					if = {
+						#Extra for important lordly fams
+						limit = {
+							any_close_or_extended_family_member = {
+								is_landed = yes
+								highest_held_title_tier >= tier_duchy
+							}
+						}
+						add = 20
+					}
+					# More Likely to pick a Lord Commander they like
+					if = {
+						limit = {
+							opinion = {
+								target = root
+								value >= 80
+							}
+						}
+						add = 40
+					}
+					else_if = {
+						limit = {
+							opinion = {
+								target = root
+								value >= 50
+							}
+						}
+						add = 30
+					}
+					else_if = {
+						limit = {
+							opinion = {
+								target = root
+								value >= 30
+							}
+						}
+						add = 15
+					}
+				}
+				save_scope_as = new_lord_commander
+			}
+			scope:new_lord_commander = {
+				add_character_flag = can_fire_kingsguard
+			}
+			revoke_court_position = {
+				court_position = zz_kingsguard_lord_commander_court_position
+				recipient = scope:new_lord_commander
+			}
+			save_scope_as = king
+			agot_assign_lord_commander_effect = {
+				COMMANDER = scope:new_lord_commander
+				KING = scope:king
+			}
+			scope:new_lord_commander = {
+				add_opinion = {
+					target = ROOT
+					modifier = grateful_opinion
+					opinion = 20
+				}
+				remove_character_flag = can_fire_kingsguard
+			}
 		}
 	}
 }
@@ -4719,8 +4729,8 @@ scripted_trigger ai_kg_assignment_trigger = {
 	}
 }
 
+# Dead Kingsguard Member AI
 agot_kingsguard.9002 = {
-	# Dead Kingsguard Member AI
 	hidden = yes
 	trigger = {
 		can_employ_court_position_type = zz_kingsguard_court_position
@@ -4760,129 +4770,152 @@ agot_kingsguard.9002 = {
 				}
 			}
 		}
-		random_in_list = {
-			list = potential_kingsguard
+	}
+	after = {
+		if = {
 			limit = {
-				can_be_kingsguard_trigger = {
-					COURT_OWNER = scope:king
-				}
-			}
-			weight = {
-				base = 1
-				modifier = {
-					#Being good at swords
-					add = {
-						value = prowess
-						multiply = 2
+                any_in_list = {
+                    list = potential_kingsguard
+                    count > 0
+            	}
+            }
+			random_in_list = {
+				list = potential_kingsguard
+				limit = {
+					can_be_kingsguard_trigger = {
+						COURT_OWNER = scope:king
 					}
 				}
-				modifier = {
-					#Grab cool traits plz
-					OR = {
-						has_trait = education_martial_prowess_3
-						has_trait = education_martial_prowess_4
-						has_trait = education_martial_prowess_5
-						has_trait = lifestyle_blademaster
+				weight = {
+					base = 1
+					modifier = {
+						#Being good at swords
+						add = {
+							value = prowess
+							multiply = 2
+						}
 					}
-					add = 50
-				}
-				modifier = { #Appoint your relatives who are training
-					any_close_or_extended_family_member = {
-						this = root
+					modifier = {
+						#Grab cool traits plz
+						OR = {
+							has_trait = education_martial_prowess_3
+							has_trait = education_martial_prowess_4
+							has_trait = education_martial_prowess_5
+							has_trait = lifestyle_blademaster
+						}
+						add = 50
 					}
-					has_character_modifier = training_for_kingsguard
-					add = 300
-				}
-				modifier = { #Appoint your spouse's relatives who are training
-					trigger = { exists = root.primary_spouse }
-					any_close_or_extended_family_member = {
-						this = root.primary_spouse
-					}
-					has_character_modifier = training_for_kingsguard
-					add = 300
-				}
-				modifier = {
-					#Important Lordly relatives is a huge plus to grab notable characters
-					any_close_or_extended_family_member = {
-						is_landed = yes
-						primary_title.tier = tier_kingdom
-					}
-					add = 150
-				}
-				modifier = {
-					#Important Lordly relatives is a huge plus to grab notable characters
-					any_close_or_extended_family_member = {
-						is_landed = yes
-						primary_title.tier = tier_duchy
-					}
-					add = 100
-				}
-				modifier = {
-					#Important Lordly relatives is a huge plus to grab notable characters
-					any_close_or_extended_family_member = {
-						is_landed = yes
-						primary_title.tier = tier_county
-					}
-					add = 50
-				}
-				opinion_modifier = {
-					# More likely to pick someone they like
-					opinion_target = root
-					multiplier = 2
-				}
-				modifier = {
-					#dont pick people you hate
-					OR = {
-						has_relation_rival = root
-						has_relation_nemesis = root
-						has_relation_potential_rival = root
-					}
-					factor = 0.1
-				}
-				modifier = {
-					#Less chance of appointing heathens
-					factor = 0.2
-					NOT = {
-						faith = root.faith
-					}
-				}
-				modifier = {
-					#Prejudice against Lowborn - AI should prefer nobles
-					factor = 0.2
-					is_lowborn = yes
-				}
-				modifier = {
-					# Dont appoint randoms when there's a trainee available
-					factor = 0
-					any_in_list = {
-						list = potential_kingsguard
+					modifier = { #Appoint your relatives who are training
+						any_close_or_extended_family_member = {
+							this = root
+						}
 						has_character_modifier = training_for_kingsguard
+						add = 300
 					}
-					NOT = {
+					modifier = { #Appoint your spouse's relatives who are training
+						trigger = { exists = root.primary_spouse }
+						any_close_or_extended_family_member = {
+							this = root.primary_spouse
+						}
 						has_character_modifier = training_for_kingsguard
+						add = 300
 					}
-				}
-				modifier = {
-					#if they can't be KG don't try and assign them stupid ass AI
-					factor = 0
-					NOT = {
-						can_be_kingsguard_trigger = {
-							COURT_OWNER = scope:king
+					modifier = {
+						#Important Lordly relatives is a huge plus to grab notable characters
+						any_close_or_extended_family_member = {
+							is_landed = yes
+							primary_title.tier = tier_kingdom
+						}
+						add = 150
+					}
+					modifier = {
+						#Important Lordly relatives is a huge plus to grab notable characters
+						any_close_or_extended_family_member = {
+							is_landed = yes
+							primary_title.tier = tier_duchy
+						}
+						add = 100
+					}
+					modifier = {
+						#Important Lordly relatives is a huge plus to grab notable characters
+						any_close_or_extended_family_member = {
+							is_landed = yes
+							primary_title.tier = tier_county
+						}
+						add = 50
+					}
+					opinion_modifier = {
+						# More likely to pick someone they like
+						opinion_target = root
+						multiplier = 2
+					}
+					modifier = {
+						#dont pick people you hate
+						OR = {
+							has_relation_rival = root
+							has_relation_nemesis = root
+							has_relation_potential_rival = root
+						}
+						factor = 0.1
+					}
+					modifier = {
+						#Less chance of appointing heathens
+						factor = 0.2
+						NOT = {
+							faith = root.faith
+						}
+					}
+					modifier = {
+						#Prejudice against Lowborn - AI should prefer nobles
+						factor = 0.2
+						is_lowborn = yes
+					}
+					modifier = {
+						# Dont appoint randoms when there's a trainee available
+						factor = 0
+						any_in_list = {
+							list = potential_kingsguard
+							has_character_modifier = training_for_kingsguard
+						}
+						NOT = {
+							has_character_modifier = training_for_kingsguard
+						}
+					}
+					modifier = {
+						#if they can't be KG don't try and assign them stupid ass AI
+						factor = 0
+						NOT = {
+							can_be_kingsguard_trigger = {
+								COURT_OWNER = scope:king
+							}
 						}
 					}
 				}
+				save_scope_as = kingsguard_candidate
 			}
-			save_scope_as = kingsguard_candidate
-		}
-	}
-	option = {
-		scope:king = {
-			add_courtier ?= scope:kingsguard_candidate
-			trigger_event = agot_kingsguard.1008
-		}
-		scope:kingsguard_candidate = {
-			trigger_event = agot_kingsguard.1006
-		}
+			scope:king = {
+				if = {
+					limit = {
+						OR = {
+							AND = {
+								scope:kingsguard_candidate = {
+									is_courtier_of = scope:king
+									is_at_home = no
+								}
+							}
+							scope:kingsguard_candidate = {
+								NOT = { is_courtier_of = scope:king }
+							}
+						}
+					}
+					add_courtier ?= scope:kingsguard_candidate
+				}
+				trigger_event = agot_kingsguard.1008
+			}
+			scope:kingsguard_candidate = {
+				trigger_event = agot_kingsguard.1006
+			}
+        }
 	}
 }
 
@@ -5028,28 +5061,8 @@ agot_kingsguard.9005 = {
 	}
 }
 
-#RIP spawn_activity
-# agot_kingsguard.9006 = {
-# 	# Kingsguard go back to liege's capital after bodyguard
-# 	hidden = yes
-# 	immediate = {
-# 		title:e_the_iron_throne.holder.location.barony.title_province = {
-# 			spawn_activity = {
-# 				owner = scope:councillor
-# 				type = activity_kinguard_bodyguard
-# 			}
-# 		}
-# 		scope:councillor.activity = {
-# 			complete_activity = yes
-# 		}
-# 		scope:councillor = {
-# 			remove_variable = kingsguard_protection_activity_var
-# 		}
-# 	}
-# }
-
+#Grab lost kingsguard send them home
 agot_kingsguard.9007 = {
-	#Grab lost kingsguard send them home
 	hidden = yes
 	trigger = {
 		any_held_title = {
@@ -5398,7 +5411,7 @@ agot_kingsguard.9007 = {
 }
 
 agot_kingsguard.9008 = {
-	# agot_on_title_gain_kingsguard = { # This only works if the previous owner has a title to fall back on, and thus, has a court
+	# agot_on_title_gain_kingsguard = {} # This only works if the previous owner has a title to fall back on, and thus, has a court
 	hidden = yes
 
 	trigger = {
@@ -5660,6 +5673,178 @@ agot_kingsguard.9008 = {
 			}
 		}
 	}
+}
+
+scripted_effect kg_decision_list_builder = {
+	scope:title_with_kg.var:kingsguard_$NUM$ ?= {
+		add_to_list = kg_decision_list
+	}
+}
+agot_kingsguard.9100 = {
+	type = character_event
+	title = agot_kingsguard.9100.t
+	desc = agot_kingsguard.9100.desc
+	override_background = {
+		reference = battlefield
+	}
+	theme = war
+	left_portrait = {
+		character = root
+		animation = marshal
+	}
+	right_portrait = scope:loser
+	trigger = {
+		scope:title_with_kg = {
+			OR = {
+				has_variable = kingsguard_1
+				has_variable = kingsguard_2
+				has_variable = kingsguard_3
+				has_variable = kingsguard_4
+				has_variable = kingsguard_5
+				has_variable = kingsguard_6
+				has_variable = kingsguard_lord_commander
+			}
+		}
+	}
+	immediate = {
+		kg_decision_list_builder = { NUM = 1 }
+		kg_decision_list_builder = { NUM = 2 }
+		kg_decision_list_builder = { NUM = 3 }
+		kg_decision_list_builder = { NUM = 4 }
+		kg_decision_list_builder = { NUM = 5 }
+		kg_decision_list_builder = { NUM = 6 }
+		kg_decision_list_builder = { NUM = lord_commander }
+		add_character_flag = {
+			flag = skip_kg_replacement_event_flag
+			days = 14
+		}
+	}
+	option = {
+		name = agot_kingsguard.9100.a
+		trigger_event = agot_kingsguard.9101
+	}
+}
+agot_kingsguard.9101 = {
+        type = character_event
+        title = agot_kingsguard.9101.t
+        desc = agot_kingsguard.9101.desc
+        override_background = {
+                reference = battlefield
+        }
+        theme = war
+        left_portrait = {
+                character = root
+                animation = marshal
+        }
+        right_portrait = {
+                character = scope:right_portrait_kg animation = beg
+        }
+        widget = {
+                is_shown = {
+                        is_ai = no
+                }
+                gui = "event_window_post_war_kg_keep_or_kick_widget"
+                container = "custom_widgets_container"
+        }
+        immediate = {
+                if = {
+                        limit = {
+                                is_ai = no
+                        }
+                        every_in_list = {
+                                list = kg_decision_list
+                                root = {
+                                        add_to_variable_list = {
+                                                name = kg_decision_widget_list
+                                                target = prev
+                                        }
+                                }
+                        }
+                        random_in_list = {
+                                list = kg_decision_list
+                                save_scope_as = right_portrait_kg
+                        }
+                }
+                else = {
+                        ordered_in_list = {
+                                list = kg_decision_list
+                                order_by = "opinion(root)"
+                                save_scope_as = kg
+                        }
+                }
+        }
+        option = {
+                name = agot_kingsguard.9101.a
+                trigger = {
+                        is_ai = no
+                }
+                every_in_list = {
+                        variable = kg_removes_list
+                        custom_tooltip = agot_kingsguard.9101.a_tt
+                        hidden_effect = {
+                                agot_remove_kingsguard_effect = { KINGSGUARD = this }
+                                root = {
+                                        imprison = {
+                                                target = prev
+                                                type = dungeon
+                                        }
+                                }
+                        }
+                }
+        }
+        option = {
+                name = agot_kingsguard.9101.b
+                trigger = {
+                        is_ai = yes
+                }
+                agot_remove_kingsguard_effect = { KINGSGUARD = scope:kg }
+                imprison = {
+                        target = scope:kg
+                        type = dungeon
+                }
+                scope:kg = { remove_from_list = kg_decision_list }
+                ai_chance = {
+                        base = 90
+                }
+        }
+        option = {
+                name = agot_kingsguard.9101.c
+                trigger = {
+                        is_ai = yes
+                }
+                scope:kg = {
+                        add_opinion = {
+                                target = root
+                                modifier = was_spared
+                                opinion = 20
+                        }
+                }
+                ai_chance = {
+                        base = 10
+                        opinion_modifier = {
+                                opinion_target = scope:kg
+                        }
+                }
+        }
+        after = {
+                if = {
+                        limit = {
+                                is_ai = yes
+                        }
+                        scope:kg = { remove_from_list = kg_decision_list }
+                        if = {
+                                limit = {
+                                        list_size:kg_decision_list > 0
+                                }
+                                clear_saved_scope = kg
+                                trigger_event = agot_kingsguard.9101
+                        }
+                }
+                else = {
+                        clear_variable_list = kg_removes_list
+                        clear_variable_list = kg_decision_widget_list
+                }
+        }
 }
 
 ##########
