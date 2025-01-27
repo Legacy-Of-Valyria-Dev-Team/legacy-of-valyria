@@ -1,10 +1,11 @@
 window = {
 	name = "yy_provinces_window_open"
-	layer = top
+	layer = windows_layer
 	movable = no
 	
 	#size = { 1000 800 }
-	size = { 100% 100% }
+	parentanchor = right
+	size = { 50% 100% }
 	#alwaystransparent = yes
 
 	datacontext = "[GetScriptedGui('yy_province_window')]"
@@ -46,9 +47,9 @@ window = {
 		datacontext = "[GetPlayer.MakeScope]"
 		datacontext = "[Scope.Char]"
 		margin = { 15 15 }
-		margin_bottom = 35
-		#margin_left = 40
-		#margin_right = 40
+		margin_top = 65
+		margin_bottom = 50
+		margin_right = 50
 
 		hbox = {
 			name = "header"
@@ -109,6 +110,7 @@ window = {
 			vbox = {
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = expanding
+				minimumsize = { 300% 0 }
 				margin = { 15 15 }
 
 				vbox = {
@@ -250,10 +252,12 @@ window = {
 
 			yy_province_view = {
 				visible = "[Scope.Var('yy_selected_province').IsSet]"
+				minimumsize = { 400% 0 }
 			}
 
 			yy_county_view = {
 				visible = "[And(GetPlayer.MakeScope.Var('yy_selected_county').IsSet, Not(Scope.Var('yy_selected_province').IsSet))]"
+				minimumsize = { 400% 0 }
 			}
 		}
 		
@@ -365,7 +369,7 @@ types ProvinceWindowTypes {
 				datacontext = "[Title.GetProvince]"
 				layoutpolicy_horizontal = fixed
 				layoutpolicy_vertical = fixed
-				minimumsize = { 0 500% }
+				minimumsize = { 0 200% }
 				scissor = yes
 
 				background = {
@@ -830,30 +834,33 @@ types ProvinceWindowTypes {
 					layoutpolicy_vertical = expanding
 					margin = { 5 5 }
 
-					text_single = {
+					#text_single = {
+					#	layoutpolicy_horizontal = expanding
+					#	raw_text = "[Holding.GetNameNoTooltip] produces the following resources:" #LOCALIZE!!!
+					#}
+					vbox_province_resource_breakdown = {
 						layoutpolicy_horizontal = expanding
-						raw_text = "[Holding.GetNameNoTooltip] produces the following resources:" #LOCALIZE!!!
 					}
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						#text = "YY_PROVINCE_GUI_SellSlaves"
-						raw_text = "[zz_iron]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_iron')|0] "
-					}
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						#text = "YY_PROVINCE_GUI_SellSlaves"
-						raw_text = "[zz_steel]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_steel')|0] "
-					}
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						#text = "YY_PROVINCE_GUI_SellSlaves"
-						raw_text = "[zz_obsidian]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_obsidian')|0] "
-					}
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						#text = "YY_PROVINCE_GUI_SellSlaves"
-						raw_text = "[zz_valyrian_steel]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_valyrian_steel')|0] "
-					}
+					#text_single = {
+					#	layoutpolicy_horizontal = expanding
+					#	#text = "YY_PROVINCE_GUI_SellSlaves"
+					#	raw_text = "[zz_iron]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_iron')|0] "
+					#}
+					#text_single = {
+					#	layoutpolicy_horizontal = expanding
+					#	#text = "YY_PROVINCE_GUI_SellSlaves"
+					#	raw_text = "[zz_steel]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_steel')|0] "
+					#}
+					#text_single = {
+					#	layoutpolicy_horizontal = expanding
+					#	#text = "YY_PROVINCE_GUI_SellSlaves"
+					#	raw_text = "[zz_obsidian]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_obsidian')|0] "
+					#}
+					#text_single = {
+					#	layoutpolicy_horizontal = expanding
+					#	#text = "YY_PROVINCE_GUI_SellSlaves"
+					#	raw_text = "[zz_valyrian_steel]: [Province.MakeScope.ScriptValue('zz_valyria_province_resource_valyrian_steel')|0] "
+					#}
 					expand = {}
 				}
 			}
@@ -862,6 +869,60 @@ types ProvinceWindowTypes {
 		}
 
 		expand = {}
+	}
+
+	type vbox_province_resource_breakdown = vbox {
+		spacing = 6
+		alwaystransparent = no
+
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			spacing = 6
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				text = "[resources|E]"
+				default_format = "#T"
+
+				background = {
+					using = Background_Area
+					margin = { 10 0 }
+					margin_bottom = 8
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[iron_tooltip] [Province.MakeScope.ScriptValue('zz_valyria_province_resource_iron')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_iron_province"
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[steel_tooltip] [Province.MakeScope.ScriptValue('zz_valyria_province_resource_steel')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_steel_province"
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[obsidian_tooltip] [Province.MakeScope.ScriptValue('zz_valyria_province_resource_obsidian')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_obsidian_province"
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[v_steel_tooltip] [Province.MakeScope.ScriptValue('zz_valyria_province_resource_valyrian_steel')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_valyrian_steel_province"
+				}
+			}
+		}
 	}
 
 	type yy_county_view = vbox  {
