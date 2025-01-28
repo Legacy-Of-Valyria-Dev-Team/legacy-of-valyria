@@ -418,6 +418,7 @@ zz_valyria_the_doom.002 = {
 	option = {
 		name = zz_valyria_the_doom.002.a
 		trigger = {
+			is_ai = no
 		}
 		if = {
 			limit = {
@@ -429,7 +430,7 @@ zz_valyria_the_doom.002 = {
 			add_trait_xp = { 
 				trait = born_under_a_red_comet
 				track = chosen_of_the_heavens
-				value = 25
+				value = 5
 			}
 		}
 		else = {
@@ -437,6 +438,14 @@ zz_valyria_the_doom.002 = {
 				trait = born_under_a_red_comet
 				track = chosen_of_the_heavens
 				value = 50
+			}
+		}
+	}
+	option = {
+		name = zz_valyria_the_doom.002.b
+		trigger = {
+			NOT = {
+				has_trait = born_under_a_red_comet
 			}
 		}
 	}
@@ -468,6 +477,14 @@ zz_valyria_item_granting.001 = {
 
 namespace = zz_valyria_magic_court_mages_ritual
 
+event_scripted_effect zz_ritual = {
+	if = { 
+		limit = { zz_valyria_court_mage_task_value = $NUM$ }
+		zz_valyria_mana_gain = {
+			MANAGAIN = $NUM$
+		}
+	}
+}
 
 zz_valyria_magic_court_mages_ritual.001 = {
 	type = character_event
@@ -493,15 +510,69 @@ zz_valyria_magic_court_mages_ritual.001 = {
 			XPTRACK = secrets_of_the_higher_mysteries
 		}
 		scope:liege = {
-			zz_valyria_mana_gain = {
-				MANAGAIN = 1
+			if = { 
+				limit = { zz_valyria_court_mage_task_value = 1 }
+				zz_valyria_mana_gain = {
+					MANAGAIN = 1
+				}
+			}
+			else_if = {
+				limit = { zz_valyria_court_mage_task_value = 2}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 2
+				}
+			}
+			else_if = {
+				limit = { zz_valyria_court_mage_task_value = 3}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 3
+				}
+			}
+			else_if = {
+				limit = { zz_valyria_court_mage_task_value = 4}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 4
+				}
+			}
+			else_if = {
+				limit = { zz_valyria_court_mage_task_value = 5}
+				zz_valyria_mana_gain = {
+					MANAGAIN = 5
+				}
 			}
 			every_courtier_or_guest ={ 
 				limit = {
 					has_trait = zz_magister
 				}
-				zz_valyria_mana_gain = {
-					MANAGAIN = 1
+				if = { 
+					limit = { zz_valyria_court_mage_task_value = 1 }
+					zz_valyria_mana_gain = {
+						MANAGAIN = 1
+					}
+				}
+				else_if = {
+					limit = { zz_valyria_court_mage_task_value = 2}
+					zz_valyria_mana_gain = {
+						MANAGAIN = 2
+					}
+				}
+				else_if = {
+					limit = { zz_valyria_court_mage_task_value = 3}
+					zz_valyria_mana_gain = {
+						MANAGAIN = 3
+					}
+				}
+				else_if = {
+					limit = { zz_valyria_court_mage_task_value = 4}
+					zz_valyria_mana_gain = {
+						MANAGAIN = 4
+					}
+				}
+				else_if = {
+					limit = { zz_valyria_court_mage_task_value = 5}
+					zz_valyria_mana_gain = {
+						MANAGAIN = 5
+					}
 				}
 			}
 		}
