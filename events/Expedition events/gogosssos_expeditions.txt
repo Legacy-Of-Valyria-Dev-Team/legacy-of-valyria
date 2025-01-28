@@ -8,23 +8,30 @@ gogossos_expedition.0001 = {
     theme = hunting
     override_background = wilderness_forest
 
-    left_portrait = scope:founder
-	animation = survey
+    left_portrait = {
+		character = root
+		animation = survey
+	}
+
+    right_portrait = {
+		character = scope:Monster_1
+		animation = rage
+	}
 
     immediate = {
         create_character = {
-                    gender = male
-                    random_traits_list = { count = 3 }
-                    culture = culture:gogossosi
-                    religion = faith:valyrian 
-                    trait = beauty_bad_3
-                    trait = scaly
-                    trait = hunchback
-                    trait = two_headed
+            gender = male
+            random_traits_list = { count = 3 }
+            culture = culture:gogossosi
+            religion = faith:valyrian 
+            trait = beauty_bad_3
+            trait = scaly
+            trait = hunchback
+            trait = two_headed
 
-                    location = root.location
-                    save_event_target_as = Monster_1
-                }
+            location = root.location
+            save_scope_as = Monster_1
+        }
     }
 
     option = {
@@ -32,9 +39,9 @@ gogossos_expedition.0001 = {
         random_list = {
             30 = {
                 duel = {
-                    skills = prowess
+                    skill = prowess
                     value = high_skill_rating
-                    target = flag:Monster_1
+                    target = scope:Monster_1
 
                     70 = {
                         comapare_modifier = {
@@ -43,9 +50,8 @@ gogossos_expedition.0001 = {
                                 min = -49
                         }
 
-                        flag:Monster_1 = {
+                        scope:Monster_1 = {
                             death = { death_reason = death_monster_duel }
-                            
                         }
 
                         trigger_event = gogossos_expedition.0002
@@ -60,11 +66,10 @@ gogossos_expedition.0001 = {
                         death = {
                             death_reason = death_monster_duel
                         }
-                        flag:Monster_1 = {
+                        scope:Monster_1 = {
                                 death = { death_reason = death_monster_duel }
                         }
-                    } 
-
+                    }
                 }
             }
 
@@ -446,27 +451,39 @@ gogossos_expedition.0004 = {
     theme = hunting
     override_background = wilderness_forest
 
-    left_portrait = scope:founder
-	animation = survey
+    left_portrait = {
+		character = root
+		animation = survey
+	}
+
+    right_portrait = {
+        character = scope:Monster_2
+		animation = dragon_main
+		camera = camera_dragon_event_standing_baby
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+    }
+
+    immediate = {
+        agot_spawn_wild_dragon_effect = {
+            trait = dragon
+            age = { 30 60 }
+            template = agot_dragon_template
+            random_traits = yes
+            trait = dragon_wounded_1 
+
+            location = root.location
+            save_scope_as = Monster_2
+        }
+    }
 
     option = {
         name = treasure.2
         random_list= {
             90 = {
-                agot_spawn_wild_dragon_effect = {
-                    trait = dragon
-                    age = { 30 60 }
-                    template = agot_dragon_template
-                    random_traits = yes
-                    trait = dragon_wounded_1 
-
-                    location = root.location
-                    save_event_target_as = Monster_2
-
-                }
-
                 duel = {
-                    skills = prowess
+                    skill = prowess
                     value = high_skill_rating
                     target = scope:Monster_2
 
@@ -499,7 +516,6 @@ gogossos_expedition.0004 = {
                         }
                     }
                 }
-
             }
 
             10 = {
