@@ -92,7 +92,7 @@ zz_valyria_on_game_start_after_lobby = {
 			value = yes 
 		}
 		set_global_variable = {
-			name = LOV_Ver_1_01_02
+			name = LOV_Ver_1_01_03
 			value = yes 
 		}
 	}
@@ -118,7 +118,6 @@ random_yearly_everyone_pulse = {
 		zz_valyria_building_mine_pulse 
 		zz_valyria_asshai_religion_scroll_generation
 		zz_valyria_dynn_setenon_scroll_generation
-		zz_valyria_torment_removal
 	}
 }
 
@@ -480,13 +479,14 @@ zz_valyria_building_mine_pulse = {
 
 zz_valyria_asshai_religion_scroll_generation = {
 	trigger = {
+		is_playable_character = yes
 		culture = {
 			has_cultural_parameter = magical_scroll_event_more_common
 		}
 	}
 	effect = { 
 		random = {
-			chance = 5 
+			chance = 3 
 			zz_random_gain_magic_scroll = yes
 		}
 	}
@@ -498,20 +498,36 @@ zz_valyria_dynn_setenon_scroll_generation = {
 	}
 	effect = { 
 		random = {
-			chance = 10 
+			chance = 5 
 			zz_random_gain_magic_scroll = yes
 		}
 	}
 }
 
 
+# An artifact has changed ownership due to succession
+# This is called just before the artifact changes hands.
+# If you destroy it or change its owner, it won't change hands
+# on_artifact_changed_owner will be called as normal when it changes hands
+# root = the artifact
+# scope:owner = the person who now holds the artifact
+# scope:old_owner = the person who used to hold the artifact
+# scope:old_primary = the heir's primary before this succession happened
+on_artifact_succession = {
+	events = {
+		artifact.0031
+	}
+	on_actions = {
+		zz_valyria_torment_removal
+	}
+}
+
 zz_valyria_torment_removal = {
 	trigger = {
-		any_character_artifact = { 
-			has_artifact_modifier = vs_torment_modifier
-		}
-		NOT = {
-			has_title = title:k_lokiria
+		scope:owner = {
+			NOT = {
+				has_title = title:k_lokiria
+			}
 		}
 	}
 	effect = { 
@@ -533,7 +549,7 @@ valryia_study_magic_ongoing = {
 	random_events = { # Any added events must set and remove scheme_event_active_flag to prevent simultaneous firing in MP
 		500 = 0 # No Event Will Fire
 		100 = zz_valyria_magic_further_education.1000 # consult written lore
-		100 = zz_valyria_magic_further_education.1001 # practice encantations
-		100 = zz_valyria_magic_further_education.1002 # study the valyrian language
+		100 = zz_valyria_magic_further_education.1010 # practice encantations
+		100 = zz_valyria_magic_further_education.1020 # study the valyrian language
 	}
 }

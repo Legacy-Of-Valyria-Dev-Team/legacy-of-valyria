@@ -594,6 +594,31 @@ widget = {
 
 				# LoV Added
 				widget_hud_main_tab = {
+					name = "tab_province_window"
+
+					blockoverride "maintab_button"
+					{
+						texture = "gfx/interface/icons/point_of_interest_types/poi_special_buildings.dds"
+						onclick = "[CloseGameView( 'my_realm' )]"
+						onclick = "[CloseGameView( 'military' )]"
+						onclick = "[CloseGameView( 'council_window' )]"
+						onclick = "[CloseGameView( 'court_window' )]"
+						onclick = "[CloseGameView( 'intrigue_window' )]"
+						onclick = "[CloseGameView( 'factions_window' )]"
+						onclick = "[CloseGameView( 'decisions' )]"
+						onclick = "[CloseGameView( 'activity_list_window' )]"
+						onclick = "[CloseGameView( 'manage_tax_slots' )]"
+						onclick = "[CloseGameView( 'government_administration' )]"
+						onclick = "[GetScriptedGui('zz_valyria_magic_crafting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+						onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+
+						onclick = "[GetScriptedGui('yy_province_window').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+						shortcut = "tab_province_window"
+						tooltip = "PROVINCEWINDOW_BUTTON"
+						down = "[GetScriptedGui('yy_province_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+					}
+				}
+				widget_hud_main_tab = {
 					name = "tab_crafting"
 					visible = "[GetScriptedGui('zz_magic_crafting_open').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 					blockoverride "maintab_button"
@@ -646,54 +671,6 @@ widget = {
 						tooltip = "[GetScriptedGui('zz_valyria_magic_management').BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						onclick = "[GetScriptedGui('zz_valyria_magic_crafting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						down = "[IsGameViewOpen( 'government_administration' )]"
-
-						using = tooltip_ws
-						tooltipwidget = {
-							administrative_button_tooltip = {}
-						}
-					}
-				}
-				widget_hud_main_tab = {
-					name = "tab_province_window"
-
-					blockoverride "maintab_button"
-					{
-						texture = "gfx/interface/icons/point_of_interest_types/poi_special_buildings.dds"
-						onclick = "[CloseGameView( 'my_realm' )]"
-						onclick = "[CloseGameView( 'military' )]"
-						onclick = "[CloseGameView( 'council_window' )]"
-						onclick = "[CloseGameView( 'court_window' )]"
-						onclick = "[CloseGameView( 'intrigue_window' )]"
-						onclick = "[CloseGameView( 'factions_window' )]"
-						onclick = "[CloseGameView( 'decisions' )]"
-						onclick = "[CloseGameView( 'activity_list_window' )]"
-						onclick = "[CloseGameView( 'manage_tax_slots' )]"
-						onclick = "[CloseGameView( 'government_administration' )]"
-						onclick = "[GetScriptedGui('zz_valyria_magic_crafting_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-						onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-
-						onclick = "[GetScriptedGui('yy_province_window').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-						down = "[GetScriptedGui('yy_province_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-						shortcut = "tab_province_window"
-						using = tooltip_ws
-						tooltipwidget = {
-							widget = {
-								alwaystransparent = no
-								datacontext = "[GetPlayer]"
-
-								vbox = {
-									using = Background_Tooltip
-									spacing = 10
-									margin = { 20 10 }
-									parentanchor = right|vcenter
-									text_single = {
-										raw_text = "PROVINCEWINDOW_BUTTON"
-										layoutpolicy_horizontal = expanding
-									}
-									expand = {}
-								}
-							}
-						}
 					}
 				}
 				# LoV End
@@ -5706,113 +5683,16 @@ types HUD
 					hbox = {
 						name = "tutorial_highlight_special_resources_bar"
 						layoutpolicy_horizontal = expanding
-						layoutpolicy_vertical = expanding
 	
 						widget = {
-							name = "Iron"
+							name = "Resources"
+							layoutpolicy_vertical = expanding
 	
 							widget = {
 								size = { 112 45 }
-	
+
 								tooltipwidget = {
-									widget = {
-										alwaystransparent = no
-
-										using = DefaultTooltipBackground
-								
-										vbox = {
-											name = "tooltip_container"
-											set_parent_size_to_minimum = yes
-											filter_mouse = all
-											margin = { 14 8 }
-											margin_bottom = 12
-								
-											vbox = {
-												layoutpolicy_horizontal = expanding
-												margin_bottom = 14
-												spacing = 5
-								
-												block "header" {}
-	
-												text_single = {
-													layoutpolicy_horizontal = expanding
-													text = "[resources]"
-													default_format = "#high;bold"
-													using = Font_Size_Medium
-													fonttintcolor = "[TooltipInfo.GetTintColor]"
-								
-													background = {
-														using = Background_Area
-														margin = { 10 0 }
-														margin_bottom = 5
-													}
-												}
-												hbox = {
-													spacing = 7
-				
-													icon = {
-														name = "iron_icon"
-														size = { 30 30 }
-														texture = "gfx/interface/icons/lov_icon_iron.dds"
-														tooltip = "[zz_iron]"
-													}
-													expand = {}
-			
-													text_single = {
-														raw_text = "[GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_iron')|0]"
-														min_width = 50
-														default_format = "#high"
-													}
-												}
-												hbox = {
-													spacing = 7
-													icon = {
-														name = "steel_icon"
-														size = { 30 30 }
-														texture = "gfx/interface/icons/lov_icon_steel.dds"
-														tooltip = "[zz_steel]"
-													}
-													expand = {}
-													text_single = {
-														raw_text = "[GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_steel')|0]"
-														min_width = 50
-														default_format = "#high"
-													}
-
-												}
-												hbox = {
-													spacing = 7
-													icon = {
-														name = "obsidian_icon"
-														size = { 30 30 }
-														texture = "gfx/interface/icons/lov_icon_obsidian.dds"
-														tooltip = "[zz_obsidian]"
-													}
-													expand = {}
-													text_single = {
-														raw_text = "[GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_obsidian')|0]"
-														min_width = 50
-														default_format = "#high"
-													}
-												}
-												hbox = {
-													spacing = 7
-													icon = {
-														name = "valyrian_steel_icon"
-														size = { 30 30 }
-														texture = "gfx/interface/icons/lov_icon_valyrian_steel.dds"
-														tooltip = "[zz_valyrian_steel]"
-													}
-													expand = {}
-													text_single = {
-														raw_text = "[GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0]"
-														min_width = 50
-														default_format = "#high"
-													}
-												}
-											}
-										}
-									}		
+									widget_resources_breakdown_tooltip = {}
 								}
 								using = tooltip_ne
 							}
@@ -5823,13 +5703,17 @@ types HUD
 							size = { 112 70 }
 	
 							vbox = {
+								#margin_top = -30
 								margin_top = -2
+
 								hbox = {
 									layoutpolicy_horizontal = expanding
+									min_height = 42
+
 									expand = {}
 	
 									hbox = {
-										spacing = 7
+										spacing = 6
 										
 										#icon = {
 										#	name = "prestige_icon"
@@ -5842,14 +5726,20 @@ types HUD
 											spacing = -6
 											direction = vertical
 	
-											text_single = {
-												text = "[resources|V]"
-												#min_width = 50
-												resizeparent = yes
-												align = center|nobaseline
-												#default_format = "#low"
+											#text_single = {
+											#	text = "[resources|V]"
+											#	#min_width = 50
+											#	resizeparent = yes
+											#	align = center|nobaseline
+											#	default_format = "#high"
+											#}
+
+											icon = { # RESOURCES ICON!!! GRRR
+												#visible = "[GetPlayer.IsDynast]"
+												texture = "gfx/interface/icons/lov_icon_resources.dds"
+												#size = { 30 30 }
+												size = { 45 45 }
 											}
-											container_resource_balance = {}
 										}
 									}
 	
@@ -5860,7 +5750,6 @@ types HUD
 										alpha = 0.8
 									}
 								}
-
 								expand = {}
 							}
 						}
@@ -6734,6 +6623,102 @@ types HUD
 					}
 				}
 			}
+		}
+	}
+}
+
+types LV_HUD {
+	type widget_resources_breakdown_tooltip = widget {
+		alwaystransparent = no
+
+		block "background" { #### needed to solve the hack for tooltip in Realm View
+			using = DefaultTooltipBackground
+		}
+
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			set_parent_size_to_minimum = yes
+			margin = { 14 8 }
+			margin_bottom = 18
+			spacing = 14
+
+			vbox_resource_breakdown = {
+				layoutpolicy_horizontal = expanding
+			}
+		}
+	}
+
+	type vbox_resource_breakdown = vbox {
+		spacing = 6
+		alwaystransparent = no
+
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			spacing = 6
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				text = "[resources|E]"
+				default_format = "#T"
+
+				background = {
+					using = Background_Area
+					margin = { 10 0 }
+					margin_bottom = 8
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[iron_tooltip] [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_iron')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_iron_total"
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[steel_tooltip] [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_steel')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_steel_total"
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[obsidian_tooltip] [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_obsidian')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_obsidian_total"
+				}
+			}
+			hbox_resource_entry = {
+				blockoverride "resource_text" {
+					raw_text = "[v_steel_tooltip] [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0]"
+				}
+				blockoverride "resource_amount" {
+					text = "resource_gain_valyrian_steel_total"
+				}
+			}
+		}
+	}
+
+	type hbox_resource_entry = hbox {
+		layoutpolicy_horizontal = expanding
+		spacing = 3
+
+		text_single = {
+			block "resource_text" {
+				raw_text = "[v_steel_tooltip] [GetPlayer.MakeScope.ScriptValue('zz_valyria_resources_valyrian_steel')|0] "
+			}
+			default_format = "#high"
+			align = right
+		}
+		expand = {}
+		text_single = {
+			block "resource_amount" {
+				text = "resource_gain_valyrian_steel_total"
+			}
+			align = right
 		}
 	}
 }

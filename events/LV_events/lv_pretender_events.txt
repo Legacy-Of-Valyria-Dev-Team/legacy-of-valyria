@@ -15,13 +15,46 @@ lv_pretender_empire.1 = {
 		save_scope_as = pretender
 	}
 
+	# Third Rome-ish successor option
 	option = {
 		name = lv_pretender_empire.1.a
+		save_scope_value_as = {
+			name = option_successor
+			value = yes 
+		}
+		add_prestige = -5000
+		LV_form_pretender_empire_effect = yes
+	}
+	# Continuation of the Freehold (Limit to its former colonies or Dragonstone if the Targaryens still hold it)
+	option = {
+		name = lv_pretender_empire.1.b
+		trigger = {
+			any_held_title = {
+				OR = {
+					this = title:k_braavos
+					this = title:k_pentos
+					this = title:k_myr
+					this = title:k_tyrosh
+					this = title:k_lys
+					this = title:k_volantis
+					# Add a trigger_if here once Bear's Gogossos PR is merged
+				}
+			}
+			OR = {
+				has_trait = dragonrider
+				dynasty = { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+			}
+		}
+		add_internal_flag = special
+		save_scope_value_as = {
+			name = option_continuation
+			value = yes 
+		}
 		add_prestige = -5000
 		LV_form_pretender_empire_effect = yes
 	}
 	option = {
-		name = lv_pretender_empire.1.b
+		name = lv_pretender_empire.1.c
 	}
 
 	after = {
@@ -189,11 +222,11 @@ lv_pretender_empire.3 = {
 			# Dynasty and house members
 			modifier = {
 				add = -25
-				any_dynasty_member = { this = scope:pretender }
+				dynasty = scope:pretender.dynasty
 			}
 			modifier = {
 				add = -50
-				any_house_member = { this = scope:pretender }
+				house = scope:pretender.house
 			}
 			# Less likely if the pretender has your hostages or has a truce
 			modifier = {
