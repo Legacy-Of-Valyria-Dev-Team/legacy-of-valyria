@@ -826,7 +826,66 @@ zz_valyria_magic_duel_stress_effect = {
 	}
 }
 
+zz_miscast_critical_effect = {
+	if = { 
+		limit = { exists = var:zz_miscast_count}
+		if = { 
+			limit = { 
+				var:zz_miscast_count = {
+					value = 3 
+					if = { 
+						limit = {
+							has_trait = born_under_a_red_comet 
+						}
+						add = 10
+					}
+					if = { 
+						limit = {
+							has_trait = magic_blood_good_3 
+						}
+						add = 5
+					}
+					if = { 
+						limit = {
+							has_trait = magic_blood_good_2
+						}
+						add = 2
+					}
+				}
+			}
+			death = {
+				death_reason = death_miscast_magic
+				killer = scope:secondary_recipient
+			}
+		}
+		random_list = {
+			50 = {
+				modifier = {
+					has_trait = born_under_a_red_comet 
+					add = 25
+				}
+			}
+			50 = {
+				change_variable = {
+					name =  zz_miscast_count
+					add = 1
+				}
+			}
+		}
 
+	}
+	else = {
+		random = {
+			chance = 50
+			set_variable = {
+				name = zz_miscast_count 
+				value = 1
+				months = { 1 600}
+			}
+		}
+		
+	}
+}
 zz_valyria_spell_failure_effect = { 
 	send_interface_message = {
 		type = event_generic_neutral
@@ -836,60 +895,15 @@ zz_valyria_spell_failure_effect = {
 		right_icon = scope:recipient
 		custom_tooltip = spell_failure_txt
 		scope:secondary_recipient  = {
-			if = { 
-				limit = { exists = var:zz_miscast_count}
-				if = { 
-					limit = { 
-						var:zz_miscast_count = {
-							value = 3 
-							if = { 
-								limit = {
-									has_trait = born_under_a_red_comet 
-								}
-								add = 7
-							}
-							if = { 
-								limit = {
-									has_trait = magic_blood_good_3 
-								}
-								add = 5
-							}
-						}
-					}
-					death = {
-						death_reason = death_miscast_magic
-						killer = scope:secondary_recipient
-					}
-				}
-				random_list = {
-					50 = {
-						modifier = {
-							has_trait = born_under_a_red_comet 
-							add = 25
-						}
-					}
-					50 = {
-						change_variable = {
-							name =  zz_miscast_count
-							add = 1
-						}
-					}
-				}
-
-			}
-			else = { 
-				set_variable = {
-					name = zz_miscast_count 
-					value = 1
-					months = { 1 600}
-				}
-			}
+			
 
 			random_list = {
 				50 = {
 					increase_wounds_effect = { REASON = fire_magic }
+					zz_miscast_critical_effect = yes
 				}
-				25 = {
+				35 = {
+					zz_miscast_critical_effect = yes
 					random_list = {
 						1 = {
 							modifier = {
@@ -1017,10 +1031,9 @@ zz_valyria_spell_failure_effect = {
 							}
 							zz_valyria_blood_magic_trait_downgrade = { TYPE = lifespan }
 						}
-					}
-					
+					}	
 				} 
-				25 = {
+				15 = {
 					modifier = {
 						add = zz_spellcast_value
 					}
