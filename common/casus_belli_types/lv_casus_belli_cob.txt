@@ -235,8 +235,8 @@ aurion_new_valyria = {
 		scope:attacker = { 
 			add_prestige = 500
 			add_gold = 1000 #for coronation
-			delay = { days = 10 }
 			trigger_event = lv_scenario_cob.0510
+			days = 10
 		}
 	}
 
@@ -679,12 +679,50 @@ cob_new_valyria_conquest_cb = {
 		# truce
 		add_truce_attacker_victory_effect = yes
 
+		#Dragonlords Assumes Correct Gov
+		if = {
+			limit = {
+				any_in_list = {
+					list = target_titles
+					OR = {
+						this = title:k_lys
+						this = title:k_tyrosh
+						this = title:k_myr
+					}
+				}
+			}
+			scope:claimant = {
+				set_realm_capital = primary_title.title_capital_county
+				change_government = feudal_government
+
+				every_held_title = {
+					if = {
+						limit = {
+							OR = {
+								has_title_law = magisterial_life_succession_law
+								has_title_law = magisterial_limited_succession_law
+							}
+						}
+						if = {
+							limit = { has_title_law = magisterial_life_succession_law }
+							remove_title_law = magisterial_life_succession_law
+						}
+						else_if = {
+							limit = { has_title_law = magisterial_limited_succession_law }
+							remove_title_law = magisterial_limited_succession_law
+						}
+						add_title_law = dictatorship_succession_law
+					}
+				}
+			}
+		}
+
 		# FP1: note the victory for future memorialisation via stele (if applicable).
 		scope:attacker = { fp1_remember_recent_conquest_victory_effect = yes }
 
 		scope:attacker = { 
-			delay = { days = 10 }
 			trigger_event = lv_scenario_cob.0512
+			days = 10
 		}
 	}
 
