@@ -235,11 +235,7 @@ aurion_new_valyria = {
 		scope:attacker = { 
 			add_prestige = 500
 			add_gold = 1000 #for coronation
-			#get_title = title:e_new_valyria
-			#title:c_old_volantis = {
-			#	set_county_faith = root.faith
-			#	set_county_culture = root.culture	
-			#}
+			delay = { days = 10 }
 			trigger_event = lv_scenario_cob.0510
 		}
 	}
@@ -445,85 +441,165 @@ aurion_new_valyria = {
 # New Valyria Conquest
 #########
 cob_new_valyria_conquest_cb = {
-	mutually_exclusive_titles = {
-		always = yes
-	}
-
+	icon = dragon_kingdom_conquest_cb
+	group = event
+	ai_only_against_liege = no
 	allow_hostages = no
+	white_peace_possible = no
+
 	allowed_for_character = {
-		always = no
-	}
+        always = no
+    }
 	allowed_against_character = {
-		always = yes
+		# This is a scripted war, it technically does not need this
+		# Including this will cause the war to invalidate when the former liege dies!
+		# exists = scope:attacker.joined_faction
+		# scope:attacker.joined_faction = {
+		# 	special_title.holder = scope:defender
+		# }
 	}
-	target_titles = all
-	target_title_tier = all
+
 	target_de_jure_regions_above = yes
-	ignore_effect = change_title_holder
-	combine_into_one = yes
 
+	valid_to_start = {}
 
-	is_allowed_claim_title = {
-		scope:claimant =  {
-			is_human = yes
-			NOT = { has_trait = incapable }
-			is_imprisoned = no
-			OR = {
-				this = scope:attacker
-				AND = {
-					religion = scope:attacker.religion
-					dynasty = scope:attacker.dynasty
-				}
-			}
+	cost = {
+		piety = {
+			value = 0
+		}
+		prestige = {
+			value = 0
 		}
 	}
 
-	cost = {}
-
-	white_peace_possible = no
+	target_titles = claim
+	#target_title_tier = all
 
 	on_declaration = {
 		on_declared_war = yes
 	}
 
 	should_invalidate = {
+		OR = {
+			NOT = {
+				any_in_list = {
+					list = target_titles
+					any_in_de_jure_hierarchy = {
+						tier >= tier_county
+						exists = holder
+						holder = {
+							OR = {
+								this = scope:defender
+								target_is_liege_or_above = scope:defender
+							}
+						}
+					}
+				}
+			}
+			AND = {
+				NOT = { scope:claimant = scope:attacker }
+				scope:claimant = {
+					OR = {
+						is_alive = no
+						NOR = {
+							is_vassal_or_below_of = scope:attacker
+							is_courtier_of = scope:attacker
+						}
+					}
+				}
+			}
+		}
+	}
+
+	on_invalidated_desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { scope:claimant = scope:attacker }
+					scope:claimant = { is_alive = no }
+				}
+				desc = msg_claim_war_invalidated_claimant_unavailable_dead_message
+			}
+			triggered_desc = {
+				trigger = {
+					scope:claimant = {
+						NOR = {
+							this = scope:attacker
+							NOR = {
+								is_vassal_or_below_of = scope:attacker
+								is_courtier_of = scope:attacker
+							}
+						}
+					}
+				}
+				desc = msg_claim_war_invalidated_claimant_unavailable_not_vassal_message
+			}
+			desc = msg_claim_war_invalidated_message
+		}
 	}
 
 	on_invalidated = {
-		scope:attacker = { #Will only invalidate if the claimant dies - Write a New Event for this?
-			trigger_event = lv_scenario_cob.0512
-		}
 	}
-	on_invalidated_desc = msg_claim_war_invalidated_message
 
 	on_victory_desc = {
 		first_valid = {
 			triggered_desc = {
-				trigger = { scope:defender = { is_local_player = yes } }
-				desc = cob_new_valyria_conquest_cb_victory_desc_defender
+				trigger = {
+					scope:claimant = { is_local_player = yes }
+				}
+				desc = claim_cb_victory_desc_attacker_claimant
 			}
 			triggered_desc = {
 				trigger = { scope:attacker = { is_local_player = yes } }
-				desc = cob_new_valyria_conquest_cb_victory_desc_attacker
+				desc = claim_cb_victory_desc_attacker
 			}
-			desc = cob_new_valyria_conquest_cb_victory_desc
+			desc = claim_cb_victory_desc
 		}
 	}
 
-	on_victory = {
+	on_victory = {	
+		scope:attacker = {
+			if = {
+				limit = {
+					is_landless_adventurer = yes
+				}
+				hidden_effect = {
+					if = {
+						limit = {
+							NOT = { has_trait = adventurer }
+						}
+						add_trait = adventurer
+					}
+					save_scope_as = the_adventurer
+					every_courtier = {
+						limit = {
+							is_human = yes
+						}
+						set_variable = {
+							name = former_camp_leader
+							value = scope:the_adventurer
+						}
+						add_trait = adventurer_follower
+					}
+				}
+			}
+		}
+
 		scope:attacker = { show_pow_release_message_effect = yes }
 
-		#EP2 accolade glory gain for winning against higher ranked enemy
-		scope:attacker = { accolade_attacker_war_end_glory_gain_high_effect = yes }
+		# Legitimacy
+		add_legitimacy_attacker_victory_effect = yes
 
-		# Set land acquisition type to conquest.
+		#EP2 Accolade glory gain from winning against higher ranked enemy
+		scope:attacker = { accolade_attacker_war_end_glory_gain_med_effect = yes }
+
 		create_title_and_vassal_change = {
-			type = conquest
+			type = conquest_claim
 			save_scope_as = change
 			add_claim_on_loss = yes
 		}
 
-		# This claim CB makes the claimant a vassal, not sure if necessary otherwise? If so reenable and make independent in an effect below
+		# Create a claim CB which is executed to handle title/vassal changes, in addition to being used to calculate Prestige awards for war participants.
 		setup_claim_cb = {
 			titles = target_titles
 			attacker = scope:attacker
@@ -532,18 +608,28 @@ cob_new_valyria_conquest_cb = {
 			change = scope:change
 		}
 
+		resolve_title_and_vassal_change = scope:change
+
+
+		# Lose titles
+		create_title_and_vassal_change = {
+			type = conquest
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
 		scope:defender = {
 			every_held_title = {
 				limit = {
-					NOT = { tier = tier_barony }
+					tier < tier_kingdom
+					tier >= tier_county
 				}
 				change_title_holder = {
 					holder = scope:claimant
 					change = scope:change
+					take_baronies = yes
 				}
 			}
 		}
-
 		scope:claimant = {
 			change_liege = {
 				liege = scope:attacker
@@ -551,9 +637,34 @@ cob_new_valyria_conquest_cb = {
 			}
 			create_dragonlord_of_valyria_effect = yes
 		}
-		
+
 		resolve_title_and_vassal_change = scope:change
 
+		create_title_and_vassal_change = {
+			type = swear_fealty
+			save_scope_as = change
+		}
+		resolve_title_and_vassal_change = scope:change
+
+		if = {
+			limit = {
+				NOT = { scope:claimant = scope:attacker }
+				scope:attacker = {
+					can_add_hook = {
+						type = favor_hook
+						target = scope:claimant
+					}
+				}
+			}
+			scope:attacker = {
+				add_hook = {
+					target = scope:claimant
+					type = favor_hook
+				}
+			}
+		}
+
+		# Attacker gets Prestige Experience, Defender loses Prestige, all other participants gain Prestige based on their war contribution.
 		modify_all_participants_fame_values = {
 			WINNER = scope:attacker
 			LOSER = scope:defender
@@ -568,106 +679,50 @@ cob_new_valyria_conquest_cb = {
 		# truce
 		add_truce_attacker_victory_effect = yes
 
-		#Dragonlords Assumes Correct Gov
-		if = {
-			limit = {
-				any_in_list = {
-					list = target_titles
-					OR = {
-						this = title:k_lys
-						this = title:k_tyrosh
-						this = title:k_myr
-					}
-				}
-			}
-			scope:claimant = {
-				set_realm_capital = primary_title.title_capital_county
-				change_government = feudal_government
-
-				every_held_title = {
-					if = {
-						limit = {
-							OR = {
-								has_title_law = magisterial_life_succession_law
-								has_title_law = magisterial_limited_succession_law
-							}
-						}
-						if = {
-							limit = { has_title_law = magisterial_life_succession_law }
-							remove_title_law = magisterial_life_succession_law
-						}
-						else_if = {
-							limit = { has_title_law = magisterial_limited_succession_law }
-							remove_title_law = magisterial_limited_succession_law
-						}
-						add_title_law = dictatorship_succession_law
-					}
-				}
-			}
-		}
-
 		# FP1: note the victory for future memorialisation via stele (if applicable).
-		scope:attacker = {
-			fp1_remember_recent_conquest_victory_effect = yes
+		scope:attacker = { fp1_remember_recent_conquest_victory_effect = yes }
+
+		scope:attacker = { 
+			delay = { days = 10 }
 			trigger_event = lv_scenario_cob.0512
-			}
 		}
 	}
 
-	on_white_peace_desc = {}
-
-	on_white_peace = {}
-
-	on_defeat_desc = {
+	on_white_peace_desc = {
 		first_valid = {
 			triggered_desc = {
 				trigger = { scope:defender = { is_local_player = yes } }
-				desc = ninepenny_conquest_cb_defeat_desc_defender
+				desc = claim_cb_white_peace_desc_defender
 			}
-			triggered_desc = {
-				trigger = { scope:attacker = { is_local_player = yes } }
-				desc = ninepenny_conquest_cb_defeat_desc_attacker
-			}
-			desc = ninepenny_conquest_cb_defeat_desc
+			desc = claim_cb_white_peace_desc
 		}
+
 	}
 
-	on_defeat = {
-		scope:attacker = { show_pow_release_message_effect = yes }
+	on_white_peace = {
+		scope:attacker = {
+			show_pow_release_message_effect = yes
+			stress_impact = {
+				ambitious = medium_stress_impact_gain
+				arrogant = medium_stress_impact_gain
+			}
+		}
 
-		#EP2 accolade glory gain for winning against higher ranked enemy
-		scope:defender = { accolade_defender_war_end_glory_gain_high_effect = yes }
+		#EP2 accolade glory gain for defender doing alright
+		scope:defender = { accolade_defender_war_end_glory_gain_low_effect = yes }
 
-		# lose claims
-		if = {
-			limit = { scope:attacker = scope:claimant }
-			every_in_list = {
-				list = target_titles
+		# press claims
+		every_in_list = {
+			list = target_titles
+			if = {
+				limit = { scope:claimant = { has_weak_claim_on = prev } }
 				scope:claimant = {
-					remove_claim = prev
+					make_claim_strong = prev
 				}
 			}
 		}
 
-		if = {
-			limit = {
-				NOT = { scope:claimant = scope:attacker }
-				scope:claimant = {
-					can_add_hook = {
-						type = favor_hook
-						target = scope:attacker
-					}
-				}
-			}
-			scope:claimant = {
-				add_hook = {
-					target = scope:attacker
-					type = favor_hook
-				}
-			}
-		}
-
-		# Award the appropriate amount of prestige to all participants in the war.
+		# Create an 'helper' claim CB which we won't execute, but can use to determine how much Prestige should be given to war participants.
 		setup_claim_cb = {
 			titles = target_titles
 			attacker = scope:attacker
@@ -675,6 +730,119 @@ cob_new_valyria_conquest_cb = {
 			claimant = scope:claimant
 			victory = no
 		}
+		# Prestige loss for the attacker
+		scope:attacker = {
+			add_prestige = {
+				value = scope:cb_prestige_factor # Set by 'setup_claim_cb'
+				multiply = -5.0
+			}
+		}
+		# Allies on both sides get full prestige value for helping in the war, based on their war participation.
+		modify_allies_of_participants_fame_values = {
+			WINNER = scope:attacker
+			FAME_BASE = scope:cb_prestige_factor # Set by 'setup_claim_cb'
+			IS_RELIGIOUS_WAR = no
+			WINNER_ALLY_FAME_SCALE = 10
+			LOSER_ALLY_FAME_SCALE = 10
+		}
+		# Defender neither gains nor loses any prestige.
+		scope:defender = {
+			stress_impact = {
+				arrogant = medium_stress_impact_gain
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = { scope:claimant = scope:attacker }
+				scope:attacker = {
+					can_add_hook = {
+						type = favor_hook
+						target = scope:claimant
+					}
+				}
+			}
+			scope:attacker = {
+				add_hook = {
+					target = scope:claimant
+					type = favor_hook
+				}
+			}
+		}
+
+		# Truce
+		add_truce_white_peace_effect = yes
+	}
+
+	on_defeat_desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:defender = { is_local_player = yes } }
+				desc = claim_cb_defeat_desc_defender
+			}
+			triggered_desc = {
+				trigger = { scope:claimant = { is_local_player = yes } }
+				desc = claim_cb_defeat_desc_attacker_claimant
+			}
+			triggered_desc = {
+				trigger = { scope:attacker = { is_local_player = yes } }
+				desc = claim_cb_defeat_desc_attacker
+			}
+			desc = claim_cb_defeat_desc
+		}
+
+	}
+
+	on_defeat = {
+		scope:attacker = { show_pow_release_message_effect = yes }
+
+		# Legitimacy
+		add_legitimacy_attacker_defeat_effect = yes
+
+		#EP2 accolade glory gain for winning against higher ranked enemy
+		scope:defender = { accolade_defender_war_end_glory_gain_med_effect = yes }
+
+		# lose claims
+		every_in_list = {
+			list = target_titles
+			scope:claimant = {
+				remove_claim = prev
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = { scope:claimant = scope:attacker }
+				scope:attacker = {
+					can_add_hook = {
+						type = favor_hook
+						target = scope:claimant
+					}
+				}
+			}
+			scope:attacker = {
+				add_hook = {
+					target = scope:claimant
+					type = favor_hook
+				}
+			}
+		}
+
+		# Attacker pays gold to the defender as reparations.
+		scope:attacker = {
+			pay_short_term_gold_reparations_effect = {
+				GOLD_VALUE = 3
+			}
+		}
+		# Create an 'helper' claim CB which we won't execute, but can use to determine how much Prestige should be given to war participants.
+		setup_claim_cb = {
+			titles = target_titles
+			attacker = scope:attacker
+			defender = scope:defender
+			claimant = scope:claimant
+			victory = no
+		}
+		# Attacker loses Prestige, all other war participants gain Prestige (Defender gains full prestige, all allies on both sides gain based on war contribution).
 		modify_all_participants_fame_values = {
 			WINNER = scope:defender
 			LOSER = scope:attacker
@@ -700,7 +868,7 @@ cob_new_valyria_conquest_cb = {
 				limit = {
 					story_type = story_lv_century_of_blood_new_valyria
 				}
-				save_scope_as = new_valyria_stor
+				save_scope_as = new_valyria_story
 			}
 		}
 		if = { #Second NPK Wars
@@ -724,8 +892,9 @@ cob_new_valyria_conquest_cb = {
 	attacker_allies_inherit = yes
 	defender_allies_inherit = yes
 
-	war_name = "AURION_NEW_VALYRIA_WAR_NAME"
-	interface_priority = 60
+	war_name = "CONQUEST_NEW_VALYRIA_WAR_NAME"
+	war_name_base = "CONQUEST_NEW_VALYRIA_WAR_NAME_BASE"
+	cb_name = "CONQUEST_NEW_VALYRIA_CB_NAME"
 
 	should_show_war_goal_subview = yes
 
@@ -733,9 +902,6 @@ cob_new_valyria_conquest_cb = {
 
 	max_defender_score_from_occupation = 150
 	max_attacker_score_from_occupation = 150
-
-	max_attacker_score_from_battles = 200
-	max_defender_score_from_battles = 200
 
 	max_ai_diplo_distance_to_title = 1000
 }

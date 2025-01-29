@@ -1,0 +1,57 @@
+﻿story_lv_century_of_blood_new_valyria = {
+
+	#The Dragonlords
+	#Aurion - Varezys_1
+	#Sonaryen - Sonaryen_1
+	#Urnebar - Urnebar_1
+	#Mataeryon - Mataeryon_1
+
+
+	on_setup = {
+		debug_log = "New Valyria Century of Blood initialized"
+		##################################
+		#Initialise Events
+
+		#Gather the Dragonlords!
+		add_to_variable_list = {
+			name = dragonlord_of_valyria
+			target = character:Varezys_1 #Aurion
+		}
+		add_to_variable_list = {
+			name = dragonlord_of_valyria
+			target = character:Urnebar_1
+		}
+		add_to_variable_list = {
+			name = dragonlord_of_valyria
+			target = character:Sonaryen_1
+		}
+		add_to_variable_list = {
+			name = dragonlord_of_valyria
+			target = character:Mataeryon_1
+		}
+		#New Valyria Conquest counter
+		set_variable = {
+			name = new_valyria_conquest
+			value = 0
+		}
+	}
+
+	# General daily checks
+	effect_group = {
+		triggered_effect = {
+			trigger = {
+				NOT = {
+					has_variable = dragonstone_ultimatum
+				}
+				has_variable = new_valyria_conquest
+				var:new_valyria_conquest = 3
+			}
+			effect = {
+				set_variable = dragonstone_ultimatum
+				title:k_dragonstone.holder ?= {
+					trigger_event = lv_scenario_cob.0517 # Dragonstone given ultimatum
+				}
+			}
+		}
+	}
+}

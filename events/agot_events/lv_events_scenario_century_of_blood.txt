@@ -768,8 +768,6 @@ lv_scenario_cob.0512 = {
 	}
 
 	immediate = {
-		set_variable = dragonlord_of_valyria
-		hidden_effect = { create_dragonlord_of_valyria_effect = yes }
 		character:Varezys_1 = { #For loc
 			save_scope_as = aurion
 		}
@@ -872,7 +870,7 @@ lv_scenario_cob.0512 = {
 			casus_belli = cob_new_valyria_conquest_cb
 			target = title:k_myr.holder
 			claimant = character:Mataeryon_1
-			target_title = title:k_lys
+			target_title = title:k_myr
 		}
 	}
 
@@ -904,5 +902,121 @@ lv_scenario_cob.0512 = {
 				}
 			}
 		}
+	}
+}
+lv_scenario_cob.0517 = { #Dragonstone ultimatum
+	type = character_event
+	title = lv_scenario_cob.0517.t
+	desc = lv_scenario_cob.0517.desc
+
+	theme = diplomacy
+	left_portrait = {
+		character = scope:aurion
+		animation = martial
+	}
+	right_portrait = {
+		character = root
+		animation = personality_callous
+	}
+	
+	trigger = {
+	}
+
+	immediate = {
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+
+	option = { #We stand defiant
+		name = lv_scenario_cob.0517.a
+
+		scope:aurion = {
+			trigger_event = lv_scenario_cob.0518
+		}
+	}
+
+	option = { #Become part of New valyria
+		name = lv_scenario_cob.0517.b
+
+		scope:root = {
+			change_liege = {
+				liege = scope:aurion
+				change = scope:change
+			}
+		}
+	}
+}
+
+lv_scenario_cob.0518 = { #Dragonstone refuses to join New Valyria
+	type = character_event
+	title = lv_scenario_cob.0518.t
+	desc = lv_scenario_cob.0518.desc
+
+	theme = court
+
+	left_portrait = {
+		character = root
+		animation = map_rage
+	}
+	right_portrait = {
+		character = scope:dragonstone
+		animation = personality_callous
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		title:k_dragonstone.holder = {
+			save_scope_as = dragonstone
+		}
+	}
+
+	option = { #It's fucking poppin off now
+		name = lv_scenario_cob.0518.a
+		show_as_tooltip = {
+			start_war = {
+				casus_belli = dragonstone_refusal
+				target = scope:dragonstone
+				target_title = title:k_dragonstone
+			}
+		}
+		hidden_effect = {
+			start_war = {
+				casus_belli = dragonstone_refusal
+				target = scope:dragonstone
+				target_title = title:k_dragonstone
+			}
+			random_character_war = {
+				limit = {
+					primary_defender = scope:dragonstone
+				}
+				save_scope_as = dragonstone_refusal
+			}
+		}
+	}
+	option = { #leave them be
+		name = lv_scenario_cob.0518.b
+	}
+}
+
+lv_scenario_cob.0519 = { #Aurion loses 
+	type = character_event
+	title = lv_scenario_cob.0519.t
+	desc = lv_scenario_cob.0519.desc
+
+	theme = war
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	left_portrait = {
+		character = root
+		animation = spymaster
+	}
+
+	option = {
+		name = lv_scenario_cob.0519.a
 	}
 }
