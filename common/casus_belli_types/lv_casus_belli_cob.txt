@@ -491,7 +491,7 @@ cob_new_valyria_conquest_cb = {
 
 	on_invalidated = {
 		scope:attacker = { #Will only invalidate if the claimant dies - Write a New Event for this?
-			trigger_event = agot_ninepenny.0002
+			trigger_event = lv_scenario_cob.0512
 		}
 	}
 	on_invalidated_desc = msg_claim_war_invalidated_message
@@ -500,13 +500,13 @@ cob_new_valyria_conquest_cb = {
 		first_valid = {
 			triggered_desc = {
 				trigger = { scope:defender = { is_local_player = yes } }
-				desc = ninepenny_conquest_cb_victory_desc_defender
+				desc = cob_new_valyria_conquest_cb_victory_desc_defender
 			}
 			triggered_desc = {
 				trigger = { scope:attacker = { is_local_player = yes } }
-				desc = ninepenny_conquest_cb_victory_desc_attacker
+				desc = cob_new_valyria_conquest_cb_victory_desc_attacker
 			}
-			desc = ninepenny_conquest_cb_victory_desc
+			desc = cob_new_valyria_conquest_cb_victory_desc
 		}
 	}
 
@@ -544,54 +544,15 @@ cob_new_valyria_conquest_cb = {
 			}
 		}
 
+		scope:claimant = {
+			change_liege = {
+				liege = scope:attacker
+				change = scope:change
+			}
+			create_dragonlord_of_valyria_effect = yes
+		}
+		
 		resolve_title_and_vassal_change = scope:change
-
-		if = { #Create Stepstones if non existant
-			limit = {
-				any_in_list = {
-					list = target_titles
-					this = title:k_the_stepstones
-				}
-			}
-			create_title_and_vassal_change = {
-				type = created
-				save_scope_as = stepstones
-				add_claim_on_loss = no
-			}
-			title:k_the_stepstones = {
-				change_title_holder = {
-					holder = scope:claimant
-					change = scope:stepstones
-				}
-			}
-			resolve_title_and_vassal_change = scope:stepstones
-		}
-
-		if = { #Return Dipsuted Lands Temp Titles to Holders
-			limit = {
-				exists = title:k_disputed_lands.holder
-			}
-			create_title_and_vassal_change = {
-				type = granted
-				save_scope_as = disputed_lands
-				add_claim_on_loss = no
-			}
-
-			title:k_disputed_lands = {
-				every_in_de_jure_hierarchy = {
-					limit = {
-						holder = scope:claimant
-						NOT = { tier = tier_barony }
-					}
-
-					change_title_holder_include_vassals = {
-						holder = title:k_disputed_lands.holder
-						change = scope:disputed_lands
-					}
-				}
-			}
-			resolve_title_and_vassal_change = scope:disputed_lands
-		}
 
 		modify_all_participants_fame_values = {
 			WINNER = scope:attacker
@@ -607,35 +568,13 @@ cob_new_valyria_conquest_cb = {
 		# truce
 		add_truce_attacker_victory_effect = yes
 
-		#Ninepenny King Becomes Independent
-		create_title_and_vassal_change = {
-			type = independency
-			save_scope_as = change
-		}
-		scope:claimant = {
-			becomes_independent = { change = scope:change }
-			if = { #Tracking for later events
-				limit = {
-					is_alive = yes
-					is_landed = yes
-				}
-				add_character_flag = enthroned
-			}
-		}
-		resolve_title_and_vassal_change = scope:change
-
-		scope:claimant = {
-			create_band_of_nine_alliances_effect = yes
-		}
-
-		#Ninepenny King Assumes Correct Gov
+		#Dragonlords Assumes Correct Gov
 		if = {
 			limit = {
 				any_in_list = {
 					list = target_titles
 					OR = {
 						this = title:k_lys
-						this = title:k_pentos
 						this = title:k_tyrosh
 						this = title:k_myr
 					}
@@ -643,7 +582,7 @@ cob_new_valyria_conquest_cb = {
 			}
 			scope:claimant = {
 				set_realm_capital = primary_title.title_capital_county
-				change_government = free_city_government
+				change_government = feudal_government
 
 				every_held_title = {
 					if = {
@@ -670,59 +609,7 @@ cob_new_valyria_conquest_cb = {
 		# FP1: note the victory for future memorialisation via stele (if applicable).
 		scope:attacker = {
 			fp1_remember_recent_conquest_victory_effect = yes
-			#Add to Ninepenny Conquest Counter
-			random_owned_story = {
-				limit = {
-					story_type = story_agot_ninepenny_kings
-				}
-				save_scope_as = ninepenny_story
-				change_variable = {
-					name = band_of_nine_conquest
-					add	= 1
-				#Remember the most recent conquest
-				}
-				if = {
-					limit = {
-						scope:claimant = character:Blackfyre_14
-						any_in_list = {
-							list = target_titles
-							this = title:k_the_stepstones
-						}
-					}
-					set_variable = {
-						name = recent_conquest
-						value = title:k_the_stepstones
-					}
-				}
-				else = {
-					set_variable = {
-						name = recent_conquest
-						value = scope:claimant.primary_title
-					}
-				}
-			}
-
-			if = {
-				limit = {
-					scope:ninepenny_story = {
-						has_variable = band_of_nine_conquest
-						var:band_of_nine_conquest = 2
-						NOT = {
-							has_variable = second_npk_conquest
-						}
-					}
-				}
-			}
-			else_if = { #Second NPK Wars
-				limit = {
-					scope:ninepenny_story = {
-						has_variable = second_npk_conquest
-					}
-				}
-				trigger_event = agot_ninepenny.0021
-			}
-			else = { #Initial NPK Wars
-				trigger_event = agot_ninepenny.0002
+			trigger_event = lv_scenario_cob.0512
 			}
 		}
 	}
@@ -807,30 +694,23 @@ cob_new_valyria_conquest_cb = {
 		}
 		on_lost_aggression_war_discontent_loss = yes
 
-		#NPK Effects
+		#New Valyria Story Effects
 		scope:attacker = {
 			random_owned_story = {
 				limit = {
-					story_type = story_agot_ninepenny_kings
+					story_type = story_lv_century_of_blood_new_valyria
 				}
-				save_scope_as = ninepenny_story
+				save_scope_as = new_valyria_stor
 			}
 		}
 		if = { #Second NPK Wars
 			limit = {
-				scope:ninepenny_story = {
-					has_variable = second_npk_conquest
+				scope:new_valyria_story = {
+					has_variable = second_new_valyria_conquest
 				}
 			}
 			scope:attacker = {
-				trigger_event = agot_ninepenny.0024 #Lost War momentum gone wah wah
-			}
-		}
-		else = {
-			#Implode the Band of the Nine
-			scope:attacker = { shatter_band_of_nine_alliances_effect = yes }
-			maelys_title_distribution_effect = {
-				MAELYS = scope:attacker
+				trigger_event = lv_scenario_cob.0519 #Lost War momentum gone wah wah WRITE ME
 			}
 		}
 	}
@@ -844,7 +724,7 @@ cob_new_valyria_conquest_cb = {
 	attacker_allies_inherit = yes
 	defender_allies_inherit = yes
 
-	war_name = "NINEPENNY_WAR_NAME"
+	war_name = "AURION_NEW_VALYRIA_WAR_NAME"
 	interface_priority = 60
 
 	should_show_war_goal_subview = yes
