@@ -528,7 +528,7 @@
 								geographical_region = world_valyria 
 							}
 						 }
-						 multiply = 2
+						 multiply = 1
 					}
 					if = {
 						limit = { 
@@ -627,7 +627,7 @@
 								geographical_region = world_valyria 
 							}
 						 }
-						 multiply = 3
+						 multiply = 2
 					}
 					if = {
 						limit = { 
@@ -635,7 +635,7 @@
 								zz_valyria_has_volcano = yes
 							}
 						 }
-						 multiply = 5
+						 multiply = 3
 					}
 				}
 			}
@@ -715,33 +715,14 @@
 			is_valid = {
 				scope:host = {
 					has_trait = zz_magister
-					zz_valyria_has_mana_to_cast = { MANACOST = 100 }
-				}
-				
-			}
-			can_pick = {
-				has_trait = zz_magister
-				zz_valyria_has_mana_to_cast = { MANACOST = 100 }
-			}
-			cost = {
-				gold = {
-					add = {
-						value = zz_valyria_colonisation_activity_cost
-						desc = pilgrimage_base_cost
-					}
-					add = {
-						value = zz_valyria_colonisation_activity_cost
-						multiply = activity_cost_scale_by_era
-						subtract = root.zz_valyria_colonisation_activity_cost
-						desc = activity_cost_scale_by_era_desc
-					}
+					zz_valyria_has_mana_to_cast = { MANACOST = 20 }
 					if = {
 						limit = { 
 							scope:province ?= {
 								geographical_region = world_valyria 
 							}
 						 }
-						 multiply = 5
+						 zz_valyria_has_mana_to_cast = { MANACOST = 100 }
 					}
 					if = {
 						limit = { 
@@ -749,10 +730,33 @@
 								zz_valyria_has_volcano = yes
 							}
 						 }
-						 multiply = 3
+						 zz_valyria_has_mana_to_cast = { MANACOST = 300 }
 					}
-					multiply = 5
 				}
+				
+			}
+			can_pick = {
+				has_trait = zz_magister
+				zz_valyria_has_mana_to_cast = { MANACOST = 20 }
+				if = {
+					limit = { 
+						scope:province ?= {
+							geographical_region = world_valyria 
+						}
+					 }
+					 zz_valyria_has_mana_to_cast = { MANACOST = 100 }
+				}
+				if = {
+					limit = { 
+						scope:province ?= {
+							zz_valyria_has_volcano = yes
+						}
+					 }
+					 zz_valyria_has_mana_to_cast = { MANACOST = 300 }
+				}
+			}
+			cost = {
+
 			}
 			on_enter_phase = {
 				if = {
@@ -775,10 +779,40 @@
 			}
 			on_end = {
 				scope:host = {
-					set_variable = {
-						name = zz_manacost 
-						value = 100
+					if = { 
+						limit = {
+							limit = { 
+								scope:province ?= {
+									geographical_region = world_valyria 
+								}
+							 }
+							 set_variable = {
+								name = zz_manacost 
+								value = 100
+							}
+						}
 					}
+					else_if = { 
+						limit = {
+							limit = { 
+								scope:province ?= {
+									geographical_region = world_valyria 
+									zz_valyria_has_volcano = yes
+								}
+							 }
+							 set_variable = {
+								name = zz_manacost 
+								value = 300
+							}
+						}
+					}
+					else = {
+						set_variable = {
+							name = zz_manacost 
+							value = 20
+						}
+					}
+					
 					zz_valyria_mana_spend = yes
 				}
 				scope:activity = {
