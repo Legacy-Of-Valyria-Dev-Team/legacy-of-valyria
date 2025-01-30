@@ -1,0 +1,749 @@
+namespace = gogossos_expedition
+
+gogossos_expedition.0001 = {
+    type = character_event
+	title = gogossos_expedition_0001_t
+	desc = gogossos_expedition_0001_desc
+
+    theme = hunting
+
+    left_portrait = {
+		character = root
+		animation = fear
+	}
+
+    right_portrait = {
+		character = scope:Monster_1
+		animation = rage
+	}
+
+    immediate = {
+        create_character = {
+				gender = male
+				random_traits_list = { count = 3 }
+				culture = culture:gogossosi
+				faith = faith:valyrian 
+				trait = beauty_bad_3
+				trait = scaly
+				trait = hunchbacked
+				trait = two_headed
+
+				location = root.location
+				save_scope_as = Monster_1
+			}
+    }
+
+    option = {
+        name = gogossos_expedition.0001a
+        random_list = {
+            30 = {
+                duel = {
+                    skill = prowess
+                    value = high_skill_rating
+                    target = scope:Monster_1
+
+                    70 = {
+                        comapare_modifier = {
+                                value = scope:duel_value
+                                multiplier = 3.5
+                                min = -49
+                        }
+
+                        trigger_event = gogossos_expedition.0002
+                    } 
+
+                    30 = {
+                        comapare_modifier = {
+                                value = scope:duel_value
+                                multiplier = -3.5
+                                min = -49
+                        }
+                    }
+                }
+            }
+
+            60 = {
+                add_gold = 100
+
+                trigger_event = gogossos_expedition.0002
+            }
+            
+            10 = {
+                death = {
+                    death_reason = death_lost_in_gogossos
+                }
+            }
+        }
+    }
+
+    option = {
+        name = gogossos_expedition.00012
+        add_prestige = -500
+        stress_impact = {
+            ambitious = medium_stress_impact_gain
+            brave = medium_stress_impact_gain
+            arrogant = minor_stress_impact_gain
+        }
+        remove_character_flag = agot_is_at_unknown_place
+        scope:Monster_1 = {
+                                death = { death_reason = death_monster_duel }
+                        }
+    }
+
+}
+
+gogossos_expedition.0002 = {
+    type = character_event
+    title = gogossos_expedition_0002_t
+    desc = gogossos_expedition_0002_desc
+
+    theme = hunting
+
+    left_portrait = {
+		character = root
+		animation = survey
+	}
+
+    immediate = {
+        scope:Monster_1 = {
+                                death = { death_reason = death_monster_duel }
+                        }
+
+
+		if = {
+			limit = {
+				NOR = {
+					has_variable = pillar_one
+					has_variable = pillar_two
+					has_variable = pillar_three
+				}
+			}
+			set_variable = {
+				name = pillar_one
+				value = 0
+			}
+			set_variable = {
+				name = pillar_two
+				value = 1
+			}
+			set_variable = {
+				name = pillar_three
+				value = 2
+			}
+		}
+    }
+
+	option = {
+		name = BYEEEE
+
+		if = {
+			limit = {
+				var:pillar_one = 4
+				var:pillar_one = 2
+				var:pillar_one = 1
+			}
+            remove_variable = pillar_one
+		    remove_variable = pillar_two
+		    remove_variable = pillar_three
+			random = {
+                50 = {
+                    trigger_event = gogossos_expedition.0003
+                }
+                
+   `             50 = {
+                    trigger_event = gogossos_expedition.0004
+                    
+                    hidden_effect = {
+                        immediate = {
+                            create_character = {
+                                trait = dragon
+                                age = 45
+                                template = agot_dragon_template
+                                random_traits = yes
+                                trait = dragon_wounded_1 
+                                save_scope_as = Monster_2
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+		else = {
+			if = {
+                limit = {
+                    AND = {
+                        NOT = {
+                            has_trait = wounded_1
+                        }
+                        NOR = {
+                            has_trait = wounded_2
+                            has_trait = wounded_3
+                        }
+                    }
+                }
+                add_trait = wounded_1
+            }
+            else = {
+                death = yes
+            }
+            trigger_event = gogossos_expedition.0002
+		}
+    }
+
+    option = {
+		name = pillar_mural_one
+		if = {
+			limit = {
+				var:pillar_one >= 3
+			}
+			set_variable = {
+				name = pillar_one
+				value = 0
+			}
+		}
+		else = {
+			change_variable = {
+				name = pillar_one
+				add = 1
+			}
+		}
+		trigger_event = gogossos_expedition.0002
+    }
+
+    option = {
+		name = pillar_mural_two
+		if = {
+			limit = {
+				var:pillar_two >= 3
+			}
+			set_variable = {
+				name = pillar_two
+				value = 0
+			}
+		}
+		else = {
+			change_variable = {
+				name = pillar_two
+				add = 1
+			}
+		}
+		trigger_event = gogossos_expedition.0002
+    }
+
+	option = {
+		name = pillar_mural_three
+		if = {
+			limit = {
+				var:pillar_three >= 3
+			}
+			set_variable = {
+				name = pillar_three
+				value = 0
+			}
+		}
+		else = {
+			change_variable = {
+				name = pillar_three
+				add = 1
+			}
+		}
+		trigger_event = gogossos_expedition.0002
+    }
+}
+
+gogossos_expedition.0003 = {
+    type = character_event
+	title = gogossos_expedition_0003_t
+	desc = gogossos_expedition_0003_desc
+
+    theme = hunting
+
+    left_portrait = scope:founder
+	animation = survey
+
+    option = {
+        name = treasure.1
+        add_gold = 500
+        remove_character_flag = agot_is_at_unknown_place
+        random_list = {
+            15 = {
+                agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root }
+            }
+
+            15 = {
+                agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root }
+            }
+
+            10 = {
+                agot_create_artifact_valyrian_steel_armor_effect = { OWNER = root }
+            }
+
+            10 = {
+                agot_create_artifact_vs_andal_armingsword_gold_effect = { OWNER = root }
+            }
+
+            20 = {
+                custom_tooltip = {
+
+                    text = egg.loc
+                
+                    random_list = {
+                        1 = {
+                            create_artifact_dragon_egg_rainbow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_yellow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blue_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_purple_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_red_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_brown_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_orange_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_white_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_tan_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_black_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_grey_1_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_grey_2_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_green_1_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_green_2_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_pink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_gold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_whitegold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_purplegold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_flame_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackred_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_brownspots_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_redblackgold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_palered_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_darkblue_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_darkred_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_frost_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_greengrey_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_magma_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_darkpurple_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_palepink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_palebluepink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_pinkspot_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_rainbowgold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_sunburst_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_goldpink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_bluebronze_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_greenorange_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_bronze_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackgreen_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_greygreenyellow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackyellow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_yellowgreen_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_silver_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackDarkRed_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_iceFire_effect = { OWNER = root }
+                        }
+                    }
+                }
+            }
+
+            10 = {
+                custom_tooltip = {
+                    text = blood.loc
+                    zz_gain_blood_magic_scroll = yes
+                }
+            }
+
+            10 = {
+                custom_tooltip = {
+                    text = water.loc
+                    zz_gain_water_magic_scroll = yes
+                }
+            }
+
+            10 = {
+                custom_tooltip = {
+                    text = shadow.loc
+                    zz_gain_shadow_magic_scroll = yes
+                }
+            }
+        }
+    }
+}
+
+gogossos_expedition.0004 = {
+    type = character_event
+	title = gogossos_expedition_0004_t
+	desc = gogossos_expedition_0004_desc
+
+    theme = hunting
+
+    left_portrait = {
+		character = root
+		animation = survey
+	}
+
+    right_portrait = {
+        character = scope:Monster_2
+		animation = dragon_main
+		camera = camera_dragon_event_standing_baby
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+    }
+
+    option = {
+        name = treasure.2
+        random_list= {
+            90 = {
+                duel = {
+                    skill = prowess
+                    value = high_skill_rating
+                    target = scope:Monster_2
+
+                    30 = {
+                        comapare_modifier = {
+                                value = scope:duel_value
+                                multiplier = 3.5
+                                min = -49
+                        }
+
+                        scope:Monster_2 = {
+                            death = { death_reason = death_monster_duel }
+                        }
+                        
+
+                        trigger_event = gogossos_expedition.00041
+                    } 
+
+                    70 = {
+                        comapare_modifier = {
+                                value = scope:duel_value
+                                multiplier = -3.5
+                                min = -49
+                        }
+                        death = {
+                            death_reason = death_monster_duel
+                        }
+                        scope:Monster_2 = {
+                                death = { death_reason = death_monster_duel }
+                        }
+                    }
+                }
+            }
+
+            10 = {
+                add_gold = 1000
+                trigger_event = gogossos_expedition.00041
+                random_list = {
+                    99 = {
+
+                    }
+
+                    1 = {
+                        1 = {
+			                create_artifact_dragon_egg_rainbow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_yellow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blue_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_purple_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_red_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_brown_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_orange_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_white_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_tan_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_black_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_grey_1_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_grey_2_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_green_1_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_green_2_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_pink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_gold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_whitegold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_purplegold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_flame_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackred_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_brownspots_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_redblackgold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_palered_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_darkblue_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_darkred_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_frost_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_greengrey_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_magma_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_darkpurple_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_palepink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_palebluepink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_pinkspot_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_rainbowgold_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_sunburst_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_goldpink_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_bluebronze_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_greenorange_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_bronze_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackgreen_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_greygreenyellow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackyellow_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_yellowgreen_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_silver_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_blackDarkRed_effect = { OWNER = root }
+                        }
+                        1 = {
+                            create_artifact_dragon_egg_iceFire_effect = { OWNER = root }
+                        }  
+                    }
+                }
+            }
+        }
+    }
+}
+
+gogossos_expedition.00041 = {
+    type = character_event
+	title = gogossos_expedition_00041_t
+	desc = gogossos_expedition_00041_desc
+
+    theme = hunting
+
+    left_portrait = scope:founder
+	animation = survey
+
+    option = {
+        name = home.1
+        remove_character_flag = agot_is_at_unknown_place
+    }
+}
+
+gogossos_expedition.00042 = {
+    type = character_event
+	title = gogossos_expedition_00042_t
+	desc = gogossos_expedition_00042_desc
+
+    theme = hunting
+
+    left_portrait = scope:founder
+	animation = survey
+
+    option = {
+        name = home.2
+        remove_character_flag = agot_is_at_unknown_place
+        add_gold = 1000
+    }
+}
+
+gogossos_expedition.0050 = {
+    type = character_event
+    title = gogossos_expedition.0101_t
+    desc = gogossos_expedition.0101_desc
+
+    theme = hunting
+    
+    left_portrait = scope:founder
+	animation = fear
+
+    right_portrait = scope:Monster_3
+    animation = page_flipping
+
+    immediate = {
+        create_character = {
+				gender = male
+				random_traits_list = { count = 3 }
+				culture = culture:gogossosi
+				faith = faith:valyrian 
+				trait = dwarf 
+                trait = witch
+
+				location = root.location
+				save_scope_as = Monster_3
+			}
+    }
+
+    option = {
+        name = bear_1
+        add_trait = silly_bear
+        remove_character_flag = agot_is_at_unknown_place
+    }
+}
+
+gogossos_expedition.0102 = {
+    type = character_event
+	title = gogossos_expedition_00042_t
+	desc = gogossos_expedition_00042_desc
+
+    theme = hunting
+
+    left_portrait = scope:founder
+	animation = survey
+
+    option = {
+        name = home.2
+        remove_character_flag = agot_is_at_unknown_place
+        add_gold = 1000
+    }
+}
