@@ -237,7 +237,7 @@ aurion_new_valyria = {
 			add_gold = 1000 #for coronation
 			trigger_event = {
 				id = lv_scenario_cob.0510
-				days = 30
+				days = 10
 			}
 		}
 	}
@@ -668,12 +668,44 @@ cob_new_valyria_conquest_cb = {
 		}
 
 		# FP1: note the victory for future memorialisation via stele (if applicable).
-		scope:attacker = { fp1_remember_recent_conquest_victory_effect = yes }
+		scope:attacker = {		
+			fp1_remember_recent_conquest_victory_effect = yes
+			#Add to New Valyria Conquest Counter
+			random_owned_story = {
+				limit = {
+					story_type = story_lv_century_of_blood_new_valyria
+				}
+				save_scope_as = new_valyria_story
+				change_variable = {
+					name = new_valyria_conquest
+					add	= 1
+				#Remember the most recent conquest
+				}
+				if = {
+					set_variable = {
+						name = recent_conquest
+						value = scope:claimant.primary_title
+					}
+				}
+			}
 
-		scope:attacker = { 
-			trigger_event = {
+			if = {
+				limit = {
+					scope:new_valyria_story = {
+						has_variable = new_valyria_conquest
+						var:new_valyria_conquest = 3	
+						NOT = {
+							has_character_flag = aurions_conquest
+						}
+					add_character_flag = aurions_conquest
+					}
+				}
+			}
+			else = { #Initial NPK Wars
+				trigger_event = {
 				id = lv_scenario_cob.0512
 				days = 10
+				}
 			}
 		}
 	}
@@ -854,22 +886,7 @@ cob_new_valyria_conquest_cb = {
 
 		#New Valyria Story Effects
 		scope:attacker = {
-			random_owned_story = {
-				limit = {
-					story_type = story_lv_century_of_blood_new_valyria
-				}
-				save_scope_as = new_valyria_story
-			}
-		}
-		if = { #Second NPK Wars
-			limit = {
-				scope:new_valyria_story = {
-					has_variable = second_new_valyria_conquest
-				}
-			}
-			scope:attacker = {
 				trigger_event = lv_scenario_cob.0519 #Lost War momentum gone wah wah WRITE ME
-			}
 		}
 	}
 

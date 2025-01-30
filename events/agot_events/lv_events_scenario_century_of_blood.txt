@@ -548,11 +548,13 @@ lv_scenario_cob.0510 = { #Aurion Varezys cornonation
 				set_county_culture = root.culture	
 			}
 		get_title = title:k_volantis
+		add_legitimacy = massive_legitimacy_gain
 		}
 		get_title = title:e_new_valyria
 		remove_character_flag = not_had_coronation
 		remove_character_modifier = uncoronated_modifier
 		add_character_modifier = coronation_appropriate_modifier
+		add_legitimacy = massive_legitimacy_gain
 		trigger_event = lv_scenario_cob.0511 
 	}
 }
@@ -904,6 +906,47 @@ lv_scenario_cob.0512 = {
 		}
 	}
 }
+lv_scenario_cob.0516 = { #Send Dragonstone ultimatum
+	type = character_event
+	title = lv_scenario_cob.0516.t
+	desc = lv_scenario_cob.0516.desc
+
+	theme = war
+
+	left_portrait = {
+		character = root
+		animation = martial
+	}
+	right_portrait = {
+		character = dragonstone
+		animation = personality_callous
+	}
+	
+	trigger = {
+		has_character_flag = aurions_conquest
+	}
+
+	immediate = {
+		title:k_dragonstone.holder = {
+			save_scope_as = dragonstone
+		}
+	}
+
+	option = { #send the message it will take a bit to get there
+		name = lv_scenario_cob.0516.a
+
+		scope:dragonstone = {
+			trigger_event = {
+			id = lv_scenario_cob.0517
+			days = 30
+			}
+		}
+	}
+
+	option = { #leave dragonstone be
+		name = lv_scenario_cob.0516.b
+	}
+}
 
 lv_scenario_cob.0517 = { #Dragonstone ultimatum
 	type = character_event
@@ -943,18 +986,27 @@ lv_scenario_cob.0517 = { #Dragonstone ultimatum
 
 	option = { #Become part of New valyria
 		name = lv_scenario_cob.0517.b
-			create_title_and_vassal_change = {
-				type = swear_fealty
-				save_scope_as = change
+
+		create_title_and_vassal_change = {
+			type = swear_fealty
+			save_scope_as = change
+		}
+
+		change_liege = {
+			liege = title:e_new_valyria.holder
+			change = scope:change
+		}
+		resolve_title_and_vassal_change = scope:change
+
+		scope:aurion = {
+			trigger_event = {
+			id = lv_scenario_cob.0520
+			days = 30
 			}
-			change_liege = {
-				liege = title:e_new_valyria.holder
-				change = scope:change
-			}
-			resolve_title_and_vassal_change = scope:change
 		}
 	}
 }
+
 
 lv_scenario_cob.0518 = { #Dragonstone refuses to join New Valyria
 	type = character_event
@@ -1013,5 +1065,40 @@ lv_scenario_cob.0519 = { #Aurion loses
 
 	option = {
 		name = lv_scenario_cob.0519.a
+	}
+}
+
+lv_scenario_cob.0520 = { #Dragonstone submits 
+	type = character_event
+	title = lv_scenario_cob.0520.t
+	desc = lv_scenario_cob.0520.desc
+
+	theme = war
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	left_portrait = {
+		character = root
+		animation = spymaster
+	}
+	
+	right_portrait = {
+		character = scope:dragonstone
+		animation = personality_callous
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		title:k_dragonstone.holder = {
+			save_scope_as = dragonstone
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0520.a
 	}
 }
