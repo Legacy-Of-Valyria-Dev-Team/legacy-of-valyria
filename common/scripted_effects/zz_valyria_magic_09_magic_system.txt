@@ -826,7 +826,47 @@ zz_valyria_magic_duel_stress_effect = {
 	}
 }
 
+zz_miscast_critical_effect = {
+	if = { 
+		limit = { exists = var:zz_miscast_count}
+		if = { 
+			limit = { 
+				var:zz_miscast_count = zz_valyria_miscast_counter
+					
+			}
+			death = {
+				death_reason = death_miscast_magic
+				killer = scope:secondary_recipient
+			}
+		}
+		random_list = {
+			50 = {
+				modifier = {
+					has_trait = starwalker 
+					add = 25
+				}
+			}
+			50 = {
+				change_variable = {
+					name =  zz_miscast_count
+					add = 1
+				}
+			}
+		}
 
+	}
+	else = {
+		random = {
+			chance = 50
+			set_variable = {
+				name = zz_miscast_count 
+				value = 1
+				months = { 1 600}
+			}
+		}
+		
+	}
+}
 zz_valyria_spell_failure_effect = { 
 	send_interface_message = {
 		type = event_generic_neutral
@@ -836,49 +876,145 @@ zz_valyria_spell_failure_effect = {
 		right_icon = scope:recipient
 		custom_tooltip = spell_failure_txt
 		scope:secondary_recipient  = {
-			if = { 
-				limit = { exists = var:zz_miscast_count}
-				if = { 
-					limit = { 
-						var:zz_miscast_count = 3
-					}
-					death = {
-						death_reason = death_miscast_magic
-						killer = scope:secondary_recipient
-					}
-				}
-				random_list = {
-					50 = {
-						modifier = {
-							has_trait = zz_magister 
-							add = 25
-						}
-					}
-					50 = {
-						change_variable = {
-							name =  zz_miscast_count
-							add = 1
-						}
-					}
-				}
-
-			}
-			else = { 
-				set_variable = {
-					name = zz_miscast_count 
-					value = 1
-					months = { 1 600}
-				}
-			}
+			
 
 			random_list = {
 				50 = {
 					increase_wounds_effect = { REASON = fire_magic }
+					zz_miscast_critical_effect = yes
 				}
-				25 = {
-					add_trait_force_tooltip = scaly
-				}
-				25 = {
+				35 = {
+					zz_miscast_critical_effect = yes
+					random_list = {
+						1 = {
+							modifier = {
+								has_trait = scaly 
+								add = -1
+							}
+							add_trait_force_tooltip = scaly
+						}
+						1 = {
+							modifier = {
+								has_trait = infertile 
+								add = -1
+							}
+							add_trait_force_tooltip = infertile
+						}
+						1 = {
+							modifier = {
+								has_trait = weak 
+								add = -1
+							}
+							add_trait_force_tooltip = weak
+						}
+						1 = {
+							modifier = {
+								has_trait = dull 
+								add = -1
+							}
+							add_trait_force_tooltip = dull
+						}
+						1 = {
+							modifier = {
+								has_trait = dwarf 
+								add = -1
+							}
+							add_trait_force_tooltip = dwarf
+						}
+						1 = {
+							modifier = {
+								has_trait = giant 
+								add = -1
+							}
+							add_trait_force_tooltip = giant
+						}
+						1 = {
+							modifier = {
+								has_trait = spindly 
+								add = -1
+							}
+							add_trait_force_tooltip = spindly
+						}
+						1 = {
+							modifier = {
+								has_trait = wheezing 
+								add = -1
+							}
+							add_trait_force_tooltip = wheezing
+						}
+						1 = {
+							modifier = {
+								has_trait = bleeder 
+								add = -1
+							}
+							add_trait_force_tooltip = bleeder
+						}
+						1 = {
+							modifier = {
+								has_trait = hunchbacked 
+								add = -1
+							}
+							add_trait_force_tooltip = hunchbacked
+						}
+						1 = {
+							modifier = {
+								has_trait = clubfooted 
+								add = -1
+							}
+							add_trait_force_tooltip = clubfooted
+						}
+						1 = {
+							modifier = {
+								has_trait = lisping 
+								add = -1
+							}
+							add_trait_force_tooltip = lisping
+						}
+						1 = {
+							modifier = {
+								has_trait = stuttering 
+								add = -1
+							}
+							add_trait_force_tooltip = stuttering
+						}
+						1 = {
+							modifier = {
+								has_trait = intellect_bad_3 
+								add = -1
+							}
+							zz_valyria_blood_magic_trait_downgrade = { TYPE = intellect }
+						}
+						1 = {
+							modifier = {
+								has_trait = physique_bad_3 
+								add = -1
+							}
+							zz_valyria_blood_magic_trait_downgrade = { TYPE = physique }
+						}
+						1 = {
+							modifier = {
+								has_trait = beauty_bad_3 
+								add = -1
+							}
+							zz_valyria_blood_magic_trait_downgrade = { TYPE = beauty }
+						}
+						1 = {
+							modifier = {
+								has_trait = magic_blood_bad_3 
+								add = -1
+							}
+							zz_valyria_blood_magic_trait_downgrade = { TYPE = magic_blood }
+						}
+						1 = {
+							modifier = {
+								has_trait = lifespan_bad_3 
+								add = -1
+							}
+							zz_valyria_blood_magic_trait_downgrade = { TYPE = lifespan }
+						}
+					}	
+				} 
+				15 = {
 					modifier = {
 						add = zz_spellcast_value
 					}
@@ -1128,87 +1264,244 @@ zz_valyria_mana_gain = {
 			value =  $MANAGAIN$
 		}
 	}
+	
 	else_if = {
 		limit ={
+			has_trait = magic_blood_good_2
 			has_trait_xp = {
-				trait = born_under_a_red_comet
+				trait = magic_blood_good_2
+				track = magic_blood_good_2_stores_of_power_01
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magic_blood_good_2
+			track = magic_blood_good_2_stores_of_power_01
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = magic_blood_good_2
+			has_trait_xp = {
+				trait = magic_blood_good_2
+				track = magic_blood_good_2_stores_of_power_02
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magic_blood_good_2
+			track = magic_blood_good_2_stores_of_power_02
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = magic_blood_good_3
+			has_trait_xp = {
+				trait = magic_blood_good_3
+				track = magic_blood_good_3_stores_of_power_01
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magic_blood_good_3
+			track = magic_blood_good_3_stores_of_power_01
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = magic_blood_good_3
+			has_trait_xp = {
+				trait = magic_blood_good_3
+				track = magic_blood_good_3_stores_of_power_02
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magic_blood_good_3
+			track = magic_blood_good_3_stores_of_power_02
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = magic_blood_good_3
+			has_trait_xp = {
+				trait = magic_blood_good_3
+				track = magic_blood_good_3_stores_of_power_03
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magic_blood_good_3
+			track = magic_blood_good_3_stores_of_power_03
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = magic_blood_good_3
+			has_trait_xp = {
+				trait = magic_blood_good_3
+				track = magic_blood_good_3_stores_of_power_04
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = magic_blood_good_3
+			track = magic_blood_good_3_stores_of_power_04
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = starwalker
+			has_trait_xp = {
+				trait = starwalker
 				track = stores_of_power_01
 				value  < 100
 			}
 		}
 		add_trait_xp = {
-			trait = born_under_a_red_comet
+			trait = starwalker
 			track = stores_of_power_01
 			value = $MANAGAIN$
 		}
 	}
 	else_if = {
 		limit ={
+			has_trait = starwalker
 			has_trait_xp = {
-				trait = born_under_a_red_comet
+				trait = starwalker
 				track = stores_of_power_02
 				value  < 100
 			}
 		}
 		add_trait_xp = {
-			trait = born_under_a_red_comet
+			trait = starwalker
 			track = stores_of_power_02
 			value = $MANAGAIN$
 		}
 	}
 	else_if = {
 		limit ={
+			has_trait = starwalker
 			has_trait_xp = {
-				trait = born_under_a_red_comet
+				trait = starwalker
 				track = stores_of_power_03
 				value  < 100
 			}
 		}
 		add_trait_xp = {
-			trait = born_under_a_red_comet
+			trait = starwalker
 			track = stores_of_power_03
 			value = $MANAGAIN$
 		}
 	}
 	else_if = {
 		limit ={
+			has_trait = starwalker
 			has_trait_xp = {
-				trait = born_under_a_red_comet
+				trait = starwalker
 				track = stores_of_power_04
 				value  < 100
 			}
 		}
 		add_trait_xp = {
-			trait = born_under_a_red_comet
+			trait = starwalker
 			track = stores_of_power_04
 			value = $MANAGAIN$
 		}
 	}
 	else_if = {
 		limit ={
+			has_trait = starwalker
 			has_trait_xp = {
-				trait = born_under_a_red_comet
+				trait = starwalker
 				track = stores_of_power_05
 				value  < 100
 			}
 		}
 		add_trait_xp = {
-			trait = born_under_a_red_comet
+			trait = starwalker
 			track = stores_of_power_05
 			value = $MANAGAIN$
 		}
 	}
 	else_if = {
 		limit ={
+			has_trait = starwalker
 			has_trait_xp = {
-				trait = born_under_a_red_comet
+				trait = starwalker
 				track = stores_of_power_06
 				value  < 100
 			}
 		}
 		add_trait_xp = {
-			trait = born_under_a_red_comet
+			trait = starwalker
 			track = stores_of_power_06
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = starwalker
+			has_trait_xp = {
+				trait = starwalker
+				track = stores_of_power_07
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = starwalker
+			track = stores_of_power_07
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = starwalker
+			has_trait_xp = {
+				trait = starwalker
+				track = stores_of_power_08
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = starwalker
+			track = stores_of_power_08
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = starwalker
+			has_trait_xp = {
+				trait = starwalker
+				track = stores_of_power_09
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = starwalker
+			track = stores_of_power_09
+			value = $MANAGAIN$
+		}
+	}
+	else_if = {
+		limit ={
+			has_trait = starwalker
+			has_trait_xp = {
+				trait = starwalker
+				track = stores_of_power_10
+				value  < 100
+			}
+		}
+		add_trait_xp = {
+			trait = starwalker
+			track = stores_of_power_10
 			value = $MANAGAIN$
 		}
 	}
@@ -1227,9 +1520,81 @@ zz_valyria_mana_spend = {
 		count = mana_cost_subtraction
 		if  = { 
 			limit =  { 
-				has_trait = born_under_a_red_comet 
+				has_trait = starwalker 
 				has_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
+					track = stores_of_power_10
+					value > 0
+				}
+			}
+			
+			hidden_effect = {
+				add_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_10
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = starwalker 
+				has_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_09
+					value > 0
+				}
+			}
+			
+			hidden_effect = {
+				add_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_09
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = starwalker 
+				has_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_08
+					value > 0
+				}
+			}
+			
+			hidden_effect = {
+				add_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_08
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = starwalker 
+				has_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_07
+					value > 0
+				}
+			}
+			
+			hidden_effect = {
+				add_trait_xp = {
+					trait = starwalker
+					track = stores_of_power_07
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = starwalker 
+				has_trait_xp = {
+					trait = starwalker
 					track = stores_of_power_06
 					value > 0
 				}
@@ -1237,7 +1602,7 @@ zz_valyria_mana_spend = {
 			
 			hidden_effect = {
 				add_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_06
 					value = -1
 				}
@@ -1245,9 +1610,9 @@ zz_valyria_mana_spend = {
 		}
 		else_if  = { 
 			limit =  { 
-				has_trait = born_under_a_red_comet 
+				has_trait = starwalker 
 				has_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_05
 					value > 0
 				}
@@ -1255,7 +1620,7 @@ zz_valyria_mana_spend = {
 			
 			hidden_effect = {
 				add_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_05
 					value = -1
 				}
@@ -1263,9 +1628,9 @@ zz_valyria_mana_spend = {
 		}
 		else_if  = { 
 			limit =  { 
-				has_trait = born_under_a_red_comet 
+				has_trait = starwalker 
 				has_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_04
 					value > 0
 				}
@@ -1273,7 +1638,7 @@ zz_valyria_mana_spend = {
 			
 			hidden_effect = {
 				add_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_04
 					value = -1 
 				}
@@ -1281,16 +1646,16 @@ zz_valyria_mana_spend = {
 		}
 		else_if  = { 
 			limit =  { 
-				has_trait = born_under_a_red_comet 
+				has_trait = starwalker 
 				has_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_03
 					value > 0
 				}
 			}
 			hidden_effect = {
 				add_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_03
 					value = -1
 				}
@@ -1298,16 +1663,16 @@ zz_valyria_mana_spend = {
 		}
 		else_if  = { 
 			limit =  { 
-				has_trait = born_under_a_red_comet 
+				has_trait = starwalker 
 				has_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_02
 					value > 0
 				}
 			}
 			hidden_effect = {
 				add_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_02
 					value =  -1
 				}
@@ -1315,17 +1680,119 @@ zz_valyria_mana_spend = {
 		}
 		else_if  = { 
 			limit =  { 
-				has_trait = born_under_a_red_comet 
+				has_trait = starwalker 
 				has_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_01
 					value > 0
 				}
 			}
 			hidden_effect = {
 				add_trait_xp = {
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = stores_of_power_01
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = magic_blood_good_3 
+				has_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_04
+					value > 0
+				}
+			}
+			hidden_effect = {
+				add_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_04
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = magic_blood_good_3 
+				has_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_03
+					value > 0
+				}
+			}
+			hidden_effect = {
+				add_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_03
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = magic_blood_good_3 
+				has_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_02
+					value > 0
+				}
+			}
+			hidden_effect = {
+				add_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_02
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = magic_blood_good_3 
+				has_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_01
+					value > 0
+				}
+			}
+			hidden_effect = {
+				add_trait_xp = {
+					trait = magic_blood_good_3
+					track = magic_blood_good_3_stores_of_power_01
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = magic_blood_good_2
+				has_trait_xp = {
+					trait = magic_blood_good_2
+					track = magic_blood_good_2_stores_of_power_02
+					value > 0
+				}
+			}
+			hidden_effect = {
+				add_trait_xp = {
+					trait = magic_blood_good_2
+					track = magic_blood_good_2_stores_of_power_02
+					value = -1
+				}
+			}
+		}
+		else_if  = { 
+			limit =  { 
+				has_trait = magic_blood_good_2 
+				has_trait_xp = {
+					trait = magic_blood_good_2
+					track = magic_blood_good_2_stores_of_power_01
+					value > 0
+				}
+			}
+			hidden_effect = {
+				add_trait_xp = {
+					trait = magic_blood_good_2
+					track = magic_blood_good_2_stores_of_power_01
 					value = -1
 				}
 			}
