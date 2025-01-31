@@ -443,11 +443,15 @@ aurion_new_valyria = {
 # New Valyria Conquest
 #########
 cob_new_valyria_conquest_cb = {
+	mutually_exclusive_titles = {
+		always = yes
+	}
 	icon = dragon_kingdom_conquest_cb
 	group = event
 	ai_only_against_liege = no
 	allow_hostages = no
 	white_peace_possible = no
+	combine_into_one = yes
 
 	allowed_for_character = {
         always = no
@@ -643,7 +647,7 @@ cob_new_valyria_conquest_cb = {
 			}
 			scope:claimant = {
 				set_realm_capital = primary_title.title_capital_county
-				change_government = feudal_government
+				change_government = free_city_government
 
 				every_held_title = {
 					if = {
@@ -670,42 +674,9 @@ cob_new_valyria_conquest_cb = {
 		# FP1: note the victory for future memorialisation via stele (if applicable).
 		scope:attacker = {		
 			fp1_remember_recent_conquest_victory_effect = yes
-			#Add to New Valyria Conquest Counter
-			random_owned_story = {
-				limit = {
-					story_type = story_lv_century_of_blood_new_valyria
-				}
-				save_scope_as = new_valyria_story
-				change_variable = {
-					name = new_valyria_conquest
-					add	= 1
-				#Remember the most recent conquest
-				}
-				if = {
-					set_variable = {
-						name = recent_conquest
-						value = scope:claimant.primary_title
-					}
-				}
-			}
-
-			if = {
-				limit = {
-					scope:new_valyria_story = {
-						has_variable = new_valyria_conquest
-						var:new_valyria_conquest = 3	
-						NOT = {
-							has_character_flag = aurions_conquest
-						}
-					add_character_flag = aurions_conquest
-					}
-				}
-			}
-			else = { #Initial NPK Wars
-				trigger_event = {
+			trigger_event = {
 				id = lv_scenario_cob.0512
 				days = 10
-				}
 			}
 		}
 	}
