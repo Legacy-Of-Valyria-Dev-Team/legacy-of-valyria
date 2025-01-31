@@ -672,11 +672,41 @@ cob_new_valyria_conquest_cb = {
 		}
 
 		# FP1: note the victory for future memorialisation via stele (if applicable).
-		scope:attacker = {		
-			fp1_remember_recent_conquest_victory_effect = yes
-			trigger_event = {
-				id = lv_scenario_cob.0512
-				days = 10
+		scope:attacker = {        
+  			fp1_remember_recent_conquest_victory_effect = yes
+  			if = {
+    			limit = {
+      				NAND = {
+        				title:k_lys.holder = {     
+         					OR = {
+            					this = root
+            					is_vassal_of = scope:attacker
+          					} 
+        				}
+        				title:k_myr.holder = {     
+          					OR = {
+            					this = root
+            					is_vassal_of = scope:attacker
+          					} 
+        				}
+        				title:k_tyrosh.holder = {     
+          					OR = {
+            					this = root
+            					is_vassal_of = scope:attacker
+          					} 
+        				}
+     				}
+    			}
+    			trigger_event = {
+      				id = lv_scenario_cob.0512
+      				days = 10
+    			}
+  			}
+			else = {
+  				trigger_event = {
+					id = lv_scenario_cob.0516
+					days = 10
+				}
 			}
 		}
 	}
@@ -960,7 +990,7 @@ dragonstone_refusal = {
 		}
 		triggered_desc = {
 			trigger = { scope:attacker = { is_local_player = yes } }
-			desc = subjugation_war_warning_desc
+			desc = claim_cb_victory_desc_attacker
 		}
 	}
 
