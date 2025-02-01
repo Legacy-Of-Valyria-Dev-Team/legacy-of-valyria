@@ -1,4 +1,48 @@
+# Patch 01.01.02
 
+
+**Added Content**
+- Added New Flavour added to Gogossite Culture
+- Added New Gogossite Religion "The Sanguine"
+- Added New MAA for Gogossite's
+- Added New Trait for Gogossite's
+- Added Artwork for MAA
+- Added 10 new events for colonisation and settlement phases
+- Added Valyrian pretender states mechanic
+- Added Legacy of Valyria version number text in the main menu and pause menu, just below the AGOT version text
+- Added so Elyria is able to see the special decision to form North Valyria kingdom title
+- Added Braavos and Volantis to the AGOT Seize Power decision (decision for Free Cities to turn feudal)
+- Added Dna's for Xhore dynasty
+- Added new vassals in New Ghis - house Sumbhaz + i landed house Marlaq
+- Added a new Landless Maksiuu character for the gamerule
+- Added Proper localization for custom traditions of the Ghiscari cultures & volantene
+- A ton more variety of MAAs have been added to many cultures including the ghiscari cultures, volantene and gogossi
+- Added New Sanguine religion
+- - Custom religious tenet has been added - jungle oracles.
+- Gogossite culture & traditions has been completed
+- - Custom tradition for the gogossite culture has been created - blood cultists
+- - New custom image for the blood cultist cultural tradition has been added
+
+**Changes**
+- Dna and character rework for Maegyr
+- Velos ruins and Howling Bogs made colonisable
+- Textured and imported Mage's Fyre sword
+- Textured and imported Abyss Axe into game (not currently spawnable)
+- Re-added missing Lokiria duchies to colonization options
+- Revised the UI's for several features, introduced a magic education system
+- Rewrote the Holding UI
+- Rewrote the Activity Phase Systems
+- Rewrote a chunk of cosmetic things.
+- Changed locations of 2 Buildings in Gogossos
+
+**Bug Fixes**
+- Fixed Buildings in Valyria
+- You will no longer need the T&T DLC to colonize as a stripped down system has been added for those without the DLC
+- Ruins of Nuqiria and Pyrys made colonisable again
+- Assorted UI changes for the resource system to help regain UI space on the top of the screen
+- Crafting system should be accessible for non-freehold
+- Name bug for Freehold government fixed
+- The AGOT Canon Children/Strong Seed systems should be working as normal again - this fix also fixes an issue with bastard children not getting the bastard trait
 
 👇 Version 1.01.01 👇 
 
