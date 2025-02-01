@@ -610,6 +610,11 @@ lv_scenario_cob.0511 = { #Aurion Varezys takes Volantis and calls upon other Dra
 			set_variable = dragonlord_of_valyria
 			hidden_effect = { create_dragonlord_of_valyria_effect = yes }
 		}
+		character:Belaerys_cob_1 = {
+			save_scope_as = belaerys
+			set_variable = dragonlord_of_valyria
+			hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
 	}
 
 	option = { #Attack Tyrosh to Install Urnebar
@@ -660,6 +665,23 @@ lv_scenario_cob.0511 = { #Aurion Varezys takes Volantis and calls upon other Dra
 			target = title:k_myr.holder
 			claimant = character:Mataeryon_1
 			target_title = title:k_myr
+		}
+	}
+
+	option = { #Attack Pentos to install Belaerys
+		name = lv_scenario_cob.0511.d
+		trigger = {
+			NOT = {
+				title:k_pentos.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_pentos.holder
+			claimant = character:Belaerys_cob_1
+			target_title = title:k_pentos
 		}
 	}
 
@@ -729,6 +751,10 @@ lv_scenario_cob.0512 = {
 			save_scope_as = sonaryen
 			set_variable = dragonlord_of_valyria			
 		}
+		character:Belaerys_cob_1 = {
+			save_scope_as = belaerys
+			set_variable = dragonlord_of_valyria
+		}
 	}
 
 	option = { #Attack Tyrosh to Install Urnebar
@@ -785,6 +811,23 @@ lv_scenario_cob.0512 = {
 		add_legitimacy = massive_legitimacy_gain
 	}
 
+	option = { #Attack Pentos to install Belaerys
+		name = lv_scenario_cob.0511.d
+		trigger = {
+			NOT = {
+				title:k_pentos.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_pentos.holder
+			claimant = character:Belaerys_cob_1
+			target_title = title:k_pentos
+		}
+	}
+
 	#Dragonlords Join Together
 	after = {
 		root = {
@@ -821,11 +864,11 @@ lv_scenario_cob.0516 = { #Send Dragonstone ultimatum
 	title = lv_scenario_cob.0516.t
 	desc = lv_scenario_cob.0516.desc
 
-	theme = court
-
 	override_background = {
 		reference = ep3_byzantium_throneroom
 	}
+
+	theme = court
 
 	left_portrait = {
 		character = root
@@ -833,19 +876,24 @@ lv_scenario_cob.0516 = { #Send Dragonstone ultimatum
 	}
 	lower_right_portrait = {
 		character = title:k_dragonstone.holder
-		animation = personality_bold
 	}
 	
 	trigger = {
 	}
 
+	immediate = {
+		title:k_dragonstone.holder = {
+			save_scope_as = dragonstone
+		}
+	}
+	
 	option = { #send the message it will take a bit to get there
 		name = lv_scenario_cob.0516.a
 
 		scope:dragonstone = {
 			trigger_event = {
 				id = lv_scenario_cob.0517
-				days = 30
+				days = 15
 			}
 		}
 	}
@@ -864,7 +912,6 @@ lv_scenario_cob.0517 = { #Dragonstone ultimatum
 
 	lower_right_portrait = {
 		character = scope:aurion
-		animation = personality_honorable
 	}
 	left_portrait = {
 		character = root
@@ -874,6 +921,7 @@ lv_scenario_cob.0517 = { #Dragonstone ultimatum
 		character = title:d_driftmark.holder
 		animation = disbelief
 	}
+
 	trigger = {
 	}
 
@@ -889,7 +937,7 @@ lv_scenario_cob.0517 = { #Dragonstone ultimatum
 		scope:aurion = {
 			trigger_event = {
 				id = lv_scenario_cob.0518
-				days = 30
+				days = 15
 			}
 		}
 	}
@@ -935,13 +983,12 @@ lv_scenario_cob.0518 = { #Dragonstone refuses to join New Valyria
 	}
 	lower_right_portrait = {
 		character = title:k_dragonstone.holder
-		animation = dismissal
 	}
 
 	trigger = {
 	}
 
-	option = { #It's fucking poppin off now
+	option = { #Its fucking poppin off now
 		name = lv_scenario_cob.0518.a
 		start_war = {
 			casus_belli = dragonstone_refusal
@@ -950,6 +997,7 @@ lv_scenario_cob.0518 = { #Dragonstone refuses to join New Valyria
 			target_title = title:k_dragonstone
 		}
 	}
+
 	option = { #leave them be
 		name = lv_scenario_cob.0518.b
 	}
@@ -994,7 +1042,6 @@ lv_scenario_cob.0520 = { #Dragonstone submits
 	
 	lower_right_portrait = {
 		character = title:k_dragonstone.holder
-		animation = personality_rational
 	}
 
 	trigger = {
