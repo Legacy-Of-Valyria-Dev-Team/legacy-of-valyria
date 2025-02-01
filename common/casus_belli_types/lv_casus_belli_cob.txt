@@ -888,11 +888,43 @@ cob_new_valyria_conquest_cb = {
 		on_lost_aggression_war_discontent_loss = yes
 
 		#New Valyria Story Effects
-		scope:attacker = {
-				trigger_event = lv_scenario_cob.0519 #Lost War momentum gone wah wah WRITE ME
+		scope:attacker = {        
+  			if = {
+    			limit = {
+      				NAND = {
+        				title:k_lys.holder = {     
+         					OR = {
+            					this = root
+            					is_vassal_of = scope:attacker
+          					} 
+        				}
+        				title:k_myr.holder = {     
+          					OR = {
+            					this = root
+            					is_vassal_of = scope:attacker
+          					} 
+        				}
+        				title:k_tyrosh.holder = {     
+          					OR = {
+            					this = root
+            					is_vassal_of = scope:attacker
+          					} 
+        				}
+     				}
+    			}
+    			trigger_event = {
+      				id = lv_scenario_cob.0512
+      				days = 10
+    			}
+  			}
+			else = {
+  				trigger_event = {
+					id = lv_scenario_cob.0516
+					days = 10
+				}
+			}
 		}
 	}
-
 
 	on_primary_attacker_death = inherit
 	on_primary_defender_death = inherit
