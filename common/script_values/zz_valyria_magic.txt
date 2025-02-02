@@ -5,7 +5,13 @@ zz_valyria_miscast_counter = {
 		limit = {
 			has_trait = starwalker 
 		}
-		add = 10
+		add = 15
+	}
+	if = { 
+		limit = {
+			has_trait = born_beneath_the_comet
+		}
+		add = 5
 	}
 	if = { 
 		limit = {
@@ -13,13 +19,24 @@ zz_valyria_miscast_counter = {
 		}
 		add = 5
 	}
-	if = { 
+	else_if = { 
 		limit = {
 			has_trait = magic_blood_good_2
 		}
 		add = 2
 	}
+	if = { 
+		limit = { 
+			has_trait = zz_magister
+		}
+		add = { 
+			value  = "has_trait_xp(zz_magister|secrets_of_the_higher_mysteries)"
+			divide = 20
+			min = 1
+		}
+	}
 }
+
 zz_valyria_court_mage_task_value = {
 	value = 0
 	add = { 
@@ -151,6 +168,7 @@ zz_valyria_drops_of_power_stat = {
 		add = "has_trait_xp(starwalker|stores_of_power_10)" 
 	}
 }
+
 zz_valyria_drops_of_power_stat_gui = {
 	value = 0
 	if = {
@@ -254,54 +272,6 @@ zz_valyria_drops_of_power_stat_gui = {
 			exists = this 
 		}
 		add = "has_trait_xp(starwalker|stores_of_power_10)" 
-	}
-}
-zz_valyria_stores_of_power_01_stat_gui = {
-	if = {
-		limit = {
-			exists = this 
-		}
-		value = "has_trait_xp(starwalker|stores_of_power_01)" 
-	}
-}
-zz_valyria_stores_of_power_02_stat_gui = {
-	if = {
-		limit = {
-			exists = this 
-		}
-		value = "has_trait_xp(starwalker|stores_of_power_02)" 
-	}
-}
-zz_valyria_stores_of_power_03_stat_gui = {
-	if = {
-		limit = {
-			exists = this 
-		}
-		value = "has_trait_xp(starwalker|stores_of_power_03)" 
-	}
-}
-zz_valyria_stores_of_power_04_stat_gui = {
-	if = {
-		limit = {
-			exists = this 
-		}
-		value = "has_trait_xp(starwalker|stores_of_power_04)" 
-	}
-}
-zz_valyria_stores_of_power_05_stat_gui = {
-	if = {
-		limit = {
-			exists = this 
-		}
-		value = "has_trait_xp(starwalker|stores_of_power_05)" 
-	}
-}
-zz_valyria_stores_of_power_06_stat_gui = {
-	if = {
-		limit = {
-			exists = this 
-		}
-		value = "has_trait_xp(starwalker|stores_of_power_06)" 
 	}
 }
 
@@ -1427,12 +1397,42 @@ zz_spellcast_value = {
 	value = 0
 	scope:secondary_recipient = { 
 		add = learning
-		add  = {
-			value = "has_trait_xp(zz_magister|secrets_of_the_higher_mysteries)"
+		if = {
+			limit = { 
+				has_trait = zz_magister
+			}
+			add =  "has_trait_xp(zz_magister|secrets_of_the_higher_mysteries)"
 			multiply = 2
 		}
-		add  = {
-			value = "has_trait_xp(starwalker|chosen_of_the_heavens)"
+		if = { 
+			limit = {
+				has_trait = born_beneath_the_comet
+			}
+			add = 10
+		}
+		if = { 
+			limit = {
+				has_trait = magic_blood_good_3
+			}
+			add = 15
+		}
+		else_if = { 
+			limit = {
+				has_trait = magic_blood_good_2
+			}
+			add = 10
+		}
+		else_if = { 
+			limit = {
+				has_trait = magic_blood_good_1
+			}
+			add = 5
+		}
+		if = { 
+			limit = {
+				has_trait = starwalker
+			}
+			add =  "has_trait_xp(starwalker|chosen_of_the_heavens)"
 			multiply = 3
 		}
 	}
