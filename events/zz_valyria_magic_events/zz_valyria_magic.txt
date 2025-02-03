@@ -522,21 +522,47 @@ zz_valyria_magic_court_mages_ritual.001 = {
 		set_variable = { name = managain value = zz_valyria_court_mage_task_value days = 1 }
 
 		scope:liege = {
-			zz_valyria_mana_gain = {
-				MANAGAIN = root.var:managain
-			}
-			every_courtier_or_guest ={ 
+			clear_variable_list = mages_in_court_list
+			if = { 
 				limit = {
 					has_trait = zz_magister
 				}
+				scope:liege ={
+					add_to_variable_list = {
+						name = mages_in_court_list
+						target = prev
+					}
+				}
+				every_spouse = {
+					limit = {
+						has_trait = zz_magister
+					}
+					scope:liege = {
+						add_to_variable_list = {
+							name = mages_in_court_list
+							target = prev
+						}
+					}
+				}
+				every_living_mage = {
+					limit = {
+						liege_or_court_owner ?= scope:liege
+					}
+					scope:liege = {
+						add_to_variable_list = {
+							name = mages_in_court_list
+							target = prev
+						}
+					}
+				}
+			}
+			every_in_list = {
+				variable = mages_in_court_list
 				zz_valyria_mana_gain = {
-					MANAGAIN = root.var:managain
+					MANAGAIN = root.zz_valyria_court_mage_task_value
 				}
 			}
 		}
-
-
-
 		trigger_event = {
 			id = zz_valyria_magic_court_mages_ritual.001
 			months = 6

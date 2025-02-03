@@ -587,41 +587,6 @@ zz_adopt_to_house_effect = {
 				remove_trait = disinherited
 			}
 		}
-		# Your other children hate this
-		every_child = {
-			custom = every_non_content_child
-			add_opinion = {
-				modifier = angry_opinion
-				opinion = -20
-				target = $ADOPTER$
-			}
-		}
-		# Player heirs *hate* you adopting someone to be your new heir
-		if = {
-			limit = {
-				exists = player_heir
-				OR = {
-					player_heir.age < $CHILD$.age
-					player_heir = { has_trait = ambitious }
-				}
-				NOR = {
-					player_heir = { has_trait = humble }
-					player_heir = { has_trait = content }
-					player_heir = { has_trait = forgiving }
-				}
-			}
-			player_heir = {
-				progress_towards_rival_effect = {
-					CHARACTER = $ADOPTER$
-					REASON = rival_adopted_another_heir
-					OPINION = default_rival_opinion
-				}
-				set_relation_rival = {
-					target = $CHILD$
-					reason = rival_stole_my_throne
-				}
-			}
-		}
 	}
 	#adopted child should travel to new parent
 	$CHILD$ = {
