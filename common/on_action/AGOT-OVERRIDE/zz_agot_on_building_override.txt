@@ -1,4 +1,7 @@
 ﻿on_building_completed = {
+	on_actions = {
+		zz_agot_dragon_pits_on_actions
+	}
 	effect = {
 		#save the county holder as the character in case the construction wasn't started through GUI or by the AI 
 		if = {
@@ -605,6 +608,63 @@
 				}
 				remove_province_modifier = scorpions_prepared
 			}
+		}
+	}
+}
+
+
+zz_agot_dragon_pits_on_actions = { 
+	trigger = {
+		NOT = {
+			zz_has_natural_dragon_pit_barony = yes
+		}
+		county = {
+			can_this_dragonpit_be_destroyed_when_dragonpit_building_is_replaced = yes
+		}
+	}
+	effect = { 
+		county = {
+			if = {
+				limit = {
+					has_variable_list = dragons_in_pit
+				}
+				save_scope_as = dragon_pit_location
+				holder = {
+					save_scope_as = dragonpit_holder
+				}
+				every_in_list = {
+					variable = dragons_in_pit
+					save_scope_as = dragon
+					agot_remove_from_dragonpit = { DRAGON = scope:dragon DRAGONPIT_HOLDER = scope:dragonpit_holder DRAGONPIT_COUNTY = scope:dragon_pit_location }
+				}
+			}
+			holder = {
+				if = {
+					limit = {
+						has_realm_law = dragonpit_close_family_law
+					}
+					remove_realm_law = dragonpit_close_family_law
+				}
+				else_if = {
+					limit = {
+						has_realm_law = dragonpit_house_law
+					}
+					remove_realm_law = dragonpit_house_law
+				}
+				else_if = {
+					limit = {
+						has_realm_law = dragonpit_dynasty_law
+					}
+					remove_realm_law = dragonpit_dynasty_law
+				}
+				else_if = {
+					limit = {
+						has_realm_law = dragonpit_everyone_law
+					}
+					remove_realm_law = dragonpit_everyone_law
+				}
+			}
+			remove_variable = has_dragonkeeper_order
 		}
 	}
 }
