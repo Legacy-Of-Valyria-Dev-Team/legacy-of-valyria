@@ -423,6 +423,7 @@ lv_scenario_cob.0501 = { #Aurion Varezys decides his path
 				}
 			}	
 			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+			add_character_flag = restore_valyria_cob
 		}
 		start_travel_plan = {
 			destination = province:8194
@@ -538,11 +539,12 @@ lv_scenario_cob.0503 = { #Aurion Varezys arrives in Little Valyria
 			destination = province:8983
 			on_start_on_action = on_travel_relocation_start
 			on_arrival_on_action = on_travel_relocation_end
-			on_arrival_event = lv_scenario_cob.0504
+			#on_arrival_event = lv_scenario_cob.0504
 			on_arrival_destinations = last
 			return_trip = no # One way
 			travel_with_domicile = yes
 		}
+		add_character_flag = varezys_valyria_event
 	}
 }
 
@@ -1323,7 +1325,14 @@ lv_scenario_cob.0519 = { #Aurion loses
 
 	option = {
 		name = lv_scenario_cob.0519.a
-		add_stress = major_stress_gain
+	}
+
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
 	}
 }
 

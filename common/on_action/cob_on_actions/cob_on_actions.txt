@@ -1,0 +1,93 @@
+﻿# called for armies whenever they enter a province
+# root is the owner of the army
+# scope:army is the army
+
+on_travel_plan_arrival = {
+	on_actions = {
+		restore_valyria_cob_travel_on_actions
+		restore_valyria_cob_event_on_actions
+	}
+}
+
+restore_valyria_cob_travel_on_actions = {
+ 	effect = {
+ 		if = {
+ 			limit = {
+ 				character:Varezys_1 = {
+ 					AND = {
+ 						exists = yes
+						has_character_flag = varezys_valyria_travel
+						location = province:8983
+ 					}
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9643
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 = {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 = {
+ 					AND = {
+ 						exists = yes
+						has_character_flag = varezys_valyria_travel
+						location = province:9643
+ 					}
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9542
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 = {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 = {
+ 					AND = {
+ 						exists = yes
+						has_character_flag = varezys_valyria_travel
+						location = province:9542
+ 					}
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9601
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 = {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+ 	}
+}
+
+restore_valyria_cob_event_on_actions = {
+	trigger = {
+		has_character_flag = varezys_valyria_event
+	}
+	random_events = {
+		50 = lv_scenario_cob.0519 #Depressed
+	}
+}
