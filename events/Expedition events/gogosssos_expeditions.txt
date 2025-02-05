@@ -798,7 +798,7 @@ gogossos_expedition.0050 = {
 	animation = fear
 
     right_portrait = scope:Monster_3
-    animation = page_flipping
+    animation = dancing
 
     immediate = {
         create_character = {
@@ -913,6 +913,281 @@ gogossos_expedition.1001 = {
     type = character_event
     title = gogossos_expedition.0110_t
     desc = gogossos_expedition.0110_desc
+
+    theme = hunting
+    override_background = jungle
+
+    left_portrait = scope:founder
+    animation = stunned
+
+    option = {
+        hidden_effect = {
+            random_list = {
+                80 = {
+                    trigger_event = {
+                        gogossos_expedition.1002
+                    }
+                }
+
+                20 = {
+                    trigger_event = {
+                        gogossos_expedition.1001.a
+                    }
+                }
+            }
+        }
+    }
+
+    option = {
+        tigger = {
+            has_trait = dragonrider
+        }
+    }
+}
+
+gogossos_expedition.1002 = {
+    type = character_event
+    title = gogossos_expedition.1002_t
+    desc = gogossos_expedition.1002_desc
+
+    theme = hunting
+    override_background = jungle
+
+    left_portrait = scope:founder
+    animation = survey
+
+    option = {
+        add_prestige = 200
+        trigger_event = {
+            gogossos_expedition.1003
+        }
+    }
+}
+
+gogossos_expedition.1003 = {
+    type = character_event
+    title = gogossos_expedition.1003_t
+    desc = gogossos_expedition.1003_desc
+
+    theme = hunting
+    override_background = jungle
+
+    left_portrait = scope:founder
+    animation = survey
+
+    option = {
+        hidden_effect = {
+            random_list = {
+                80 = {
+                    trigger_event = {
+                        gogossos_expedition.1004
+                    }
+                }
+
+                20 = {
+                    trigger_event = {
+                        gogossos_expedition.1100
+                    }
+                }
+            }
+        }
+    }
+}
+
+gogossos_expedition.1100 = {
+    type = character_event
+    title = gogossos_expedition.1100_t
+    desc = gogossos_expedition.1100_desc
+
+    theme = hunting
+    override_background = jungle
+
+    left_portrait = {
+		character = root
+		camera = camera_slay_dragon_human_event_left
+		scripted_animation = duel_wield_weapon
+	}
+
+    right_portrait = {
+        character = scope:dragon
+		animation = dragon_main
+		camera = camera_dragon_facing_human
+
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_1.5  }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_1.5  }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_1.5  }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_1.5 }
+		}
+		triggered_outfit = { # VHAGAR
+			trigger = {
+				scope:dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_1.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = { # MELEYS
+			trigger = {
+				scope:dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = { # SYRAX
+			trigger = {
+				scope:dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dynamic_camera_zoom_0.7 }
+		}
+		#End Dynamic Camera Zoom
+    }
+
+    immediate = {
+        create_character = {
+            trait = dragon
+            age = { 20 65 }
+            template = agot_dragon_template
+            random_traits = yes 
+            save_scope_as = dragon
+        }
+    }
+
+
+    option = {
+        name = dragon.1
+            duel = {
+                skill = prowess
+                value = high_skill_rating
+                target = scope:dragon
+                    30 = {
+                        comapare_modifier = {
+                                value = scope:duel_value
+                                multiplier = 3.5
+                                min = -49
+                        }
+                        scope:dragon = {
+                            death = { death_reason = death_monster_duel }
+                        }
+
+                        # Hell Yeah
+                        add_trait = dragonslayer
+                        give_nickname = nick_the_dragonslayer
+                        gain_legitimizing_legend_seed_tooltip_effect = yes
+                        hidden_effect = { legend_seed_great_deed_dynasty_effect = yes }
+
+                        if = {
+                            limit = {
+                                is_acclaimed = yes
+                            }
+                            accolade = {
+                                add_glory = major_glory_gain
+                            }
+                        }
+
+                        create_character_memory = {
+                            type = agot_slayed_dragon
+                            participants = { slayed_dragon = scope:dragon }
+                        }
+
+                        agot_ds_clean_up_effect = yes
+                        every_player = {
+                            limit = {
+                                NOT = { this = root }
+                            }
+                            trigger_event = {
+                                id = agot_dragon_slaying_events.0112
+                                days = 1
+                            }
+                        }
+                            
+                        trigger_event = gogossos_expedition.1101
+                    } 
+
+                    70 = {
+                        comapare_modifier = {
+                            value = scope:duel_value
+                            multiplier = -3.5
+                            min = -49
+                        }
+                            death = {
+                                death_reason = death_monster_duel
+                            }
+                            scope:dragon = {
+                                death = { death_reason = death_monster_duel }
+                            }
+                    }
+            }
+    }
+
+    option = {
+        trigger = {
+            dragonblood_percent > 0
+            NOT = { 
+                has_trait = dragonrider
+            }
+        }
+            save_scope_as = tamer
+
+                if = {
+                    limit = {
+                        NOT = { has_relation_agot_dragon = scope:dragon }
+                    }
+                    trigger_event = {
+                        id = dragon_taming_events.0100    # Handler for unbonded dragons
+                    }
+                }
+                else = {
+                    trigger_event = {
+                        id = dragon_taming_events.0200 # Handler for bonded dragons
+                    }
+                }
+    }
+}
+
+gogossos_expedition.1101 = {
+    type = character_event
+    title = gogossos_expedition.1003_t
+    desc = gogossos_expedition.1003_desc
 
     theme = hunting
     override_background = jungle
