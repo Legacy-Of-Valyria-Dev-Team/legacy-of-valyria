@@ -761,7 +761,7 @@ gogossos_expedition.00041 = {
 
     theme = hunting
 
-    left_portrait = scope:root
+    left_portrait = root
 	animation = survey
 
     option = {
@@ -777,7 +777,7 @@ gogossos_expedition.00042 = {
 
     theme = hunting
 
-    left_portrait = scope:root
+    left_portrait = root
 	animation = survey
 
     option = {
@@ -794,7 +794,7 @@ gogossos_expedition.0050 = {
 
     theme = hunting
     
-    left_portrait = scope:root
+    left_portrait = root
 	animation = fear
 
     right_portrait = scope:Monster_3
@@ -830,7 +830,7 @@ gogossos_expedition.0060 = {
     theme = hunting
     override_background = jungle
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = survey
 
     option = {
@@ -872,7 +872,7 @@ gogossos_expedition.0119 = {
 
     theme = hunting
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = fear
 
     right_portrait = scope:pirate_lord
@@ -923,7 +923,7 @@ gogossos_expedition.0110 = {
 
     theme = hunting
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = fear
 
     right_portrait = scope:pirate_lord
@@ -931,7 +931,7 @@ gogossos_expedition.0110 = {
 
     option = {
         scope:pirate_lord = {
-            imprison = scope:root
+            imprison = root
         }
     }
 
@@ -943,7 +943,7 @@ gogossos_expedition.0110 = {
         configure_start_single_combat_effect = {
             SC_INITIATOR = scope:pirate_lord
             SC_ATTACKER = scope:pirate_lord
-            SC_DEFENDER = scope:root
+            SC_DEFENDER = root
             FATALITY = default
             FIXED = no
             LOCALE = terrain_scope
@@ -958,7 +958,7 @@ gogossos_expedition.0120 = {
     title = gogossos_expedition.0120_t #Evaded the Pirates
     desc = gogossos_expedition.0120_desc
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = survey
 
     option = {
@@ -983,16 +983,39 @@ gogossos_expedition.0120 = {
 }
 
 gogossos_expedition.0121 = {
-    type = character_event
-    title = gogossos_expedition.0120_t #Defeated the Pirates
-    desc = gogossos_expedition.0120_desc
+      hidden = yes
 
-    left_portrait = scope:root
-    animation = survey
+  immediate = {
+    if = {
+      limit = { scope:sc_victor = root }
+      trigger_event = gogossos_expedition.0110.a
+    }  
+    else = {  
+      trigger_event = gogossos_expedition.0110.b
+    }
+  }
+}
+
+
+gogossos_expedition.0110.a = {
+    type = character_event
+    title = gogossos_expedition.0110.a_t #Pirate Duel Victor
+    desc = gogossos_expedition.0110.a_desc 
 
     theme = hunting
 
+    left_portrait = root
+    aniamtion = celebrate_sword
+
+    right_portrait = scope:pirate_lord
+    animation = shame 
+
     option = {
+        name = winner.1
+        trigger = {
+            is_ai = no
+        }
+
         trigger_event = {
             random_list = {
                 50 = {
@@ -1010,18 +1033,40 @@ gogossos_expedition.0121 = {
         }
 
         add_prestige = 500
+        add_gold = 100
+    }
+}
+
+gogossos_expedition.0110.b = {
+    type = character_event
+    title = gogossos_expedition.0110.b_t #Pirate Duel loser
+    desc = gogossos_expedition.0110.b_desc 
+
+    theme = hunting
+
+    left_portrait = root
+    aniamtion = shame
+
+    right_portrait = scope:pirate_lord
+    animation = celebrate_sword 
+
+    option = {
+        name = Loser.1
+        remove_character_flag = agot_is_at_unknown_place
+        add_prestige = -1000
+        add_stress = 100
     }
 }
 
 gogossos_expedition.1001 = {
     type = character_event
-    title = gogossos_expedition.0110_t #Cliff climb
-    desc = gogossos_expedition.0110_desc
+    title = gogossos_expedition.1001_t #Cliff climb
+    desc = gogossos_expedition.1001_desc
 
     theme = hunting
     override_background = jungle
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = stunned
 
     option = {
@@ -1057,7 +1102,7 @@ gogossos_expedition.1002 = {
     theme = hunting
     override_background = jungle
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = survey
 
     option = {
@@ -1076,7 +1121,7 @@ gogossos_expedition.1003 = {
     theme = hunting
     override_background = jungle
 
-    left_portrait = scope:root
+    left_portrait = root
     animation = survey
 
     option = {
@@ -1290,8 +1335,8 @@ gogossos_expedition.1100 = {
 
 gogossos_expedition.1101 = {
     type = character_event
-    title = gogossos_expedition.1003_t
-    desc = gogossos_expedition.1003_desc
+    title = gogossos_expedition.1101_t
+    desc = gogossos_expedition.1101_desc
 
     theme = hunting
     override_background = jungle
