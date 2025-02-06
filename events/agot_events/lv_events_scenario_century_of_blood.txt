@@ -353,6 +353,12 @@ lv_scenario_cob.0500 = { #Aurion Varezys arrives in Ny Sar
 		character:Nymeros_1 = {
 			save_scope_as = Nymeria
 		}
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
 	}
 
 	option = {
@@ -468,6 +474,12 @@ lv_scenario_cob.0502 = { #Aurion Varezys arrives in Volantis
 	}
 
 	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
 	}
 
 	option = {
@@ -518,6 +530,12 @@ lv_scenario_cob.0503 = { #Aurion Varezys arrives in Little Valyria
 	}
 
 	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
 	}
 
 	option = {
@@ -1996,6 +2014,85 @@ lv_scenario_cob.0525 = { #Aurion encounters a retired freehold soldier
 			}
 			60 = { #unscathed	
 				custom_tooltip = lv_scenario_cob.0525.b_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+lv_scenario_cob.0527 = { #Aurion encounters a freehold dragonrider
+	type = character_event
+	title = lv_scenario_cob.0527.t
+	desc = lv_scenario_cob.0527.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = stunned
+	}
+	right_portrait = {
+		character = scope:freeholder_dragonlord
+		animation = anger
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = freeholder_dragonrider_character
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			dynasty = none
+			location = root.location
+			gender_female_chance = 20
+			save_scope_as = freeholder_dragonlord
+		}
+	}
+
+	option = { #face it
+		name = lv_scenario_cob.0527.a
+		custom_tooltip = lv_scenario_cob.0527.a_tt
+		
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}				
+		configure_start_dragon_combat_effect = {
+			DSC_INITIATOR = scope:freeholder_dragonlord
+			DSC_ATTACKER = scope:freeholder_dragonlord
+			DSC_DEFENDER = root
+		}
+	}
+
+	option = { #run away
+		name = lv_scenario_cob.0527.b
+		random_list = {
+			50 = { #dead
+				death = {
+					death_reason = death_dragon_fire
+					killer = scope:freeholder_dragonlord
+				}
+			}
+			50 = { #unscathed	
+				custom_tooltip = lv_scenario_cob.0527.b_tt
 				stress_impact = {
 					base = medium_stress_impact_gain
 				}
