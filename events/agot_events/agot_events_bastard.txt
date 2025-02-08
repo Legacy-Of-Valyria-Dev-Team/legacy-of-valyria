@@ -2296,7 +2296,7 @@ agot_events_bastard.0920 = { # Jon discovers secret by accident
 		title:e_the_iron_throne.holder ?= { exists = yes }
 		NOT = { title:e_the_iron_throne.holder = root }
 		is_adult = yes
-		is_landed = yes
+		is_ruler = yes
 		NOT = { has_character_flag = royal_bastard }
 		knows_self_royal_bastard_secret = no
 		any_courtier_or_guest = {
@@ -2442,6 +2442,23 @@ agot_events_bastard.0950 = { # Handler event for reveal to create the story
 				create_story = agot_royal_bastard_story
 			}
 		}
+		if = {
+			limit = {
+				scope:reveal_scope = {
+					is_character_stark_7 = yes
+				}
+			}
+			scope:reveal_scope = {
+				if = {
+					limit = {
+						has_variable = agot_birthplace
+					}
+					remove_variable = agot_birthplace
+					agot_set_birthplace = { LOCATION = b_tower_of_joy }
+				}
+				else = { agot_set_birthplace = { LOCATION = b_tower_of_joy } }
+			}
+		}
 	}
 }
 
@@ -2559,7 +2576,7 @@ agot_events_bastard.0953 = { # Parent is told child is revealing after sharer te
 	right_portrait = scope:story.var:bastard
 
 	immediate = {
-		scope:story.var:it_ruler = {
+		title:e_the_iron_throne.holder = {
 			save_scope_as = ruler_scope
 		}
 	}
@@ -2584,7 +2601,7 @@ agot_events_bastard.0954 = { # Parent is told sharer is revealing
 	lower_left_portrait = scope:sharer
 
 	immediate = {
-		scope:story.var:it_ruler = {
+		title:e_the_iron_throne.holder = {
 			save_scope_as = ruler_scope
 		}
 
@@ -2610,7 +2627,7 @@ agot_events_bastard.0955 = { # Sharer is told child is revealing
 	right_portrait = scope:story.var:bastard
 
 	immediate = {
-		scope:story.var:it_ruler = {
+		title:e_the_iron_throne.holder = {
 			save_scope_as = ruler_scope
 		}
 	}
@@ -2801,7 +2818,7 @@ agot_events_bastard.0959 = { # King is alterted to claimant
 			triggered_desc = { # Bastard is landed
 				trigger = { # Is their host
 					scope:story.var:bastard = {
-						is_landed = yes
+						is_ruler = yes
 					}
 				}
 				desc = agot_bastard_event.0959.desc.landed
@@ -3452,6 +3469,16 @@ agot_events_bastard.0961 = { # King responds harshly
 				scope:story.var:bastard = { is_male = no }
 			}
 			text = agot_bastard_event.0961.c.ss
+		}
+		# Can't do this if already at their respective order
+		trigger = {
+			trigger_if = {
+				limit = { scope:story.var:bastard = { is_male = yes } }
+				NOT = { scope:story.var:bastard = { has_trait = nightswatch } }
+			}
+			trigger_else = {
+				NOT = { scope:story.var:bastard = { has_trait = silent_sister } }
+			}
 		}
 		ai_chance = {
 			base = 50
@@ -4262,6 +4289,89 @@ agot_events_bastard.0970 = { # Employer responds to king demand (unlanded claima
 				agot_royal_bastard_should_give_up = yes
 			}
 		}
+		# If they're of a weird niche government type, become Adventurer
+		if = {
+			limit = {
+				scope:story.var:bastard = {
+					OR = {
+						has_government = silent_sisterhood_government
+						has_government = nights_watch_government
+						has_government = the_citadel_government
+					}
+				}
+			}
+			if = { # I am LC of NW
+				limit = {
+					has_government = nights_watch_government
+					has_title = title:k_the_wall
+					has_ep3_dlc_trigger = yes # Needs DLC to play adventurer because Paradox says so
+				}
+				agot_nw_elect_lc = yes # Sets player heir to next NW LC for this effect
+				save_scope_as = adventurer
+				if = {
+					limit = {
+						player_heir ?= {
+							NOT = { this = root }
+							is_adult = yes
+						}
+					}
+					player_heir = {
+						save_scope_as = laamp_heir
+						save_scope_as = laamp_inheritor
+					}
+				}
+				else = {
+					if = {
+						limit = {
+							NOT = { exists = scope:laamp_inheritor }
+						}
+						hidden_effect_new_object = {
+							create_character = {
+								template = laamp_inheritor_template
+								culture = root.capital_county.culture
+								faith = root.capital_county.faith
+								dynasty = generate
+								location = root.capital_province
+								after_creation = {
+									save_scope_as = laamp_inheritor
+									add_character_flag = new_laamp_inheritor
+								}
+							}
+						}
+					}
+				}
+				create_landless_adventurer_title_tooltip_effect = yes
+				trigger_event = { id = ep3_laamps.0030 }
+				spawn_army = {
+					men_at_arms = {
+						type = rangers
+						stacks = 4
+					}
+					men_at_arms = {
+						type = sworn_brothers
+						stacks = 10
+					}
+					men_at_arms = {
+						type = trackers
+						stacks = 2
+					}
+					inheritable = yes
+					uses_supply = yes
+					location = root.location
+					name = agot_bastard_event.0971.nw_army_for_claim
+				}
+				add_gold = 100
+				add_realm_law_skip_effects = camp_purpose_legitimists
+				remove_trait = nightswatch
+				scope:laamp_inheritor ?= {
+					change_government = nights_watch_government
+				}
+			}
+			else = { # All others are unplayable / player doesn't have DLC so just depose
+				add_character_flag = do_not_kill_on_depose
+				agot_depose_effect = yes
+			}
+		}
 		scope:story = {
 			set_variable = {
 				name = response_to_demand
@@ -4809,6 +4919,17 @@ agot_events_bastard.0971 = { # Bastard responds to king demand (landed claimant)
 					type = dungeon
 				}
 			}
+			if = { # Depose if leading organisation that would probably pick a new leader
+				limit = {
+					OR = {
+						has_government = silent_sisterhood_government
+						has_government = nights_watch_government
+						has_government = the_citadel_government
+					}
+				}
+				add_character_flag = do_not_kill_on_depose
+				agot_depose_effect = yes
+			}
 		}
 		else_if = {
 			limit = { scope:story.var:rulers_choice = flag:bring_to_court }
@@ -4823,7 +4944,8 @@ agot_events_bastard.0971 = { # Bastard responds to king demand (landed claimant)
 				}
 			}
 			remove_character_flag = awaiting_bastardry_result
-			depose = yes
+			add_character_flag = do_not_kill_on_depose
+			agot_depose_effect = yes
 			set_employer = scope:story.var:it_ruler
 			scope:story.var:it_ruler = {
 				trigger_event = agot_events_bastard.1005
@@ -5061,7 +5183,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			triggered_desc = {
 				trigger = {
 					scope:story.var:bastard = {
-						is_landed = yes
+						is_ruler = yes
 					}
 				}
 				desc = {
@@ -5102,7 +5224,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 
 	immediate = {
 		if = {
-			limit = { scope:story.var:bastard = { is_landed = no } }
+			limit = { scope:story.var:bastard = { is_ruler = no } }
 			save_scope_as = right_portrait
 		}
 		else = {
@@ -5125,13 +5247,13 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 	option = { # Marry option 1
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = yes }
+				scope:story.var:bastard = { is_ruler = yes }
 			}
 			text = agot_bastard_event.0990.a
 		}
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = no }
+				scope:story.var:bastard = { is_ruler = no }
 			}
 			text = agot_bastard_event.0990.a.they
 		}
@@ -5148,7 +5270,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		if = {
-			limit = { scope:story.var:bastard = { is_landed = yes is_male = yes } }
+			limit = { scope:story.var:bastard = { is_ruler = yes is_male = yes } }
 			if = {
 				limit = { scope:potential_spouse_1.age >= 16 scope:story.var:bastard.age >= 16 }
 				marry = scope:potential_spouse_1
@@ -5158,7 +5280,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = yes is_male = no } }
+			limit = { scope:story.var:bastard = { is_ruler = yes is_male = no } }
 			if = {
 				limit = { scope:potential_spouse_1.age >= 16 scope:story.var:bastard.age >= 16 }
 				marry_matrilineal = scope:potential_spouse_1
@@ -5168,7 +5290,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = no is_male = yes } }
+			limit = { scope:story.var:bastard = { is_ruler = no is_male = yes } }
 			if = {
 				limit = { scope:potential_spouse_1.age >= 16 scope:story.var:bastard.age >= 16 }
 				scope:story.var:bastard = {
@@ -5182,7 +5304,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = no is_male = no } }
+			limit = { scope:story.var:bastard = { is_ruler = no is_male = no } }
 			if = {
 				limit = { scope:potential_spouse_1.age >= 16 scope:story.var:bastard.age >= 16 }
 				scope:story.var:bastard = {
@@ -5208,13 +5330,13 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 	option = { # Marry option 2
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = yes }
+				scope:story.var:bastard = { is_ruler = yes }
 			}
 			text = agot_bastard_event.0990.b
 		}
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = no }
+				scope:story.var:bastard = { is_ruler = no }
 			}
 			text = agot_bastard_event.0990.b.they
 		}
@@ -5231,7 +5353,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		if = {
-			limit = { scope:story.var:bastard = { is_landed = yes is_male = yes } }
+			limit = { scope:story.var:bastard = { is_ruler = yes is_male = yes } }
 			if = {
 				limit = { scope:potential_spouse_2.age >= 16 scope:story.var:bastard.age >= 16 }
 				marry = scope:potential_spouse_2
@@ -5241,7 +5363,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = yes is_male = no } }
+			limit = { scope:story.var:bastard = { is_ruler = yes is_male = no } }
 			if = {
 				limit = { scope:potential_spouse_2.age >= 16 scope:story.var:bastard.age >= 16 }
 				marry_matrilineal = scope:potential_spouse_2
@@ -5251,7 +5373,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = no is_male = yes } }
+			limit = { scope:story.var:bastard = { is_ruler = no is_male = yes } }
 			if = {
 				limit = { scope:potential_spouse_2.age >= 16 scope:story.var:bastard.age >= 16 }
 				scope:story.var:bastard = {
@@ -5265,7 +5387,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = no is_male = no } }
+			limit = { scope:story.var:bastard = { is_ruler = no is_male = no } }
 			if = {
 				limit = { scope:potential_spouse_2.age >= 16 scope:story.var:bastard.age >= 16 }
 				scope:story.var:bastard = {
@@ -5291,13 +5413,13 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 	option = { # Marry option 3
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = yes }
+				scope:story.var:bastard = { is_ruler = yes }
 			}
 			text = agot_bastard_event.0990.c
 		}
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = no }
+				scope:story.var:bastard = { is_ruler = no }
 			}
 			text = agot_bastard_event.0990.c.they
 		}
@@ -5314,7 +5436,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		if = {
-			limit = { scope:story.var:bastard = { is_landed = yes is_male = yes } }
+			limit = { scope:story.var:bastard = { is_ruler = yes is_male = yes } }
 			if = {
 				limit = { scope:potential_spouse_3.age >= 16 scope:story.var:bastard.age >= 16 }
 				marry = scope:potential_spouse_3
@@ -5324,7 +5446,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = yes is_male = no } }
+			limit = { scope:story.var:bastard = { is_ruler = yes is_male = no } }
 			if = {
 				limit = { scope:potential_spouse_3.age >= 16 scope:story.var:bastard.age >= 16 }
 				marry_matrilineal = scope:potential_spouse_3
@@ -5334,7 +5456,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = no is_male = yes } }
+			limit = { scope:story.var:bastard = { is_ruler = no is_male = yes } }
 			if = {
 				limit = { scope:potential_spouse_3.age >= 16 scope:story.var:bastard.age >= 16 }
 				scope:story.var:bastard = {
@@ -5348,7 +5470,7 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 			}
 		}
 		else_if = {
-			limit = { scope:story.var:bastard = { is_landed = no is_male = no } }
+			limit = { scope:story.var:bastard = { is_ruler = no is_male = no } }
 			if = {
 				limit = { scope:potential_spouse_3.age >= 16 scope:story.var:bastard.age >= 16 }
 				scope:story.var:bastard = {
@@ -5374,13 +5496,13 @@ agot_events_bastard.0990 = { # Marriage pre-war for alliance (where applicable)
 	option = {
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = yes }
+				scope:story.var:bastard = { is_ruler = yes }
 			}
 			text = agot_bastard_event.0990.d
 		}
 		name = {
 			trigger = {
-				scope:story.var:bastard = { is_landed = no }
+				scope:story.var:bastard = { is_ruler = no }
 			}
 			text = agot_bastard_event.0990.d.they
 		}
