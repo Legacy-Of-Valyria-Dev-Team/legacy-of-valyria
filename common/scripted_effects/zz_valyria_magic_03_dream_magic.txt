@@ -1636,3 +1636,91 @@ zz_valyria_magic_dream_magic_32_mysteries_disrupt_schemes_effect = {
 		reset_scheme_progress = yes
 	}
 }
+
+
+zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging.t
+		desc = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging.desc
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging.tt
+	}
+	if = {
+		limit = {
+			NOT = {
+				scope:actor = scope:recipient
+			}
+		}
+		stress_impact = {
+			compassionate = medium_stress_impact_loss
+			sadistic = minor_stress_gain
+			callous = minor_stress_gain
+		}
+	}
+	if = { 
+		limit = {
+			scope:option_01 ?= yes
+		}
+		scope:recipient = { 
+			spawn_army = {
+				men_at_arms = { 
+					type = zz_valyria_ravens
+					stacks = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging_value
+				}
+				location = scope:recipient.location
+				uses_supply = no
+				name = "Crebain Host"
+			}
+		}	
+	}
+	if = { 
+		limit = {
+			scope:option_02 ?= yes
+		}
+		set_variable = {
+			name = zz_manacost 
+			value = 12
+		}
+
+		zz_valyria_mana_spend = yes
+		scope:recipient = { 
+			spawn_army = {
+				men_at_arms = { 
+					type = zz_valyria_direwolves
+					stacks = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging_value
+				}
+				location = scope:recipient.location
+				uses_supply = no
+				name = "Dire Host"
+			}
+			stress_impact ={ 
+				base = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging_value
+			}  
+		}	
+	}
+	if = { 
+		limit = {
+			scope:option_03 ?= yes
+		}
+		scope:secondary_recipient = {
+			set_variable = {
+				name = zz_manacost 
+				value = 42
+			}
+			zz_valyria_mana_spend = yes
+		}
+		scope:recipient = { 
+			spawn_army = {
+				men_at_arms = { 
+					type = zz_valyria_bears
+					stacks = zz_valyria_magic_dream_magic_33_mysteries_of_skinchanging_value
+				}
+				location = scope:recipient.location
+				uses_supply = no
+				name = "Grizzly Host"
+			}
+		}	
+	}
+}
