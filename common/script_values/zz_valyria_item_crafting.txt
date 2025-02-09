@@ -1,4 +1,116 @@
-﻿zz_valyria_province_resource_iron = {
+﻿zz_no_modifer_cost = {
+	value = 0
+}
+
+zz_modifier_dop_mult_cost= {
+	value = 200
+}
+
+zz_modifier_magic_xp_mult_cost= {
+	value = 100
+}
+zz_modifier_higher_mysteries_xp_mult_cost= {
+	value = 100
+}
+zz_modifier_blood_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_shadow_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_dream_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_alchemy_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_fire_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_air_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_water_magic_xp_mult_cost= {
+	value = 50
+}
+zz_modifier_passive_dop_xp_mult_cost= {
+	value = 500
+}
+zz_modifier_learning_add_cost= {
+	value = 50
+}
+zz_modifier_diplomacy_add_cost= {
+	value = 50
+}
+zz_modifier_stewardship_add_cost= {
+	value = 50
+}
+zz_modifier_martial_add_cost= {
+	value = 50
+}
+
+zz_modifier_intrigue_add_cost= {
+	value = 50
+}
+
+zz_modifier_prowess_add_cost= {
+	value = 50
+}
+
+zz_modifier_diplomacy_range_mult_cost= {
+	value = 500
+}
+
+zz_item_vs_sword_cost= {
+	value = 250
+}
+zz_item_dragonbone_bow_cost= {
+	value = 250
+}
+zz_item_vs_armour_cost= {
+	value = 1000
+}
+
+zz_item_vs_ring_cost= {
+	value = 300
+}
+zz_item_dragon_saddle_01_cost = {
+	value = 500
+}
+zz_item_dragon_saddle_02_cost = {
+	value = 600
+}
+zz_item_dragon_saddle_03_cost = {
+	value = 750
+}
+
+zz_item_glass_candle_cost = {
+	value = 500
+}
+
+zz_item_dragon_horn_cost = {
+	value = 1500
+}
+
+
+zz_valyria_scroll_cost = {
+	value = 0
+	if = {
+		limit = {
+			exists = this 
+			exists = var:zz_valyria_mystery
+		}
+		add = 1000
+		multiply = var:zz_valyria_mystery.var:manacost 
+		divide = {
+			value = var:zz_scroll_maker.zz_valyria_higher_mysteries_stat_gui
+			divide = 50
+			min = 1
+		}
+	}
+}
+
+zz_valyria_province_resource_iron = {
 	value = 0
 	if = {
 		limit = {
@@ -77,13 +189,13 @@ zz_valyria_province_resource_steel_gain = {
 		}
 		if = {
 			limit = {
-				has_building_or_higher = zz_valyria_steel_forge_03
+				has_building_or_higher = zz_valyria_steel_forge_01
 			}
 			add = 2
 		}
 		if = {
 			limit = {
-				has_building_or_higher = zz_valyria_steel_forge_03
+				has_building_or_higher = zz_valyria_steel_forge_02
 			}
 			add = 2
 		}
@@ -132,7 +244,7 @@ zz_valyria_province_resource_valyrian_steel_gain = {
 		}
 		if = {
 			limit = {
-				province_owner = {
+				province_owner ?= {
 					has_trait = dragonrider
 				}
 				has_building_or_higher = zz_valyria_valyrian_steel_forge_01
@@ -142,7 +254,7 @@ zz_valyria_province_resource_valyrian_steel_gain = {
 		}
 		if = {
 			limit = {
-				province_owner = {
+				province_owner ?= {
 					has_trait = dragonrider
 				}
 				has_building_or_higher = zz_valyria_valyrian_steel_forge_02
@@ -152,13 +264,50 @@ zz_valyria_province_resource_valyrian_steel_gain = {
 		}
 		if = {
 			limit = {
-				province_owner = {
+				province_owner ?= {
 					has_trait = dragonrider
 				}
 				has_building_or_higher = zz_valyria_valyrian_steel_forge_03
 				has_building_or_higher = zz_valyria_mages_tower_01
 			}
 			add = 1
+		}
+	}
+}
+
+zz_valyria_resources_total_iron_gain = {
+	value = 0
+	if = {
+		limit = { exists = this }
+		every_realm_province = {
+			add = zz_valyria_province_resource_iron_gain
+		}
+	}
+}
+zz_valyria_resources_total_steel_gain = {
+	value = 0
+	if = {
+		limit = { exists = this }
+		every_realm_province = {
+			add = zz_valyria_province_resource_steel_gain
+		}
+	}
+}
+zz_valyria_resources_total_obsidian_gain = {
+	value = 0
+	if = {
+		limit = { exists = this }
+		every_realm_province = {
+			add = zz_valyria_province_resource_obsidian_gain
+		}
+	}
+}
+zz_valyria_resources_total_valyrian_steel_gain = {
+	value = 0
+	if = {
+		limit = { exists = this }
+		every_realm_province = {
+			add = zz_valyria_province_resource_valyrian_steel_gain
 		}
 	}
 }
@@ -284,7 +433,6 @@ zz_valyria_magic_alchemy_magic_crafting_value = {
 			min = 1
 		}	
 	}
-
 }
 zz_valyria_current_item_cost = {
 	value = 0 

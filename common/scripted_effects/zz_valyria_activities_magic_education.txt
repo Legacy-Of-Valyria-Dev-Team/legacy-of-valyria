@@ -3,88 +3,115 @@
 	duel = {
 		skill = $SKILL$
 		value = high_skill_rating
-		20 = {
+
+		50 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 5
+				multiplier = 1
 				min = -49
 			}			
-			send_interface_toast = {
-				title = $ZZ_EVENT_OPTION_NAME$.crit_success
-				left_icon = root
-				if = {
-					limit = {
-						var:reward_scale = flag:massive
+			random_list = { 
+				5 = {
+					modifier = {
+						scope:duel_value > 49
+						add = 55
 					}
-					zz_valyria_magic_education_reward_massive = yes
+					send_interface_toast = {
+						title = zz_valyria_magic_education.crit_success
+						left_icon = root
+						if = {
+							limit = {
+								var:reward_scale ?= flag:massive
+							}
+							zz_valyria_magic_education_reward_massive = yes
+						}
+						else = {
+							zz_valyria_magic_education_reward_major = yes
+						}
+						zz_valyria_extra_reward_calculation_effect = yes
+					}
+					stress_impact = {
+						base = medium_stress_impact_loss
+					}
 				}
-				else = {
-					zz_valyria_magic_education_reward_major = yes
+				10 = {
+					modifier = {
+						scope:duel_value > 24
+						scope:duel_value < 50
+						add = 35
+					}
+					send_interface_toast = {
+						title = zz_valyria_magic_education.major_success
+						left_icon = root
+						if = {
+							limit = {
+								var:reward_scale ?= flag:massive
+							}
+							zz_valyria_magic_education_reward_major = yes
+						}
+						else = {
+							zz_valyria_magic_education_reward_medium = yes
+						}
+						zz_valyria_extra_reward_calculation_effect = yes
+					}
+					stress_impact = {
+						base = minor_stress_impact_loss
+					}
 				}
-				zz_valyria_extra_reward_calculation_effect = yes
-				
+				15 = {
+					modifier = {
+						scope:duel_value > 9
+						scope:duel_value < 25
+						add = 25
+					}
+					send_interface_toast = {
+						title = zz_valyria_magic_education.success
+						left_icon = root
+						zz_valyria_magic_education_reward_medium = yes
+						zz_valyria_extra_reward_calculation_effect = yes
+					}
+					stress_impact = {
+						base = minor_stress_impact_loss
+					}
+				}
+				20 = {
+					modifier = {
+						scope:duel_value > 0
+						scope:duel_value < 10
+						add = 25
+					}
+					send_interface_toast = {
+						title = zz_valyria_magic_education.small_success
+						left_icon = root
+						if = {
+							limit = {
+								var:reward_scale ?= flag:massive
+							}
+							zz_valyria_magic_education_reward_medium = yes
+						}
+						else = {
+							zz_valyria_magic_education_reward_minor = yes
+						}
+						zz_valyria_extra_reward_calculation_effect = yes
+					}
+					stress_impact = {
+						base = minor_stress_impact_loss
+					}
+				}
+
 			}
-			stress_impact = {
-				base = medium_stress_impact_loss
-			}
+
 		}
-		20 = {
+		50 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 3.5
+				multiplier = -1
 				min = -49
 			}
 			send_interface_toast = {
-				title = $ZZ_EVENT_OPTION_NAME$.success
+				title = zz_valyria_magic_education.failure
 				left_icon = root
-				if = {
-					limit = {
-						var:reward_scale = flag:massive
-					}
-					zz_valyria_magic_education_reward_major = yes
-				}
-				else = {
-					zz_valyria_magic_education_reward_medium = yes
-				}
-				zz_valyria_extra_reward_calculation_effect = yes
-			}
-			stress_impact = {
-				base = minor_stress_impact_loss
-			}
-		}
-		20 = {
-			compare_modifier = {
-				value = scope:duel_value
-				multiplier = 2.5
-				min = -49
-			}
-			send_interface_toast = {
-				title = $ZZ_EVENT_OPTION_NAME$.small_success
-				left_icon = root
-				if = {
-					limit = {
-						var:reward_scale = flag:massive
-					}
-					zz_valyria_magic_education_reward_medium = yes
-				}
-				else = {
-					zz_valyria_magic_education_reward_minor = yes
-				}
-				zz_valyria_extra_reward_calculation_effect = yes
-			}
-			stress_impact = {
-				base = minor_stress_impact_loss
-			}
-		}
-		40 = {
-			compare_modifier = {
-				value = scope:duel_value
-				multiplier = -3.5
-				min = -49
-			}
-			send_interface_toast = {
-				title = $ZZ_EVENT_OPTION_NAME$.failure
-				left_icon = root
+				custom_tooltip = zz_valyria_magic_education_tt_negative
 				zz_valyria_magic_education_reward_failure = yes
 
 			}
@@ -92,6 +119,7 @@
 				base = medium_stress_impact_gain
 			}
 		}
+
 	}
 	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
 }
@@ -99,7 +127,7 @@
 zz_valyria_extra_reward_calculation_effect = {
 	if = {
 		limit = {
-			var:random_spell = yes
+			var:random_spell ?= yes
 		}
 		zz_valyria_magic_education_reward_random_spell_effect = yes
 	}
@@ -482,21 +510,12 @@ disburse_magic_education_reward_effect = {
 			chance = 25
 			if = { 
 				limit = { 
-					has_trait = born_under_a_red_comet
+					has_trait = starwalker
 				}
 				add_trait_xp = { 
-					trait = born_under_a_red_comet
+					trait = starwalker
 					track = chosen_of_the_heavens
 					value = 5
-				}
-			}
-			else = { 
-				add_trait_force_tooltip = born_under_a_red_comet
-			}
-			scope:activity = {
-				add_to_variable_list = {
-					name = trait_rewards
-					target = trait:born_under_a_red_comet
 				}
 			}
 		}
@@ -538,7 +557,7 @@ disburse_magic_education_reward_effect = {
 			create_artifact_book_effect = {
 				OWNER = scope:host
 				CREATOR = scope:dummy_gender
-				SET_SUBJECT = flag:no
+				SET_SUBJECT = flag:alchemy
 				SET_TOPIC = flag:no
 			}
 			hidden_effect_new_object = {
@@ -594,12 +613,24 @@ disburse_magic_education_reward_effect = {
 			create_artifact_book_effect = {
 				OWNER = scope:host
 				CREATOR = scope:dummy_gender
-				SET_SUBJECT = flag:no
+				SET_SUBJECT = flag:alchemy
 				SET_TOPIC = flag:no
 			}
 			hidden_effect_new_object = {
 				scope:newly_created_artifact = {
 					set_artifact_rarity = illustrious
+				}
+				random_list = {
+					50 = {
+						scope:newly_created_artifact = {
+							add_artifact_modifier = zz_valyria_magic_xp_gain_modifier_01_stacking
+						}
+					}
+					50 = {
+						scope:newly_created_artifact = {
+							add_artifact_modifier = zz_valyria_magic_mana_gain_modifier_01_stacking
+						}
+					}
 				}
 			}
 			scope:activity = {

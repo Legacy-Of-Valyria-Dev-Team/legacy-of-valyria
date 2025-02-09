@@ -1,6 +1,6 @@
 ﻿zz_valyria_settlement_random_test = {
 	random_list = {
-		25 = {
+		15 = {
 			send_interface_toast = {
 				left_icon = root
 				custom_tooltip = zz_valyria_settlement_tt_positive_major
@@ -11,7 +11,7 @@
 				base = minor_stress_impact_loss
 			}
 		}
-		25 = {
+		20 = {
 			send_interface_toast = {
 				left_icon = root
 				custom_tooltip = zz_valyria_settlement_tt_positive_medium
@@ -31,7 +31,7 @@
 				base = minor_stress_impact_loss
 			}
 		}
-		25 = {
+		40 = {
 			send_interface_toast = {
 				left_icon = root
 				custom_tooltip = zz_valyria_settlement_tt_negative
@@ -48,70 +48,81 @@ zz_valyria_settlement_skill_test = {
 	duel = {
 		skill = $SKILL$
 		value = high_skill_rating
-		5 = {
+		50 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 5
+				multiplier = 1
 				min = -49
 			}			
-			send_interface_toast = {
-				title = zz_valyria_settlement.crit_success
-				left_icon = root
-				zz_valyria_settlement_reward_massive = yes
+			random_list = { 
+				5 = {
+					modifier = {
+						scope:duel_value > 49
+						add = 55
+					}
+					send_interface_toast = {
+						title = zz_valyria_settlement.crit_success
+						left_icon = root
+						zz_valyria_settlement_reward_massive = yes
+					}
+					stress_impact = {
+						base = medium_stress_impact_loss
+					}
+				}
+				10 = {
+					modifier = {
+						scope:duel_value > 24
+						scope:duel_value < 50
+						add = 35
+					}
+					send_interface_toast = {
+						title = zz_valyria_settlement.major_success
+						left_icon = root
+						zz_valyria_settlement_reward_major = yes
+					}
+					stress_impact = {
+						base = minor_stress_impact_loss
+					}
+				}
+				15 = {
+					modifier = {
+						scope:duel_value > 9
+						scope:duel_value < 25
+						add = 25
+					}
+					send_interface_toast = {
+						title = zz_valyria_settlement.success
+						left_icon = root
+						zz_valyria_settlement_reward_medium = yes
+					}
+					stress_impact = {
+						base = minor_stress_impact_loss
+					}
+				}
+				20 = {
+					modifier = {
+						scope:duel_value > 0
+						scope:duel_value < 10
+						add = 25
+					}
+					send_interface_toast = {
+
+						title = zz_valyria_settlement.small_success
+						left_icon = root
+						zz_valyria_settlement_reward_minor = yes
+					}
+					stress_impact = {
+						base = minor_stress_impact_loss
+					}
+				}
+
 			}
-			stress_impact = {
-				base = medium_stress_impact_loss
-			}
+
 		}
-		15 = {
+		50 = {
 			compare_modifier = {
 				value = scope:duel_value
-				multiplier = 4
-				min = -49
-			}
-			send_interface_toast = {
-				title = zz_valyria_settlement.major_success
-				left_icon = root
-				zz_valyria_settlement_reward_major = yes
-			}
-			stress_impact = {
-				base = minor_stress_impact_loss
-			}
-		}
-		20 = {
-			compare_modifier = {
-				value = scope:duel_value
-				multiplier = 2.5
-				min = -49
-			}
-			send_interface_toast = {
-				title = zz_valyria_settlement.success
-				left_icon = root
-				zz_valyria_settlement_reward_medium = yes
-			}
-			stress_impact = {
-				base = minor_stress_impact_loss
-			}
-		}
-		20 = {
-			compare_modifier = {
-				value = scope:duel_value
-				multiplier = 1.5
-				min = -49
-			}
-			send_interface_toast = {
-				title = zz_valyria_settlement.small_success
-				left_icon = root
-				zz_valyria_settlement_reward_minor = yes
-			}
-			stress_impact = {
-				base = minor_stress_impact_loss
-			}
-		}
-		40 = {
-			compare_modifier = {
-				value = scope:duel_value
-				multiplier = -5
+				multiplier = -1
 				min = -49
 			}
 			send_interface_toast = {
@@ -230,7 +241,7 @@ resolve_valyria_settlement_success_reward_effect = {
 			}
 		}
 		#major settlement 
-		if = {
+		else_if = {
 			limit = { var:activity_special_type_progression >= 75 }
 			scope:host = {
 				add_character_flag = major_settlement_reward
@@ -290,7 +301,7 @@ disburse_valyria_settlement_reward_effect = {
 		}
 		zz_valyria_settlement_effect = {
 			NUM = 04
-			DEV = 20
+			DEV = 15
 		}
 		remove_character_flag = perfect_settlement_reward
 	}
@@ -363,7 +374,10 @@ zz_valyria_settlement_effect = {
 			}
 			remove_character_flag = settle_city
 		}
-		else = {
+		else_if = { 
+			limit = {
+				has_character_flag = settle_temple
+			}
 			scope:province = {
 				set_holding_type = church_holding
 				add_building = temple_$NUM$
