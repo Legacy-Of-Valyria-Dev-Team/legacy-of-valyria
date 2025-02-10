@@ -307,3 +307,175 @@ zz_valyria_magic_water_magic_07_mysteries_of_fertile_growth_effect = {
 		}
 	}
 }
+
+zz_valyria_magic_water_magic_08_mysteries_of_the_mists_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_water_magic_08_mysteries_of_the_mists.t
+		desc = zz_valyria_magic_water_magic_08_mysteries_of_the_mists.desc
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_water_magic_08_mysteries_of_the_mists.tt
+	}
+	scope:recipient = {
+		zz_valyria_magic_apply_character_modifier_effect = { 
+			MODIFIER = zz_valyria_magic_water_magic_08_mysteries_of_the_mists_modifier
+			DURATION = 1
+			BOOSTED_DURATION = 2
+		}
+	}
+}
+
+zz_valyria_magic_water_magic_09_mysteries_of_sodden_ground_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_water_magic_09_mysteries_of_sodden_ground.t
+		desc = zz_valyria_magic_water_magic_09_mysteries_of_sodden_ground.desc
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_water_magic_09_mysteries_of_sodden_ground.tt
+	}
+	scope:recipient = {
+		zz_valyria_magic_apply_character_modifier_effect = { 
+			MODIFIER = zz_valyria_magic_water_magic_09_mysteries_of_sodden_ground_modifier
+			DURATION = 1
+			BOOSTED_DURATION = 2
+		}
+	}
+}
+
+zz_valyria_magic_water_magic_10_mysteries_of_waters_resilience_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title =  zz_valyria_magic_water_magic_10_mysteries_of_waters_resilience.t
+		desc =  zz_valyria_magic_water_magic_10_mysteries_of_waters_resilience.desc
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip =  zz_valyria_magic_water_magic_10_mysteries_of_waters_resilience.tt
+	}
+	scope:recipient = {
+		zz_valyria_magic_apply_character_modifier_effect = { 
+			MODIFIER = zz_valyria_magic_water_magic_10_mysteries_of_waters_resilience_modifier
+			DURATION = 1
+			BOOSTED_DURATION = 2
+		}
+	}
+}
+
+zz_valyria_magic_water_magic_11_mysteries_of_waters_purity_effect = { 
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_water_magic_11_mysteries_of_waters_purity.t
+		desc = zz_valyria_magic_water_magic_11_mysteries_of_waters_purity.desc
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_water_magic_11_mysteries_of_waters_purity.tt
+	}
+	if = {
+		limit = {
+			NOT = {
+				scope:actor = scope:recipient
+			}
+		}
+		scope:actor = {
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				sadistic = minor_stress_gain
+				callous = minor_stress_gain
+			}
+		}
+	}
+	while = {
+		count = zz_valyria_magic_water_magic_11_mysteries_of_waters_purity_value 
+		scope:recipient = { 
+			stress_impact = {
+				base = minor_stress_impact_loss
+			}
+			add_character_flag = {
+				flag = immune_to_disease
+				years = zz_valyria_magic_water_magic_11_mysteries_of_waters_purity_value
+			}
+			if = { 
+				limit = { 
+					OR = { 
+						has_character_modifier = chronic_headaches_modifier 
+						has_character_modifier = infected_wound_modifier
+						has_character_modifier = gangrene_modifier
+					}
+				}
+				if = { limit = { has_character_modifier = chronic_headaches_modifier }
+					remove_character_modifier = chronic_headaches_modifier
+				}
+				if = { limit = { has_character_modifier = infected_wound_modifier }
+					remove_character_modifier = infected_wound_modifier
+				}
+				if = { limit = { has_character_modifier = gangrene_modifier }
+					remove_character_modifier = gangrene_modifier
+				}
+			}
+			else = { 
+				switch = { 
+					trigger = has_trait 
+					
+					ill = { 
+						remove_trait = ill
+					}
+					sickly = {
+						remove_trait = sickly
+					}
+					pneumonic = {
+						remove_trait = pneumonic
+					}
+					great_pox = {
+						remove_trait = great_pox
+					}
+					early_great_pox = {
+						remove_trait = early_great_pox
+					}
+					lovers_pox ={
+						remove_trait = lovers_pox
+					}
+					leper ={
+						remove_trait = leper
+					}
+					consumption = {
+						remove_trait = consumption
+					}
+					cancer = {
+						remove_trait = cancer
+					}
+					typhus = {
+						remove_trait = typhus
+					}
+					bubonic_plague = {
+						remove_trait = bubonic_plague
+					}
+					smallpox = {
+						remove_trait = smallpox
+					}
+					measles = {
+						remove_trait = measles
+					}
+					dysentery = {
+						remove_trait = dysentery
+					}
+					ergotism = {
+						remove_trait = ergotism
+					}
+				}
+			}
+		}
+	}
+	scope:recipient = {				
+		if = {
+			limit = {
+				NOT = { scope:actor = scope:recipient }
+			}
+			add_opinion = {
+				modifier = grateful_opinion
+				target = scope:actor
+				opinion = 70
+			}
+		}
+	}		
+}

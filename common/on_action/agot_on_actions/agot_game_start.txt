@@ -793,6 +793,9 @@ agot_on_game_start = {
 			trigger_event = agot_prowess.0001 # Giving Prowess traits to characters
 			trigger_event = agot_events_generic.0009
 
+			#Set Birthplace - Human
+			agot_birthplace_game_start = yes
+
 			#canon dragons
 			if = {
 				limit = {
@@ -1206,6 +1209,7 @@ agot_on_game_start = {
 			}
 		}
 
+		# Magesterial laws
 		every_empire = {
 			limit = {
 				exists = holder
@@ -1274,6 +1278,671 @@ agot_on_game_start = {
 				}
 			}
 		}
+
+		# Legitimate house mechanic set up
+		every_empire = {
+			if = {
+				limit = {
+					OR = {
+						this = title:e_the_iron_throne
+						this = title:e_dorne
+						this = title:e_the_iron_islands
+						this = title:e_the_north
+						this = title:e_the_reach
+						this = title:e_the_stormlands
+						this = title:e_the_riverlands
+						this = title:e_the_vale
+						this = title:e_the_westerlands
+					}
+				}
+				set_variable = {
+					name = legitimate_house_title
+					value = 1
+				}
+				set_variable = {
+					name = new_house_progress
+					value = 0
+				}
+				add_to_global_variable_list = {
+					name = legitimate_house_titles
+					target = this
+				}
+			}
+			else = {
+				set_variable = {
+					name = legitimate_house_title
+					value = 0
+				}
+			}
+		}
+		every_kingdom = {
+			if = {
+				limit = {
+					OR = {
+						this = title:k_the_crownlands
+						this = title:k_dragonstone
+						this = title:k_dorne
+						this = title:k_the_iron_islands
+						this = title:k_the_north
+						this = title:k_the_reach
+						this = title:k_the_stormlands
+						this = title:k_the_riverlands
+						this = title:k_the_vale
+						this = title:k_the_westerlands
+					}
+				}
+				set_variable = {
+					name = legitimate_house_title
+					value = 1
+				}
+				set_variable = {
+					name = new_house_progress
+					value = 0
+				}
+				add_to_global_variable_list = {
+					name = legitimate_house_titles
+					target = this
+				}
+			}
+			else = {
+				set_variable = {
+					name = legitimate_house_title
+					value = 0
+				}
+			}
+		}
+		every_duchy = {
+			set_variable = {
+				name = legitimate_house_title
+				value = 0
+			}
+		}
+		every_county = {
+			set_variable = {
+				name = legitimate_house_title
+				value = 0
+			}
+		}
+		every_barony = {
+			set_variable = {
+				name = legitimate_house_title
+				value = 0
+			}
+		}
+		# Set up initial legitimate dynasties
+		# The below has to be done with references to founding members of the houses, as the houses themselves cannot be directly referenced in the script without a lot of extra work
+		agot_set_legitimate_house = {
+			TITLE = title:e_dorne
+			HOUSE = character:Martell_24.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:e_the_north
+			HOUSE = character:Stark_12.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:e_the_reach
+			HOUSE = character:Gardener_1.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:e_the_stormlands
+			HOUSE = character:Durrandon_1.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:e_the_vale
+			HOUSE = character:Arryn_15.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:e_the_westerlands
+			HOUSE = character:Lannister_29.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:k_the_riverlands
+			HOUSE = character:Hoare_1.house
+		}
+		agot_set_legitimate_house = {
+			TITLE = title:k_the_iron_islands
+			HOUSE = character:Hoare_1.house
+		}
+		# Set initial legitimate house for non-paired titles (i.e. ones that don't have both a kingdom and empire)
+		title:k_the_crownlands = {
+			set_variable = {
+				name = legitimate_house
+				value = character:Targaryen_13.house
+			}
+		}
+		title:k_dragonstone = {
+			set_variable = {
+				name = legitimate_house
+				value = character:Targaryen_13.house
+			}
+		}
+		title:e_the_iron_throne = {
+			set_variable = {
+				name = legitimate_house
+				value = character:Targaryen_13.house
+			}
+		}
+		if = { # Set up new house progress based on start date if the early days after Aegon's Conquest
+			limit = {
+				game_start_date > 8001.1.1 # Post Aegon's Conquest
+				game_start_date < 8050.1.1 # Before they're the legitimate house
+			}
+			agot_set_current_house = {
+				TITLE = title:e_the_reach
+				HOUSE = character:Tyrell_40.house
+			}
+			agot_set_current_house = {
+				TITLE = title:e_the_stormlands
+				HOUSE = character:Baratheon_14.house
+			}
+			agot_set_current_house = {
+				TITLE = title:e_the_riverlands
+				HOUSE = character:Tully_10.house
+			}
+			agot_set_current_house = {
+				TITLE = title:e_the_iron_islands
+				HOUSE = character:Greyjoy_21.house
+			}
+			# Give progress every 10 years
+			if = {
+				limit = {
+					game_start_date < 8003.1.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_reach
+					PROGRESS = 3
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_stormlands
+					PROGRESS = 3
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_riverlands
+					PROGRESS = 3
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_islands
+					PROGRESS = 3
+				}
+			}
+			else_if = {
+				limit = {
+					game_start_date < 8010.1.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_reach
+					PROGRESS = 12
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_stormlands
+					PROGRESS = 12
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_riverlands
+					PROGRESS = 12
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_islands
+					PROGRESS = 12
+				}
+			}
+			else_if = {
+				limit = {
+					game_start_date < 8020.1.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_reach
+					PROGRESS = 32
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_stormlands
+					PROGRESS = 32
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_riverlands
+					PROGRESS = 32
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_islands
+					PROGRESS = 32
+				}
+			}
+			else_if = {
+				limit = {
+					game_start_date < 8030.1.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_reach
+					PROGRESS = 50
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_stormlands
+					PROGRESS = 50
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_riverlands
+					PROGRESS = 50
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_islands
+					PROGRESS = 50
+				}
+			}
+			else_if = {
+				limit = {
+					game_start_date < 8040.1.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_reach
+					PROGRESS = 77
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_stormlands
+					PROGRESS = 77
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_riverlands
+					PROGRESS = 77
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_islands
+					PROGRESS = 77
+				}
+			}
+		}
+		else_if = { # If past the 50 year limit, set them as the legitimate dynasties
+			limit = {
+				game_start_date > 8050.1.1
+			}
+			agot_set_legitimate_house = {
+				TITLE = title:e_the_iron_islands
+				HOUSE = character:Greyjoy_21.house
+			}
+			agot_set_legitimate_house = {
+				TITLE = title:e_the_riverlands
+				HOUSE = character:Tully_10.house
+			}
+			agot_set_legitimate_house = {
+				TITLE = title:e_the_stormlands
+				HOUSE = character:Baratheon_14.house
+			}
+			agot_set_legitimate_house = {
+				TITLE = title:e_the_reach
+				HOUSE = character:Tyrell_40.house
+			}
+		}
+		# Now set current house for all relevant titles
+		every_in_global_list = {
+			variable = legitimate_house_titles
+			if = {
+				limit = {
+					exists = holder
+				}
+				agot_set_current_house = {
+					TITLE = this
+					HOUSE = holder.house
+				}
+				if = {
+					limit = {
+						OR = {
+							title_is_held_by_legitimate_house = yes
+							# Shattered world should have all as legitimate anyway so do that here
+							has_game_rule = agot_shatter_duchies
+							has_game_rule = agot_shatter_duchies_even
+							has_game_rule = agot_shatter_petty_kingdoms
+							has_game_rule = agot_shatter_kingdoms
+							has_game_rule = agot_shatter_empires
+						}
+					}
+					agot_set_new_house_progress = {
+						TITLE = this
+						PROGRESS = 100
+					}
+					if = {
+						limit = {
+							title_is_held_by_legitimate_house = no # We're in shattered world
+						}
+						agot_set_legitimate_house = {
+							TITLE = this
+							HOUSE = holder.house
+						}
+					}
+				}
+			}
+		}
+		# Finally, if we're post Robert's Rebellion, set the progress of the Baratheon's on IT, Crownlands, and Dragonstone
+		if = {
+			limit = {
+				game_start_date > 8283.9.1
+				NOR = { # Don't do this if shattered world
+					has_game_rule = agot_shatter_duchies
+					has_game_rule = agot_shatter_duchies_even
+					has_game_rule = agot_shatter_petty_kingdoms
+					has_game_rule = agot_shatter_kingdoms
+					has_game_rule = agot_shatter_empires
+				}
+			}
+			agot_set_new_house_progress = {
+				TITLE = title:e_the_iron_throne
+				PROGRESS = 1
+			}
+			agot_set_new_house_progress = {
+				TITLE = title:k_dragonstone
+				PROGRESS = 1
+			}
+			agot_set_new_house_progress = {
+				TITLE = title:k_the_crownlands
+				PROGRESS = 1
+			}
+			if = {
+				limit = {
+					game_start_date > 8284.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 2
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 2
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 2
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8285.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 3
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 3
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 3
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8286.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 4
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 4
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 4
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8287.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 5
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 5
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 5
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8288.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 6
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 6
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 6
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8289.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 7
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 7
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 7
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8290.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 8
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 8
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 8
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8291.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 9
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 9
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 9
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8292.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 10
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 10
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 10
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8293.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 11
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 11
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 11
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8294.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 12
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 12
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 12
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8295.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 13
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 13
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 13
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8296.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 14
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 14
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 14
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8297.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 15
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 15
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 15
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8298.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 16
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 16
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 16
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8299.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 17
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 17
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 17
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8300.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 18
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 18
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 18
+				}
+			}
+			if = {
+				limit = {
+					game_start_date > 8301.9.1
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:e_the_iron_throne
+					PROGRESS = 19
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_dragonstone
+					PROGRESS = 19
+				}
+				agot_set_new_house_progress = {
+					TITLE = title:k_the_crownlands
+					PROGRESS = 19
+				}
+			}
+			# We're now up to date with the latest lore, so we can stop here
+		}
+		# Legitimate house mechanic is now set up with appropriate houses and progress
 
 		random_ruler = {
 			limit = { NOT = { is_landed = yes } }
@@ -1651,6 +2320,11 @@ agot_on_game_start = {
 					}
 				}
 			}
+		}
+
+		#Set Birthplace - Dragon
+		every_living_dragon = {
+			agot_dragon_birthplace_game_start = yes
 		}
 		### Run effects on dead characters
 		agot_apply_posthistory_effect = yes
