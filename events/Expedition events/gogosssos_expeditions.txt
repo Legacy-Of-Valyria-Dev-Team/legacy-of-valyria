@@ -1216,7 +1216,74 @@ gogossos_expedition.1005 = {
     override_background = jungle
 
     left_portrait = root
-    animation = survey
+    animation = 
+    
+    immediate = {
+        if = {
+			limit = {
+				NOT = {
+					has_variable = door_iteration
+				}
+			}
+			set_variable = {
+				name = door_iteration
+				value = 0
+			}
+		}
+    }
+
+    option = { # RED DOOR!
+        name = gogossos_expedition.1005.a
+        if = {
+            limit = {
+                # So door_iteration starts at 0
+                # Every time you select a correct door, it adds 1 then brings you back to this event to choose a door again
+                # If for example you want this door (red) to be the correct door for the 1st time (door_iteration = 0), do var:door_iteration = 0
+                # If you want this door to be the correct choice for the 2nd or 4th time (or more), do something like:
+                #   OR = {
+                #       var:door_iteration = 1
+                #       var:door_iteration = 3
+                #   }
+
+                # var:door_iteration = 2
+            }
+            change_variable = {
+                name = door_iteration
+                add = 1
+            }
+        }
+        else = {
+            # This is where you do the wrong choice
+            # Add the effect you want here
+
+            change_variable = {
+                name = door_iteration
+                add = 1
+            }
+        }
+    }
+
+    # ADD THE OTHER DOORS
+
+    option = { # KILL SELF!
+        text = gogossos_expedition.1005.z
+        add_character_flag = gogossos_abort_maze
+    }
+
+    after = {
+        if = {
+            limit = { has_character_flag = gogossos_abort_maze }
+            #trigger_event = (THE DEATH EVENT CALLING YOU AN IDIOT GOES HERE, UNCOMMENT)
+        }
+        else_if = {
+            # Once you reach the 4th correct door (door_iteration = 4), end the labyrinth
+            limit = { var:door_iteration >= 4 }
+            #trigger_event = (THE EVENT WHERE YOU GET OUT OF THE DOORS LABYRINTH GOES HERE, UNCOMMENT)
+        }
+        else = {
+            trigger_event = gogossos_expedition.1005
+        }
+    }
 }
 
 gogossos_expedition.1100 = {
