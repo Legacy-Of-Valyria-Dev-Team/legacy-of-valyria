@@ -295,16 +295,14 @@ zz_valyria_magic_learning_type_apprentice_master = {
 	}
 	is_valid = {
 		NAND = {
-			var:zz_valyria_magic_learner = {
+			root.var:zz_valyria_magic_learner = {
 				any_relation = { type = zz_magic_master }
 			}
-			var:zz_magic_master = {
+			root.var:zz_magic_master = {
 				any_relation = { type = zz_magic_apprentice }
 			}
+			scope:zz_magic_master ?= root.var:zz_valyria_magic_learner
 		}	
-		not = {
-			this ?= var:zz_valyria_magic_learner
-		}
 	}
 	is_shown = {
 		var:zz_magic_master ?= scope:zz_magic_master
@@ -324,16 +322,15 @@ zz_valyria_magic_learning_type_apprentice_learner = {
 		zz_valyria_magic_learner
 	}
 	is_valid = {
-		not = {
-			this ?= var:zz_magic_master
-		}
+
 		NAND = {
-			var:zz_valyria_magic_learner = {
+			root.var:zz_valyria_magic_learner = {
 				any_relation = { type = zz_magic_master }
 			}
-			var:zz_magic_master = {
+			root.var:zz_magic_master = {
 				any_relation = { type = zz_magic_apprentice }
 			}
+			scope:zz_valyria_magic_learner ?= root.var:zz_magic_master
 		}	
 	}
 	is_shown = {
