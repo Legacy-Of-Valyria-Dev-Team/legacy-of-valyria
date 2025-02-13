@@ -378,18 +378,16 @@ zz_valyria_make_scroll_list = {
 }
 
 zz_valyria_make_magic_master_list = {
-	remove_variable ?= zz_magic_master
+	remove_variable = zz_magic_master
 	clear_variable_list ?= magic_master_list
 	if = { 
 		limit = {
 			has_trait = zz_magister
-			NAND = {
-				any_relation = {
-					type = zz_magic_master
-				}
-				any_relation = {
-					type = zz_magic_apprentice
-				}
+			NOT = {
+				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 		scope:$MAGIC_USER$ = {
@@ -402,13 +400,11 @@ zz_valyria_make_magic_master_list = {
 	every_spouse = {
 		limit = {
 			has_trait = zz_magister
-			NAND = {
-				any_relation = {
-					type = zz_magic_master
-				}
-				any_relation = {
-					type = zz_magic_apprentice
-				}
+			NOT = {
+				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 		scope:$MAGIC_USER$ = {
@@ -421,13 +417,11 @@ zz_valyria_make_magic_master_list = {
 	every_living_mage = {
 		limit = {
 			liege_or_court_owner ?= scope:$MAGIC_USER$
-			NAND = {
-				any_relation = {
-					type = zz_magic_master
-				}
-				any_relation = {
-					type = zz_magic_apprentice
-				}
+			NOT = {
+				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 		scope:$MAGIC_USER$ = {
@@ -443,8 +437,11 @@ zz_valyria_make_magic_master_list = {
 		order_by = learning
 		save_scope_as = zz_magic_master
 		limit = {
-			not = {
+			NOT = {
 				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 	}
@@ -460,14 +457,16 @@ zz_valyria_make_magic_master_list = {
 }
 
 zz_valyria_make_magic_learner_list = {
-	remove_variable ?= zz_valyria_magic_learner
+	remove_variable = zz_valyria_magic_learner
 	clear_variable_list ?= magic_learner_list
 
 	scope:$MAGIC_USER$ = {
 		if = { 
 			limit = {
-				NAND = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
 				}
 			}
@@ -478,9 +477,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_spouse = {
 			limit = {
-				NAND = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -492,9 +499,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_close_or_extended_family_member = {
 			limit = {
-				NAND = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -506,9 +521,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_courtier_or_guest = {
 			limit = {
-				NAND = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -520,9 +543,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_vassal_or_below = {
 			limit = {
-				NAND = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -538,8 +569,11 @@ zz_valyria_make_magic_learner_list = {
 			order_by = learning
 			save_scope_as = zz_valyria_magic_learner
 			limit = {
-				not = {
+				NOT = {
 					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 		} 
@@ -907,7 +941,6 @@ zz_miscast_critical_effect = {
 				}
 			}
 		}
-
 	}
 	else = {
 		random = {
