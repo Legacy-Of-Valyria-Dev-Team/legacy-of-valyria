@@ -8,6 +8,15 @@
 zz_valyria_on_game_start_after_lobby = {
 	effect = { 
 		character:Setenon_01 = {
+			add_perk = pedagogy_perk
+			add_perk = open_minded_perk
+			add_perk = apostate_perk
+			add_perk = scientific_perk
+			add_perk = planned_cultivation_perk
+			add_perk = scholarly_circles_perk
+			add_perk = learn_on_the_job_perk
+			add_perk = sanctioned_loopholes_perk
+			add_perk = scholar_perk
 			if = { 
 				limit = {
 					NOT = {
@@ -18,6 +27,7 @@ zz_valyria_on_game_start_after_lobby = {
 					death_reason = death_ascension_magic
 					killer = character:Setenon_01 
 				}
+				destroy_laamp_effect = { ADVENTURER = THIS }
 			}
 			else = {
 				agot_create_random_dragon_egg_artifact = { OWNER = THIS }
@@ -91,13 +101,13 @@ zz_valyria_on_game_start_after_lobby = {
 			name = CV_is_loaded
 			value = yes 
 		}
+		debug_log = lv_load_game_log
 		set_global_variable = {
-			name = LOV_Ver_1_01_03
+			name = LOV_Ver_1_01_08
 			value = yes 
 		}
 	}
 	events = {
-		zz_valyria_magic.1
 	}
 }
 
@@ -124,7 +134,6 @@ random_yearly_everyone_pulse = {
 zz_valyria_mana_gain_on_actions = {
 	on_actions = {
 		zz_valyria_mana_gain_dynn_setenon_on_action
-		zz_valyria_mana_gain_nick_the_mage_on_action
 		zz_valyria_mana_gain_red_comet_on_action
 		zz_valyria_mana_gain_items_on_action
 		zz_valyria_mana_modifier_action
@@ -165,7 +174,7 @@ zz_valyria_magic_dragon_life_extension_lost = {
 
 zz_valyria_mana_gain_red_comet_on_action = {
 	trigger = {
-		has_trait = born_under_a_red_comet
+		has_trait = starwalker
 	}
 	effect = {
 		zz_valyria_mana_gain = {
@@ -174,16 +183,6 @@ zz_valyria_mana_gain_red_comet_on_action = {
 	}
 }
 
-zz_valyria_mana_gain_nick_the_mage_on_action = {
-	trigger = {
-		has_nickname = nick_the_mage
-	}
-	effect = {
-		zz_valyria_mana_gain = {
-			MANAGAIN = 1
-		}
-	}
-}
 
 zz_valyria_mana_gain_dynn_setenon_on_action = {
 	trigger = {
@@ -231,26 +230,7 @@ zz_valyria_mana_modifier_action = {
 	}
 }
 
-zz_valyria_magic_grant_spells = {
-	trigger = {
-		has_trait = zz_magister
-	}
-	effect = {
-		if = { 
-			limit = { 
-				has_trait = born_under_a_red_comet
-			}
-			add_trait_xp = {
-				trait = born_under_a_red_comet
-				track = chosen_of_the_heavens
-				value = 100
-			}
-		}
-		zz_random_gain_magic_spell = yes 
-		zz_random_gain_magic_spell = yes 
 
-	}
-}
 
 
 
@@ -531,11 +511,13 @@ zz_valyria_torment_removal = {
 		}
 	}
 	effect = { 
-		every_character_artifact ?= {
-			limit = {
-				has_artifact_modifier = vs_torment_modifier
+		scope:owner = {
+			every_character_artifact ?= {
+				limit = {
+					has_artifact_modifier = vs_torment_modifier
+				}
+				destroy_artifact = this
 			}
-			destroy_artifact = this
 		}
 	}
 }

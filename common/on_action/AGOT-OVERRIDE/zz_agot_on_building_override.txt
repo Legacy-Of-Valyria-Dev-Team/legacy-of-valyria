@@ -1,4 +1,7 @@
 ﻿on_building_completed = {
+	on_actions = {
+		zz_agot_dragon_pits_on_actions
+	}
 	effect = {
 		#save the county holder as the character in case the construction wasn't started through GUI or by the AI 
 		if = {
@@ -439,7 +442,23 @@
 					}
 				}
 			}
-			
+
+			# Inspection - Has Holding Modifier 
+			if = {
+				limit = {
+					has_province_modifier = inspection_empty_lands_domain_modifier
+				}
+				remove_province_modifier = inspection_empty_lands_domain_modifier
+				add_random_economic_building_effect = yes
+			}
+			else_if = {
+				limit = {
+					has_province_modifier = inspection_empty_lands_border_modifier
+				}
+				remove_province_modifier = inspection_empty_lands_border_modifier
+				add_random_fortification_building_effect = yes
+			}
+
 			# Admin - Governors get rewards for constructing buildings in governed counties
 			if = {
 				limit = {
@@ -472,40 +491,7 @@
 			#		}
 			#	}
 			#}			
-			#AGOT Added, ruins
-			if = {
-				limit = {
-					root = {
-						has_building = agot_summerhall_ruins_02
-						NOT = { has_global_variable = summerhall_rebuilt }
-					}
-				}
-				set_global_variable = summerhall_rebuilt
-				random = {
-					chance = 25
-					modifier = {
-						factor = 0
-						has_global_variable = summerhall_egg_found
-					}
-					scope:character = {
-						trigger_event = agot_ruins.2000
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					root = {
-						OR = {
-							has_building = small_ruin_04
-							has_building = medium_ruin_04
-							has_building = large_ruin_04
-						}
-					}
-				}
-				scope:character = {
-					trigger_event = agot_ruins.1000
-				}
-			}
+
 			#remove slave camps if slavery is illegal
 			if = {
 				limit = {
@@ -525,62 +511,7 @@
 				}
 				county = { remove_slave_population_effect = yes }
 			}
-
-			#AGOT Added
-			if = {
-				limit = {
-					NOT = {
-						zz_has_natural_dragon_pit_barony = yes
-					}
-					county = {
-						can_this_dragonpit_be_destroyed_when_dragonpit_building_is_replaced = yes
-					}
-				}
-				county = {
-					if = {
-						limit = {
-							has_variable_list = dragons_in_pit
-						}
-						save_scope_as = dragon_pit_location
-						holder = {
-							save_scope_as = dragonpit_holder
-						}
-						every_in_list = {
-							variable = dragons_in_pit
-							save_scope_as = dragon
-							agot_remove_from_dragonpit = { DRAGON = scope:dragon DRAGONPIT_HOLDER = scope:dragonpit_holder DRAGONPIT_COUNTY = scope:dragon_pit_location }
-						}
-					}
-					holder = {
-						if = {
-							limit = {
-								has_realm_law = dragonpit_close_family_law
-							}
-							remove_realm_law = dragonpit_close_family_law
-						}
-						else_if = {
-							limit = {
-								has_realm_law = dragonpit_house_law
-							}
-							remove_realm_law = dragonpit_house_law
-						}
-						else_if = {
-							limit = {
-								has_realm_law = dragonpit_dynasty_law
-							}
-							remove_realm_law = dragonpit_dynasty_law
-						}
-						else_if = {
-							limit = {
-								has_realm_law = dragonpit_everyone_law
-							}
-							remove_realm_law = dragonpit_everyone_law
-						}
-					}
-					remove_variable = has_dragonkeeper_order
-				}
-			}
-
+			
 			#AGOT Added, Scorpion Defenses
 			if = {
 				limit ={
@@ -605,6 +536,63 @@
 				}
 				remove_province_modifier = scorpions_prepared
 			}
+		}
+	}
+}
+
+
+zz_agot_dragon_pits_on_actions = { 
+	trigger = {
+		NOT = {
+			zz_has_natural_dragon_pit_barony = yes
+		}
+		county = {
+			can_this_dragonpit_be_destroyed_when_dragonpit_building_is_replaced = yes
+		}
+	}
+	effect = { 
+		county = {
+			if = {
+				limit = {
+					has_variable_list = dragons_in_pit
+				}
+				save_scope_as = dragon_pit_location
+				holder = {
+					save_scope_as = dragonpit_holder
+				}
+				every_in_list = {
+					variable = dragons_in_pit
+					save_scope_as = dragon
+					agot_remove_from_dragonpit = { DRAGON = scope:dragon DRAGONPIT_HOLDER = scope:dragonpit_holder DRAGONPIT_COUNTY = scope:dragon_pit_location }
+				}
+			}
+			holder = {
+				if = {
+					limit = {
+						has_realm_law = dragonpit_close_family_law
+					}
+					remove_realm_law = dragonpit_close_family_law
+				}
+				else_if = {
+					limit = {
+						has_realm_law = dragonpit_house_law
+					}
+					remove_realm_law = dragonpit_house_law
+				}
+				else_if = {
+					limit = {
+						has_realm_law = dragonpit_dynasty_law
+					}
+					remove_realm_law = dragonpit_dynasty_law
+				}
+				else_if = {
+					limit = {
+						has_realm_law = dragonpit_everyone_law
+					}
+					remove_realm_law = dragonpit_everyone_law
+				}
+			}
+			remove_variable = has_dragonkeeper_order
 		}
 	}
 }
