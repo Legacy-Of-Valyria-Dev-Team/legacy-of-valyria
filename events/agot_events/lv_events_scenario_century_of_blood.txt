@@ -175,7 +175,14 @@ lv_scenario_cob.0005 = { #Aurion Varezys
 		#Add this so dragon fits within event window
 		outfit_tags = { linear_camera_zoom }
 	}
-
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+	}
     # To Valyria
 	option = {
 		name = lv_scenario_cob.0005.a
@@ -1797,6 +1804,9 @@ lv_scenario_cob.0523 = { #Aurion encounters a freehold soldier
 			gender_female_chance = 20
 			save_scope_as = freeholder_survivor
 		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
 	}
 
 	option = { #face it
@@ -1819,8 +1829,34 @@ lv_scenario_cob.0523 = { #Aurion encounters a freehold soldier
 			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
 		}
 	}
-	option = { #run away
+	option = { #attempt to convince them to join us
 		name = lv_scenario_cob.0523.b
+		random_list = {
+			60 = { #joins
+				add_courtier = scope:freeholder_survivor
+				send_interface_toast = {
+					title = lv_scenario_cob.0523.b.joined
+					left_icon = root
+					right_icon = scope:freeholder_survivor
+				}
+			}
+			40 = { #duel anyway
+				custom_tooltip = lv_scenario_cob.0523.b_tt	
+				configure_start_single_combat_effect = {
+					SC_INITIATOR = scope:freeholder_survivor
+					SC_ATTACKER = scope:freeholder_survivor
+					SC_DEFENDER = root
+					FATALITY = always
+					FIXED = no
+					LOCALE = terrain_scope
+					OUTPUT_EVENT = single_combat.0001
+					INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = lv_scenario_cob.0523.c
 		random_list = {
 			40 = { #dead
 				death = {
@@ -1829,7 +1865,7 @@ lv_scenario_cob.0523 = { #Aurion encounters a freehold soldier
 				}
 			}
 			60 = { #unscathed	
-				custom_tooltip = lv_scenario_cob.0523.b_tt
+				custom_tooltip = lv_scenario_cob.0523.c_tt
 				stress_impact = {
 					base = medium_stress_impact_gain
 				}
@@ -1879,6 +1915,9 @@ lv_scenario_cob.0524 = { #Aurion encounters a great freehold soldier
 			location = root.location
 			gender_female_chance = 20
 			save_scope_as = freeholder_survivor
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
 		}
 	}
 
@@ -1962,6 +2001,9 @@ lv_scenario_cob.0525 = { #Aurion encounters a retired freehold soldier
 			location = root.location
 			gender_female_chance = 20
 			save_scope_as = freeholder_survivor
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
 		}
 	}
 
