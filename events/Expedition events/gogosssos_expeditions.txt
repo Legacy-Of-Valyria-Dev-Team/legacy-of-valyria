@@ -883,11 +883,13 @@ gogossos_expedition.0119 = {
     right_portrait = scope:pirate_lord
     animation = aggressive_axe
 
-    hidden_effect = {
-        random_neighboring_top_liege_realm_owner = {
-            limit = { government_has_flag = government_is_pirate }
-            save_scope_as = pirate_lord
-    }
+    immediate = {
+        hidden_effect = {
+            random_neighboring_top_liege_realm_owner = {
+                limit = { government_has_flag = government_is_pirate }
+                save_scope_as = pirate_lord
+            }
+        }
     if = {
         limit = { NOT = { exists = scope:pirate_lord } }
             create_character = {
@@ -936,17 +938,23 @@ gogossos_expedition.0110 = {
     animation = aggressive_axe
 
     option = {
-        name = pirate.1
-        scope:pirate_lord = {
-            imprison = root
+        if = {
+            limit = { scope:pirate_lord = { is_landed = no } }
+                imprison = { target = root }
+        }
+        else = {
+            add_gold = -500
+            add_trait = wounded_2
+            add_trait = one_handed
         }
         remove_character_flag = agot_is_at_unknown_place
-    }
+}
 
     option = {
         name = pirate.2
         trigger = {
             prowess > 20
+            scope:pirate_lord = { is_landed = yes }
         }
 
         configure_start_single_combat_effect = {
