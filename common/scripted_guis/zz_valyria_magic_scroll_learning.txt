@@ -294,8 +294,13 @@ zz_valyria_magic_learning_type_apprentice_master = {
 		zz_magic_master
 	}
 	is_valid = {
-		not = {
-			any_relation = { type = zz_magic_apprentice }
+		scope:zz_magic_master ?= {
+			NOT = {
+				any_relation = { type = zz_magic_master this = scope:zz_magic_master }
+			}
+			NOT = { 
+				any_relation = { type = zz_magic_apprentice this = scope:zz_magic_master }
+			}
 		}
 	}
 	is_shown = {
@@ -316,8 +321,11 @@ zz_valyria_magic_learning_type_apprentice_learner = {
 		zz_valyria_magic_learner
 	}
 	is_valid = {
-		not = {
-			any_relation = { type = zz_magic_master }
+
+		scope:zz_valyria_magic_learner ?= {
+			NOT = { 
+				any_relation = { type = zz_magic_master this = scope:zz_valyria_magic_learner }
+			}
 		}
 	}
 	is_shown = {
@@ -335,18 +343,20 @@ zz_valyria_magic_learning_type_apprentice_learn = {
 	scope = character
 
 	is_valid = {
-		var:zz_valyria_magic_learner = {
-			not = {
-				any_relation = { type = zz_magic_master }
-			}
-		}
 		var:zz_magic_master = {
-			not = {
-				any_relation = { type = zz_magic_apprentice }
+			has_trait = zz_magister
+			NOT = { 
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
-
-		
+		var:zz_valyria_magic_learner = { 
+			NOT = {
+				has_trait = zz_magister
+			}
+		}
+		NOT = {
+			var:zz_magic_master ?= var:zz_valyria_magic_learner
+		}		
 	}
 	effect = {
 		save_scope_as = actor

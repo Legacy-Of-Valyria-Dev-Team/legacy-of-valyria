@@ -378,15 +378,16 @@ zz_valyria_make_scroll_list = {
 }
 
 zz_valyria_make_magic_master_list = {
-	remove_variable ?= zz_magic_master
+	remove_variable = zz_magic_master
 	clear_variable_list ?= magic_master_list
 	if = { 
 		limit = {
 			has_trait = zz_magister
 			NOT = {
-				any_relation = {
-					type = zz_magic_master
-				}
+				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 		scope:$MAGIC_USER$ = {
@@ -400,9 +401,10 @@ zz_valyria_make_magic_master_list = {
 		limit = {
 			has_trait = zz_magister
 			NOT = {
-				any_relation = {
-					type = zz_magic_master
-				}
+				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 		scope:$MAGIC_USER$ = {
@@ -416,9 +418,10 @@ zz_valyria_make_magic_master_list = {
 		limit = {
 			liege_or_court_owner ?= scope:$MAGIC_USER$
 			NOT = {
-				any_relation = {
-					type = zz_magic_master
-				}
+				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 		scope:$MAGIC_USER$ = {
@@ -434,8 +437,11 @@ zz_valyria_make_magic_master_list = {
 		order_by = learning
 		save_scope_as = zz_magic_master
 		limit = {
-			not = {
+			NOT = {
 				any_relation = { type = zz_magic_master }
+			}
+			NOT = {
+				any_relation = { type = zz_magic_apprentice  }
 			}
 		}
 	}
@@ -451,17 +457,17 @@ zz_valyria_make_magic_master_list = {
 }
 
 zz_valyria_make_magic_learner_list = {
-	remove_variable ?= zz_valyria_magic_learner
+	remove_variable = zz_valyria_magic_learner
 	clear_variable_list ?= magic_learner_list
 
 	scope:$MAGIC_USER$ = {
 		if = { 
 			limit = {
-				nand = {
+				NOT = {
 					has_trait = zz_magister
-					any_relation = {
-						type = zz_magic_master
-					}
+				}
+				NOT  = {	
+					has_trait = dragon
 				}
 			}
 			add_to_variable_list = {
@@ -471,12 +477,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_spouse = {
 			limit = {
-				nand = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
-					any_relation = {
-						type = zz_magic_master
-					}
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -488,12 +499,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_close_or_extended_family_member = {
 			limit = {
-				nand = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
-					any_relation = {
-						type = zz_magic_master
-					}
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -505,12 +521,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_courtier_or_guest = {
 			limit = {
-				nand = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
-					any_relation = {
-						type = zz_magic_master
-					}
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -522,12 +543,17 @@ zz_valyria_make_magic_learner_list = {
 		}
 		every_vassal_or_below = {
 			limit = {
-				nand = {
+				NOT = {
 					has_trait = zz_magister
+				}
+				NOT  = {	
 					has_trait = dragon
-					any_relation = {
-						type = zz_magic_master
-					}
+				}
+				NOT = {
+					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 			scope:$MAGIC_USER$ = {
@@ -543,8 +569,11 @@ zz_valyria_make_magic_learner_list = {
 			order_by = learning
 			save_scope_as = zz_valyria_magic_learner
 			limit = {
-				not = {
+				NOT = {
 					any_relation = { type = zz_magic_master }
+				}
+				NOT = {
+					any_relation = { type = zz_magic_apprentice  }
 				}
 			}
 		} 
@@ -912,7 +941,6 @@ zz_miscast_critical_effect = {
 				}
 			}
 		}
-
 	}
 	else = {
 		random = {
@@ -1083,7 +1111,7 @@ zz_valyria_spell_failure_effect = {
 			} 
 			20 = {
 				modifier = {
-					add = 40	
+					add = 100	
 					scope:secondary_recipient  = {
 						has_trait = starwalker
 					}
@@ -2017,6 +2045,30 @@ zz_random_spell_gain_effect = {
 				NOT = { zz_valyria_knows_spell  = { SPELL = $SPELL_33$}}
 			}
 			zz_add_spell  = { SPELL = $SPELL_33$ }
+		}
+		100 = {
+			trigger = {
+				NOT = { zz_valyria_knows_spell  = { SPELL = $SPELL_34$}}
+			}
+			zz_add_spell  = { SPELL = $SPELL_34$ }
+		}
+		100 = {
+			trigger = {
+				NOT = { zz_valyria_knows_spell  = { SPELL = $SPELL_35$}}
+			}
+			zz_add_spell  = { SPELL = $SPELL_35$ }
+		}
+		100 = {
+			trigger = {
+				NOT = { zz_valyria_knows_spell  = { SPELL = $SPELL_36$}}
+			}
+			zz_add_spell  = { SPELL = $SPELL_36$ }
+		}
+		100 = {
+			trigger = {
+				NOT = { zz_valyria_knows_spell  = { SPELL = $SPELL_37$}}
+			}
+			zz_add_spell  = { SPELL = $SPELL_37$ }
 		}
 
 	}
@@ -3231,13 +3283,13 @@ zz_gain_fire_magic_scroll = {
 		SPELL_02 = zz_valyria_magic_fire_magic_02_mysteries_of_the_blasting_flame
 		SPELL_03 = zz_valyria_magic_fire_magic_03_mysteries_of_the_storm_of_fire
 		SPELL_04 = zz_valyria_magic_fire_magic_04_mysteries_of_flaming_purification
-		SPELL_05 = zz_valyria_magic_fire_magic_06_mysteries_of_the_secret_fire
-		SPELL_06 = zz_valyria_magic_fire_magic_07_mysteries_of_the_revealing_fire
-		SPELL_07 = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
-		SPELL_07 = zz_valyria_magic_fire_magic_08_mysteries_of_siege
-		SPELL_08 = zz_valyria_magic_fire_magic_09_mysteries_of_fireball
-		SPELL_09 = zz_valyria_magic_fire_magic_10_mysteries_of_dragons_breath
-		SPELL_10 = zz_valyria_magic_fire_magic_11_mysteries_of_fire_volley
+		SPELL_05 = zz_valyria_magic_fire_magic_05_mysteries_of_flaming_blades
+		SPELL_06 = zz_valyria_magic_fire_magic_06_mysteries_of_the_secret_fire
+		SPELL_07 = zz_valyria_magic_fire_magic_07_mysteries_of_the_revealing_fire
+		SPELL_08 = zz_valyria_magic_fire_magic_08_mysteries_of_siege
+		SPELL_09 = zz_valyria_magic_fire_magic_09_mysteries_of_fireball
+		SPELL_10 = zz_valyria_magic_fire_magic_10_mysteries_of_dragons_breath
+		SPELL_11 = zz_valyria_magic_fire_magic_11_mysteries_of_fire_volley
 		SPELL_12 = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
 		SPELL_13 = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
 		SPELL_14 = zz_valyria_magic_fire_magic_01_mysteries_of_striking_flame
