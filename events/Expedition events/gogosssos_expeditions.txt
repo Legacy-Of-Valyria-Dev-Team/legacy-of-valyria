@@ -649,26 +649,33 @@ gogossos_expedition.0119 = {
 
     immediate = {
         hidden_effect = {
-            random_neighboring_top_liege_realm_owner = {
-                limit = {
-                    government_has_flag = government_is_pirate 
-                    is_alive = yes
+            if = {
+                limit = { NOT = { exists = scope:pirate_lord } }
+                if = {
+                    limit = {
+                        any_neighboring_top_liege_realm_owner = {
+                            government_has_flag = government_is_pirate
+                            is_alive = yes
+                        }
+                    }
+                    random_neighboring_top_liege_realm_owner = {
+                        limit = { government_has_flag = government_is_pirate }
+                        save_scope_as = pirate_lord
+                    }
                 }
-                save_scope_as = pirate_lord
-            }
-        }
-    if = {
-        limit = { NOT = { exists = scope:pirate_lord } }
-            create_character = {
-                gender = male
-                random_traits_list = { count = 3 }
-                culture = culture:ironborn
-                faith = faith:valyrian 
-                trait = education_martial_prowess_4
-                trait = brave
+                else = {
+                    create_character = {
+                        gender = male
+                        random_traits_list = { count = 3 }
+                        culture = culture:ironborn
+                        faith = faith:valyrian 
+                        trait = education_martial_prowess_4
+                        trait = brave
 
-                location = root.location
-			    save_scope_as = pirate_lord
+                        location = root.location
+                        save_scope_as = pirate_lord
+                    }
+                }
             }
         }
     }
