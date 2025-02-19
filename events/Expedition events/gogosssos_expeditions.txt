@@ -22,6 +22,7 @@ gogossos_expedition.0001 = {
 				gender = male
 				random_traits_list = { count = 3 }
 				culture = culture:gogossosi
+                age = { 400 }
 				faith = faith:valyrian 
 				trait = beauty_bad_3
 				trait = scaly
@@ -447,14 +448,23 @@ gogossos_expedition.0004 = {
     theme = hunting
 
     immediate = {
-        create_character = {
-            trait = dragon
-            age = 45
-            template = agot_dragon_template
-            random_traits = yes
-            trait = dragon_wounded_1 
-            save_scope_as = dragon
-            location = root.location
+        if = {
+            limit = { any_living_dragon = { is_at_location = title:c_gogossos.title_province } }
+            random_living_dragon = {
+                limit = { is_at_location = title:c_gogossos.title_province }
+                save_scope_as = dragon
+            }
+        }
+        else = {
+            create_character = {
+                trait = dragon
+                age = 45
+                template = agot_dragon_template
+                random_traits = no
+                trait = dragon_wounded_1 
+                save_scope_as = dragon
+                location = root.location
+            }
         }
     }
 
@@ -601,9 +611,6 @@ gogossos_expedition.0004 = {
                         death = {
                             death_reason = death_monster_duel
                         }
-                        scope:dragon = {
-                            death = { death_reason = death_monster_duel }
-                        }
                     }
                 }
             }
@@ -664,8 +671,8 @@ gogossos_expedition.00042 = {
 
 gogossos_expedition.0050 = {
     type = character_event
-    title = gogossos_expedition.0101_t #You Got Bear-ed
-    desc = gogossos_expedition.0101_desc
+    title = gogossos_expedition.0050_t #You Got Bear-ed
+    desc = gogossos_expedition.0050_desc
 
     theme = hunting
     
@@ -1781,13 +1788,23 @@ gogossos_expedition.1100 = {
     }
 
     immediate = {
-        create_character = {
-            trait = dragon
-            age = { 20 65 }
-            template = agot_dragon_template
-            random_traits = yes 
-            save_scope_as = dragon
-            location = root.location
+        if = {
+            limit = { any_living_dragon = { is_at_location = title:c_gogossos.title_province } }
+            random_living_dragon = {
+                limit = { is_at_location = title:c_gogossos.title_province }
+                save_scope_as = dragon
+            }
+        }
+        else = {
+            create_character = {
+                trait = dragon
+                age = 45
+                template = agot_dragon_template
+                random_traits = no
+                trait = dragon_wounded_1 
+                save_scope_as = dragon
+                location = root.location
+            }
         }
     }
 
@@ -1850,9 +1867,6 @@ gogossos_expedition.1100 = {
                         }
                             death = {
                                 death_reason = death_monster_duel
-                            }
-                            scope:dragon = {
-                                death = { death_reason = death_monster_duel }
                             }
                     }
             }
