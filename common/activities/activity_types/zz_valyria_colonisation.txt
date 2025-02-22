@@ -2047,28 +2047,8 @@ activity_valyria_colonisation_duchy = {
 						value = zz_valyria_colonisation_activity_cost
 						desc = pilgrimage_base_cost
 					}
-					add = {
-						value = zz_valyria_colonisation_activity_cost
-						multiply = activity_cost_scale_by_era
-						subtract = root.zz_valyria_colonisation_activity_cost
-						desc = activity_cost_scale_by_era_desc
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-							}
-						 }
-						 multiply = 5
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								zz_valyria_has_volcano = yes
-							}
-						 }
-						 multiply = 3
-					}
+					add = zz_valyria_colonisation_duchy_gold_cost
+					multiply = 1.5
 				}
 			}
 			on_enter_phase = {
@@ -2146,28 +2126,8 @@ activity_valyria_colonisation_duchy = {
 						value = zz_valyria_colonisation_activity_cost
 						desc = pilgrimage_base_cost
 					}
-					add = {
-						value = zz_valyria_colonisation_activity_cost
-						multiply = activity_cost_scale_by_era
-						subtract = root.zz_valyria_colonisation_activity_cost
-						desc = activity_cost_scale_by_era_desc
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-							}
-						 }
-						 multiply = 1
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								zz_valyria_has_volcano = yes
-							}
-						 }
-						 multiply = 3
-					}
+					add = zz_valyria_colonisation_duchy_gold_cost
+					multiply = 1.5
 				}
 			}
 			on_enter_phase = {
@@ -2245,28 +2205,9 @@ activity_valyria_colonisation_duchy = {
 						value = zz_valyria_colonisation_activity_cost
 						desc = pilgrimage_base_cost
 					}
-					add = {
-						value = zz_valyria_colonisation_activity_cost
-						multiply = activity_cost_scale_by_era
-						subtract = root.zz_valyria_colonisation_activity_cost
-						desc = activity_cost_scale_by_era_desc
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-							}
-						 }
-						 multiply = 2
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								zz_valyria_has_volcano = yes
-							}
-						 }
-						 multiply = 3
-					}
+					add = zz_valyria_colonisation_duchy_gold_cost
+					multiply = 1.5
+
 				}
 			}
 			on_enter_phase = {
@@ -2347,28 +2288,9 @@ activity_valyria_colonisation_duchy = {
 						value = zz_valyria_colonisation_activity_cost
 						desc = pilgrimage_base_cost
 					}
-					add = {
-						value = zz_valyria_colonisation_activity_cost
-						multiply = activity_cost_scale_by_era
-						subtract = root.zz_valyria_colonisation_activity_cost
-						desc = activity_cost_scale_by_era_desc
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-							}
-						 }
-						 multiply = 5
-					}
-					if = {
-						limit = { 
-							scope:province ?= {
-								zz_valyria_has_volcano = yes
-							}
-						 }
-						 multiply = 3
-					}
+					add = zz_valyria_colonisation_duchy_gold_cost
+					multiply = 1.5
+
 					divide = 10
 				}
 			}
@@ -2454,45 +2376,14 @@ activity_valyria_colonisation_duchy = {
 			is_valid = {
 				scope:host = {
 					has_trait = zz_magister
-					zz_valyria_has_mana_to_cast = { MANACOST = 20 }
-					trigger_if = {
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-							}
-						 }
-						 zz_valyria_has_mana_to_cast = { MANACOST = 100 }
-					}
-					trigger_if = {
-						limit = { 
-							scope:province ?= {
-								zz_valyria_has_volcano = yes
-							}
-						 }
-						 zz_valyria_has_mana_to_cast = { MANACOST = 300 }
-					}
+					zz_valyria_has_mana_to_cast = { MANACOST = zz_valyria_magic_cost_duchy_value }
+
 				}
 				
 			}
 			can_pick = {
 				has_trait = zz_magister
-				zz_valyria_has_mana_to_cast = { MANACOST = 20 }
-				trigger_if = {
-					limit = { 
-						scope:province ?= {
-							geographical_region = world_valyria 
-						}
-					 }
-					 zz_valyria_has_mana_to_cast = { MANACOST = 100 }
-				}
-				trigger_if = {
-					limit = { 
-						scope:province ?= {
-							zz_valyria_has_volcano = yes
-						}
-					 }
-					 zz_valyria_has_mana_to_cast = { MANACOST = 300 }
-				}
+				zz_valyria_has_mana_to_cast = { MANACOST = zz_valyria_magic_cost_duchy_value }
 			}
 			cost = {
 
@@ -2518,41 +2409,11 @@ activity_valyria_colonisation_duchy = {
 			}
 			on_end = {
 				scope:host = {
-					if = { 
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-								NOT = {
-									zz_valyria_has_volcano = yes
-								}
-							}
-						 }
-						 set_variable = {
-							name = zz_manacost 
-							value = 100
-						}
-						zz_valyria_mana_spend = yes
+					set_variable = {
+						name = zz_manacost 
+						value = zz_valyria_magic_cost_duchy_value
 					}
-					else_if = { 
-						limit = { 
-							scope:province ?= {
-								geographical_region = world_valyria 
-								zz_valyria_has_volcano = yes
-							}
-						 }
-						 set_variable = {
-							name = zz_manacost 
-							value = 300
-						}
-						zz_valyria_mana_spend = yes
-					}
-					else = {
-						set_variable = {
-							name = zz_manacost 
-							value = 20
-						}
-						zz_valyria_mana_spend = yes
-					}	
+					zz_valyria_mana_spend = yes
 				}
 				scope:activity = {
 					#Phase progression
@@ -2598,7 +2459,7 @@ activity_valyria_colonisation_duchy = {
 			on_end = {
 				scope:host = {
 					resolve_valyria_colonisation_success_reward_effect = yes 
-					valyria_colonisation_completed_log_entry_effect = yes
+					valyria_colonisation_duchy_completed_log_entry_effect = yes
 					complete_activity_intent = yes
 					trigger_event = zz_valyria_colonisation.0009 	
 				}
