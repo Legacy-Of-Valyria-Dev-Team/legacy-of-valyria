@@ -363,6 +363,22 @@ agot_on_game_start = {
 			set_coa = c_kings_landing
 		}
 
+		### Landless NW Setup
+		title:d_nw_landless_first_ranger = {
+			set_coa = c_castle_black
+			holder = {
+				add_character_flag = nw_ranger_title
+				agot_nw_laamp_start_effect = yes
+			}
+			set_variable = agot_title_blocked_to_give_away
+		}
+		title:k_the_wall.holder = {
+			assign_councillor_type = {
+				type = councillor_marshal
+				target = title:d_nw_landless_first_ranger.holder
+			}
+		}
+
 		### Most Devout Setup
 		title:k_the_most_devout = {
 			every_past_holder = {
@@ -795,6 +811,21 @@ agot_on_game_start = {
 
 			#Set Birthplace - Human
 			agot_birthplace_game_start = yes
+
+			#Prevent the change of the Dynasty names on gaining land
+			if = {
+				limit = {
+					exists = dynasty
+					NOR = {
+						has_character_flag = canon_status_canon
+						has_character_flag = canon_status_semicanon
+						has_character_flag = canon_status_mentioned
+					}
+					NOT = { exists = mother.dynasty }
+					NOT = { exists = father.dynasty }
+				}
+				add_character_flag = keep_dynasty_name
+			}
 
 			#canon dragons
 			if = {
@@ -2846,6 +2877,12 @@ agot_on_game_start_after_lobby = {
 				}
 				trigger_event = agot_rp_event.0105 # Custom Strong Seed Menu
 			}
+
+			if = {
+				limit = { is_from_ruler_designer = yes }
+				trigger_event = agot_rp_event.0201 # Birthplace Event
+			}
+
 			agot_clear_patron = yes
 			add_character_flag = cannot_be_knight_and_commander
 		}
@@ -2962,6 +2999,11 @@ agot_on_game_start_after_lobby = {
 				limit = { game_start_date = 8233.2.8 }
 
 				agot_8233_peake_uprising_setup = yes
+			}
+			if = { # manage 8258.12.21 The Laughing Storm Rebellion scenario
+				limit = { game_start_date = 8239.1.11 }
+
+				agot_8239_1_11_laughing_storm_setup = yes
 			}
 			if = { # manage 8258.12.21 The Ninepenny Kings scenario
 				limit = { game_start_date = 8258.12.21 }
