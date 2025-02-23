@@ -139,6 +139,35 @@ zz_valyria_colonisation_skill_test = {
 			stress_impact = {
 				base = medium_stress_impact_gain
 			}
+			if = { 
+				limit = { 
+					exists = var:bad_life_choices  
+				}
+				if = { 
+					limit = { 
+						scope:activity.activity_location = { 
+							geographical_region = world_valyria 
+						}
+						random = { 
+							chance = 75
+							death = {
+								killer = root
+								death_reason = death_sacrificed_to_gods
+							}
+						}
+					}
+				}
+				else = {
+					random = { 
+						chance = 25
+						death = {
+							killer = root
+							death_reason = death_sacrificed_to_gods
+						}
+					}
+				}
+			}
+
 		}
 	}
 	remove_character_flag = $ZZ_EVENT_OPTION_NAME$
@@ -305,6 +334,9 @@ disburse_valyria_colonisation_reward_effect = {
 	}
 }
 
+
+
+
 zz_valyria_colonise_claim_titles = { 
 	if = { 
 		limit = { 
@@ -360,3 +392,119 @@ zz_valyria_colonise_claim_titles = {
 
 
 
+valyria_colonisation_duchy_completed_log_entry_effect = {
+	involved_activity = {
+		add_activity_log_entry = {
+			key = valyria_colonisation_studies_completed_log
+			tags = { completed }
+			score = 100
+			show_in_conclusion = yes
+			character = root
+			#Effects
+			root = {
+				disburse_valyria_colonisation_duchy_reward_effect = yes
+			}
+		}
+	}
+}
+
+disburse_valyria_colonisation_duchy_reward_effect = {
+	if = { 
+		limit = { 
+			has_character_flag = perfect_colonisation_reward
+		}
+			zz_valyria_colonise_duchy_claim_titles = yes
+			remove_character_flag = perfect_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = high_colonisation_reward
+		}
+		zz_valyria_colonise_duchy_claim_titles = yes
+		remove_character_flag = high_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = high_colonisation_reward
+		}
+		zz_valyria_colonise_duchy_claim_titles = yes
+		remove_character_flag = high_colonisation_reward
+	}
+	else_if = {
+		limit = { 
+			has_character_flag = mid_colonisation_reward
+		}
+		zz_valyria_colonise_duchy_claim_titles = yes
+		remove_character_flag = mid_colonisation_reward
+	}
+	else = {
+		remove_character_flag = low_colonisation_reward
+	}
+}
+
+zz_valyria_colonise_duchy_claim_titles = { 
+	if = { 
+		limit = { 
+			is_landless_adventurer = no
+		}		
+		create_title_and_vassal_change = {
+			type = conquest
+			add_claim_on_loss = yes
+			save_scope_as = change
+		}
+		scope:province.county = {	
+			change_title_holder_include_vassals = {
+				holder = scope:host
+				change = scope:change
+				take_baronies = no
+			}
+		}
+		scope:province.county.duchy = {
+			every_de_jure_county = {
+				change_title_holder_include_vassals = {
+					holder = scope:host
+					change = scope:change
+					take_baronies = no
+				}
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		#get_title = scope:province.county
+		
+	}
+	else_if = { 
+		limit = { 
+			is_landless_adventurer = yes
+		}
+		scope:province.county = { add_to_list = seized_titles }
+		scope:province.county.duchy = {
+			every_de_jure_county = {
+				add_to_list = seized_titles
+			}
+		}
+		
+		# Resolve title, liege, government changes
+		ep3_become_landed_transfer_effect = {
+			TITLE_RECEIVER = scope:host 
+			TITLE_LIST = seized_titles
+			TYPE = conquest
+			REASON = flag:conquest 
+		}
+	}
+	scope:province.county = { 
+		set_county_faith = scope:host.faith
+		set_county_culture = scope:host.culture
+	}
+	if = {
+		limit = { this = scope:host }
+		create_character_memory = {
+			type = completed_colonisation
+		}
+		scope:new_memory = {
+			set_variable = {
+				name = education_destination
+				value = scope:activity.activity_location
+			}
+		}
+	}
+}
