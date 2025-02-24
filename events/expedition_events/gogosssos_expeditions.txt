@@ -1,4 +1,4 @@
-namespace = gogossos_expedition
+﻿namespace = gogossos_expedition
 
 gogossos_expedition.0001 = {
     type = character_event
@@ -22,72 +22,71 @@ gogossos_expedition.0001 = {
 
     immediate = {
         create_character = {
-				gender = male
-				random_traits_list = { count = 3 }
-				culture = culture:gogossosi
-                age = { 400 800 }
-				faith = faith:valyrian 
-				trait = beauty_bad_3
-				trait = scaly
-				trait = hunchbacked
-				trait = silent_monster
+            gender = male
+            random_traits_list = { count = 3 }
+            culture = culture:gogossosi
+            age = { 400 800 }
+            faith = faith:valyrian 
+            trait = beauty_bad_3
+            trait = scaly
+            trait = hunchbacked
+            trait = silent_monster
 
-				location = root.location
-				save_scope_as = monster_1
-			}
+            location = root.location
+            save_scope_as = monster_1
+        }
     }
 
     option = {
         name = gogossos_expedition.0001.a
-        duel = {
-            skill = prowess
-            value = high_skill_rating
-            target = scope:monster_1
-
-            70 = {
-                compare_modifier = {
-                    value = scope:duel_value
-                    multiplier = 3.5
-                    min = -49
-                }
-                trigger_event = gogossos_expedition.0002
-                scope:monster_1 = {
-                    death = {
-                        death_reason = death_lost_in_gogossos
-                    }
-                }
-                add_gold = 100
-            }
-
-            30 = {
-                compare_modifier = {
-                    value = scope:duel_value
-                    multiplier = -3.5
-                    min = -49
-                }
-                death = {
-                    death_reason = death_lost_in_gogossos
-                }
+        custom_tooltip = {
+            text = gogossos_expedition.0001.a.outcome
+            configure_start_single_combat_effect = {
+                SC_INITIATOR = scope:monster_1
+                SC_ATTACKER = scope:monster_1
+                SC_DEFENDER = root
+                FATALITY = default
+                FIXED = no
+                LOCALE = terrain_scope
+                OUTPUT_EVENT = gogossos_expedition.0011
+                INVALIDATION_EVENT = gogossos_expedition.0002
             }
         }
     }
 
     option = {
         name = gogossos_expedition.0001.b
+        custom_tooltip = {
+            text = gogossos_expedition.0001.b.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+            hidden_effect = {
+                scope:monster_1 = {
+                    death = { death_reason = death_monster_duel }
+                }
+            }
+        }
         add_prestige = -500
         stress_impact = {
             ambitious = medium_stress_impact_gain
             brave = medium_stress_impact_gain
             arrogant = minor_stress_impact_gain
         }
-        remove_character_flag = agot_is_at_unknown_place
-        hidden_effect = {
-            scope:monster_1 = {
-                death = { death_reason = death_monster_duel }
-            }
+    }
+}
+
+gogossos_expedition.0011 = {
+    hidden = yes
+
+    immediate = {
+        if = {
+            limit = { scope:sc_victor = scope:sc_defender }
+            scope:sc_defender = { trigger_event = gogossos_expedition.0002 }
+        } 
+        else = { 
+            scope:sc_defender = { death = { death_reason = death_lost_in_gogossos } }
         }
     }
-
 }
 
 gogossos_expedition.0002 = {
@@ -141,12 +140,8 @@ gogossos_expedition.0002 = {
                 remove_variable = pillar_two
                 remove_variable = pillar_three
                 random_list = {
-                    50 = {
-                        trigger_event = gogossos_expedition.0003
-                    }
-                    50 = {
-                        trigger_event = gogossos_expedition.0004
-                    }
+                    50 = { trigger_event = gogossos_expedition.0003 }
+                    50 = { trigger_event = gogossos_expedition.0004 }
                 }
             }
             else = {
@@ -253,11 +248,11 @@ gogossos_expedition.0002 = {
 
 gogossos_expedition.0003 = {
     type = character_event
-	title = gogossos_expedition_0003_t #Tomb of the Dragon Lord
-	desc = gogossos_expedition_0003_desc
+	title = gogossos_expedition.0003_t #Tomb of the Dragon Lord
+	desc = gogossos_expedition.0003_desc
 
     theme = hunting
-    override_background = ruin_3
+    override_background = lov_ruin_3
 
     left_portrait = {
 		character = root
@@ -266,8 +261,12 @@ gogossos_expedition.0003 = {
 
     option = {
         name = gogossos_expedition.0003.a
+        custom_tooltip = {
+            text = gogossos_expedition.0003.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_gold = 500
-        remove_character_flag = agot_is_at_unknown_place
         random_list = {
             15 = {
                 agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root }
@@ -311,24 +310,25 @@ gogossos_expedition.0003 = {
 
 gogossos_expedition.0004 = {
     type = character_event
-	title = gogossos_expedition_0004_t #Smaug The Terrible
-	desc = gogossos_expedition_0004_desc
+	title = gogossos_expedition.0004_t #Smaug The Terrible
+	desc = gogossos_expedition.0004_desc
 
     theme = hunting
-    override_background = ruin_2
+    override_background = lov_ruin_2
 
     immediate = {
         if = {
-            limit = { any_living_dragon = { 
-                is_at_location = title:c_gogossos.title_province
-                has_character_flag = big_boi_dragon
-            } }
-
+            limit = {
+                any_living_dragon = { 
+                    is_at_location = title:c_gogossos.title_province
+                    has_character_flag = big_boi_dragon
+                }
+            }
             random_living_dragon = {
                 limit = { 
                     is_at_location = title:c_gogossos.title_province
                     has_character_flag = big_boi_dragon
-                    }
+                }
                 save_scope_as = dragon
             }
         }
@@ -343,7 +343,7 @@ gogossos_expedition.0004 = {
                 location = title:c_gogossos.title_province
                 after_creation = {
                     add_character_flag = big_boi_dragon
-                }   
+                }
             }
         }
 
@@ -360,78 +360,77 @@ gogossos_expedition.0004 = {
         animation = dragon_main
         camera = camera_dragon_facing_human
 
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_ten_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_1.5  }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_ten_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_nine_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_1.5  }
+            outfit_tags = { dynamic_camera_zoom_1.5  }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_nine_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_eight_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_1.5  }
+            outfit_tags = { dynamic_camera_zoom_1.5  }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_eight_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_seven_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_1.5 }
+            outfit_tags = { dynamic_camera_zoom_1.5  }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_seven_dragon_size_trigger = yes }
             }
-            triggered_outfit = { # VHAGAR
-                trigger = {
-                    scope:dragon = { level_six_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_1.5 }
+            outfit_tags = { dynamic_camera_zoom_1.5 }
+        }
+        triggered_outfit = { # VHAGAR
+            trigger = {
+                scope:dragon = { level_six_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_five_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_1.0 }
+            outfit_tags = { dynamic_camera_zoom_1.5 }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_five_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_four_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_0.9 }
+            outfit_tags = { dynamic_camera_zoom_1.0 }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_four_dragon_size_trigger = yes }
             }
-            triggered_outfit = { # MELEYS
-                trigger = {
-                    scope:dragon = { level_three_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_0.8 }
+            outfit_tags = { dynamic_camera_zoom_0.9 }
+        }
+        triggered_outfit = { # MELEYS
+            trigger = {
+                scope:dragon = { level_three_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_two_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_0.5 }
+            outfit_tags = { dynamic_camera_zoom_0.8 }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_two_dragon_size_trigger = yes }
             }
-            triggered_outfit = { # SYRAX
-                trigger = {
-                    scope:dragon = { level_one_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_0.4 }
+            outfit_tags = { dynamic_camera_zoom_0.5 }
+        }
+        triggered_outfit = { # SYRAX
+            trigger = {
+                scope:dragon = { level_one_dragon_size_trigger = yes }
             }
-            triggered_outfit = {
-                trigger = {
-                    scope:dragon = { level_zero_dragon_size_trigger = yes }
-                }
-                outfit_tags = { dynamic_camera_zoom_0.7 }
+            outfit_tags = { dynamic_camera_zoom_0.4 }
+        }
+        triggered_outfit = {
+            trigger = {
+                scope:dragon = { level_zero_dragon_size_trigger = yes }
             }
-            #End Dynamic Camera Zoom
-        
+            outfit_tags = { dynamic_camera_zoom_0.7 }
+        }
+        #End Dynamic Camera Zoom   
     }
 
     option = {
-        name = treasure.2
+        name = gogossos_expedition.0004.a
         random_list = {
             90 = {
                 duel = {
@@ -480,7 +479,7 @@ gogossos_expedition.0004 = {
                             }
                         }
                         
-                        trigger_event = gogossos_expedition.00041
+                        trigger_event = gogossos_expedition.00042
                     } 
 
                     70 = {
@@ -518,38 +517,47 @@ gogossos_expedition.0004 = {
 
 gogossos_expedition.00041 = {
     type = character_event
-	title = gogossos_expedition_00041_t #Dragon Skelebob
-	desc = gogossos_expedition_00041_desc
+	title = gogossos_expedition.00041_t #Dragon Skelebob
+	desc = gogossos_expedition.00041_desc
 
     theme = hunting
-    override_background = ruin_2
+    override_background = lov_ruin_2
 
     left_portrait = {
         character = root
 	    animation = survey
     }
     option = {
-        name = home.1
-        remove_character_flag = agot_is_at_unknown_place
+        name = gogossos_expedition.00041.a
+        add_gold = 500
+        custom_tooltip = {
+            text = gogossos_expedition.00041.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
     }
 }
 
 gogossos_expedition.00042 = {
     type = character_event
-	title = gogossos_expedition_00042_t #Slew The Dragon
-	desc = gogossos_expedition_00042_desc
+	title = gogossos_expedition.00042_t #Slew The Dragon
+	desc = gogossos_expedition.00042_desc
 
     theme = hunting
-    override_background = ruin_2
+    override_background = lov_ruin_2
 
     left_portrait = {
         character = root
 	    animation = survey
     }
     option = {
-        name = home.2
-        remove_character_flag = agot_is_at_unknown_place
+        name = gogossos_expedition.00042.a
         add_gold = 1000
+        custom_tooltip = {
+            text = gogossos_expedition.00042.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
     }
 }
 
@@ -559,7 +567,7 @@ gogossos_expedition.0050 = {
     desc = gogossos_expedition.0050_desc
 
     theme = hunting
-    override_background = jungle
+    override_background = lov_jungle
 
     immediate = {
         create_character = {
@@ -587,10 +595,12 @@ gogossos_expedition.0050 = {
     }
 
     option = {
-        name = bear_1
+        name = gogossos_expedition.0050.a
         add_trait = silly_bear
-        remove_character_flag = agot_is_at_unknown_place
-        hidden_effect = {
+        custom_tooltip = {
+            text = gogossos_expedition.0050.a.bear
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
             scope:Monster_3 = {
                 death = {
                     death_reason = death_lost_in_gogossos
@@ -606,7 +616,7 @@ gogossos_expedition.0060 = {
     desc = gogossos_expedition.0060_desc
 
     theme = hunting
-    override_background = ruin_4
+    override_background = lov_ruin_4
 
     left_portrait = {
         character = root
@@ -614,37 +624,57 @@ gogossos_expedition.0060 = {
     }
 
     option = {
-        name = martial_book.1
+        name = gogossos_expedition.0060.a
+        custom_tooltip = {
+            text = gogossos_expedition.0060.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_martial_skill = 1
-        remove_character_flag = agot_is_at_unknown_place
         add_gold = 200
     }
 
     option = {
-        name = learning_book.1
+        name = gogossos_expedition.0060.b
+        custom_tooltip = {
+            text = gogossos_expedition.0060.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_learning_skill = 1
-        remove_character_flag = agot_is_at_unknown_place
         add_gold = 200
     }
 
     option = {
-        name = diplomacy_book.1
+        name = gogossos_expedition.0060.c
+        custom_tooltip = {
+            text = gogossos_expedition.0060.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_diplomacy_skill = 1
-        remove_character_flag = agot_is_at_unknown_place
         add_gold = 200
     }
 
     option = {
-        name = stewardship_book.1
+        name = gogossos_expedition.0060.d
+        custom_tooltip = {
+            text = gogossos_expedition.0060.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_stewardship_skill = 1
-        remove_character_flag = agot_is_at_unknown_place
         add_gold = 200
     }
 
     option = {
-        name = intrigue_book.1
+        name = gogossos_expedition.0060.e
+        custom_tooltip = {
+            text = gogossos_expedition.0060.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_intrigue_skill = 1
-        remove_character_flag = agot_is_at_unknown_place
         add_gold = 200
     }
 }
@@ -736,52 +766,28 @@ gogossos_expedition.0110 = {
     }
 
     option = {
-        name = ambush.1
-        if = {
-            limit = { scope:pirate_lord = { is_landed = yes } }
-            scope:pirate_lord = {
-                imprison = {   
-                    target = root
-                    type = dungeon 
-                }
-            }
+        name = gogossos_expedition.0110.a
+        custom_tooltip = {
+            text = gogossos_expedition.0110.a.outcome
+            trigger_event = gogossos_expedition.0112
         }
-        else = {
-            remove_short_term_gold = 500
-            add_trait = wounded_2
-            add_trait = one_handed
-            hidden_effect = {
-                scope:pirate_lord = {
-                    death =  {
-                        death_reason = death_lost_in_gogossos
-                    } 
-                    if = {
-                        limit = {
-                            is_landed = no
-                        }
-                    }
-                }
-            }
-        }
-        remove_character_flag = agot_is_at_unknown_place
     }
 
     option = {
-        name = pirate.2
-        trigger = {
-            prowess > 20
-            scope:pirate_lord = { is_landed = yes }
-        }
+        name = gogossos_expedition.0110.b
 
-        configure_start_single_combat_effect = {
-            SC_INITIATOR = scope:pirate_lord
-            SC_ATTACKER = scope:pirate_lord
-            SC_DEFENDER = root
-            FATALITY = default
-            FIXED = no
-            LOCALE = terrain_scope
-            OUTPUT_EVENT = gogossos_expedition.0121
-            INVALIDATION_EVENT = gogossos_expedition.0120
+        custom_tooltip = {
+            text = gogossos_expedition.0110.b.outcome
+            configure_start_single_combat_effect = {
+                SC_INITIATOR = scope:pirate_lord
+                SC_ATTACKER = scope:pirate_lord
+                SC_DEFENDER = root
+                FATALITY = default
+                FIXED = no
+                LOCALE = terrain_scope
+                OUTPUT_EVENT = gogossos_expedition.0121
+                INVALIDATION_EVENT = gogossos_expedition.0120
+            }
         }
     }
 }
@@ -801,31 +807,23 @@ gogossos_expedition.0120 = {
 
     option = {
         name = gogossos_expedition.120.a
-            hidden_effect = {
-                random_list = {
-                    50 = {
-                        trigger_event = gogossos_expedition.0060
-                    }
-
-                    40 = {
-                        trigger_event = gogossos_expedition.0050
-                    }
-
-                    10 = {
-                        trigger_event = gogossos_expedition.0001
-                    }
-                }
-            }
         add_prestige = 100
         hidden_effect = {
+            random_list = {
+                50 = { trigger_event = gogossos_expedition.0060 }
+                40 = {
+                    modifier = {
+                        factor = 0.025
+                        NOT = { has_game_rule = agot_silly_mode }
+                    }
+                    trigger_event = gogossos_expedition.0050
+                }
+                10 = { trigger_event = gogossos_expedition.0001 }
+            }
             scope:pirate_lord = {
                 if = {
-                    limit = {
-                        is_landed = no
-                    }
-                        death = {
-                            death_reason = death_lost_in_gogossos
-                        }
+                    limit = { is_landed = no }
+                    death = { death_reason = death_lost_in_gogossos }
                 }
             }
         }
@@ -838,23 +836,18 @@ gogossos_expedition.0121 = {
     immediate = {
         if = {
             limit = { scope:sc_victor = scope:sc_defender }
-            scope:sc_defender = {
-                trigger_event = gogossos_expedition.0111
-            }
+            scope:sc_defender = { trigger_event = gogossos_expedition.0111 }
         }  
         else = { 
-            scope:sc_defender = {
-                trigger_event = gogossos_expedition.0112
-            }
+            scope:sc_defender = { trigger_event = gogossos_expedition.0112 }
         }
     }
 }
 
-
 gogossos_expedition.0111 = {
     type = character_event
-    title = gogossos_expedition.0110.a_t #Pirate Duel Victor
-    desc = gogossos_expedition.0110.a_desc 
+    title = gogossos_expedition.0111_t #Pirate Duel Victor
+    desc = gogossos_expedition.0111_desc 
 
     theme = hunting
     override_background = lov_sea_travel
@@ -870,50 +863,49 @@ gogossos_expedition.0111 = {
     }
 
     option = {
-        name = winner.1
-        trigger = {
-            is_ai = no
-        }
-        random_list = {
-            50 = {
-                trigger_event = gogossos_expedition.0060
-            }
-
-            40 = {
-                trigger_event = gogossos_expedition.0050
-            }
-
-            10 = {
-                trigger_event = gogossos_expedition.0001
+        name = gogossos_expedition.0111.a
+        custom_tooltip = {
+            text = gogossos_expedition.0111.a.outcome
+            random_list = {
+                50 = { trigger_event = gogossos_expedition.0060 }
+                40 = {
+                    modifier = {
+                        factor = 0.025
+                        NOT = { has_game_rule = agot_silly_mode }
+                    }
+                    trigger_event = gogossos_expedition.0050
+                }
+                10 = { trigger_event = gogossos_expedition.0001 }
             }
         }
-
         add_prestige = 500
         add_gold = 100
     }
+<<<<<<< HEAD:events/Expedition events/gogosssos_expeditions.txt
     
     option = {
         trigger = {
-            is_player = no
             is_ai = yes
         }
         add_gold = 500
         add_prestige = 500
         add_martial_skill = 1
     }
+=======
+>>>>>>> 614e2cf924ef92ae78f5609abea435c0eed94bf4:events/expedition_events/gogosssos_expeditions.txt
 }
 
 gogossos_expedition.0112 = {
     type = character_event
-    title = gogossos_expedition.0110.b_t #Pirate Duel loser
-    desc = gogossos_expedition.0110.b_desc 
+    title = gogossos_expedition.0112_t #Pirate Duel loser or surrendered
+    desc = gogossos_expedition.0112_desc 
 
     theme = hunting
     override_background = lov_sea_travel
 
     left_portrait = {
         character = root
-        aniamtion = shame
+        animation = shame
     }
 
     right_portrait = {
@@ -921,11 +913,37 @@ gogossos_expedition.0112 = {
         animation = celebrate_sword 
     }
 
+    immediate = {
+        if = {
+            limit = { scope:pirate_lord = { is_landed = yes } }
+            scope:pirate_lord = {
+                imprison = {   
+                    target = root
+                    type = dungeon 
+                }
+            }
+        }
+        else = {
+            remove_short_term_gold = 500
+            add_trait = wounded_2
+            add_trait = one_handed
+            hidden_effect = {
+                scope:pirate_lord = {
+                    death =  { death_reason = death_lost_in_gogossos } 
+                }
+            }
+        }
+    }
+
     option = {
-        name = Loser.1
-        remove_character_flag = agot_is_at_unknown_place
-        add_prestige = -1000
-        add_stress = 100
+        name = gogossos_expedition.0112.a
+        add_prestige = -500
+        add_stress = 50
+        custom_tooltip = {
+            text = gogossos_expedition.0110.a.outcome
+            current_travel_plan = { abort_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
     }
 }
 
@@ -942,36 +960,37 @@ gogossos_expedition.1001 = {
         animation = stunned
     }
 
-    option = {
-        name = cliff.1
-        hidden_effect = {
-            random_list = {
-                70 = {
-                    trigger_event = gogossos_expedition.1002
-
-                }
-
-                30 = {
-                    trigger_event = gogossos_expedition.1006
-                }
+    immediate = {
+        if = {
+            limit = { any_living_dragon = { var:current_rider ?= root } }
+            random_living_dragon = {
+                limit = { var:current_rider ?= root }
+                save_scope_as = my_dragon
             }
         }
     }
 
     option = {
-        name = cliff.2
-        trigger = {
-            has_trait = dragonrider
+        name = gogossos_expedition.1001.a
+        hidden_effect = {
+            random_list = {
+                70 = { trigger_event = gogossos_expedition.1002 }
+                30 = { trigger_event = gogossos_expedition.1006 }
+            }
         }
-        
+    }
+
+    option = {
+        name = gogossos_expedition.1001.b
+        trigger = { has_trait = dragonrider }
         trigger_event = gogossos_expedition.1002
     }
 }
 
 gogossos_expedition.1006 = {
     type = character_event
-    title = gogossos_expedition.1001.a_t #Falling off the Cliff
-    desc = gogossos_expedition.1001.a_desc
+    title = gogossos_expedition.1006_t #Falling off the Cliff
+    desc = gogossos_expedition.1006_desc
 
     theme = hunting
     override_background = lov_cliff
@@ -981,10 +1000,8 @@ gogossos_expedition.1006 = {
         animation = fear
     }
     option = {
-        name = cliff.3
-        death = {
-            death_reason = death_lost_in_gogossos
-        }
+        name = gogossos_expedition.1006.a
+        death = { death_reason = death_lost_in_gogossos }
     }
 }
 
@@ -1021,17 +1038,11 @@ gogossos_expedition.1003 = {
     }
 
     option = {
-        name = palace.1
+        name = gogossos_expedition.1003.a
         hidden_effect = {
             random_list = {
-                60 = {
-                    trigger_event = gogossos_expedition.1004 #Labyrinth
-                }
-
-                40 = {
-                    trigger_event = gogossos_expedition.1100 #Dragon
-
-                }
+                60 = { trigger_event = gogossos_expedition.1004 #Labyrinth }
+                40 = { trigger_event = gogossos_expedition.1100 #Dragon }
             }
         }
     }
@@ -1051,7 +1062,7 @@ gogossos_expedition.1004 = {
     }
 
     option = {
-        name = mural.1
+        name = gogossos_expedition.1004.a
         trigger_event = gogossos_expedition.1005
     }
 }
@@ -1125,7 +1136,13 @@ gogossos_expedition.1005 = {
                             }
                         }
                         else = {
-                            death = yes
+<<<<<<< HEAD:events/Expedition events/gogosssos_expeditions.txt
+                            death = {
+                                death_reason = death_lost_in_gogossos
+                            }
+=======
+                            death = { death_reason = death_viciously_dismembered }
+>>>>>>> 614e2cf924ef92ae78f5609abea435c0eed94bf4:events/expedition_events/gogosssos_expeditions.txt
                         }
                     }
 
@@ -1161,7 +1178,7 @@ gogossos_expedition.1005 = {
                             }
 
                             10 = {
-                                add_trait = eunuch
+                                add_trait = eunuch_1
                             }
 
                             10 = {
@@ -1226,8 +1243,13 @@ gogossos_expedition.1005 = {
                                 rank = 1
                             }
                         }
+<<<<<<< HEAD:events/Expedition events/gogosssos_expeditions.txt
+                        death = {
+                            death_reason = death_lost_in_gogossos
+=======
                         else = {
-                            death = yes
+                            death = { death_reason = death_viciously_dismembered }
+>>>>>>> 614e2cf924ef92ae78f5609abea435c0eed94bf4:events/expedition_events/gogosssos_expeditions.txt
                         }
                     }
 
@@ -1263,7 +1285,7 @@ gogossos_expedition.1005 = {
                             }
 
                             10 = {
-                                add_trait = eunuch
+                                add_trait = eunuch_1
                             }
 
                             10 = {
@@ -1341,8 +1363,13 @@ gogossos_expedition.1005 = {
                                 rank = 1
                             }
                         }
+<<<<<<< HEAD:events/Expedition events/gogosssos_expeditions.txt
+                        death = {
+                            death_reason = death_lost_in_gogossos
+=======
                         else = {
-                            death = yes
+                            death = { death_reason = death_viciously_dismembered }
+>>>>>>> 614e2cf924ef92ae78f5609abea435c0eed94bf4:events/expedition_events/gogosssos_expeditions.txt
                         }
                     }
 
@@ -1378,7 +1405,7 @@ gogossos_expedition.1005 = {
                             }
 
                             10 = {
-                                add_trait = eunuch
+                                add_trait = eunuch_1
                             }
 
                             10 = {
@@ -1445,8 +1472,13 @@ gogossos_expedition.1005 = {
                                 rank = 1
                             }
                         }
+<<<<<<< HEAD:events/Expedition events/gogosssos_expeditions.txt
+                        death = {
+                            death_reason = death_lost_in_gogossos
+=======
                         else = {
-                            death = yes
+                            death = { death_reason = death_viciously_dismembered }
+>>>>>>> 614e2cf924ef92ae78f5609abea435c0eed94bf4:events/expedition_events/gogosssos_expeditions.txt
                         }
                     }
 
@@ -1482,7 +1514,7 @@ gogossos_expedition.1005 = {
                             }
 
                             10 = {
-                                add_trait = eunuch
+                                add_trait = eunuch_1
                             }
 
                             10 = {
@@ -1568,35 +1600,34 @@ gogossos_expedition.1009 = {
         add_gold = 500
         add_prestige = 500
         add_learning_skill = 2
-        trigger_event = gogossos_expedition.1210
-            hidden_effect = {
-                random_list = {
-                    80 = {}
-
-                    20 = {
-                        random_list = {
-                            50 = {
-                                custom_tooltip = {
-                                    text = gogossos_expedition.0003.a.outcome.blood
-                                    zz_gain_blood_magic_scroll = yes
-                                }
+        hidden_effect = {
+            trigger_event = gogossos_expedition.1210
+            random_list = {
+                80 = {}
+                20 = {
+                    random_list = {
+                        50 = {
+                            custom_tooltip = {
+                                text = gogossos_expedition.0003.a.outcome.blood
+                                zz_gain_blood_magic_scroll = yes
                             }
-                            20 = {
-                                custom_tooltip = {
-                                    text = gogossos_expedition.0003.a.outcome.water
-                                    zz_gain_water_magic_scroll = yes
-                                }
-                            }
-                            30 = {
-                                custom_tooltip = {
-                                    text = gogossos_expedition.0003.a.outcome.shadow
-                                    zz_gain_shadow_magic_scroll = yes
-                                }
-                            } 
                         }
+                        20 = {
+                            custom_tooltip = {
+                                text = gogossos_expedition.0003.a.outcome.water
+                                zz_gain_water_magic_scroll = yes
+                            }
+                        }
+                        30 = {
+                            custom_tooltip = {
+                                text = gogossos_expedition.0003.a.outcome.shadow
+                                zz_gain_shadow_magic_scroll = yes
+                            }
+                        } 
                     }
                 }
             }
+        }
     }
 }
 
@@ -1615,7 +1646,11 @@ gogossos_expedition.1210 = {
 
     option = {
         name = gogossos_expedition.1210.b
-        remove_character_flag = agot_is_at_unknown_place
+        custom_tooltip = {
+            text = gogossos_expedition.1210.b.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
     }
 }
 
@@ -1709,16 +1744,18 @@ gogossos_expedition.1100 = {
 
     immediate = {
         if = {
-            limit = { any_living_dragon = { 
-                is_at_location = title:c_gogossos.title_province
-                has_character_flag = big_boi_dragon
-            } }
+            limit = {
+                any_living_dragon = { 
+                    is_at_location = title:c_gogossos.title_province
+                    has_character_flag = big_boi_dragon
+                }
+            }
 
             random_living_dragon = {
                 limit = { 
                     is_at_location = title:c_gogossos.title_province
                     has_character_flag = big_boi_dragon
-                    }
+                }
                 save_scope_as = dragon
             }
         }
@@ -1736,12 +1773,10 @@ gogossos_expedition.1100 = {
                 }   
             }
         }
-
     }
 
-
     option = {
-        name = dragon.1
+        name = gogossos_expedition.1100.a
             duel = {
                 skill = prowess
                 value = high_skill_rating
@@ -1796,38 +1831,41 @@ gogossos_expedition.1100 = {
                             multiplier = -3.5
                             min = -49
                         }
-                            death = {
-                                death_reason = death_dragon_ate 
-                                killer = scope:dragon
-                            }
+                        death = {
+                            death_reason = death_dragon_ate 
+                            killer = scope:dragon
+                        }
                     }
             }
     }
 
     option = {
-        name = dragon.11
+        name = gogossos_expedition.1100.b
         trigger = {
             dragonblood_percent > 0
             NOT = { 
                 has_trait = dragonrider
             }
         }
-        remove_character_flag = agot_is_at_unknown_place
+        custom_tooltip = {
+            text = gogossos_expedition.1100.b.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
             save_scope_as = tamer
-
-                if = {
-                    limit = {
-                        NOT = { has_relation_agot_dragon = scope:dragon }
-                    }
-                    trigger_event = {
-                        id = dragon_taming_events.0100    # Handler for unbonded dragons
-                    }
+            if = {
+                limit = {
+                    NOT = { has_relation_agot_dragon = scope:dragon }
                 }
-                else = {
-                    trigger_event = {
-                        id = dragon_taming_events.0200 # Handler for bonded dragons
-                    }
+                trigger_event = {
+                    id = dragon_taming_events.0100    # Handler for unbonded dragons
                 }
+            }
+            else = {
+                trigger_event = {
+                    id = dragon_taming_events.0200 # Handler for bonded dragons
+                }
+            }
+        }
     }
 }
 
@@ -1839,14 +1877,14 @@ gogossos_expedition.1101 = {
     theme = hunting
     override_background = lov_ruin_2
 
-   left_portrait = {
+    left_portrait = {
 		character = root
 		camera = camera_slay_dragon_human_event_left
 		scripted_animation = duel_wield_weapon
 	}
 
     option = {
-        name = dragon.2
+        name = gogossos_expedition.1101.a
         add_gold = 1000
         add_prestige = 2000
         trigger_event = gogossos_expedition.1102
@@ -1860,19 +1898,29 @@ gogossos_expedition.1102 = {
 
     theme = hunting
     override_background = lov_door
+<<<<<<< HEAD:events/Expedition events/gogosssos_expeditions.txt
 
-    left_portrait = root
-    animation = thinking
+    left_portrait = {
+        character = root
+        animation = thinking
+    }
+    
+=======
+    
+    left_portrait = {
+		character = root
+		animation = thinking
+	}
 
+>>>>>>> 614e2cf924ef92ae78f5609abea435c0eed94bf4:events/expedition_events/gogosssos_expeditions.txt
     option = {
-        name = blood.1
+        name = gogossos_expedition.1102.a
         hidden_effect = {
             random_list = {
                 80 = {
                     add_trait = wounded_1
                     trigger_event = gogossos_expedition.2002
                 }
-
                 20 = {
                     trigger_event = gogossos_expedition.2001
                 }
@@ -1881,14 +1929,13 @@ gogossos_expedition.1102 = {
     }
 
     option = {
-        name = blood.2
+        name = gogossos_expedition.1102.b
         hidden_effect = {
             random_list = {
                 50 = {
                     add_trait = wounded_2
                     trigger_event = gogossos_expedition.2002
                 }
-
                 50 = {
                     trigger_event = gogossos_expedition.2001
                 }
@@ -1897,8 +1944,12 @@ gogossos_expedition.1102 = {
     }
 
     option = {
-        name = blood.3
-        remove_character_flag = agot_is_at_unknown_place
+        name = gogossos_expedition.1102.c
+        custom_tooltip = {
+            text = gogossos_expedition.1102.c.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
     }
 }
 
@@ -1916,7 +1967,7 @@ gogossos_expedition.2001 = {
     }
 
     option = {
-        name = dumbass.2
+        name = gogossos_expedition.2001.dumbass
         death = {
             death_reason = death_rusty_knife
         }    
@@ -1937,10 +1988,14 @@ gogossos_expedition.2002 = {
     }
 
     option = {
-        name = treasure.3
+        name = gogossos_expedition.2002.a
+        custom_tooltip = {
+            text = gogossos_expedition.2002.a.outcome
+            current_travel_plan = { resume_travel_plan = yes }
+            remove_character_flag = agot_is_at_unknown_place
+        }
         add_gold = 500
         add_prestige = 1000
-        remove_character_flag = agot_is_at_unknown_place
         random_list = {
             15 = {
                 agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root }

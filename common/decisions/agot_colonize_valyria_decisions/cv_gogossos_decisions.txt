@@ -94,28 +94,24 @@ expedition_quest = { #Explore the Jungles
 	picture = {
 		reference = "gfx/interface/illustrations/decisions/fp3_decision_tax_collector.dds"
 	}
-	decision_group_type = minor
 
-	ai_check_interval = 120
+	ai_check_interval = 0 # Leave to the player for now
 
 	desc = expedition_quest_desc
 	
 	is_shown = {
-		is_independent_ruler = yes
-		is_ai = no
-		is_landed = yes
-
 		any_realm_province = {
   			geographical_region = world_gogossos
 		}
-		
-		NOR = {
-			government_has_flag = government_is_pirate 
-			is_ai = yes
+		title:c_gogossos = { # No one must own Gogossos and it must be a ruin
+			OR = {
+				holder = character:Ruin_Empress
+				holder = title:c_ruins.holder
+			}
 		}
-		add_character_flag = {
-  			flag = no_quest
-  			years = 10
+		NOR = {
+			#government_has_flag = government_is_pirate 
+			is_ai = yes
 		}
 	}
 
@@ -125,13 +121,17 @@ expedition_quest = { #Explore the Jungles
 		is_imprisoned = no
 	}
 
-	cost = {
-		gold = 50
-		prestige = 200
+	minimum_cost = {
+		gold = 500
+		#prestige = 200
 	}
 
 	effect = {
+		custom_tooltip = {
+			text = expedition_quest_effect
+		}
 		trigger_event = funding_expedition.0001
 	}
 
+	cooldown = { years = 10 }
 }

@@ -24,15 +24,31 @@
 
 zz_lov_item_grant_on_action = {
 	trigger = {
-		scope:title =title:k_lokiria 
-		any_character_artifact = {
-			NOT = {
-				has_artifact_modifier = vs_torment_modifier
-			}	
-		}
+		scope:title =title:k_lokiria  
+		NOT = {
+			exists = global_var:torment
+		}	
 	}
 	effect = {
-		trigger_event = zz_valyria_item_granting.001
+		if = { 
+			limit = { 
+				any_artifact = { 
+					has_artifact_modifier = vs_torment_modifier
+					not = { 
+						exists = this 
+					}
+				}
+			}
+			trigger_event = zz_valyria_item_granting.001
+		}
+		every_artifact = { 
+			limit = { 
+				has_artifact_modifier = vs_torment_modifier
+			}
+			scope:title.holder = { 
+				add_personal_artifact_claim = prev
+			}
+		}
 	}
 }
 
@@ -1095,7 +1111,6 @@ on_title_gain = {
 			}
 		}
 		#AGOT Modified
-		#if = {
 		else_if = {
 			limit = {
 				OR = {
@@ -1169,13 +1184,13 @@ on_title_gain = {
 			}
 		}
 		### MEMORIES - SHOULD STAY AT BOTTOM ###
-	}
-	events = {
-	}
-
-	#AGOT Added
-	on_actions = {
-		zz_lov_item_grant_on_action
+		}
+		events = {
+		}
+		#AGOT Added
+		on_actions = {
+			zz_lov_item_grant_on_action
+		}
 	}
 }
 
@@ -1208,7 +1223,8 @@ on_vassal_change = {
 				save_scope_as = title_to_destroy
 				root = { destroy_title = scope:title_to_destroy }
 			}
-		
+		}		
+
 		### GOVERNORS CHANGE GOVERNMENT IF NEW LIEGE IS NOT ADMINISTRATIVE
 		if = {
 			limit = {
