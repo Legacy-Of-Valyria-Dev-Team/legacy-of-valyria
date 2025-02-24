@@ -24,3 +24,58 @@ incalculable_gold_value_static_max = { # Only to be used in extreme cases, prima
 	ceiling = yes
 	multiply = 5
 }
+
+zz_valyria_magic_cost_duchy_value = {
+	value = 0
+	scope:province.county.duchy ?= {
+		every_de_jure_county = {
+			add = 30 
+		}
+	}
+	if = {
+		limit = { 
+			scope:province ?= {
+				geographical_region = world_valyria 
+			}
+		 }
+		 multiply = 5
+	}
+	if = {
+		limit = { 
+			scope:province ?= {
+				zz_valyria_has_volcano = yes
+			}
+		 }
+		 multiply = 3
+	}
+}
+
+zz_valyria_colonisation_duchy_gold_cost = { 
+	value = 0 
+	scope:province.county.duchy ?= {
+		every_de_jure_county = {
+			add = {	
+				value = zz_valyria_colonisation_activity_cost
+				multiply = activity_cost_scale_by_era
+				desc = activity_cost_scale_by_era_desc
+			}
+			
+		}
+	}
+	if = {
+		limit = { 
+			scope:province ?= {
+				geographical_region = world_valyria 
+			}
+		 }
+		 multiply = 5
+	}
+	if = {
+		limit = { 
+			scope:province ?= {
+				zz_valyria_has_volcano = yes
+			}
+		 }
+		 multiply = 3
+	}
+}
