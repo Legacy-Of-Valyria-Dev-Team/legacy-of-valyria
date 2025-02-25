@@ -1,0 +1,40 @@
+﻿# Expedition on_actions
+expedition_quest_start_on_action = {
+	effect = {
+		add_character_flag = agot_is_at_unknown_place
+	}
+}
+expedition_quest_travel_planner_cancel_on_action = {
+	effect = {
+		# Refund gold spent on the planning
+		add_gold = 500
+		remove_decision_cooldown = expedition_quest
+	}
+}
+expedition_quest_on_arrival_on_action = {
+	effect = {
+		# Pause travel plan
+		# - To be resumed at the conclusion of the quest chain
+		current_travel_plan = { pause_travel_plan = yes }
+		if = { # Gogossos
+			limit = { location = province:9734 }
+			random_list = {
+				50 = { trigger_event = gogossos_expedition.0001 }
+				20 = { trigger_event = gogossos_expedition.0119 }
+				20 = { trigger_event = gogossos_expedition.1001 }
+			}
+		}
+		else = {
+			if = {
+				limit = { location = default_location }
+				current_travel_plan = { complete_travel_plan = yes }
+			}
+			else = {
+				current_travel_plan = {
+					reroute_to_home = yes
+					resume_travel_plan = yes
+				}
+			}
+		}
+	}
+}
