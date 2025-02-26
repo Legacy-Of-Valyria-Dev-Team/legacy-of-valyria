@@ -1,0 +1,66 @@
+﻿# Legacy of Valyria general on actions
+on_game_start = {
+    on_actions = {
+		lv_vassals_setup
+    }
+}
+
+# Inconsequential vassal generator and title distributor
+# - Will generate vassals for characters that exist in history that hold all titles in their respective duchies
+# - Add entries here for duchies you don't really want to create an entire dedicated history for (mainly county-level vassals)
+lv_vassals_setup = {
+	effect = {
+		every_ruler = {
+			limit = {
+				any_held_title = {
+					OR = {
+						# VOLANTIS
+						this = title:c_selhoru
+						this = title:c_death_swamps
+						this = title:c_volaena
+						this = title:c_vysyria
+					}
+				}
+			}
+			save_scope_as = ruler
+
+			## VOLANTIS
+			# SELHORYS
+			if = {
+				limit = { this = title:c_selhoru.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_selhorys
+					COUNTY_OF_HOLDER = title:c_selhoru
+				}
+			}
+			# DEATH SWAMPS
+			if = {
+				limit = { this = title:c_death_swamps.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_death_swamps
+					COUNTY_OF_HOLDER = title:c_death_swamps
+				}
+			}
+			# VOLAENA
+			if = {
+				limit = { this = title:c_volaena.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_volaena
+					COUNTY_OF_HOLDER = title:c_volaena
+				}
+			}
+			# VYSYRIA
+			if = {
+				limit = { this = title:c_vysyria.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_vysyria
+					COUNTY_OF_HOLDER = title:c_vysyria
+				}
+			}
+		}
+	}
+}
