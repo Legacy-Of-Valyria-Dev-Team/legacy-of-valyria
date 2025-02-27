@@ -1,3 +1,87 @@
+# 👇 Update 01.02.01 👇 
+
+**Added Content** 
+Added Gogossos Religion to Valyrian Family
+Added 2 New Traits
+Added 4 new Buildings to Gogossos
+Added New Holy Sites to Valyrian Religion
+Added New Holy Sites to Gogossos Religion
+Added new icons for Gogossos MAA
+Added New Buildings icons for Gogossos
+Added New Decision (Explore the Old Ruins)
+Added New Gogossos Ruin Exploration Event chains(Expeditions)
+Added New Icon for Gogossos Religion
+Added Locs for New Events
+Added Locs for New Buildings
+Added Locs for New Decision
+Added New Event Background
+Added New Buildings to History Files
+Added Ck2 Events to Expeditions
+Added Groundwork for Future content in Gogossos
+Added New Death Reasons
+New Gogossos MAA The Basilisk Riders
+new activity, colonisation (duchy) colonises a duchy at once, costs 150% of the cost of doing all the counties individually, has a 10 year cooldown.
+new colonisation phase, Bad Life Decisions. Reduces colonisation cost by a factor of 10, but any failed event roll will have a 75% chance of death in valyria, or a 25% chance of death elsewhere.
+3 new modifiers for item crafting, Tax Mult, Income Mult, and Income Add
+New event to let you rename your items you craft.
+• New valyrian dynasties
+• New valyrian titles
+• New custom character
+• New Asshai titles + localization
+Extended Volantis, Yunkai, and Astapor histories to work with new CoB bookmark
+Asshai map expansion (6 duchies added)
+Manticore Isles added
+
+**Changes**
+Reworked and Remade Gogossos Religion
+Moved Special Buildings to Gogossos County (This is Now Gogossos City)
+Retconned old Gogossos Building Locs
+Changed Gogossos Culture to More Lore Friendly ish
+Changed Isle of Tears County to Gogossos
+Changed AGOT Restore Ruins system to allow you to claim de jure ruins without its de jure title needing to be your primary title
+Changed AGOT Restore Ruins system to also consider coastal neighbors 1 sea province away, and other special cases, e.g. Elyria with Ghozai
+
+**Bug Fixes**
+if a claimant dies in the New Valyria Conquest chain the chain will potentially break
+Fixed Roynar Ruin Special Buildings so now they show as Ruined
+Fixed issues with Gogossos dynasties
+
+
+**Important Infomation**
+Century of Blood Bookmark 0.0.1 has been added
+event chain for Aurion Varezys implemented
+WIP localization included
+further updates will come at later dates
+
+# ☝️ Update 01.02.01 ☝️
+
+# 👇  Bugfix Patch 01.01.08 👇 
+
+**Added Content** 
+Added localization to prowess mystery
+Added localization to dragon army modifiers
+Added localization to find gold title
+
+**Changes**
+Born Under a Red Comet now has proper trait name, description and an icon
+Minor rebalancing for miscast death counter.
+
+**Bug Fixes**
+Fixed zz_colonisation_phase_core.0001.f using intrigue instead of prowess
+Fixed zz_colonisation_phase_core.0002.f using intrigue instead of prowess
+Fixed zz_colonisation_phase_core.0003.f using intrigue instead of prowess
+Fixed zz_colonisation_phase_core.0005.f using intrigue instead of prowess
+Fixed no localization for colonization and settlement memories
+Fixed Draconic Longevity description
+Fixed apprentice issues
+Fixed missing brace in dragon modifiers
+Repaired random spell functions.
+Repaired crafting issues
+Repaired some math for miscasting
+Repaired some missing events for fire mysteries
+
+# ☝️ Bugfix Patch 01.01.08 ☝️
+
 # 👇 Patch 01.01.07 👇 
 
 **Added Content** 
