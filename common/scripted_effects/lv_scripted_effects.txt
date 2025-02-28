@@ -10,19 +10,38 @@ lv_distribute_titles_effect = {
 		}
 		get_title = $DUCHY$
 	}
-	create_title_and_vassal_change = {
-		type = granted
-		save_scope_as = change
-		add_claim_on_loss = no
+	if = {
+		limit = { always = $GRANT_INDEPENDENCE$ }
+		create_title_and_vassal_change = {
+			type = independency
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
+	}
+	else = {
+		create_title_and_vassal_change = {
+			type = granted
+			save_scope_as = change
+			add_claim_on_loss = no
+		}
 	}
 	every_held_title = {
 		limit = {
 			tier = tier_county
-			NOT = { this = $COUNTY_OF_HOLDER$ }
+			trigger_if = {
+				limit = { NOT = { always = $GIVE_COUNTY_CAPITAL$ } }
+				NOR = {
+					this = $COUNTY_OF_HOLDER$
+					trigger_if = { # Exception for Volantis
+						limit = { $DUCHY$ = title:d_volantis }
+						this = title:c_volantis
+					}
+				}
+			}
 			duchy = $DUCHY$
 		}
 		create_character = {
-			employer = scope:ruler
+			location = this.title_province
 			culture = scope:ruler.culture
 			faith = scope:ruler.faith
 			gender = male
@@ -33,12 +52,16 @@ lv_distribute_titles_effect = {
 			holder = scope:vassal
 			change = scope:change
 		}
-		scope:vassal = {
-			change_liege = {
-				liege = scope:ruler
-				change = scope:change
+		if = {
+			limit = { NOT = { always = $GRANT_INDEPENDENCE$ } }
+			scope:vassal = {
+				change_liege = {
+					liege = scope:ruler
+					change = scope:change
+				}
 			}
 		}
+		else = { scope:vassal = { becomes_independent = { change = scope:change } } }
 	}
 	resolve_title_and_vassal_change = scope:change
 }
