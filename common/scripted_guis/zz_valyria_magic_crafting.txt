@@ -189,6 +189,38 @@
 						}
 					}
 				}
+				clear_variable_list = zz_valyria_ring_list
+				trait:zz_valyria_magic_none_modifier_01_stacking = {
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_ring_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_ring_selection }
+							}
+							set_variable = { name = zz_ring_selection value = prev }
+						}
+					}
+				}
+				every_trait = {
+					limit = {
+						has_trait_flag = zz_ring_type
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_ring_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_ring_selection }
+							}
+							set_variable = { name = zz_ring_selection value = prev }
+						}
+					}
+				}
 			}
 		}
 		else = {
@@ -275,6 +307,16 @@ zz_valyria_magic_item_selection = {
 				set_variable = {
 					name = zz_item_ui
 					value = flag:sword_crafting_ui
+				}
+			}
+			else_if = {
+				limit = {
+					scope:zz_selected_item ?= trait:zz_valyria_crafting_magic_ring_01
+				}
+				remove_variable = zz_ring_selection_ring
+				set_variable = {
+					name = zz_item_ui
+					value = flag:ring_crafting_ui
 				}
 			}
 		}
@@ -850,6 +892,37 @@ zz_sword_selection = {
 		set_variable = {
 			name = zz_sword_selection_sword
 			value = scope:zz_sword_selection_sword
+		}
+		remove_variable = zz_item_ui
+	}
+}
+
+zz_ring_selection_shown = { 
+	scope = character
+	saved_scopes = {
+	}
+	is_valid = {
+		is_ai = no
+		var:zz_item_ui ?= flag:ring_crafting_ui
+	}
+}
+zz_ring_selection_shown_close = { 
+	scope = character
+	saved_scopes = {
+	}
+	effect = {
+		remove_variable = zz_item_ui
+	}
+}
+
+zz_ring_selection = { 
+	scope = character
+	saved_scopes = {
+	}
+	effect = { 
+		set_variable = {
+			name = zz_ring_selection_ring
+			value = scope:zz_ring_selection_ring
 		}
 		remove_variable = zz_item_ui
 	}
