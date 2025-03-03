@@ -1,13 +1,27 @@
 ﻿# Legacy of Valyria general on actions
 on_game_start = {
     on_actions = {
+		lv_titles_setup
 		lv_vassals_setup
     }
+}
+
+# Set up title-related stuff here
+lv_titles_setup = {
+	effect = {
+		title:d_ruins = { set_color_from_title = title:d_lv_map_transparent_color }
+	}
 }
 
 # Inconsequential vassal generator and title distributor
 # - Will generate vassals for characters that exist in history that hold all titles in their respective duchies
 # - Add entries here for duchies you don't really want to create an entire dedicated history for (mainly county-level vassals)
+# - Parameters:
+# - > GRANT_DUCHY - Whether to grant the holder of the county the duchy title on game start (you can either use this or just give them the duchy via history)
+# - > DUCHY - The corresponding duchy title
+# - > GIVE_COUNTY_CAPITAL - Whether to give away the capital county (or special cases such as Selhoru) to generated vassals as well
+# - > COUNTY_OF_HOLDER - The "capital county" in reference
+# - > GRANT_INDEPENDENCE - Whether to make the generated vassals break away on game start
 lv_vassals_setup = {
 	effect = {
 		every_ruler = {
@@ -19,6 +33,18 @@ lv_vassals_setup = {
 						this = title:c_death_swamps
 						this = title:c_volaena
 						this = title:c_vysyria
+						this = title:c_old_volantis
+
+						# ASSHAI
+						this = title:c_asshai
+						this = title:c_saffar
+						this = title:c_zhalor
+						this = title:c_hattar
+						this = title:c_maruza
+						this = title:c_ostiros
+						this = title:c_razmai
+						this = title:c_vyrokh
+						this = title:c_lazyros
 					}
 				}
 			}
@@ -31,34 +57,243 @@ lv_vassals_setup = {
 				lv_distribute_titles_effect = {
 					GRANT_DUCHY = no
 					DUCHY = title:d_selhorys
+					GIVE_COUNTY_CAPITAL = no
 					COUNTY_OF_HOLDER = title:c_selhoru
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
 				}
 			}
 			# DEATH SWAMPS
 			if = {
 				limit = { this = title:c_death_swamps.holder }
-				lv_distribute_titles_effect = {
-					GRANT_DUCHY = no
-					DUCHY = title:d_death_swamps
-					COUNTY_OF_HOLDER = title:c_death_swamps
+				if = {
+					limit = {
+						current_year >= 7998
+						culture = culture:dothraki
+					}
+					lv_distribute_titles_effect = {
+						GRANT_DUCHY = no
+						DUCHY = title:d_death_swamps
+						GIVE_COUNTY_CAPITAL = yes
+						COUNTY_OF_HOLDER = title:c_death_swamps
+						GRANT_INDEPENDENCE = no
+						VASSAL_CULTURE = this.culture
+						VASSAL_FAITH = this.faith
+						VASSAL_FEMALE_CHANCE = 0
+					}
+				}
+				else = {
+					lv_distribute_titles_effect = {
+						GRANT_DUCHY = no
+						DUCHY = title:d_death_swamps
+						GIVE_COUNTY_CAPITAL = no
+						COUNTY_OF_HOLDER = title:c_death_swamps
+						GRANT_INDEPENDENCE = no
+						VASSAL_CULTURE = this.culture
+						VASSAL_FAITH = this.faith
+						VASSAL_FEMALE_CHANCE = 50
+					}
 				}
 			}
 			# VOLAENA
 			if = {
 				limit = { this = title:c_volaena.holder }
-				lv_distribute_titles_effect = {
-					GRANT_DUCHY = no
-					DUCHY = title:d_volaena
-					COUNTY_OF_HOLDER = title:c_volaena
+				if = {
+					limit = {
+						current_year >= 7998
+						culture = culture:dothraki
+					}
+					lv_distribute_titles_effect = {
+						GRANT_DUCHY = no
+						DUCHY = title:d_volaena
+						GIVE_COUNTY_CAPITAL = yes
+						COUNTY_OF_HOLDER = title:c_volaena
+						GRANT_INDEPENDENCE = no
+						VASSAL_CULTURE = this.culture
+						VASSAL_FAITH = this.faith
+						VASSAL_FEMALE_CHANCE = 0
+					}
+				}
+				else = {
+					lv_distribute_titles_effect = {
+						GRANT_DUCHY = no
+						DUCHY = title:d_volaena
+						GIVE_COUNTY_CAPITAL = no
+						COUNTY_OF_HOLDER = title:c_volaena
+						GRANT_INDEPENDENCE = no
+						VASSAL_CULTURE = this.culture
+						VASSAL_FAITH = this.faith
+						VASSAL_FEMALE_CHANCE = 50
+					}
 				}
 			}
 			# VYSYRIA
 			if = {
 				limit = { this = title:c_vysyria.holder }
+				if = {
+					limit = {
+						current_year >= 7998
+						culture = culture:dothraki
+					}
+					lv_distribute_titles_effect = {
+						GRANT_DUCHY = no
+						DUCHY = title:d_vysyria
+						GIVE_COUNTY_CAPITAL = yes
+						COUNTY_OF_HOLDER = title:c_vysyria
+						GRANT_INDEPENDENCE = no
+						VASSAL_CULTURE = this.culture
+						VASSAL_FAITH = this.faith
+						VASSAL_FEMALE_CHANCE = 0
+					}
+				}
+				else = {
+					lv_distribute_titles_effect = {
+						GRANT_DUCHY = no
+						DUCHY = title:d_vysyria
+						GIVE_COUNTY_CAPITAL = no
+						COUNTY_OF_HOLDER = title:c_vysyria
+						GRANT_INDEPENDENCE = no
+						VASSAL_CULTURE = this.culture
+						VASSAL_FAITH = this.faith
+						VASSAL_FEMALE_CHANCE = 50
+					}
+				}
+			}
+			# VOLANTIS
+			if = {
+				limit = { this = title:c_old_volantis.holder }
 				lv_distribute_titles_effect = {
 					GRANT_DUCHY = no
-					DUCHY = title:d_vysyria
-					COUNTY_OF_HOLDER = title:c_vysyria
+					DUCHY = title:d_volantis
+					GIVE_COUNTY_CAPITAL = no
+					COUNTY_OF_HOLDER = title:c_old_volantis
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+
+			# ASSHAI
+			if = {
+				limit = { this = title:c_asshai.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_asshai
+					GIVE_COUNTY_CAPITAL = no
+					COUNTY_OF_HOLDER = title:c_asshai
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_saffar.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_the_saffron_lands
+					GIVE_COUNTY_CAPITAL = no
+					COUNTY_OF_HOLDER = title:c_saffar
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_zhalor.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_chalysa
+					GIVE_COUNTY_CAPITAL = no
+					COUNTY_OF_HOLDER = title:c_zhalor
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_hattar.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_hattar
+					GIVE_COUNTY_CAPITAL = yes
+					COUNTY_OF_HOLDER = title:c_hattar
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_maruza.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_maruza
+					GIVE_COUNTY_CAPITAL = yes
+					COUNTY_OF_HOLDER = title:c_maruza
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_ostiros.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_ostiros
+					GIVE_COUNTY_CAPITAL = yes
+					COUNTY_OF_HOLDER = title:c_ostiros
+					GRANT_INDEPENDENCE = no
+					VASSAL_CULTURE = this.culture
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+
+			# Tribes
+			if = {
+				limit = { this = title:c_razmai.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_razmai
+					GIVE_COUNTY_CAPITAL = yes
+					COUNTY_OF_HOLDER = title:c_razmai
+					GRANT_INDEPENDENCE = yes
+					VASSAL_CULTURE = culture:shadowmen
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_vyrokh.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_vyrokh
+					GIVE_COUNTY_CAPITAL = yes
+					COUNTY_OF_HOLDER = title:c_vyrokh
+					GRANT_INDEPENDENCE = yes
+					VASSAL_CULTURE = culture:shadowmen
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
+				}
+			}
+			if = {
+				limit = { this = title:c_lazyros.holder }
+				lv_distribute_titles_effect = {
+					GRANT_DUCHY = no
+					DUCHY = title:d_malior
+					GIVE_COUNTY_CAPITAL = yes
+					COUNTY_OF_HOLDER = title:c_lazyros
+					GRANT_INDEPENDENCE = yes
+					VASSAL_CULTURE = culture:shadowmen
+					VASSAL_FAITH = this.faith
+					VASSAL_FEMALE_CHANCE = 50
 				}
 			}
 		}
