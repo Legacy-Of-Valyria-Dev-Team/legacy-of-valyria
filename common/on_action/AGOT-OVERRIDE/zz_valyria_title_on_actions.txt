@@ -23,37 +23,28 @@
 # flag:stepped_down
 
 zz_lov_item_grant_on_action = {
-	trigger = {
-		scope:title =title:k_lokiria 
-		any_character_artifact = {
-			NOT = {
-				has_artifact_modifier = vs_torment_modifier
-			}	
-		}
-	}
-	effect = {
-		if = { 
-			limit = { 
-				any_artifact = { 
-					has_artifact_modifier = vs_torment_modifier
-					not = { 
-						exists = this 
-					}
-				}
-			}
-			trigger_event = zz_valyria_item_granting.001
-		}
-		every_artifact = { 
-			limit = { 
-				has_artifact_modifier = vs_torment_modifier
-			}
-			scope:title.holder = { 
-				add_personal_artifact_claim = prev
-			}
-		}
-	}
+    trigger = {
+        scope:title = title:k_lokiria  
+    }
+    effect = {
+        if = { 
+            limit = { 
+                NOT = {
+                    any_artifact = { has_variable = vs_torment_artifact }
+                }
+            }
+            trigger_event = zz_valyria_item_granting.001
+        }
+        every_artifact = { 
+            limit = { 
+                has_variable = vs_torment_artifact
+            }
+            scope:title.holder = { 
+                add_personal_artifact_claim = prev
+            }
+        }
+    }
 }
-
 
 
 # A title is transferred to a new character
@@ -1189,7 +1180,6 @@ on_title_gain = {
 	}
 	events = {
 	}
-
 	#AGOT Added
 	on_actions = {
 		zz_lov_item_grant_on_action
@@ -1225,7 +1215,8 @@ on_vassal_change = {
 				save_scope_as = title_to_destroy
 				root = { destroy_title = scope:title_to_destroy }
 			}
-		}
+		}		
+
 		### GOVERNORS CHANGE GOVERNMENT IF NEW LIEGE IS NOT ADMINISTRATIVE
 		if = {
 			limit = {

@@ -1,0 +1,2546 @@
+﻿namespace = lv_scenario_cob
+
+## Events 
+## Durrandon - 0101-0199
+## Targaryen - 0200-0299
+## Hoare = 0300-0399
+## Lannister - 0400-0499
+## Varezys - 0500-0599
+###Varezys Old valyria - 501-509
+### Varezys New Valyria - 510-520
+### Varezys Old Valryia flavor - 521-529
+## Justman - 0600-0699
+
+################################
+### Start of Bookmark Events ###
+################################
+
+
+lv_scenario_cob.0001 = { #Arrec Durrandon
+	type = character_event
+	title = lv_scenario_cob.0001.t
+	desc = lv_scenario_cob.0001.desc
+
+	override_background = {
+		reference = agot_storms_end
+	}
+	theme = realm
+	left_portrait = {
+		character = root
+		animation = marshal
+	}
+	lower_right_portrait = character:Hoare_25
+	lower_left_portrait = character:Justman_cob_2
+
+	immediate = {
+		character:Hoare_25 = {
+			save_scope_as = qhorwyn
+		}
+		character:Justman_cob_2 = {
+			save_scope_as = lucifer_cob
+		}
+		character:Durrandon_70 = {
+			save_scope_as = arlan
+		}
+		character:Justman_1 = {
+			save_scope_as = benedict
+		}
+		character:Justman_12 = {
+			save_scope_as = lucifer
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0001.a
+		add_prestige = 100
+		stress_impact = {
+			base = medium_stress_impact_gain
+		}
+	}
+}
+
+lv_scenario_cob.0002 = { #Aenar Targaryen
+	type = character_event
+	title = lv_scenario_cob.0002.t
+	desc = lv_scenario_cob.0002.desc
+
+	override_background = {
+		reference = agot_dragonstone_throneroom
+	}
+	theme = war
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	right_portrait = {
+		character = character:Targaryen_15
+		animation = personality_content
+	}
+	immediate = {
+		character:Targaryen_15 = {
+			save_scope_as = dreamer
+		}
+	}
+	option = {
+		name = lv_scenario_cob.0002.a
+		add_prestige = 100
+	}
+}
+
+lv_scenario_cob.0003 = { #Qhorwyn Hoare
+	type = character_event
+	title = lv_scenario_cob.0003.t
+	desc = lv_scenario_cob.0003.desc
+
+	override_background = {
+		reference = agot_pyke
+	}
+
+	theme = physical_health
+
+	left_portrait = {
+		character = root
+		animation = sick
+	}
+	lower_center_portrait = character:Hoare_27
+	lower_right_portrait = character:Hoare_28
+	lower_left_portrait = character:Hoare_26
+
+	immediate = {
+		character:Hoare_26 = {
+			save_scope_as = harmund
+		}
+		character:Hoare_27 = {
+			save_scope_as = harlan
+		}
+		character:Hoare_28 = {
+			save_scope_as = harwyn
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0003.a
+		add_prestige = 100
+		stress_impact = {
+			base = medium_stress_impact_gain
+		}
+		cv_create_artifact_vs_abyss_effect = { OWNER = root }	
+	}
+}
+lv_scenario_cob.0004 = { #Tommen II Lannister
+	type = character_event
+	title = lv_scenario_cob.0004.t
+	desc = lv_scenario_cob.0004.desc
+
+	override_background = {
+		reference = agot_casterly_rock
+	}
+	theme = realm
+	left_portrait = {
+		character = root
+		animation = marshal
+	}
+
+	option = {
+		name = lv_scenario_cob.0004.a
+		add_prestige = 100
+	}
+}
+
+lv_scenario_cob.0005 = { #Aurion Varezys
+	type = character_event
+	title = lv_scenario_cob.0005.t
+	desc = lv_scenario_cob.0005.desc
+
+	override_background = {
+		reference = agot_dragon_forest_clearing
+	}
+
+	theme = landless_adventurer
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = marshal
+	}
+
+	right_portrait = {
+		character = var:current_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+	}
+    # To Valyria
+	option = {
+		name = lv_scenario_cob.0005.a
+		custom_tooltip = lv_scenario_cob.0005.a_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13950
+				}
+			}
+		}	
+		character:Varezys_1 = {
+			#Aurion needs his host
+			spawn_army = {
+				levies = 30000 #Qohorik Levies
+				location = character:Varezys_1.location
+				name = aurion_qohor_army
+			}
+			cv_create_artifact_vs_stormbringer_effect = { OWNER = root }	
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+		}	
+		start_travel_plan = {
+			destination = province:8692
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0500
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+}
+
+lv_scenario_cob.0006 = { #Lucifer Justman
+	type = character_event
+	title = lv_scenario_cob.0006.t
+	desc = lv_scenario_cob.0006.desc
+
+	override_background = {
+		reference = throne_room
+	}
+	theme = landless_adventurer
+	left_portrait = root
+	lower_left_portrait = character:Justman_1
+	lower_right_portrait = character:Justman_12
+
+	immediate = {
+		play_music_cue = mood_the_hedge_knight
+		character:Justman_1 = {
+			save_scope_as = benedict
+		}
+		character:Justman_12 = {
+			save_scope_as = lucifer
+		}
+		character:Durrandon_70 = {
+			save_scope_as = arlan
+		}
+	}
+
+    # To Highgarden
+	option = {
+		name = lv_scenario_cob.0006.a
+		custom_tooltip = lv_scenario_cob.0006.a_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13950
+				}
+			}
+		}		
+		title:e_the_reach.holder.capital_province = {
+			save_scope_as = relocation_destination_reach
+		}
+		start_travel_plan = {
+			destination = scope:relocation_destination_reach
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+    # To Casterly Rock
+	option = {
+		name = lv_scenario_cob.0006.b
+		custom_tooltip = lv_scenario_cob.0006.b_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13950
+				}
+			}
+		}		
+		title:e_the_westerlands.holder.capital_province = {
+			save_scope_as = relocation_destination_rock
+		}
+		start_travel_plan = {
+			destination = scope:relocation_destination_rock
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+    # To The Eyrie
+	option = {
+		name = lv_scenario_cob.0006.c
+		custom_tooltip = lv_scenario_cob.0006.c_tt
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13950
+				}
+			}
+		}		
+		title:e_the_vale.holder.capital_province = {
+			save_scope_as = relocation_destination_eyrie
+		}
+		start_travel_plan = {
+			destination = scope:relocation_destination_eyrie
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+    # I will decide my own path
+	option = {
+		name = lv_scenario_cob.0006.d
+		add_prestige = 100
+		domicile = {
+			if = {
+				limit = { provisions < max_provisions }
+				change_provisions = {
+					value = 13950
+				}
+			}
+		}
+	}
+}
+
+###########################
+### Varezys Event Chain ###
+###########################
+
+lv_scenario_cob.0500 = { #Aurion Varezys arrives in Ny Sar
+	type = character_event
+	title = lv_scenario_cob.0500.t
+	desc = lv_scenario_cob.0500.desc
+
+	override_background = {
+		reference = AGOT_ruins_inside
+	}
+
+	theme = landless_adventurer
+
+	left_portrait = {
+		character = root
+		animation = personality_zealous
+	}
+	
+	lower_right_portrait = character:Nymeros_1
+
+	immediate = {
+		character:Nymeros_1 = {
+			save_scope_as = Nymeria
+		}
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0500.a
+		custom_tooltip = lv_scenario_cob.0500.a_tt
+		add_prestige = 100
+		hidden_effect = {
+			domicile = {
+				if = {
+					limit = { provisions < max_provisions }
+					change_provisions = {
+						value = 13950
+					}
+				}
+			}	
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+		}
+		start_travel_plan = {
+			destination = province:8860
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0501
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+}
+lv_scenario_cob.0501 = { #Aurion Varezys decides his path
+	type = character_event
+	title = lv_scenario_cob.0501.t
+	desc = lv_scenario_cob.0501.desc
+
+	override_background = {
+		reference = agot_dragon_forest_clearing
+	}
+
+	theme = landless_adventurer
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = var:current_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+	}
+
+	option = { #Aurion decides his path
+		name = lv_scenario_cob.0501.a
+		custom_tooltip = lv_scenario_cob.0501.a_tt
+		ai_chance = {
+			base = 60
+		}
+		add_prestige = 100
+		hidden_effect = {
+			domicile = {
+				if = {
+					limit = { provisions < max_provisions }
+					change_provisions = {
+						value = 13950
+					}
+				}
+			}	
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+			add_character_flag = restore_valyria_cob
+		}
+		add_trait = zealous
+		start_travel_plan = {
+			destination = province:8194
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0502
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+	# Declare a New Valyria
+	option = {
+		name = lv_scenario_cob.0005.b
+		ai_chance = {
+			base = 40
+		}
+		add_trait = zealous
+		start_war = {
+			casus_belli = aurion_new_valyria
+			target = title:k_volantis.holder
+			claimant = root
+			target_title = title:k_volantis
+		}
+	}
+	#Dragonlords Join Together
+	after = {
+		root = {
+			every_character_war = {
+				limit = {
+					OR = {
+						using_cb = aurion_new_valyria
+					}
+					is_attacker = root
+				}
+				add_attacker = title:d_laamp_Mataeryon_1.holder
+				add_attacker = title:d_laamp_Urnebar_1.holder
+				add_attacker = title:d_laamp_Sonaryen_1.holder
+				add_attacker = title:d_laamp_Belaerys_1.holder
+			}
+		}
+	}
+}
+
+###################################
+### Varezys Restore Valyria arc ###
+###################################
+
+lv_scenario_cob.0502 = { #Aurion Varezys arrives in Volantis
+	type = character_event
+	title = lv_scenario_cob.0502.t
+	desc = lv_scenario_cob.0502.desc
+
+	override_background = {
+		reference = AGOT_ocean_fp3_docks
+	}
+
+	theme = landless_adventurer
+
+	left_portrait = {
+		character = root
+		animation = toast_goblet
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0502.a
+		custom_tooltip = lv_scenario_cob.0502.a_tt
+		add_prestige = 100
+		hidden_effect = {
+			domicile = {
+				if = {
+					limit = { provisions < max_provisions }
+					change_provisions = {
+						value = 13950
+					}
+				}
+			}	
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+		}
+		start_travel_plan = {
+			destination = province:8380
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = lv_scenario_cob.0503
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+	}
+}
+
+lv_scenario_cob.0503 = { #Aurion Varezys arrives in Little Valyria
+	type = character_event
+	title = lv_scenario_cob.0503.t
+	desc = lv_scenario_cob.0503.desc
+
+	override_background = {
+		reference = agot_taiga_bog
+	}
+
+	theme = landless_adventurer
+
+	override_effect_2d = {
+		reference = rain
+	}
+
+	left_portrait = {
+		character = root
+		animation = grief
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0503.a
+		custom_tooltip = lv_scenario_cob.0503.a_tt
+		add_prestige = 100
+		hidden_effect = {
+			domicile = {
+				if = {
+					limit = { provisions < max_provisions }
+					change_provisions = {
+						value = 13950
+					}
+				}
+			}	
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
+		}
+		start_travel_plan = {
+			destination = province:8983
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			#on_arrival_event = lv_scenario_cob.0504
+			on_arrival_destinations = last
+			return_trip = no # One way
+			travel_with_domicile = yes
+		}
+		add_character_flag = varezys_valyria_event
+	}
+}
+
+
+########################################
+### Varezys New Valyria Conquest arc ###
+########################################
+
+lv_scenario_cob.0510 = { #Aurion Varezys cornonation
+	type = character_event
+	title = lv_scenario_cob.0510.t
+	desc = lv_scenario_cob.0510.desc
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	theme = realm
+
+	left_portrait = {
+		character = root
+		animation = war_over_win
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = lv_scenario_cob.0510.a
+
+		hidden_effect = {
+			if = {
+				limit = { has_title = title:k_volantis }
+				destroy_title = title:k_volantis
+			}
+			title:c_old_volantis = {
+				set_county_faith = root.faith
+				set_county_culture = root.culture	
+			}
+		get_title = title:k_volantis
+		}
+		get_title = title:e_new_valyria
+		remove_character_flag = not_had_coronation
+		remove_character_modifier = uncoronated_modifier
+		add_character_modifier = coronation_appropriate_modifier
+		add_legitimacy = massive_legitimacy_gain
+		agot_create_artifact_valyrian_crown2_effect = { OWNER = this }
+		every_held_title = {
+			limit = { tier = tier_kingdom }
+			set_de_jure_liege_title = title:e_new_valyria
+		}
+		trigger_event = {
+			id = lv_scenario_cob.0511 
+			days = 30
+		}
+	}
+}
+
+lv_scenario_cob.0511 = { #Aurion Varezys takes Volantis and calls upon other Dragonlords
+	type = character_event
+	title = lv_scenario_cob.0511.t
+	desc = lv_scenario_cob.0511.desc
+
+	theme = war
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+	right_portrait = {
+		character = scope:urnebar
+		animation = marshall
+	}
+	lower_left_portrait = scope:mataeryon
+	lower_right_portrait = scope:sonaryen
+	lower_center_portrait = scope:belaerys
+
+
+	trigger = {
+	}
+
+	immediate = {
+		set_variable = dragonlord_of_valyria
+		#hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		character:Urnebar_1 = {
+			save_scope_as = urnebar
+			set_variable = dragonlord_of_valyria
+		#	hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+		character:Mataeryon_1 = {
+			save_scope_as = mataeryon
+			set_variable = dragonlord_of_valyria
+		#	hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+		character:Sonaryen_1 = {
+			save_scope_as = sonaryen
+			set_variable = dragonlord_of_valyria
+		#	hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+		character:Belaerys_cob_1 = {
+			save_scope_as = belaerys
+			set_variable = dragonlord_of_valyria
+		#	hidden_effect = { create_dragonlord_of_valyria_effect = yes }
+		}
+	}
+
+	option = { #Attack Tyrosh to Install Urnebar
+		name = lv_scenario_cob.0511.a
+		trigger = {
+			NOT = {
+				title:k_tyrosh.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Urnebar_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_tyrosh.holder
+			claimant = character:Urnebar_1
+			target_title = title:k_tyrosh
+		}
+		add_legitimacy = massive_legitimacy_gain
+	}
+
+	option = { #Attack Lys to install Sonaryen
+		name = lv_scenario_cob.0511.b
+		trigger = {
+			NOT = {
+				title:k_lys.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Sonaryen_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_lys.holder
+			claimant = character:Sonaryen_1
+			target_title = title:k_lys
+		}
+		add_legitimacy = massive_legitimacy_gain
+	}
+
+	option = { #Attack Myr to install Mataeryon
+		name = lv_scenario_cob.0511.c
+		trigger = {
+			NOT = {
+				title:k_myr.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Mataeryon_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_myr.holder
+			claimant = character:Mataeryon_1
+			target_title = title:k_myr
+		}
+		add_legitimacy = massive_legitimacy_gain
+	}
+
+	option = { #Attack Pentos to install Belaerys
+		name = lv_scenario_cob.0511.d
+		trigger = {
+			NOT = {
+				title:k_pentos.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			#title:k_myr.holder = { #No marching through Myr to march back
+			#	is_vassal_of = root
+			#}
+			character:Belaerys_cob_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_pentos.holder
+			claimant = character:Belaerys_cob_1
+			target_title = title:k_pentos
+		}
+	}
+
+	#Dragonlords Join Together
+	after = {
+		root = {
+			every_character_war = {
+				limit = {
+					OR = {
+						using_cb = cob_new_valyria_conquest_cb
+					}
+					is_attacker = root
+				}
+				add_attacker = title:d_laamp_Mataeryon_1.holder
+				add_attacker = title:d_laamp_Urnebar_1.holder
+				add_attacker = title:d_laamp_Sonaryen_1.holder
+				add_attacker = title:d_laamp_Belaerys_1.holder
+			}
+		}
+	}
+}
+
+# Recursive Aurion War Declaration Event
+lv_scenario_cob.0512 = {
+	type = character_event
+	title = lv_scenario_cob.0512.t
+	desc = lv_scenario_cob.0512.desc 
+
+	override_background = {
+		reference = battlefield
+	}
+
+	theme = war
+
+	left_portrait = {
+		character = root
+		animation = celebrate_sword
+	}
+
+	right_portrait = {
+		trigger = { #In case we run out of kings
+			exists = scope:ascendant
+		}
+		character = scope:ascendant #From the victorious war
+		animation = war_over_win
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		character:Varezys_1 = { #For loc
+			save_scope_as = aurion
+		}
+		character:Urnebar_1 = {
+			save_scope_as = urnebar
+			set_variable = dragonlord_of_valyria
+		}
+		character:Mataeryon_1 = {
+			save_scope_as = mataeryon
+			set_variable = dragonlord_of_valyria
+		}
+		character:Sonaryen_1 = {
+			save_scope_as = sonaryen
+			set_variable = dragonlord_of_valyria			
+		}
+		character:Belaerys_cob_1 = {
+			save_scope_as = belaerys
+			set_variable = dragonlord_of_valyria
+		}
+		if = {
+			limit = {
+				title:k_tyrosh.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Urnebar_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else_if = {
+			limit = {
+				title:k_lys.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Sonaryen_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else_if = {
+			limit = {
+				title:k_myr.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Mataeryon_1 = {
+				save_scope_as = ascendant
+			}
+		}
+		else = {
+			limit = {
+				title:k_pentos.holder = {
+					has_variable = dragonlord_of_valyria
+				}
+			}
+			character:Belaerys_cob_1 = {
+				save_scope_as = ascendant
+			}
+		}
+	}
+
+	option = { #Attack Tyrosh to Install Urnebar
+		name = lv_scenario_cob.0511.a
+		trigger = {
+			NOT = {
+				title:k_tyrosh.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Urnebar_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = {
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_tyrosh.holder
+			claimant = character:Urnebar_1
+			target_title = title:k_tyrosh
+		}
+		add_legitimacy = massive_legitimacy_gain
+	}
+
+	option = { #Attack Lys to install Sonaryen
+		name = lv_scenario_cob.0511.b
+		trigger = {
+			NOT = {
+				title:k_lys.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Sonaryen_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_lys.holder
+			claimant = character:Sonaryen_1
+			target_title = title:k_lys
+		}
+		add_legitimacy = massive_legitimacy_gain
+	}
+
+	option = { #Attack Myr to install Mataeryon
+		name = lv_scenario_cob.0511.c
+		trigger = {
+			NOT = {
+				title:k_myr.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Mataeryon_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_myr.holder
+			claimant = character:Mataeryon_1
+			target_title = title:k_myr
+		}
+		add_legitimacy = massive_legitimacy_gain
+	}
+
+	option = { #Attack Pentos to install Belaerys
+		name = lv_scenario_cob.0511.d
+		trigger = {
+			NOT = {
+				title:k_pentos.holder = {
+					#has_variable = dragonlord_of_valyria
+					is_vassal_of = root
+				}
+			}
+			character:Belaerys_cob_1 ?= {
+				is_alive = yes
+			}
+		}
+		start_war = { 
+			casus_belli = cob_new_valyria_conquest_cb
+			target = title:k_pentos.holder
+			claimant = character:Belaerys_cob_1
+			target_title = title:k_pentos
+		}
+	}
+
+	#Dragonlords Join Together
+	after = {
+		root = {
+			every_character_war = {
+				limit = {
+					OR = {
+						using_cb = cob_new_valyria_conquest_cb
+					}
+					is_attacker = root
+				}
+				add_attacker = title:d_laamp_Mataeryon_1.holder
+				add_attacker = title:d_laamp_Urnebar_1.holder
+				add_attacker = title:d_laamp_Sonaryen_1.holder
+				add_attacker = title:d_laamp_Belaerys_1.holder
+			}
+		}
+	}
+}
+
+lv_scenario_cob.0516 = { #Send Dragonstone ultimatum
+	type = character_event
+	title = lv_scenario_cob.0516.t
+	desc = lv_scenario_cob.0516.desc
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	theme = court
+
+	left_portrait = {
+		character = root
+		animation = personality_honorable
+	}
+	lower_right_portrait = {
+		character = title:k_dragonstone.holder
+	}
+	
+	trigger = {
+	}
+
+	immediate = {
+		title:k_dragonstone.holder = {
+			save_scope_as = dragonstone
+		}
+	}
+	
+	option = { #send the message it will take a bit to get there
+		name = lv_scenario_cob.0516.a
+
+		scope:dragonstone = {
+			trigger_event = {
+				id = lv_scenario_cob.0517
+				days = 15
+			}
+		}
+	}
+}
+
+lv_scenario_cob.0517 = { #Dragonstone ultimatum
+	type = character_event
+	title = lv_scenario_cob.0517.t
+	desc = lv_scenario_cob.0517.desc
+
+	override_background = {
+		reference = agot_dragonstone_throneroom
+	}
+
+	theme = court
+
+	lower_right_portrait = {
+		character = scope:aurion
+	}
+	left_portrait = {
+		character = root
+		animation = disbelief
+	}
+	right_portrait = {
+		character = title:d_driftmark.holder
+		animation = shock
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+	}
+
+	option = { #We stand defiant
+		name = lv_scenario_cob.0517.a
+
+		scope:aurion = {
+			trigger_event = {
+				id = lv_scenario_cob.0518
+				days = 15
+			}
+		}
+	}
+
+	option = { #Become part of New valyria
+		name = lv_scenario_cob.0517.b
+
+		create_title_and_vassal_change = {
+			type = swear_fealty
+			save_scope_as = change
+		}
+
+		change_liege = {
+			liege = title:e_new_valyria.holder
+			change = scope:change
+		}
+		resolve_title_and_vassal_change = scope:change
+
+		scope:aurion = {
+			trigger_event = {
+				id = lv_scenario_cob.0520
+				days = 5
+			}
+		}
+	}
+}
+
+
+lv_scenario_cob.0518 = { #Dragonstone refuses to join New Valyria
+	type = character_event
+	title = lv_scenario_cob.0518.t
+	desc = lv_scenario_cob.0518.desc
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	theme = court
+
+	left_portrait = {
+		character = root
+		animation = rage
+	}
+	lower_right_portrait = {
+		character = title:k_dragonstone.holder
+	}
+
+	trigger = {
+	}
+
+	option = { #Its fucking poppin off now
+		name = lv_scenario_cob.0518.a
+		start_war = {
+			casus_belli = dragonstone_refusal
+			target = title:k_dragonstone.holder
+			claimant = root
+			target_title = title:k_dragonstone
+		}
+	}
+
+	option = { #leave them be
+		name = lv_scenario_cob.0518.b
+		add_legitimacy = minor_legitimacy_loss
+		add_prestige = minor_prestige_loss
+	}
+}
+
+lv_scenario_cob.0519 = { #Aurion loses 
+	type = character_event
+	title = lv_scenario_cob.0519.t
+	desc = lv_scenario_cob.0519.desc
+
+	theme = war
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	left_portrait = {
+		character = root
+		animation = disbelief
+	}
+
+	option = {
+		name = lv_scenario_cob.0519.a
+	}
+}
+
+lv_scenario_cob.0520 = { #Dragonstone submits 
+	type = character_event
+	title = lv_scenario_cob.0520.t
+	desc = lv_scenario_cob.0520.desc
+
+	theme = war
+
+	override_background = {
+		reference = ep3_byzantium_throneroom
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	
+	lower_right_portrait = {
+		character = title:k_dragonstone.holder
+	}
+
+	trigger = {
+	}
+
+	option = {
+		name = lv_scenario_cob.0520.a
+		add_legitimacy = massive_legitimacy_gain
+		add_prestige = major_prestige_gain
+	}
+}
+
+#########################################
+### Varezys Old Valryia flavor Events ###
+#########################################
+
+lv_scenario_cob.0521 = { #Aurion encounters fyrewyrm 
+	type = character_event
+	title = lv_scenario_cob.0521.t
+	desc = lv_scenario_cob.0521.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+
+	override_effect_2d = {
+		reference = fog
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+	}
+
+	option = { #face it
+		name = lv_scenario_cob.0521.a
+
+		random_list = {
+			50 = { #dead
+				death = {
+					death_reason = death_firewyrm_ate
+				}
+			}
+			30 = { #injured
+
+				add_trait = burned
+			}
+			20 = { #unscathed				
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = lv_scenario_cob.0521.b
+		random_list = {
+			40 = { #dead
+				death = {
+					death_reason = death_firewyrm_ate
+				}
+			}
+			25 = { #injured
+				add_trait = burned
+			}
+			35 = { #unscathed				
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	option = { #send your knights to slay it
+		name = lv_scenario_cob.0521.c
+		random_list = {
+			20 = { #dead
+				random_knight = {
+					death = { death_reason = death_firewyrm_ate }
+				}
+				death = {
+					death_reason = death_firewyrm_ate
+				}
+			}
+			40 = { #injured, knights die
+				every_knight  = {
+					death = { death_reason = death_firewyrm_ate }
+				}
+				add_trait = burned
+			}
+			40 = { #unscathed				
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+
+lv_scenario_cob.0522 = { #Aurion encounters a former Valyrian Freeholder trying to rob them
+	type = character_event
+	title = lv_scenario_cob.0522.t
+	desc = lv_scenario_cob.0522.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = stunned
+	}
+	right_portrait = {
+		character = scope:freeholder_looter
+		animation = aggressiive_sword
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = freeholder_raider
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			dynasty = none
+			location = root.location
+			gender_female_chance = 2
+			save_scope_as = freeholder_looter
+		}
+		current_travel_plan = {
+			random_entourage_character = {
+				limit = {
+					NOT = {
+						this = root
+					}
+					is_ai = yes
+				}
+				save_scope_as = sacrificed_entourage
+			}
+		}
+	}
+
+	option = { #Run
+		name = lv_scenario_cob.0522.a
+		custom_tooltip = lv_scenario_cob.0522.a.tt
+		hidden_effect = {
+			random_list = {
+				# Everyone makes it no delay no loss
+				15 = {
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.fleeing
+						left_icon = root
+						add_prestige = minor_prestige_gain
+					}
+				}
+				#Delay because you need to lose him
+				15 = {
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.minordelay
+						left_icon = root
+					}
+				}
+				# Even more delay
+				15 = {
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.majordelay
+						left_icon = root
+					}
+				}
+				# Haha get robbed idiot
+				15 = {
+					pay_short_term_gold = {
+						target = scope:freeholder_looter
+						gold = minor_gold_value
+					}
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.minortheft
+						left_icon = root
+					}
+				}
+				#Damn you lost some nice things huh
+				15 = {
+					pay_short_term_gold = {
+						target = scope:freeholder_looter
+						gold = medium_gold_value
+					}
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.majortheft
+						left_icon = root
+					}
+				}
+				#Because nice things cant happen
+				15 = {
+					pay_short_term_gold = {
+						target = scope:freeholder_looter
+						gold = minor_gold_value
+					}
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.minorcombo
+						left_icon = root
+					}
+				}
+				#Entering the danger zone
+				7 = {
+					pay_short_term_gold = {
+						target = scope:freeholder_looter
+						gold = major_gold_value
+					}
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.majorcombo
+						left_icon = root
+					}
+				}
+				#Everybody run 8)
+				2 = {
+					current_travel_plan = {
+						every_entourage_character = {
+							duel = {
+								skill = prowess
+								target = scope:freeholder_looter
+								50 = {
+									compare_modifier = {
+										value = scope:duel_value
+										multiplier = 3.5
+										min = -49
+								}
+								}
+								50 = {
+									compare_modifier = {
+										value = scope:duel_value
+										multiplier = -3.5
+										min = -49
+									}
+									death = {
+										death_reason = death_duel
+									}
+								}
+							}
+						}
+					}
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.a.toast
+						custom_tooltip = lv_scenario_cob.0522.a.scattered
+						left_icon = root
+					}
+				}
+				#Get sniped idiot
+				1 = {
+					root = {
+						death = {
+							death_reason = death_shot_arrow_murder
+							killer = scope:freeholder_looter
+						}
+					}
+				}
+
+			}
+			scope:freeholder_looter = {
+				death = {
+					death_reason = death_vanished
+				}
+			}
+		}
+		ai_chance = {
+			base = 10
+			modifier = {
+				add = 20
+				has_trait = craven
+			}
+			modifier = {
+				add = -20
+				has_trait = brave
+			}
+		}
+		stress_impact = {
+			brave = major_stress_gain
+			craven = major_stress_loss
+			knight = medium_stress_gain
+		}
+	}
+
+	option = { #Fight
+		name = lv_scenario_cob.0522.b
+		custom_tooltip = lv_scenario_cob.0522.b.tt
+		root = {
+			duel = {
+				skill = prowess
+				target = scope:freeholder_looter
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = -49
+					}
+					custom_tooltip = lv_scenario_cob.0522.b.winning
+					hidden_effect = {
+						random_list = {
+							45 = {
+								scope:freeholder_looter = {
+									death = {
+										death_reason = death_duel
+										killer = root
+									}
+								}
+								send_interface_toast = {
+									title = lv_scenario_cob.0522.b.win
+									custom_tooltip = lv_scenario_cob.0522.b.killed
+									left_icon = root
+								}
+							}
+							35 = {
+								root ={
+									imprison = {
+										target = scope:freeholder_looter
+										type = dungeon
+									}
+								}
+								send_interface_toast = {
+									title = lv_scenario_cob.0522.b.win
+									custom_tooltip = lv_scenario_cob.0522.b.imprisoned
+									left_icon = root
+								}
+							}
+							20 = {
+								scope:freeholder_looter = {
+									death = {
+										death_reason = death_vanished
+									}
+								}
+								send_interface_toast = {
+									title = lv_scenario_cob.0522.b.win
+									custom_tooltip = lv_scenario_cob.0522.b.fleeing
+									left_icon = root
+								}
+							}
+						}
+					}
+
+				}
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = -49
+					}
+					custom_tooltip = lv_scenario_cob.0522.b.losing
+					hidden_effect = {
+						if = { #If you get knocked out alone, thats a game over mate
+							limit = {
+								current_travel_plan = {
+									any_entourage_character = {
+										NOT = {
+											this = root
+										}
+										is_ai = yes
+										count < 1
+									}
+								}
+							}
+							root = {
+								death = {
+									death_reason = death_duel
+								}
+							}
+						}
+						else = {
+
+							random_list = {
+
+								# We doing a little robbing
+								50 = {
+									pay_short_term_gold = {
+										target = scope:freeholder_looter
+										gold = minor_gold_value
+									}
+									send_interface_toast = {
+										title = lv_scenario_cob.0522.b.loss
+										custom_tooltip = lv_scenario_cob.0522.b.robbed
+										left_icon = root
+									}
+								}
+								# We do a little kidnapping
+								30 = {
+									current_travel_plan = {
+										random_entourage_character = { # They grab someone
+											limit = {
+												NOT = {
+													this = root
+												}
+												is_ai = yes
+											}
+											save_scope_as = kidnapped_entourage
+										}
+										scope:kidnapped_entourage = {
+											death = {
+												death_reason = death_vanished
+											}
+										}
+									}
+									send_interface_toast = {
+										title = lv_scenario_cob.0522.b.loss
+										custom_tooltip = lv_scenario_cob.0522.b.kidnapping
+										left_icon = root
+									}
+
+								}
+								# They killed you in the duel
+								20 = {
+									root = {
+										death = {
+											death_reason = death_duel
+											killer = scope:freeholder_looter
+										}
+									}
+								}
+
+							}
+
+						}
+						scope:freeholder_looter = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+					}
+
+				}
+			}
+		}
+		ai_chance = {
+			base = 20
+			modifier = {
+				add = 20
+				has_trait = brave
+			}
+			modifier = {
+				add = 10
+				OR = {
+					has_trait = squire
+					has_trait = knight
+				}
+			}
+		}
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+	}
+
+	option = { #Bribe
+		name = lv_scenario_cob.0522.c
+		custom_tooltip = lv_scenario_cob.0522.c.tt
+		pay_short_term_gold = {
+			target = scope:freeholder_looter
+			gold = medium_gold_value
+		}
+		# Does the raider just runs with money
+		root = {
+			duel = {
+				skill = diplomacy
+				target = scope:freeholder_looter
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = -49
+					}
+					add_courtier = scope:freeholder_looter
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.c.joined
+						left_icon = root
+						right_icon = scope:freeholder_looter
+					}
+				}
+				50 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = -49
+					}
+					custom_tooltip = lv_scenario_cob.0522.c.else
+					hidden_effect = {
+						scope:freeholder_looter = {
+							death = {
+								death_reason = death_vanished
+							}
+						}
+					}
+					send_interface_toast = {
+						title = lv_scenario_cob.0522.c.ranwithmoney
+						left_icon = root
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 10
+			modifier = {
+				short_term_gold < medium_gold_value
+				factor = 0
+			}
+			modifier = {
+				add = 20
+				has_trait = gregarious
+			}
+			modifier = {
+				add = -20
+				has_trait = greedy
+			}
+		}
+		stress_impact = {
+			greedy = major_stress_gain
+			knight = minor_stress_gain
+		}
+	}
+	option  = { #Give Someone
+		name = lv_scenario_cob.0522.d
+		custom_tooltip = lv_scenario_cob.0522.d.tt
+		trigger = {
+			OR = {
+				has_trait = callous
+				has_trait = sadistic
+				has_trait = craven
+			}
+			exists = scope:sacrificed_entourage
+		}
+		scope:sacrificed_entourage = {
+			death = {
+				death_reason = death_vanished
+			}
+		}
+		hidden_effect = {
+			scope:freeholder_looter = {
+				death = {
+					death_reason = death_vanished
+				}
+			}
+		}
+		add_prestige = minor_prestige_loss
+		stress_impact = {
+			sadistic = minor_stress_loss
+			craven = major_stress_gain
+		}
+		send_interface_toast = {
+			title = lv_scenario_cob.0522.d.sacrifice
+			left_icon = root
+			right_icon = scope:sacrificed_entourage
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 20
+				has_trait = sadistic
+			}
+			modifier = {
+				add = 5
+				has_trait = craven
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+
+lv_scenario_cob.0523 = { #Aurion encounters a freehold soldier 
+	type = character_event
+	title = lv_scenario_cob.0523.t
+	desc = lv_scenario_cob.0523.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+	right_portrait = {
+		character = scope:freeholder_survivor
+		animation = anger
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = freeholder_soldier
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			dynasty = none
+			location = root.location
+			gender_female_chance = 20
+			save_scope_as = freeholder_survivor
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+	}
+
+	option = { #face it
+		name = lv_scenario_cob.0523.a
+		custom_tooltip = lv_scenario_cob.0523.a_tt
+
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}		
+		configure_start_single_combat_effect = {
+			SC_INITIATOR = scope:freeholder_survivor
+			SC_ATTACKER = scope:freeholder_survivor
+			SC_DEFENDER = root
+			FATALITY = always
+			FIXED = no
+			LOCALE = terrain_scope
+			OUTPUT_EVENT = single_combat.0001
+			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+		}
+	}
+	option = { #attempt to convince them to join us
+		name = lv_scenario_cob.0523.b
+		random_list = {
+			30 = { #joins
+				add_courtier = scope:freeholder_survivor
+				send_interface_toast = {
+					title = lv_scenario_cob.0523.b.joined
+					left_icon = root
+					right_icon = scope:freeholder_survivor
+				}
+			}
+			70 = { #duel anyway
+				custom_tooltip = lv_scenario_cob.0523.b_tt	
+				configure_start_single_combat_effect = {
+					SC_INITIATOR = scope:freeholder_survivor
+					SC_ATTACKER = scope:freeholder_survivor
+					SC_DEFENDER = root
+					FATALITY = always
+					FIXED = no
+					LOCALE = terrain_scope
+					OUTPUT_EVENT = single_combat.0001
+					INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = lv_scenario_cob.0523.c
+		random_list = {
+			40 = { #dead
+				death = {
+					death_reason = death_shot_arrow_murder
+					killer = scope:freeholder_survivor
+				}
+			}
+			60 = { #unscathed	
+				custom_tooltip = lv_scenario_cob.0523.c_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+lv_scenario_cob.0524 = { #Aurion encounters a great freehold soldier 
+	type = character_event
+	title = lv_scenario_cob.0524.t
+	desc = lv_scenario_cob.0524.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+	right_portrait = {
+		character = scope:freeholder_survivor
+		animation = anger
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = great_freeholder_soldier
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			dynasty = none
+			location = root.location
+			gender_female_chance = 20
+			save_scope_as = freeholder_survivor
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+	}
+
+	option = { #face it
+		name = lv_scenario_cob.0524.a
+		custom_tooltip = lv_scenario_cob.0524.a_tt
+		
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}				
+		configure_start_single_combat_effect = {
+			SC_INITIATOR = scope:freeholder_survivor
+			SC_ATTACKER = scope:freeholder_survivor
+			SC_DEFENDER = root
+			FATALITY = always
+			FIXED = no
+			LOCALE = terrain_scope
+			OUTPUT_EVENT = single_combat.0001
+			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+		}
+	}
+	option = { #attempt to convince them to join us
+		name = lv_scenario_cob.0524.b
+		random_list = {
+			20 = { #joins
+				add_courtier = scope:freeholder_survivor
+				send_interface_toast = {
+					title = lv_scenario_cob.0524.b.joined
+					left_icon = root
+					right_icon = scope:freeholder_survivor
+				}
+			}
+			80 = { #duel anyway
+				custom_tooltip = lv_scenario_cob.0524.b_tt	
+				configure_start_single_combat_effect = {
+					SC_INITIATOR = scope:freeholder_survivor
+					SC_ATTACKER = scope:freeholder_survivor
+					SC_DEFENDER = root
+					FATALITY = always
+					FIXED = no
+					LOCALE = terrain_scope
+					OUTPUT_EVENT = single_combat.0001
+					INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = lv_scenario_cob.0524.c
+		random_list = {
+			40 = { #dead
+				death = {
+					death_reason = death_shot_arrow_murder
+					killer = scope:freeholder_survivor
+				}
+			}
+			60 = { #unscathed	
+				custom_tooltip = lv_scenario_cob.0524.c_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+lv_scenario_cob.0525 = { #Aurion encounters a retired freehold soldier 
+	type = character_event
+	title = lv_scenario_cob.0525.t
+	desc = lv_scenario_cob.0525.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+	right_portrait = {
+		character = scope:freeholder_survivor
+		animation = anger
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = retired_freeholder_soldier
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			dynasty = none
+			location = root.location
+			gender_female_chance = 20
+			save_scope_as = freeholder_survivor
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+	}
+
+	option = { #face it
+		name = lv_scenario_cob.0525.a
+		custom_tooltip = lv_scenario_cob.0525.a_tt
+		
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}				
+		configure_start_single_combat_effect = {
+			SC_INITIATOR = scope:freeholder_survivor
+			SC_ATTACKER = scope:freeholder_survivor
+			SC_DEFENDER = root
+			FATALITY = always
+			FIXED = no
+			LOCALE = terrain_scope
+			OUTPUT_EVENT = single_combat.0001
+			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+		}
+	}
+	option = { #you will face my dragon
+		name = lv_scenario_cob.0525.b
+		trigger = {
+			scope:vassarion ?= {
+				is_alive = yes
+			}
+		}
+		stress_impact = {
+			brave = medium_stress_gain
+			craven = major_stress_loss
+			knight = minor_stress_gain
+		}		
+		random_list = {
+			60 = { #vassarion kills the general
+				#custom_tooltip = lv_scenario_cob.0525.b_1_tt	
+				scope:freeholder_survivor = {
+					death = {
+						death_reason = death_dragon_fire
+						killer = scope:vassarion
+					}				
+				}
+				send_interface_toast = {
+					title = lv_scenario_cob.0525.b.win
+					left_icon = scope:vassarion
+					right_icon = scope:freeholder_survivor
+				}
+			}
+			40 = { #vassarion wounded
+				#custom_tooltip = lv_scenario_cob.0525.b_2_tt	
+				scope:vassarion = {
+					random_list = {
+						55 = {
+							add_trait = dragon_wounded_1
+						}
+						20 = {
+							add_trait = dragon_wounded_2
+						}
+						15 = {
+							add_trait = dragon_wounded_3
+						}
+						5 = {
+							add_trait = dragon_wounded_4
+						}
+						4 = {
+							add_trait = dragon_wounded_5
+						}
+						1 = {
+							death = {
+								death_reason = death_dragon_fire
+								killer = scope:freeholder_survivor
+							}
+						}
+					}
+				}
+				send_interface_toast = {
+					title = lv_scenario_cob.0525.b.dead
+					left_icon = scope:vassarion
+					right_icon = scope:freeholder_survivor
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = lv_scenario_cob.0525.c
+		random_list = {
+			40 = { #dead
+				death = {
+					death_reason = death_shot_arrow_murder
+					killer = scope:freeholder_survivor
+				}
+			}
+			60 = { #unscathed	
+				custom_tooltip = lv_scenario_cob.0525.c_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+lv_scenario_cob.0527 = { #Aurion encounters a freehold dragonrider
+	type = character_event
+	window = dragon_duel_event
+	title = lv_scenario_cob.0527.t
+	desc = lv_scenario_cob.0527.desc
+
+	theme = dragon
+
+	left_portrait = {
+		character = scope:aurion
+		animation = dragon_main
+		camera = camera_dragon_hover_left
+
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_six_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_six_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_five_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_five_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_four_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_four_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_three_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_three_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_two_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_two_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_one_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_one_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+	lower_right_portrait = {
+		character = scope:aurion.var:current_dragon
+	}
+
+	right_portrait = {
+		character = scope:freeholder_dragonlord
+		animation = dragon_main
+		camera = camera_dragon_hover_distant
+
+		# Dynamic Camera Zoom
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_six_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_six_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_five_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_five_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_four_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_four_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_three_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_three_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_two_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_two_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_one_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_one_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+					scope:freeholder_dragonlord.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+	}
+
+	override_background = {
+		trigger = { has_character_flag = dragon_night_ride }
+		reference = agot_night_sky_video
+	}
+	override_background = {
+		trigger = { NOT = { has_character_flag = dragon_night_ride } }
+		reference = agot_open_sky_video
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = freeholder_dragonrider_character
+			culture = culture:high_valyrian
+			faith = faith:valyrian
+			dynasty = none
+			location = root.location
+			gender_female_chance = 20
+			save_scope_as = freeholder_dragonlord
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+		scope:freeholder_dragonlord = {
+			var:current_dragon = {
+				save_scope_as = enemy_dragon
+			}
+		}
+		scope:aurion = {
+			add_character_flag = currently_riding_dragon
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_hover
+				RIDING_DRAGON = yes
+			}
+		}
+		scope:freeholder_dragonlord = {
+			add_character_flag = currently_riding_dragon
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_hover
+				RIDING_DRAGON = yes
+			}
+		}		
+	}
+
+	option = { #face it
+		name = lv_scenario_cob.0527.a
+		custom_tooltip = lv_scenario_cob.0527.a_tt
+		
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}				
+		configure_start_dragon_combat_effect = {
+			DSC_INITIATOR = scope:freeholder_dragonlord
+			DSC_ATTACKER = scope:freeholder_dragonlord
+			DSC_DEFENDER = root
+		}
+	}
+
+	option = { #run away
+		name = lv_scenario_cob.0527.b
+		random_list = {
+			50 = { #dead
+				death = {
+					death_reason = death_dragon_fire
+					killer = scope:freeholder_dragonlord
+				}
+			}
+			30 = { #injured, knights die
+				add_trait = burned
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+			20 = { #unscathed	
+				custom_tooltip = lv_scenario_cob.0527.b_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+		add_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+		trigger_event = {
+			on_action = restore_valyria_cob_travel_on_actions
+		}
+	}
+}
+
+lv_scenario_cob.0529 = { #Aurion returns home
+	type = character_event
+	title = lv_scenario_cob.0529.t
+	desc = lv_scenario_cob.0529.desc
+
+	theme = war
+
+	override_background = {
+		reference = AGOT_ocean_fp3_docks
+	}
+	override_effect_2d = {
+		reference = legend_glow
+	}
+
+	left_portrait = {
+		character = root
+		animation = happiness
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+	}
+
+	option = {
+		name = lv_scenario_cob.0529.a
+
+		#title:b_valyria_5.title_province = {
+		#	set_holding_type = castle_holding
+		#	add_building = castle_02
+		#}
+		get_title = title:c_valyria
+		add_legitimacy = massive_legitimacy_gain
+		add_gold = 5000
+		add_prestige = 1000
+		agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
+		agot_create_artifact_valyrian_crown1_effect = { OWNER = this }
+		stress_impact = {
+			base = major_stress_loss
+		}
+	}
+	after = { #remove any remaining flags
+		remove_character_flag = varezys_valyria_travel
+		remove_character_flag = varezys_valyria_event
+	}
+}
