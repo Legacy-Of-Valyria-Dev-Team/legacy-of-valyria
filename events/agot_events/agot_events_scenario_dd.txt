@@ -2944,11 +2944,28 @@ agot_scenario_dd.0201 = { # Selmy Fails; Tywin Asks Rhaegar to Put His Family in
 	option = { # Duskendale Goes to House Targaryen; Remove Claims from Darklyn/Hollard
 		name = agot_scenario_dd.0201.opt.b
 		custom_tooltip = agot_scenario_dd.0201.b.tt
+		trigger = { character:Targaryen_8 ?= { is_alive = yes } }
 
 		# Send to the Wall
 		agot_send_to_nightswatch_effect = { ACTOR = root NIGHTSWATCH_CANDIDATE = scope:denys }
 		# Transfer of Power; House Targaryen
 		character:Targaryen_8 ?= { save_scope_as = chosen_holder }
+
+		ai_chance = {
+			base = 0
+			modifier = { add = agot_historic_outcome_2 } # Historic Weight
+		}
+	}
+
+	option = { # Duskendale Goes to Rhaegar
+		name = agot_scenario_dd.0201.opt.c
+		custom_tooltip = agot_scenario_dd.0201.c.tt
+		trigger = { character:Targaryen_8 ?= { is_alive = no } }
+
+		# Send to the Wall
+		agot_send_to_nightswatch_effect = { ACTOR = root NIGHTSWATCH_CANDIDATE = scope:denys }
+		# Transfer of Power; House Targaryen
+		title:e_the_iron_throne.holder ?= { save_scope_as = chosen_holder }
 
 		ai_chance = {
 			base = 0

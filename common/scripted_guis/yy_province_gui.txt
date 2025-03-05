@@ -14,6 +14,16 @@
 					has_variable = yy_selected_province
 				}
 			}
+			every_in_list = {
+				variable = yy_counties
+				every_county_province = {
+					limit = { has_holding = yes }
+					remove_variable = lv_province_level_iron_added
+					remove_variable = lv_province_level_steel_added
+					remove_variable = lv_province_level_obsidian_added
+					remove_variable = lv_province_level_valyrian_steel_added
+				}
+			}
 			remove_variable = yy_province_window
 			remove_variable = yy_selected_county
 			remove_variable = yy_selected_province
@@ -220,27 +230,27 @@ yy_province_window_slavery_buy = {
 				}
 				AND = {
 					has_county_modifier = slave_pop_6
-					title_province = { has_building = agot_slave_camps_07 }
+					title_province = { has_building_or_higher = agot_slave_camps_07 }
 				}
 				AND = {
 					has_county_modifier = slave_pop_5
-					title_province = { has_building = agot_slave_camps_06 }
+					title_province = { has_building_or_higher = agot_slave_camps_06 }
 				}
 				AND = {
 					has_county_modifier = slave_pop_4
-					title_province = { has_building = agot_slave_camps_05 }
+					title_province = { has_building_or_higher = agot_slave_camps_05 }
 				}
 				AND = {
 					has_county_modifier = slave_pop_3
-					title_province = { has_building = agot_slave_camps_04 }
+					title_province = { has_building_or_higher = agot_slave_camps_04 }
 				}
 				AND = {
 					has_county_modifier = slave_pop_2
-					title_province = { has_building = agot_slave_camps_03 }
+					title_province = { has_building_or_higher = agot_slave_camps_03 }
 				}
 				AND = {
 					has_county_modifier = slave_pop_1
-					title_province = { has_building = agot_slave_camps_02 }
+					title_province = { has_building_or_higher = agot_slave_camps_02 }
 				}
 				AND = {
 					NOR = {
@@ -253,7 +263,7 @@ yy_province_window_slavery_buy = {
 						has_county_modifier = slave_pop_2
 						has_county_modifier = slave_pop_1
 					}
-					title_province = { has_building = agot_slave_camps_01 }
+					title_province = { has_building_or_higher = agot_slave_camps_01 }
 				}
 			}
 		}
@@ -342,3 +352,385 @@ yy_province_window_slavery_sell = {
 #		}
 #	}
 #}
+
+# RESOURCE APPLICATION
+# - Use resources to upgrade
+lv_province_window_province_level_upgrade = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		# Must have enough to 
+	}
+	effect = {
+		scope:yy_selected_province = {
+			# Set the XP
+			if = {
+				limit = { has_variable = lv_province_level_progress }
+				change_variable = {
+					name = lv_province_level_progress
+					add = lv_province_level_progress_gain
+				}
+			}
+			else = {
+				set_variable = {
+					name = lv_province_level_progress
+					value = lv_province_level_progress_gain
+				}
+			}
+
+			# Spend resources
+			change_variable = {
+				name = zz_valyria_resource_iron
+				subtract = lv_province_level_iron_added
+			}
+			remove_variable = lv_province_level_iron_added
+			change_variable = {
+				name = zz_valyria_resource_steel
+				subtract = lv_province_level_steel_added
+			}
+			remove_variable = lv_province_level_steel_added
+			change_variable = {
+				name = zz_valyria_resource_obsidian
+				subtract = lv_province_level_obsidian_added
+			}
+			remove_variable = lv_province_level_obsidian_added
+			change_variable = {
+				name = zz_valyria_resource_valyrian_steel
+				subtract = lv_province_level_valyrian_steel_added
+			}
+			remove_variable = lv_province_level_valyrian_steel_added
+
+			# Level Up
+			if = {
+				limit = { var:lv_province_level_progress >= lv_province_level_progress_next }
+				change_variable = {
+					name = lv_province_level_progress
+					subtract = lv_province_level_progress_next
+				}
+				if = {
+					limit = { has_variable = lv_province_level }
+					change_variable = {
+						name = lv_province_level
+						add = 1
+					}
+				}
+				else = {
+					set_variable = {
+						name = lv_province_level
+						value = 1
+					}
+				}
+				root = {
+					set_variable = {
+						name = province_uprade_open 
+						value = flag:province_uprade_open
+					}
+					set_variable = {
+						name = zz_upgrade_current_prov 
+						value = scope:yy_selected_province
+					}
+					clear_variable_list = zz_valyria_province_modifier_list
+					every_trait = {
+						limit = {
+							has_trait_flag = zz_province_modifier
+						}
+						root = {
+							add_to_variable_list = {
+								name = zz_valyria_province_modifier_list
+								target = prev
+							}
+						}
+					}
+				}
+				
+				#remove_all_province_modifier_instances = lv_province_level_modifier
+				#add_province_modifier = lv_province_level_modifier
+			}
+		}
+	}
+}
+lv_province_window_province_upgrade_open = {
+	scope = character
+	is_valid = {
+		is_ai = no
+		var:province_uprade_open ?= flag:province_uprade_open 
+	}
+}
+
+lv_province_window_province_upgrade_close = {
+	scope = character
+	effect  = {
+		remove_variable = province_uprade_open
+	}
+}
+
+lv_province_window_province_upgrade = {
+	scope = character
+	effect  = {
+		if = { 
+			limit = { 
+				scope:zz_current_province_modifier = trait:province_modifier_type_01
+			}
+			var:zz_upgrade_current_prov = {
+				add_province_modifier = zz_province_stationed_maa_damage
+			}
+			
+		}
+		if = { 
+			limit = { 
+				scope:zz_current_province_modifier = trait:province_modifier_type_02
+			}
+			var:zz_upgrade_current_prov = {
+				add_province_modifier = zz_province_stationed_maa_toughness
+			}
+			
+		}
+		if = { 
+			limit = { 
+				scope:zz_current_province_modifier = trait:province_modifier_type_03
+			}
+			var:zz_upgrade_current_prov = {
+				add_province_modifier = zz_province_stationed_maa_pursuit
+			}
+			
+		}
+		if = { 
+			limit = { 
+				scope:zz_current_province_modifier = trait:province_modifier_type_04
+			}
+			var:zz_upgrade_current_prov = {
+				add_province_modifier = zz_province_stationed_maa_screen
+			}
+			
+		}
+		if = { 
+			limit = { 
+				scope:zz_current_province_modifier = trait:province_modifier_type_05
+			}
+			var:zz_upgrade_current_prov = {
+				add_province_modifier = zz_province_stationed_maa_siege
+			}
+			
+		}
+		if = { 
+			limit = { 
+				scope:zz_current_province_modifier = trait:province_modifier_type_06
+			}
+			var:zz_upgrade_current_prov = {
+				add_province_modifier = zz_province_tax
+			}
+			
+		}
+		remove_variable = province_uprade_open
+	}
+}
+
+
+# Iron
+lv_province_window_province_level_add_iron_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			zz_valyria_province_resource_iron >= 1
+			NOT = { lv_province_level_iron_added >= zz_valyria_province_resource_iron }
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { has_variable = lv_province_level_iron_added }
+				change_variable = {
+					name = lv_province_level_iron_added
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = lv_province_level_iron_added
+					value = 1
+				}
+			}
+		}
+	}
+}
+
+lv_province_window_province_level_subtract_iron_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			lv_province_level_iron_added >= 1
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { var:lv_province_level_iron_added = 1 }
+				remove_variable = lv_province_level_iron_added
+			}
+			else = {
+				change_variable = {
+					name = lv_province_level_iron_added
+					subtract = 1
+				}
+			}
+		}
+	}
+}
+# Steel
+lv_province_window_province_level_add_steel_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			zz_valyria_province_resource_steel >= 1
+			NOT = { lv_province_level_steel_added >= zz_valyria_province_resource_steel }
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { has_variable = lv_province_level_steel_added }
+				change_variable = {
+					name = lv_province_level_steel_added
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = lv_province_level_steel_added
+					value = 1
+				}
+			}
+		}
+	}
+}
+
+lv_province_window_province_level_subtract_steel_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			lv_province_level_steel_added >= 1
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { var:lv_province_level_steel_added = 1 }
+				remove_variable = lv_province_level_steel_added
+			}
+			else = {
+				change_variable = {
+					name = lv_province_level_steel_added
+					subtract = 1
+				}
+			}
+		}
+	}
+}
+# Obsidian
+lv_province_window_province_level_add_obsidian_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			zz_valyria_province_resource_obsidian >= 1
+			NOT = { lv_province_level_obsidian_added >= zz_valyria_province_resource_obsidian }
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { has_variable = lv_province_level_obsidian_added }
+				change_variable = {
+					name = lv_province_level_obsidian_added
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = lv_province_level_obsidian_added
+					value = 1
+				}
+			}
+		}
+	}
+}
+
+lv_province_window_province_level_subtract_obsidian_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			lv_province_level_obsidian_added >= 1
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { var:lv_province_level_obsidian_added = 1 }
+				remove_variable = lv_province_level_obsidian_added
+			}
+			else = {
+				change_variable = {
+					name = lv_province_level_obsidian_added
+					subtract = 1
+				}
+			}
+		}
+	}
+}
+# Valyrian Steel
+lv_province_window_province_level_add_valyrian_steel_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			zz_valyria_province_resource_valyrian_steel >= 1
+			NOT = { lv_province_level_valyrian_steel_added >= zz_valyria_province_resource_valyrian_steel }
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { has_variable = lv_province_level_valyrian_steel_added }
+				change_variable = {
+					name = lv_province_level_valyrian_steel_added
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = lv_province_level_valyrian_steel_added
+					value = 1
+				}
+			}
+		}
+	}
+}
+
+lv_province_window_province_level_subtract_valyrian_steel_one = {
+	scope = character
+	saved_scopes = { yy_selected_province }
+	is_valid = {
+		scope:yy_selected_province = {
+			lv_province_level_valyrian_steel_added >= 1
+		}
+	}
+	effect = {
+		scope:yy_selected_province = {
+			if = {
+				limit = { var:lv_province_level_valyrian_steel_added = 1 }
+				remove_variable = lv_province_level_valyrian_steel_added
+			}
+			else = {
+				change_variable = {
+					name = lv_province_level_valyrian_steel_added
+					subtract = 1
+				}
+			}
+		}
+	}
+}
