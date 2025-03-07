@@ -23,35 +23,28 @@
 # flag:stepped_down
 
 zz_lov_item_grant_on_action = {
-	trigger = {
-		scope:title =title:k_lokiria  
-		NOT = {
-			exists = global_var:torment
-		}	
-	}
-	effect = {
-		if = { 
-			limit = { 
-				any_artifact = { 
-					has_artifact_modifier = vs_torment_modifier
-					not = { 
-						exists = this 
-					}
-				}
-			}
-			trigger_event = zz_valyria_item_granting.001
-		}
-		every_artifact = { 
-			limit = { 
-				has_artifact_modifier = vs_torment_modifier
-			}
-			scope:title.holder = { 
-				add_personal_artifact_claim = prev
-			}
-		}
-	}
+    trigger = {
+        scope:title = title:k_lokiria  
+    }
+    effect = {
+        if = { 
+            limit = { 
+                NOT = {
+                    any_artifact = { has_variable = vs_torment_artifact }
+                }
+            }
+            trigger_event = zz_valyria_item_granting.001
+        }
+        every_artifact = { 
+            limit = { 
+                has_variable = vs_torment_artifact
+            }
+            scope:title.holder = { 
+                add_personal_artifact_claim = prev
+            }
+        }
+    }
 }
-
 
 
 # A title is transferred to a new character
