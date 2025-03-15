@@ -38,7 +38,7 @@
 #}
 
 ## Gogossos 
-rrestore_gogossos = { #form gogossos free city
+restore_gogossos = { #form gogossos free city
 	picture = {
 		reference = "gfx/interface/illustrations/decisions/decision_found_kingdom.dds"
 	}
@@ -85,9 +85,53 @@ rrestore_gogossos = { #form gogossos free city
 		
 		every_player = {
 			limit = { NOT = { this = scope:founder } }
-			trigger_event = {
-				id = gogossos_restoration.0002
-			}
+			trigger_event = gogossos_restoration.0002
 		}
 	}
+}
+
+expedition_quest = { #Explore the Jungles
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/fp3_decision_tax_collector.dds"
+	}
+
+	ai_check_interval = 0 # Leave to the player for now
+
+	desc = expedition_quest_desc
+	
+	is_shown = {
+		any_realm_province = {
+  			geographical_region = world_gogossos
+		}
+		title:c_gogossos = { # No one must own Gogossos and it must be a ruin
+			OR = {
+				holder = character:Ruin_Empress
+				holder = title:c_ruins.holder
+			}
+		}
+		NOR = {
+			#government_has_flag = government_is_pirate 
+			is_ai = yes
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		is_alive = yes
+		NOT = { exists = involved_activity }
+		is_imprisoned = no
+	}
+
+	minimum_cost = {
+		gold = 500
+		#prestige = 200
+	}
+
+	effect = {
+		custom_tooltip = {
+			text = expedition_quest_effect
+		}
+		trigger_event = funding_expedition.0001
+	}
+
+	cooldown = { years = 10 }
 }

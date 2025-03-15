@@ -8,7 +8,6 @@
 		visuals = book
 		description = book_dragonlore_desc
 		type = miscellaneous
-		book_subject = flag:martial
 		wealth = scope:wealth
 		quality = scope:quality
 		template = marco_polo_book
@@ -23,6 +22,10 @@
 		set_variable = {
 			name = historical_unique_artifact
 			value = yes
+		}
+		set_variable = {
+			name = book_subject
+			value = flag:martial
 		}
 	}
 }
@@ -272,7 +275,7 @@ cv_create_artifact_dothraki_arakh_effect = {
 	$OWNER$ = {
 		save_scope_as = owner
 	}
-	set_artifact_rarity_illustrious = yes
+	set_artifact_rarity_masterwork = yes
 	create_artifact = {
 		name = dothraki_arakh_name
 		description = dothraki_arakh_description
@@ -287,6 +290,81 @@ cv_create_artifact_dothraki_arakh_effect = {
 	}
 	scope:newly_created_artifact ?= {
 		set_variable = { name = dothraki_arakh_artifact value = yes }
+		equip_artifact_to_owner_replace = yes
+	}
+}
+
+cv_create_artifact_vs_stormbringer_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = vs_stormbringer_name
+		visuals = vs_valyrian_armingsword_gold_visuals
+		description = vs_stormbringer_description
+		type = sword
+		wealth = scope:wealth
+		quality = scope:quality
+		template = vs_generic_valyrian_template
+		modifier = vs_generic_valyrian_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		equip_artifact_to_owner_replace = yes
+		set_variable = {
+			name = valyrian_steel
+			value = yes
+		}
+		set_variable = {
+			name = valyrian_steel_generic
+			value = yes
+		}
+		set_variable = {
+			name = valyrian_armingsword_gold_gold_artifact
+			value = yes
+		}
+		set_variable = {
+			name = traditional_house_owner
+			value = dynasty:dynn_Varezys.dynasty_founder.house
+		}
+		agot_add_artifact_history = {
+			ARTIFACT = this
+			TYPE = created
+			DATE = 7895.1.1
+			RECIPIENT = character:Varezys_1
+		}
+
+		save_scope_value_as = {
+			name = valyrian_steel
+			value = yes
+		}
+	}
+}
+
+cv_create_artifact_frostbite_hammer_effect = {
+	$OWNER$ = {
+		save_scope_as = owner
+	}
+	set_artifact_rarity_illustrious = yes
+	create_artifact = {
+		name = frostbite_hammer_name
+		description = frostbite_hammer_description
+		visuals = frostbite_hammer_visuals
+		type = hammer
+		wealth = scope:wealth
+		quality = scope:quality
+		template = frostbite_hammer_template
+		modifier = frostbite_hammer_modifier
+		save_scope_as = newly_created_artifact
+		decaying = no
+	}
+	scope:newly_created_artifact ?= {
+		set_variable = { name = frostbite_hammer_artifact value = yes }
+		save_scope_value_as = { name = valyrian_steel value = yes }
+		set_variable = { name = historical_unique_artifact value = yes }
+		set_variable = { name = valyrian_steel value = yes }
 		equip_artifact_to_owner_replace = yes
 	}
 }

@@ -1,4 +1,192 @@
-# Patch 01.01.02
+# 👇 Update 01.02.01 👇 
+
+**Added Content** 
+Added Gogossos Religion to Valyrian Family
+Added 2 New Traits
+Added 4 new Buildings to Gogossos
+Added New Holy Sites to Valyrian Religion
+Added New Holy Sites to Gogossos Religion
+Added new icons for Gogossos MAA
+Added New Buildings icons for Gogossos
+Added New Decision (Explore the Old Ruins)
+Added New Gogossos Ruin Exploration Event chains(Expeditions)
+Added New Icon for Gogossos Religion
+Added Locs for New Events
+Added Locs for New Buildings
+Added Locs for New Decision
+Added New Event Background
+Added New Buildings to History Files
+Added Ck2 Events to Expeditions
+Added Groundwork for Future content in Gogossos
+Added New Death Reasons
+New Gogossos MAA The Basilisk Riders
+new activity, colonisation (duchy) colonises a duchy at once, costs 150% of the cost of doing all the counties individually, has a 10 year cooldown.
+new colonisation phase, Bad Life Decisions. Reduces colonisation cost by a factor of 10, but any failed event roll will have a 75% chance of death in valyria, or a 25% chance of death elsewhere.
+3 new modifiers for item crafting, Tax Mult, Income Mult, and Income Add
+New event to let you rename your items you craft.
+• New valyrian dynasties
+• New valyrian titles
+• New custom character
+• New Asshai titles + localization
+Extended Volantis, Yunkai, and Astapor histories to work with new CoB bookmark
+Asshai map expansion (6 duchies added)
+Manticore Isles added
+
+**Changes**
+Reworked and Remade Gogossos Religion
+Moved Special Buildings to Gogossos County (This is Now Gogossos City)
+Retconned old Gogossos Building Locs
+Changed Gogossos Culture to More Lore Friendly ish
+Changed Isle of Tears County to Gogossos
+Changed AGOT Restore Ruins system to allow you to claim de jure ruins without its de jure title needing to be your primary title
+Changed AGOT Restore Ruins system to also consider coastal neighbors 1 sea province away, and other special cases, e.g. Elyria with Ghozai
+
+**Bug Fixes**
+if a claimant dies in the New Valyria Conquest chain the chain will potentially break
+Fixed Roynar Ruin Special Buildings so now they show as Ruined
+Fixed issues with Gogossos dynasties
+
+
+**Important Infomation**
+Century of Blood Bookmark 0.0.1 has been added
+event chain for Aurion Varezys implemented
+WIP localization included
+further updates will come at later dates
+
+# ☝️ Update 01.02.01 ☝️
+
+# 👇  Bugfix Patch 01.01.08 👇 
+
+**Added Content** 
+Added localization to prowess mystery
+Added localization to dragon army modifiers
+Added localization to find gold title
+
+**Changes**
+Born Under a Red Comet now has proper trait name, description and an icon
+Minor rebalancing for miscast death counter.
+
+**Bug Fixes**
+Fixed zz_colonisation_phase_core.0001.f using intrigue instead of prowess
+Fixed zz_colonisation_phase_core.0002.f using intrigue instead of prowess
+Fixed zz_colonisation_phase_core.0003.f using intrigue instead of prowess
+Fixed zz_colonisation_phase_core.0005.f using intrigue instead of prowess
+Fixed no localization for colonization and settlement memories
+Fixed Draconic Longevity description
+Fixed apprentice issues
+Fixed missing brace in dragon modifiers
+Repaired random spell functions.
+Repaired crafting issues
+Repaired some math for miscasting
+Repaired some missing events for fire mysteries
+
+# ☝️ Bugfix Patch 01.01.08 ☝️
+
+# 👇 Patch 01.01.07 👇 
+
+**Added Content** 
+- Added 17 new mysteries.
+- Added three new animal based MAA for the new animal summoning mystery
+
+**Changes**
+- Some balance changes for mysteries
+- slight numbers adjustements in colonisation activity, now needs skill 20 rather than skill 25 as target for the duel events.
+- Edited Resource icon positions
+- Updated for AGOT 3.9.1 (Fix for superimposed names bug on UI included)
+- Updated splash screen version number
+
+**Bug Fixes**
+- Fixed bug that was making becoming an acolyte artificially difficult
+- Lots of Loc fixes
+
+# ☝️ Version 01.01.07 ☝️
+
+# 👇 Patch 01.01.05 👇
+- emergency Hotfix
+
+# ☝️ Version 01.01.05 ☝️
+
+# 👇 Patch 01.01.04 👇 
+
+
+**Added Content**
+- Expanded power store to up to 900 drops of power
+- Added Two new phase types for colonizing Valyria.
+- Added new congential traits for lifespan and drops of power store.
+- Added expanding miscast to have the effect of downgrading physical traits, including drops of power and lifespan
+- Added balance changes for crafting and magic costs
+- Added Drops of Power changes, can now have a much higher pool.
+- Added Changes to the Court mage action, now scales on Higher Mysteries
+- Expanded the Miscast Table.
+- Added extensions to the miscast randomness.
+- Added new item added to crafting
+- Added new modifier for crafting/enchantment
+- Added dothraki stallion tradition
+- Added dothraki custom MAA
+- Added others white walking custom tradition
+- Added actual cultural traditions for the others culture
+- Added white walkers MAA
+- Added icons for lifespan traits
+- Added new lifestyle track icons for the magister trait
+- Added localization for good lifespan traits
+- Added additional description for magister in the ruler designer
+- Added tooltip loc for failing to cast a spell
+- Added Lots of new missing locs overall
+
+**Changes**
+- Changed EE_on_action for Old Ghis to set the ruin province to level 1 large ruin (previously was level 2 and would not allow the player to restore the ruin)
+- Change in the shape of econ nerfs
+- Redid math for success and failure in activities
+- Revised the calculation effects for drops of power spend and gain.
+- Crafting can now miscast. Uses Higher Mysteries stat for crafting success
+- Changes to the Court mage action, now scales on Higher Mysteries
+- Balance changes for crafting and magic costs
+
+**Bug Fixes**
+- Fixed typo of dull as dim
+- Finished loc overhaul for mysteries.
+- Fixes to several mysteries
+- Fixed a bug that granted the mage trait to people during the doom events
+- Fixed various file encoding errors from the error log
+- Fixed mesh sync errors in various models
+- Fixed UV errors for Lyria court and Janqanor Keep models
+- Fixed Braavos Aqueduct model so it just doesn't fall into an abyss
+- Fixed  zz_colonisation_phase_core.0004.f option using intrigue instead of prowess
+
+# ☝️ Version 01.01.04 ☝️
+
+# 👇 Patch 01.01.03 👇 
+
+**Added Content**
+- Added Gogossi Berserkers MAA
+- Added new Artwork to New Gogossite MAA
+- Added Loc to New MAA
+- Added resource generation localisation to resource producing buildings
+- Added icons for colonization activity phases
+- Added new ability to gain drops of power for piety
+- Added Valaddar's Volantis updates to the git
+- Added more restrictions to Claim the Mantle of the Freehold decision (no more Iron Throne Valyrias)
+- Added and changed Various UI tweaks
+- Added more missing locs in the colonisation screen, Freehold interactions, and Kingsguard court position task
+- Added new map mode: Sites of Magic
+- Added The Abyss ( Axe ) 
+- Updated French translation
+
+**Changes**
+- Reworked the Resource UI tab
+- Centered Resource icons
+- Removed building slots from resource generating buildings
+
+**Bug Fixes**
+- Fixed dummy and dragon traits being visible in ruler designer
+- Fixed temple visual file so that rooloo temples will now properly show
+- Fixed some of the Asshai ruins so that they can be restored normally with the AGOT system
+- Fixed ruins turning to temple holdings during the Settle Ruins activity if perfect settlement score is achieved
+- Fixed Demand Administrative Government interaction so it makes your vassal a Freehold instead of Administrative if you are a Freehold
+- Fixed Administrative Government UI to also show governor efficiency if they are Freehold government
+# ☝️ Version 1.01.03 ☝️
+
+# 👇 Patch 01.01.02 👇 
 
 
 **Added Content**
@@ -44,7 +232,9 @@
 - Name bug for Freehold government fixed
 - The AGOT Canon Children/Strong Seed systems should be working as normal again - this fix also fixes an issue with bastard children not getting the bastard trait
 
-👇 Version 1.01.01 👇 
+# ☝️ Version 1.01.02 ☝️
+
+# 👇 Patch 01.01.01 👇 
 
 Added Content
 :Pointer:Added Mysteries of Age Manipulation.
@@ -122,6 +312,4 @@ Bug Fixes
 :Pointer:Fixed Bear's Buildings in Valyria so they should all show now with correct location and Loc
 :Pointer:Kingsguard Lord Commander bug violently squashed
 
-☝️  Version 1.01.01 ☝️
-message.txt
-6 KB
+# ☝️ Version 1.01.01 ☝️

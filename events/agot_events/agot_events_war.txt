@@ -1,0 +1,968 @@
+﻿namespace = agot_war
+
+agot_war.0001 = {
+	type = character_event
+	title = agot_war.0001.t
+	desc = agot_war.0001.desc
+	theme = war
+	left_portrait = root
+	right_portrait = scope:attacker
+
+	immediate = {}
+
+	option = {
+		name = agot_war.0001.a
+		trigger_event = agot_war.0002
+		ai_chance = {
+			base = 90
+			modifier = {
+				factor = 1.5
+				OR = {
+					has_trait = ambitious
+					has_trait = shrewd
+				}
+			}
+		}
+	}
+	option = {
+		name = agot_war.0001.b
+		ai_chance = {
+			base = 10
+			modifier = {
+				factor = 2
+				OR = {
+					has_trait = trusting
+					has_trait = content
+				}
+			}
+		}
+	}
+}
+
+scripted_effect sc_effect = {
+	if = {
+		limit = {
+			$APPOINTEE$ = {
+				has_variable = castellan
+			}
+		}
+		assign_councillor_type = {
+			type = councillor_castellan
+			target = $APPOINTEE$
+		}
+		$APPOINTEE$ = {
+			remove_variable = castellan
+		}
+	}
+	if = {
+		limit = {
+			$APPOINTEE$ = {
+				has_variable = chancellor
+			}
+		}
+		assign_councillor_type = {
+			type = councillor_chancellor
+			target = $APPOINTEE$
+		}
+		$APPOINTEE$ = {
+			remove_variable = chancellor
+		}
+	}
+	if = {
+		limit = {
+			$APPOINTEE$ = {
+				has_variable = steward
+			}
+		}
+		assign_councillor_type = {
+			type = councillor_steward
+			target = $APPOINTEE$
+		}
+		$APPOINTEE$ = {
+			remove_variable = steward
+		}
+	}
+	if = {
+		limit = {
+			$APPOINTEE$ = {
+				has_variable = marshal
+			}
+		}
+		assign_councillor_type = {
+			type = councillor_marshal
+			target = $APPOINTEE$
+		}
+		$APPOINTEE$ = {
+			remove_variable = marshal
+		}
+	}
+	if = {
+		limit = {
+			$APPOINTEE$ = {
+				has_variable = admiral
+			}
+		}
+		assign_councillor_type = {
+			type = councillor_admiral
+			target = $APPOINTEE$
+		}
+		$APPOINTEE$ = {
+			remove_variable = admiral
+		}
+	}
+	if = {
+		limit = {
+			$APPOINTEE$ = {
+				has_variable = spymaster
+			}
+		}
+		assign_councillor_type = {
+			type = councillor_spymaster
+			target = $APPOINTEE$
+		}
+		$APPOINTEE$ = {
+			remove_variable = spymaster
+		}
+	}
+}
+
+agot_war.0002 = {
+	type = character_event
+	title = agot_war.0002.t
+	desc = agot_war.0002.desc
+	theme = war
+	left_portrait = root
+	lower_right_portrait = {
+		trigger = {
+			exists = scope:spoiler_marriage_candidate
+		}
+		character = scope:spoiler_marriage_candidate
+	}
+	lower_left_portrait = {
+		trigger = {
+			exists = scope:spoiler_kg_candidate
+		}
+		character = scope:spoiler_kg_candidate
+	}
+	right_portrait = scope:attacker
+
+	immediate = {
+		save_scope_as = whiner
+		if = {
+			limit = {
+				scope:attacker = {
+					AND = {
+						primary_title = {
+							has_variable = kingsguard
+						}
+						OR = {
+							NOT = {
+								exists = court_position:zz_kingsguard_court_position
+							}
+						}
+					}
+				}
+				any_close_or_extended_family_member = {
+					can_be_kingsguard_trigger = { COURT_OWNER = scope:attacker }
+					house ?= root.house
+					NOT = {
+						any_heir_title = {
+							place_in_line_of_succession = {
+								target = prev
+								value == 1
+							}
+						}
+					}
+				}
+			}
+			random_close_or_extended_family_member = {
+				limit = {
+					house ?= root.house
+					can_be_kingsguard_trigger = { COURT_OWNER = scope:attacker }
+					NOT = {
+						any_heir_title = {
+							place_in_line_of_succession = {
+								target = prev
+								value == 1
+							}
+						}
+					}
+				}
+				weight = {
+					base = 1
+					modifier = {
+						has_character_modifier = training_for_kingsguard
+						factor = 100
+					}
+				}
+				save_scope_as = spoiler_kg_candidate
+			}
+		}
+		if = {
+			limit = {
+				scope:attacker = {
+					is_married = no
+					is_betrothed = no
+				}
+				any_close_or_extended_family_member = {
+					is_married = no
+					is_betrothed = no
+					sex_opposite_of = scope:attacker
+					can_marry_common_trigger = yes
+					house ?= root.house
+					NOR = {
+						age < scope:attacker.age_minus_5
+						age > scope:attacker.age_plus_5
+					}
+					NOT = {
+						any_heir_title = {
+							place_in_line_of_succession = {
+								target = prev
+								value == 1
+							}
+						}
+					}
+				}
+			}
+			random_close_or_extended_family_member = {
+				limit = {
+					is_married = no
+					is_betrothed = no
+					sex_opposite_of = scope:attacker
+					can_marry_common_trigger = yes
+					house ?= root.house
+					NOR = {
+						age < scope:attacker.age_minus_5
+						age > scope:attacker.age_plus_5
+					}
+					NOT = {
+						any_heir_title = {
+							place_in_line_of_succession = {
+								target = prev
+								value == 1
+							}
+						}
+					}
+				}
+				weight = {
+					base = 1
+					modifier = {
+						this = {
+							is_child_of = root
+						}
+						add = 200
+					}
+					modifier = {
+						add = this.age
+					}
+				}
+				save_scope_as = spoiler_marriage_candidate
+			}
+		}
+		if = {
+			limit = {
+				highest_held_title_tier = tier_duchy
+				AND = {
+					primary_title.de_jure_liege.tier = tier_kingdom
+					primary_title.de_jure_liege != title:k_the_crownlands
+					primary_title.de_jure_liege.holder = scope:attacker
+				}
+			}
+			primary_title.de_jure_liege = {
+				save_scope_as = title
+			}
+		}
+		if = {
+			limit = {
+				scope:attacker = {
+					NOT = {
+						exists = cp:councillor_castellan
+					}
+				}
+			}
+			save_scope_as = council
+			set_variable = {
+				name = castellan
+				value = 0
+			}
+		}
+		else = {
+			random_list = {
+				1 = {
+					trigger = {
+						scope:attacker = {
+							NOT = {
+								exists = cp:councillor_chancellor
+							}
+						}
+					}
+					save_scope_as = council
+					set_variable = {
+						name = chancellor
+						value = 0
+					}
+					modifier = {
+						factor = 10
+						has_education_diplomacy_trigger = yes
+					}
+				}
+				1 = {
+					trigger = {
+						scope:attacker = {
+							NOT = {
+								exists = cp:councillor_steward
+							}
+						}
+					}
+					save_scope_as = council
+					set_variable = {
+						name = steward
+						value = 0
+					}
+					modifier = {
+						factor = 10
+						has_education_stewardship_trigger = yes
+					}
+				}
+				1 = {
+					trigger = {
+						scope:attacker = {
+							NOT = {
+								exists = cp:councillor_admiral
+							}
+						}
+					}
+					save_scope_as = council
+					set_variable = {
+						name = admiral
+						value = 0
+					}
+					modifier = {
+						factor = 10
+						has_education_martial_trigger = yes
+					}
+				}
+				1 = {
+					trigger = {
+						scope:attacker = {
+							NOT = {
+								exists = cp:councillor_spymaster
+							}
+						}
+					}
+					save_scope_as = council
+					set_variable = {
+						name = spymaster
+						value = 0
+					}
+					modifier = {
+						factor = 10
+						has_education_intrigue_trigger = yes
+					}
+				}
+				1 = {
+					trigger = {
+						scope:attacker = {
+							NOT = {
+								exists = cp:councillor_marshal
+							}
+						}
+					}
+					save_scope_as = council
+					set_variable = {
+						name = marshal
+						value = 0
+					}
+					modifier = {
+						factor = 10
+						has_education_martial_trigger = yes
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = agot_war.0002.a # Gold
+		set_variable = {
+			name = spoilers
+			value = flag:asked_for_gold
+		}
+		ai_chance = {
+			base = 25
+		}
+	}
+	option = {
+		name = agot_war.0002.b # KG
+		trigger = {
+			exists = scope:spoiler_kg_candidate
+		}
+		set_variable = {
+			name = spoilers
+			value = flag:asked_for_kg
+		}
+		ai_chance = {
+			base = 40
+		}
+	}
+	option = {
+		name = agot_war.0002.c # Royal Marriage
+		trigger = {
+			exists = scope:spoiler_marriage_candidate
+		}
+		set_variable = {
+			name = spoilers
+			value = flag:asked_for_marriage
+		}
+		ai_chance = {
+			base = 70
+			modifier = {
+				has_trait = family_first
+				factor = 1.5
+			}
+		}
+	}
+	option = {
+		name = agot_war.0002.d # Title
+		trigger = {
+			exists = scope:title
+			OR = {
+				top_liege ?= scope:attacker
+				liege ?= scope:attacker
+			}
+		}
+		set_variable = {
+			name = spoilers
+			value = flag:asked_for_title
+		}
+		ai_chance = {
+			base = 80
+			modifier = {
+				OR = {
+					any_parent = {
+						even_if_dead = yes
+						primary_title ?= scope:title
+					}
+					any_spouse = {
+						has_claim_on = scope:title
+					}
+					has_claim_on = scope:title
+				}
+				factor = 3
+			}
+		}
+	}
+	option = {
+		name = agot_war.0002.e # Small Council
+		trigger = {
+			exists = scope:council
+			is_adult = yes
+			OR = {
+				top_liege ?= scope:attacker
+				liege ?= scope:attacker
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					exists = scope:whiner.liege
+					scope:whiner.liege != scope:attacker
+				}
+			}
+			scope:whiner.liege = { save_scope_as = recipient }
+			scope:whiner = { save_scope_as = secondary_recipient }
+			show_as_tooltip = {
+				scope:attacker = {
+					hire_small_councillor = yes
+					scope:recipient = { small_councillor_vassal_repatriation_effect = yes }
+					small_councillor_appointment_effect = yes
+				}
+			}
+		}
+		else = {
+			show_as_tooltip = {
+				scope:attacker = {
+					sc_effect = { APPOINTEE = scope:whiner }
+				}
+			}
+		}
+		set_variable = {
+			name = spoilers
+			value = flag:asked_for_council
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	after = {
+		if = {
+			limit = {
+				NOT = { var:spoilers ?= flag:asked_for_council }
+			}
+			if = {
+				limit = {
+					has_variable = castellan
+				}
+				remove_variable = castellan
+			}
+			else_if = {
+				limit = {
+					has_variable = chancellor
+				}
+				remove_variable = chancellor
+			}
+			else_if = {
+				limit = {
+					has_variable = steward
+				}
+				remove_variable = steward
+			}
+			else_if = {
+				limit = {
+					has_variable = admiral
+				}
+				remove_variable = admiral
+			}
+			else_if = {
+				limit = {
+					has_variable = spymaster
+				}
+				remove_variable = spymaster
+			}
+			else_if = {
+				limit = {
+					has_variable = marshal
+				}
+				remove_variable = marshal
+			}
+		}
+		if = {
+			limit = {
+				is_ai = no
+				var:spoilers = flag:asked_for_marriage
+			}
+			trigger_event = agot_war.0004
+		}
+		else = {
+			scope:attacker = {
+				trigger_event = agot_war.0003
+			}
+		}
+	}
+}
+
+agot_war.0003 = {
+	type = character_event
+	title = agot_war.0003.t
+	desc = {
+		desc = agot_war.0003.desc
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:whiner.var:spoilers ?= flag:asked_for_gold }
+				desc = agot_war.0003.requested_gold.desc
+			}
+			triggered_desc = {
+				trigger = { scope:whiner.var:spoilers ?= flag:asked_for_kg }
+				desc = agot_war.0003.requested_kg.desc
+			}
+			triggered_desc = {
+				trigger = { scope:whiner.var:spoilers ?= flag:asked_for_marriage }
+				desc = agot_war.0003.requested_marriage.desc
+			}
+			triggered_desc = {
+				trigger = { scope:whiner.var:spoilers ?= flag:asked_for_title }
+				desc = agot_war.0003.requested_titles.desc
+			}
+			triggered_desc = {
+				trigger = { scope:whiner.var:spoilers ?= flag:asked_for_council }
+				desc = agot_war.0003.requested_council.desc
+			}
+		}
+	}
+
+	theme = war
+	left_portrait = scope:whiner
+	lower_left_portrait = {
+		trigger = {
+			scope:whiner.var:spoilers ?= flag:asked_for_marriage
+		}
+		character = scope:spoiler_marriage_candidate
+	}
+	lower_right_portrait = {
+		trigger = {
+			scope:whiner.var:spoilers ?= flag:asked_for_kg
+		}
+		character = scope:spoiler_kg_candidate
+	}
+	right_portrait = scope:attacker
+
+	immediate = {}
+
+	option = {
+		name = agot_war.0003.a # Gold
+		trigger = { scope:whiner.var:spoilers ?= flag:asked_for_gold }
+		scope:whiner = {
+			send_interface_message = {
+				type = event_generic_good
+				title = agot_war.0003.acceptance_msg
+				custom_tooltip = agot_war.0003.acceptance_msg_desc
+				left_icon = scope:whiner
+				right_icon = root
+			}
+			add_opinion = {
+				target = root
+				modifier = grateful_opinion
+				opinion = 30
+			}
+		}
+		pay_short_term_gold = {
+			target = scope:whiner
+			gold = 325
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		name = agot_war.0003.b # KG
+		trigger = { scope:whiner.var:spoilers ?= flag:asked_for_kg }
+		agot_join_kingsguard_effect = {
+			KINGSGUARD = scope:spoiler_kg_candidate
+			KING = root
+		}
+		scope:spoiler_kg_candidate = {
+			add_prestige_level = 1
+			hidden_effect = {
+				if = {
+					limit = {
+						has_trait = refusing_marriage
+					}
+					remove_trait = refusing_marriage
+				}
+				if = {
+					limit = {
+						has_character_modifier = training_for_kingsguard
+					}
+					remove_character_modifier = training_for_kingsguard
+				}
+				if = {
+					limit = {
+						is_squire_with_trait_xp = yes
+					}
+					if = {
+						limit = {
+							any_relation = {
+								type = agot_knight
+							}
+						}
+						random_relation = {
+							type = agot_knight
+							save_scope_as = my_knight
+						}
+						remove_relation_agot_knight = scope:my_knight
+					}
+					agot_become_a_knight_effect = {
+						KNIGHT_MAKER = scope:king
+						KNIGHT_TO_BE = this
+					}
+				}
+			}
+			if = {
+				limit = {
+					exists = dynasty
+				}
+				dynasty = {
+					add_dynasty_prestige = medium_dynasty_prestige_gain
+				}
+			}
+			create_character_memory = {
+				type = agot_kingsguard_memory
+				participants = {
+					king = scope:king
+				}
+			}
+		}
+		scope:whiner = {
+			if = {
+				limit = {
+					can_add_hook = {
+						target = scope:spoiler_kg_candidate
+						type = strong_favor_hook
+					}
+				}
+				add_hook = {
+					target = scope:spoiler_kg_candidate
+					type = strong_favor_hook
+				}
+			}
+			send_interface_message = {
+				type = event_generic_good
+				title = agot_war.0003.acceptance_msg
+				custom_tooltip = agot_war.0003.acceptance_msg_desc
+				left_icon = scope:whiner
+				right_icon = root
+			}
+			add_opinion = {
+				target = root
+				modifier = grateful_opinion
+				opinion = 40
+			}
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		# Royal Marriage
+		name = {
+			text = agot_war.0003.c
+			trigger = {
+				is_adult = yes
+				scope:spoiler_marriage_candidate = {
+					is_adult = yes
+				}
+			}
+		}
+		name = {
+			text = agot_war.0003.c_betrothal
+			trigger = {
+				OR = {
+					is_adult = no
+					scope:spoiler_marriage_candidate = {
+						is_adult = no
+					}
+				}
+			}
+		}
+		trigger = { scope:whiner.var:spoilers ?= flag:asked_for_marriage }
+		if = {
+			limit = {
+				is_female = yes
+				scope:spoiler_marriage_candidate = {
+					is_male = yes
+				}
+			}
+			if = {
+				limit = {
+					is_adult = yes
+					scope:spoiler_marriage_candidate = {
+						is_adult = yes
+					}
+				}
+				marry_matrilineal = scope:spoiler_marriage_candidate
+			}
+			else = {
+				create_betrothal_matrilineal = scope:spoiler_marriage_candidate
+			}
+		}
+		else = {
+			if = {
+				limit = {
+					OR = {
+						is_adult = no
+						scope:spoiler_marriage_candidate = {
+							is_adult = no
+						}
+					}
+				}
+				create_betrothal = scope:spoiler_marriage_candidate
+			}
+			else = {
+				marry = scope:spoiler_marriage_candidate
+			}
+		}
+		scope:whiner = {
+			add_opinion = {
+				target = root
+				modifier = grateful_opinion
+				opinion = 50
+			}
+			send_interface_message = {
+				type = event_generic_good
+				title = agot_war.0003.acceptance_msg
+				custom_tooltip = agot_war.0003.acceptance_msg_desc
+				left_icon = scope:whiner
+				right_icon = root
+			}
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		name = agot_war.0003.e # Grant Title
+		trigger = { scope:whiner.var:spoilers ?= flag:asked_for_title }
+		create_title_and_vassal_change = {
+			type = granted
+			save_scope_as = change
+		}
+		scope:title = {
+			change_title_holder_include_vassals = {
+				holder = scope:whiner
+				change = scope:change
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		scope:whiner = {
+			add_opinion = {
+				target = root
+				modifier = grateful_opinion
+				opinion = 50
+			}
+			send_interface_message = {
+				type = event_generic_good
+				title = agot_war.0003.acceptance_msg
+				custom_tooltip = agot_war.0003.acceptance_msg_desc
+				left_icon = scope:whiner
+				right_icon = root
+			}
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		name = agot_war.0003.f # Small Council
+		trigger = {
+			scope:whiner.var:spoilers ?= flag:asked_for_council
+		}
+		if = {
+			limit = {
+				exists = scope:recipient
+			}
+			hire_small_councillor = yes
+			scope:recipient = { small_councillor_vassal_repatriation_effect = yes }
+			small_councillor_appointment_effect = yes
+			scope:secondary_recipient = {
+				block_firing_councillor_effect = { COURT_OWNER = root }
+			}
+		}
+		else = {
+			sc_effect = { APPOINTEE = scope:whiner }
+			scope:whiner = {
+				block_firing_councillor_effect = { COURT_OWNER = root }
+			}
+		}
+		scope:whiner = {
+			add_opinion = {
+				target = root
+				modifier = grateful_opinion
+				opinion = 50
+			}
+			send_interface_message = {
+				type = event_generic_good
+				title = agot_war.0003.acceptance_msg
+				custom_tooltip = agot_war.0003.acceptance_msg_desc
+				left_icon = scope:whiner
+				right_icon = root
+			}
+		}
+		ai_chance = {
+			base = 50
+		}
+	}
+	option = {
+		name = agot_war.0003.d # No, I reject these claims
+		scope:whiner = {
+			add_opinion = {
+				target = root
+				modifier = annoyed_opinion
+				opinion = -50
+			}
+			if = {
+				limit = {
+					can_add_hook = {
+						target = root
+						type = indebted_hook
+					}
+				}
+				add_hook = {
+					target = root
+					type = indebted_hook
+				}
+			}
+			send_interface_message = {
+				type = event_generic_bad
+				title = agot_war.0003.rejection_msg
+				desc = agot_war.0003.rejection_msg_desc
+				left_icon = scope:whiner
+				right_icon = root
+			}
+		}
+		add_prestige = medium_prestige_loss
+		add_legitimacy = medium_legitimacy_loss
+		ai_chance = {
+			base = 5
+			modifier = {
+				has_trait = greedy
+				add = 10
+			}
+		}
+	}
+	after = {
+		scope:whiner = {
+			remove_variable = spoilers
+		}
+	}
+}
+
+agot_war.0004 = {
+	type = character_event
+	title = agot_war.0004.t
+	desc = agot_war.0004.desc
+	theme = war
+	left_portrait = root
+	widget = {
+		is_shown = {
+			is_ai = no
+		}
+		gui = "event_window_character_selection_tall"
+		container = "custom_widgets_container"
+	}
+	immediate = {
+		every_close_or_extended_family_member = {
+			limit = {
+				is_married = no
+				is_betrothed = no
+				sex_opposite_of = scope:attacker
+				can_marry_common_trigger = yes
+				house ?= root.house
+				NOR = {
+					age < scope:attacker.age_minus_5
+					age > scope:attacker.age_plus_5
+				}
+			}
+			root = {
+				add_to_variable_list = {
+					name = possible_characters
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			root = { set_variable = { name = si_selected_character value = prev } }
+			save_scope_as = spoiler_marriage_candidate
+		}
+	}
+	option = {
+		name = agot_war.0004.a
+		custom_tooltip = agot_war.0004.a_tt
+		var:si_selected_character = {
+			save_scope_as = spoiler_marriage_candidate
+			remove_variable = si_selecting_character
+		}
+	}
+	after = {
+		if = {
+			limit = {
+				has_variable = si_selected_character
+			}
+			remove_variable = si_selected_character
+		}
+		clear_variable_list = possible_characters
+		scope:attacker = {
+			trigger_event = agot_war.0003
+		}
+	}
+}

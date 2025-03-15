@@ -2188,6 +2188,7 @@ combat_event.2111 = {
 #	scope = combat_side
 
 #	trigger = {
+#		exists = side_commander
 #		exists = enemy_side.side_commander
 #		enemy_side.side_commander = {
 #			has_culture = culture:norman
@@ -2339,9 +2340,36 @@ combat_event.3000 = {
 				name = battle_poi_date_month
 				value = current_month
 			}
+			#AGOT Modified
+			#set_variable = { # Year
+			#	name = battle_poi_date_year
+			#	value = current_year
+			#}
 			set_variable = { # Year
 				name = battle_poi_date_year
+				value = {
 				value = current_year
+					if = {
+						limit = { current_year >= 8000 }
+						add = -8000
+					}
+					else = {
+						add = -6400
+					}
+				}
+			}
+			#AGOT Added
+			set_variable = {
+				name = battle_poi_date_era
+				value = {
+					if = {
+						limit = { current_year >= 8000 }
+						add = 1
+					}
+					else = {
+						add = 2
+					}
+				}
 			}
 			random_list = { # Set a randomized variable, so we don't need the same desc every time
 				10 = { battle_poi_randomizer_effect = { NAME = 1 } }

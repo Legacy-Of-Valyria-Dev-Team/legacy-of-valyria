@@ -156,6 +156,71 @@
 						}
 					}
 				}
+				remove_variable = zz_item_ui
+				clear_variable_list = zz_valyria_sword_list
+				trait:zz_valyria_magic_none_modifier_01_stacking = {
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_sword_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_sword_selection }
+							}
+							set_variable = { name = zz_sword_selection value = prev }
+						}
+					}
+				}
+				every_trait = {
+					limit = {
+						has_trait_flag = zz_sword_type
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_sword_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_sword_selection }
+							}
+							set_variable = { name = zz_sword_selection value = prev }
+						}
+					}
+				}
+				clear_variable_list = zz_valyria_ring_list
+				trait:zz_valyria_magic_none_modifier_01_stacking = {
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_ring_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_ring_selection }
+							}
+							set_variable = { name = zz_ring_selection value = prev }
+						}
+					}
+				}
+				every_trait = {
+					limit = {
+						has_trait_flag = zz_ring_type
+					}
+					scope:actor = {
+						add_to_variable_list = {
+							name = zz_valyria_ring_list
+							target = prev
+						}
+						if = {
+							limit = {
+								NOT = { has_variable = zz_ring_selection }
+							}
+							set_variable = { name = zz_ring_selection value = prev }
+						}
+					}
+				}
 			}
 		}
 		else = {
@@ -234,6 +299,26 @@ zz_valyria_magic_item_selection = {
 				value = scope:zz_selected_item
 			}
 			zz_valyria_crafting_calculate_crafting_cost_item_effect = yes 
+			if = { 
+				limit = {
+					scope:zz_selected_item ?= trait:zz_valyria_crafting_vs_sword_01
+				}
+				remove_variable = zz_sword_selection_sword
+				set_variable = {
+					name = zz_item_ui
+					value = flag:sword_crafting_ui
+				}
+			}
+			else_if = {
+				limit = {
+					scope:zz_selected_item ?= trait:zz_valyria_crafting_magic_ring_01
+				}
+				remove_variable = zz_ring_selection_ring
+				set_variable = {
+					name = zz_item_ui
+					value = flag:ring_crafting_ui
+				}
+			}
 		}
 	}
 }
@@ -272,6 +357,41 @@ zz_valyria_magic_item_craft_add_one_iron = {
 		}
 	}
 }
+zz_valyria_magic_item_craft_add_ten_iron = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_iron >= 10
+				NOT = {
+					zz_valyria_current_use_iron >= zz_valyria_resources_iron
+				}
+			}
+			change_variable = {
+				name = zz_current_use_iron
+				add = 10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_add_hundred_iron = {
+	scope = character
+
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_iron >= 100
+				NOT = {
+					zz_valyria_current_use_iron >= zz_valyria_resources_iron
+				}
+			}
+			change_variable = {
+				name = zz_current_use_iron
+				add = 100
+			}
+		}
+	}
+}
 
 zz_valyria_magic_item_craft_minus_one_iron = {
 	scope = character
@@ -282,6 +402,36 @@ zz_valyria_magic_item_craft_minus_one_iron = {
 		change_variable = {
 			name = zz_current_use_iron
 			add = -1
+		}
+	}
+}
+zz_valyria_magic_item_craft_minus_ten_iron = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_iron >= 10
+
+			}
+			change_variable = {
+				name = zz_current_use_iron
+				add = -10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_minus_hundred_iron = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_iron >= 100
+
+			}
+			change_variable = {
+				name = zz_current_use_iron
+				add = -100
+			}
 		}
 	}
 }
@@ -301,7 +451,41 @@ zz_valyria_magic_item_craft_add_one_steel = {
 		}
 	}
 }
+zz_valyria_magic_item_craft_add_ten_steel = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_steel >= 10
+				NOT = {
+					zz_valyria_current_use_steel >= zz_valyria_resources_steel
+				}
+			}
+			change_variable = {
+				name = zz_current_use_steel
+				add = 10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_add_hundred_steel = {
+	scope = character
 
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_steel >= 100
+				NOT = {
+					zz_valyria_current_use_steel >= zz_valyria_resources_steel
+				}
+			}
+			change_variable = {
+				name = zz_current_use_steel
+				add = 100
+			}
+		}
+	}
+}
 zz_valyria_magic_item_craft_minus_one_steel = {
 	scope = character
 	is_valid = {
@@ -314,6 +498,37 @@ zz_valyria_magic_item_craft_minus_one_steel = {
 		}
 	}
 }
+zz_valyria_magic_item_craft_minus_ten_steel = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_steel >= 10
+
+			}
+			change_variable = {
+				name = zz_current_use_steel
+				add = -10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_minus_hundred_steel = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_steel >= 100
+
+			}
+			change_variable = {
+				name = zz_current_use_steel
+				add = -100
+			}
+		}
+	}
+}
+
 
 zz_valyria_magic_item_craft_add_one_obsidian = {
 	scope = character
@@ -330,6 +545,41 @@ zz_valyria_magic_item_craft_add_one_obsidian = {
 		}
 	}
 }
+zz_valyria_magic_item_craft_add_ten_obsidian = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_obsidian >= 10
+				NOT = {
+					zz_valyria_current_use_obsidian >= zz_valyria_resources_obsidian
+				}
+			}
+			change_variable = {
+				name = zz_current_use_obsidian
+				add = 10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_add_hundred_obsidian = {
+	scope = character
+
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_obsidian >= 100
+				NOT = {
+					zz_valyria_current_use_obsidian >= zz_valyria_resources_obsidian
+				}
+			}
+			change_variable = {
+				name = zz_current_use_obsidian
+				add = 100
+			}
+		}
+	}
+}
 
 zz_valyria_magic_item_craft_minus_one_obsidian = {
 	scope = character
@@ -340,6 +590,37 @@ zz_valyria_magic_item_craft_minus_one_obsidian = {
 		change_variable = {
 			name = zz_current_use_obsidian
 			add = -1
+		}
+	}
+}
+
+zz_valyria_magic_item_craft_minus_ten_obsidian = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_obsidian >= 10
+
+			}
+			change_variable = {
+				name = zz_current_use_obsidian
+				add = -10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_minus_hundred_obsidian = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_obsidian >= 100
+
+			}
+			change_variable = {
+				name = zz_current_use_obsidian
+				add = -100
+			}
 		}
 	}
 }
@@ -359,6 +640,41 @@ zz_valyria_magic_item_craft_add_one_valyrian_steel = {
 		}
 	}
 }
+zz_valyria_magic_item_craft_add_ten_valyrian_steel = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_valyrian_steel >= 10
+				NOT = {
+					zz_valyria_current_use_valyrian_steel >= zz_valyria_resources_valyrian_steel
+				}
+			}
+			change_variable = {
+				name = zz_current_use_valyrian_steel
+				add = 10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_add_hundred_valyrian_steel = {
+	scope = character
+
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_resources_valyrian_steel >= 100
+				NOT = {
+					zz_valyria_current_use_valyrian_steel >= zz_valyria_resources_valyrian_steel
+				}
+			}
+			change_variable = {
+				name = zz_current_use_valyrian_steel
+				add = 100
+			}
+		}
+	}
+}
 
 zz_valyria_magic_item_craft_minus_one_valyrian_steel = {
 	scope = character
@@ -372,6 +688,38 @@ zz_valyria_magic_item_craft_minus_one_valyrian_steel = {
 		}
 	}
 }
+
+zz_valyria_magic_item_craft_minus_ten_valyrian_steel = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_valyrian_steel >= 10
+
+			}
+			change_variable = {
+				name = zz_current_use_valyrian_steel
+				add = -10
+			}
+		}
+	}
+}
+zz_valyria_magic_item_craft_minus_hundred_valyrian_steel = {
+	scope = character
+	effect = {
+		if = { 
+			limit = {
+				zz_valyria_current_use_valyrian_steel >= 100
+
+			}
+			change_variable = {
+				name = zz_current_use_valyrian_steel
+				add = -100
+			}
+		}
+	}
+}
+
 zz_valyria_magic_item_craft_none = {
 	scope = character
 	is_shown = {
@@ -443,11 +791,14 @@ zz_valyria_magic_item_craft = {
 	is_shown = {
 	}
 	effect = {
+		save_scope_as = recipient
 		var:zz_item_crafter = {
 			save_scope_as = zz_item_crafter
+		}
+
+		scope:zz_item_crafter = {
 			save_scope_as = secondary_recipient
 		}
-		save_scope_as = recipient
 	
 		zz_valyria_crafting_item_construct_effect = yes 
 		zz_craft_item_cost_effect = yes
@@ -511,5 +862,68 @@ zz_valyria_magic_craft_chance_ui = {
 		}
 		save_scope_as = recipient
 		zz_valyria_magic_craft_ui_effect = yes 
+	}
+}
+
+
+zz_sword_selection_shown = { 
+	scope = character
+	saved_scopes = {
+	}
+	is_valid = {
+		is_ai = no
+		var:zz_item_ui ?= flag:sword_crafting_ui
+	}
+}
+zz_sword_selection_shown_close = { 
+	scope = character
+	saved_scopes = {
+	}
+	effect = {
+		remove_variable = zz_item_ui
+	}
+}
+
+zz_sword_selection = { 
+	scope = character
+	saved_scopes = {
+	}
+	effect = { 
+		set_variable = {
+			name = zz_sword_selection_sword
+			value = scope:zz_sword_selection_sword
+		}
+		remove_variable = zz_item_ui
+	}
+}
+
+zz_ring_selection_shown = { 
+	scope = character
+	saved_scopes = {
+	}
+	is_valid = {
+		is_ai = no
+		var:zz_item_ui ?= flag:ring_crafting_ui
+	}
+}
+zz_ring_selection_shown_close = { 
+	scope = character
+	saved_scopes = {
+	}
+	effect = {
+		remove_variable = zz_item_ui
+	}
+}
+
+zz_ring_selection = { 
+	scope = character
+	saved_scopes = {
+	}
+	effect = { 
+		set_variable = {
+			name = zz_ring_selection_ring
+			value = scope:zz_ring_selection_ring
+		}
+		remove_variable = zz_item_ui
 	}
 }

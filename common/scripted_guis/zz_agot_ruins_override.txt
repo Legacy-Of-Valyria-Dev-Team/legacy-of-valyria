@@ -4,15 +4,43 @@
 		save_temporary_scope_as = ruin
 		OR = {
 			scope:actor = {
-				any_sub_realm_county = {
-					any_neighboring_county = {
+				OR = {
+					any_character_to_title_neighboring_and_across_water_county = {
 						this = scope:ruin.county
+					}
+					# Ghozai
+					trigger_if = {
+						limit = {
+							title:d_velos = { is_de_jure_liege_or_above_target = scope:ruin.county }
+						}
+						any_sub_realm_county = {
+							is_coastal_county = yes
+							title_province = {
+								OR = {
+									geographical_region = world_essos_painted_mountains
+									geographical_region = world_essos_elyria
+									geographical_region = world_essos_slavers_bay
+								}
+							}
+						}
+					}
+					# Manticore Isles
+					trigger_if = {
+						limit = {
+							title:d_manticore_isles = { is_de_jure_liege_or_above_target = scope:ruin.county }
+						}
+						any_sub_realm_county = {
+							is_coastal_county = yes
+							title_province = {
+								geographical_region = world_asshai
+							}
+						}
 					}
 				}
 			}
-			scope:actor.primary_title = {
-				any_de_jure_county = {
-					this = scope:ruin.county
+			scope:actor = {
+				any_held_title = {
+					is_de_jure_liege_or_above_target = scope:ruin.county
 				}
 			}
 		}

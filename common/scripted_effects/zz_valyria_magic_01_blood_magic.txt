@@ -1,6 +1,32 @@
 ﻿zz_valyria_immortality_ritual_list = {
 	clear_variable_list ?= possible_characters
 	remove_variable = si_selected_character
+	every_prisoner = {
+		limit = {
+			agot_is_dragonblood_character = yes
+			NOR = {
+				this ?= scope:target_char_01
+				this ?= scope:target_char_02
+				this ?= scope:target_char_03
+				this ?= scope:target_char_04
+				this ?= scope:target_char_05
+				this ?= scope:target_char_06
+				this ?= scope:target_char_07
+			}
+		}
+		root = {
+			add_to_variable_list = {
+				name = possible_characters
+				target = prev
+			}
+			if = {
+				limit = {
+					NOT = { has_variable = si_selected_character }
+				}
+				set_variable = { name = si_selected_character value = prev }
+			}
+		}
+	}
 	every_courtier_or_guest = {
 		limit = {
 			agot_is_dragonblood_character = yes
@@ -1001,14 +1027,14 @@ zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_effect = {
 				name = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
 				add = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_value
 			}
-			else = {
-				set_variable = { 
-					name = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
-					value = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_value 
-					years = 5 
-				}
+		}
+		else = {
+			set_variable = { 
+				name = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement
+				value = zz_valyria_magic_blood_magic_09_mysteries_of_draconic_enhancement_value 
+				years = 5 
 			}
-		}	
+		}
 	}
 }
 
@@ -2694,6 +2720,49 @@ zz_valyria_magic_blood_magic_22_mysteries_of_draconic_consumption_effect = {
 					killer = scope:secondary_recipient
 				}
 
+			}
+		}
+	}
+}
+
+
+zz_valyria_magic_blood_magic_23_mysteries_of_prowess_effect = {
+	send_interface_message = {
+		type = event_generic_neutral
+		title = zz_valyria_magic_blood_magic_23_mysteries_of_prowess.t
+		desc = zz_valyria_magic_blood_magic_23_mysteries_of_prowess.desc
+		left_icon = scope:secondary_recipient
+		right_icon = scope:recipient
+		custom_tooltip = zz_valyria_magic_blood_magic_23_mysteries_of_prowess.tt
+	}
+	if = {
+		limit = {
+			NOT = {
+				scope:actor = scope:recipient
+			}
+		}
+		stress_impact = {
+			compassionate = medium_stress_impact_loss
+			sadistic = minor_stress_gain
+			callous = minor_stress_gain
+		}
+	}
+	scope:recipient = {
+		zz_valyria_magic_apply_character_modifier_effect = { 
+			MODIFIER = zz_valyria_magic_blood_magic_23_mysteries_of_prowess_modifier
+			DURATION = zz_valyria_magic_blood_magic_23_mysteries_of_prowess_value
+			BOOSTED_DURATION = zz_valyria_magic_blood_magic_23_mysteries_of_prowess_value_2
+		}
+	}	
+	scope:recipient = {		
+		if = {
+			limit = {
+				NOT = { scope:actor = scope:recipient }
+			}
+			add_opinion = {
+				modifier = grateful_opinion
+				target = scope:actor
+				opinion = 70
 			}
 		}
 	}
