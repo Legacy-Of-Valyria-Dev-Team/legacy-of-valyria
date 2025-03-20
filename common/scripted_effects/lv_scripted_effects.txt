@@ -3,13 +3,27 @@
 # For distributing owned inconsequential titles on game start or when necessary
 # - Requires character scope
 lv_distribute_titles_effect = {
-	save_scope_as = ruler
 	if = {
 		limit = {
 			always = $GRANT_DUCHY$
 			NOT = { exists = $DUCHY$.holder }
 		}
 		get_title = $DUCHY$
+	}
+	if = {
+		limit = { always = $GRANT_INDEPENDENCE$ }
+		create_title_and_vassal_change = {
+			type = independency
+			save_scope_as = change
+			add_claim_on_loss = yes
+		}
+	}
+	else = {
+		create_title_and_vassal_change = {
+			type = granted
+			save_scope_as = change
+			add_claim_on_loss = no
+		}
 	}
 	every_held_title = {
 		limit = {
@@ -34,155 +48,20 @@ lv_distribute_titles_effect = {
 			gender_female_chance = $VASSAL_FEMALE_CHANCE$
 			save_scope_as = vassal
 		}
+		change_title_holder_include_vassals = {
+			holder = scope:vassal
+			change = scope:change
+		}
 		if = {
-			limit = { always = $GRANT_INDEPENDENCE$ }
-			create_title_and_vassal_change = {
-				type = independency
-				save_scope_as = change
-				add_claim_on_loss = yes
-			}
-			change_title_holder_include_vassals = {
-				holder = scope:vassal
-				change = scope:change
-			}
-			scope:vassal = { becomes_independent = { change = scope:change } }
-		}
-		else = {
-			create_title_and_vassal_change = {
-				type = granted
-				save_scope_as = change
-				add_claim_on_loss = no
-			}
-			change_title_holder_include_vassals = {
-				holder = scope:vassal
-				change = scope:change
-				government_base = scope:ruler
-			}
-		}
-		resolve_title_and_vassal_change = scope:change
-		scope:vassal = {
-			if = {
-				limit = { target_is_liege_or_above = scope:ruler }
-				if = {
-					limit = { always = $INHERIT_LIEGE_GOVERNMENT$ }
-					lv_distribute_titles_government_parser = { FALLBACK = $GOVERNMENT$ }
-				}
-				else = {
-					change_government = $GOVERNMENT$
+			limit = { NOT = { always = $GRANT_INDEPENDENCE$ } }
+			scope:vassal = {
+				change_liege = {
+					liege = scope:ruler
+					change = scope:change
 				}
 			}
 		}
+		else = { scope:vassal = { becomes_independent = { change = scope:change } } }
 	}
-}
-
-# Only used so far in the vassal generator
-# - Requires "ruler" and "vassal" scopes
-lv_distribute_titles_government_parser = {
-	scope:ruler = {
-		switch = {
-			trigger = has_government
-
-			# Vanilla Governments
-			feudal_government = { scope:vassal = { change_government = feudal_government } }
-			republic_government = { scope:vassal = { change_government = republic_government } }
-			theocracy_government = { scope:vassal = { change_government = theocracy_government } }
-			clan_government = { scope:vassal = { change_government = clan_government } }
-			tribal_government = { scope:vassal = { change_government = tribal_government } }
-			mercenary_government = { scope:vassal = { change_government = mercenary_government } }
-			holy_order_government = { scope:vassal = { change_government = holy_order_government } }
-			administrative_government = { scope:vassal = { change_government = administrative_government } }
-			landless_adventurer_government = { scope:vassal = { change_government = landless_adventurer_government } }
-
-			# AGOT Governments
-			lp_feudal_government = { scope:vassal = { change_government = lp_feudal_government } }
-			free_city_government = { scope:vassal = { change_government = free_city_government } }
-			silent_sisterhood_government = { scope:vassal = { change_government = silent_sisterhood_government } }
-			kingsguard_government = { scope:vassal = { change_government = kingsguard_government } }
-			nights_watch_government = { scope:vassal = { change_government = nights_watch_government } }
-			the_citadel_government = { scope:vassal = { change_government = the_citadel_government } }
-			ruins_government = { scope:vassal = { change_government = ruins_government } }
-			pirate_government = { scope:vassal = { change_government = pirate_government } }
-			host_government = { scope:vassal = { change_government = host_government } }
-			first_ranger_government = { scope:vassal = { change_government = first_ranger_government } }
-
-			fallback = {
-				scope:vassal = { change_government = $FALLBACK$ }
-				debug_log = "A randomly generated vassal was assigned to inherit liege's government did not match any of the pre-defined government types in lv_distribute_titles_government_parser. Defaulting to fallback."
-			}
-		}
-	}
-	# Wrong Holding/Government Corrector
-	# - If a randomly-generated vassal's main holding does not match the assigned government, convert to an appropriate analogue
-	scope:vassal = {
-		if = {
-			limit = {
-				any_held_title = {
-					has_wrong_holding_type = yes
-					title_province = { save_temporary_scope_as = capital_province }
-				}
-			}
-			#change_government = republic_government
-			scope:capital_province = {
-				switch = {
-					trigger = has_holding_type
-
-					castle_holding = {
-						scope:vassal = { 
-							if = {
-								limit = { liege = { has_government = lp_feudal_government } }
-								change_government = lp_feudal_government
-							}
-							else = { change_government = feudal_government }
-						}
-					}
-					city_holding = {
-						scope:vassal = { 
-							if = {
-								limit = {
-									liege = {
-										OR = {
-											has_government = free_city_government
-											has_government = oligarchic_government
-										}
-									}
-								}
-								if = {
-									limit = {
-										highest_held_title_tier >= tier_county
-										liege = { has_government = free_city_government }
-									}
-									change_government = free_city_government
-								}
-								else_if = {
-									limit = {
-										highest_held_title_tier >= tier_county
-										liege = { has_government = oligarchic_government }
-									}
-									change_government = oligarchic_government
-								}
-							}
-							else = {
-								if = {
-									limit = {
-										highest_held_title_tier >= tier_county
-										any_liege_or_above = { has_government = free_city_government }
-									}
-									change_government = free_city_government
-								}
-								else_if = {
-									limit = {
-										highest_held_title_tier >= tier_county
-										any_liege_or_above = { has_government = oligarchic_government }
-									}
-									change_government = oligarchic_government
-								}
-								else = { change_government = oligarchic_government }
-							}
-						}
-					}
-					tribal_holding = { scope:vassal = { change_government = tribal_government } }
-				}
-			}
-		}
-	}
+	resolve_title_and_vassal_change = scope:change
 }

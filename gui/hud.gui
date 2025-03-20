@@ -235,7 +235,7 @@ widget = {
 				}
 
 				widget_hud_main_tab = {
-					name = "tab_military_tutorial_uses_this"
+					name = "tab_military"
 
 					blockoverride "maintab_button"
 					{
@@ -533,7 +533,7 @@ widget = {
 						}
 
 						icon = {
-							visible = "[Or( Or( GreaterThan_int32( Character.GetUnassignedVassalsCount, '(int32)0' ), Not( Character.HasTaxSlots ) ), GreaterThan_int32( Character.GetUntaxedJurisdictionCount, '(int32)0' ) )]"
+							visible = "[Or( Or( GreaterThan_int32( Character.GetUnassignedVassalsCount, '(int32)0' ), Not( Character.HasTaxSlots ) ), GreaterThan_int32( Character.GetTaxSlotsWithoutTaxCollectorCount, '(int32)0' ) )]"
 							size = { 25 25 }
 							position = { -5 5}
 							texture = "gfx/interface/icons/symbols/icon_warning.dds"
@@ -615,7 +615,7 @@ widget = {
 						onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 
 						onclick = "[GetScriptedGui('yy_province_window').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-						#shortcut = "tab_province_window"
+						shortcut = "tab_province_window"
 						tooltip = "PROVINCEWINDOW_BUTTON"
 						down = "[GetScriptedGui('yy_province_window').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
 					}
@@ -640,7 +640,7 @@ widget = {
 						onclick = "[CloseGameView( 'manage_tax_slots' )]"
 						onclick = "[CloseGameView( 'government_administration' )]"
 						onclick = "[GetScriptedGui('zz_valyria_magic_scroll_learning_close').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-						#shortcut = "tab_crafting"
+						shortcut = "tab_crafting"
 
 						enabled = "[GetScriptedGui('zz_magic_crafting_open').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
 						onclick = "[GetScriptedGui('zz_magic_crafting_open').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
@@ -665,7 +665,7 @@ widget = {
 						onclick = "[CloseGameView( 'activity_list_window' )]"
 						onclick = "[CloseGameView( 'manage_tax_slots' )]"
 						onclick = "[CloseGameView( 'government_administration' )]"
-						#shortcut = "tab_magic_administration"
+						shortcut = "tab_magic_administration"
 
 						texture = "gfx/interface/icons/zz_magic_management.dds"
 						enabled = "[GetScriptedGui('zz_valyria_magic_management').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
@@ -1852,7 +1852,7 @@ widget = {
 			datacontext = "[Character.GetLegitimacyType]"
 			datacontext = "[Character.GetLegitimacyLevel]"
 
-			visible = "[And(LegitimacyType.IsValid, Character.GetGovernment.HasRule( 'legitimacy' ))]"
+			visible = "[And(LegitimacyType.IsValid, GetPlayer.GetGovernment.HasRule( 'legitimacy' ))]"
 
 			using = tooltip_ne
 
@@ -2421,7 +2421,10 @@ widget = {
 				onclick = "[OpenGameViewData( 'lifestyle', GetPlayer.GetID )]"
 				size = { 56 56 }
 
-				icon_round_button_base = {}
+				icon = {
+					texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+					size = { 100% 100% }
+				}
 
 				icon = {
 					name = "progress_frame"
@@ -2538,7 +2541,10 @@ widget = {
 				onclick = "[ToggleGameViewData( 'character_focus', GetPlayer.GetID )]"
 				size = { 55 55 }
 
-				icon_round_button_base = {}
+				icon = {
+					texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+					size = { 100% 100% }
+				}
 
 				highlight_icon_lifestyle_focus = {
 					texture = "[GetPlayer.GetFocus.GetIcon]"
@@ -2561,8 +2567,6 @@ widget = {
 
 				button_open_inventory = {
 					name = "open_inventory_tutorial_uses_this"
-					using = tooltip_ne
-
 					size = { 55 55 }
 					datacontext = "[GetPlayer]"
 					blockoverride "highlight_icon_size"
@@ -2583,12 +2587,13 @@ widget = {
 				parentanchor = left
 				onclick = "[ToggleGameViewData( 'diarchy', Character.GetID )]"
 				visible = "[IsDiarchyVisible]"
-
 				tooltip = "DIARCHY_WINDOW_OPEN_TOOLTIP"
-				using = tooltip_ne
 				size = { 55 55 }
 
-				icon_round_button_base = {}
+				icon = {
+					texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+					size = { 100% 100% }
+				}
 
 				button = {
 					size = { 40 40 }
@@ -2596,28 +2601,6 @@ widget = {
 					parentanchor = center
 					texture = "gfx/interface/icons/scale_of_power.dds"
 				}
-
-				icon_power_sharing_level = {
-					name = "your_power_sharing_level"
-
-					datacontext = "[GetPlayer.GetDiarchy]"
-					visible = "[Diarchy.IsValid]"
-
-					parentanchor = bottom|right
-					position = { 3 3 }
-
-				}
-
-				icon_power_sharing_level = {
-					name = "liege_power_sharing_level"
-
-					datacontext = "[GetPlayer.GetLiege.GetDiarchy]"
-					visible = "[And(GetPlayer.HasLiege, Diarchy.IsValid)]"				
-
-					parentanchor = bottom|right
-					position = { 3 3 }
-				}
-				
 			}
 
 			button_round = {
@@ -2631,7 +2614,10 @@ widget = {
 				onclick = "[ToggleGameViewData( 'domicile', Domicile.Self )]"
 				tooltip = "[Domicile.GetMapPinTooltip( Character.Self )]"
 
-				icon_round_button_base = {}
+				icon = {
+					texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+					size = { 100% 100% }
+				}
 
 				button_icon = {
 					size = { 40 40 }
@@ -2705,7 +2691,10 @@ widget = {
 			tooltip = "[SelectLocalization(Character.GetTravelPlan.GetData.IsTravelWithDomicile, 'TT_TRAVELING_WITH_DOMICILE_WIDGET', 'TT_AWAY_FROM_CAPITAL_WIDGET')]"
 			using = tooltip_above
 
-			icon_round_button_base = {}
+			icon = {
+				texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+				size = { 100% 100% }
+			}
 
 			icon = {
 				name = "progress_frame"
@@ -2958,7 +2947,6 @@ widget = {
 			margin_top = 15
 			visible = "[Not(IsGameViewOpen('barbershop'))]"
 
-
 			### Inspirations ###
 			flowcontainer = {
 				name = "player_inspirations"
@@ -2976,7 +2964,10 @@ widget = {
 						using = tooltip_above
 						onclick = "[InGameBottomBar.ToggleSelectedInspiration( Inspiration.Self )]"
 
-						icon_round_button_base = {}
+						icon = {
+							texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+							size = { 100% 100% }
+						}
 
 						icon = {
 							visible = "[ObjectsEqual( InGameBottomBar.GetSelectedInspiration, Inspiration.Self )]"
@@ -3443,20 +3434,14 @@ widget = {
 				visible = "[Or( InGameBottomBar.HasGlobalNotificationEpidemic, Or( DataModelHasItems( InGameBottomBar.GetEpidemicsInRealm ), DataModelHasItems( InGameBottomBar.GetEpidemicsBorderingRealm ) ) )]"
 			}
 
-			container = {
-				visible = "[Not(GetPlayer.HasActiveCompanionAISetting('raise_armies'))]"
-				ignoreinvisible = yes
-
+			### Raise/Disband armies ###
 			button_raise_disband_armies = {
 				name = "tutorial_highlight_raise_troops"
-					visible = "[And( Character.IsAtWar, Not(Character.HasRaisedRegiments))]"
+				visible = "[And( And( Character.IsAtWar, Not(Character.HasRaisedRegiments)), Not(IsGameViewOpen('barbershop')))]"
 				visible_at_creation = no
 
 				enabled = "[PlayerCanRaiseAnyRallyPoint]"
 				onclick = "[PlayerRaiseAllRegiments]"
-					onrightclick = "[PlayerRaiseAllRegimentsAtLocation]"
-					button_ignore = none
-
 				clicksound = "event:/SFX/UI/Unit/Army/sfx_ui_raise_army"
 
 				onclick = "[PdxGuiTriggerAllAnimations('button_army')]"
@@ -3467,7 +3452,7 @@ widget = {
 			}
 
 			button_raise_disband_armies = {
-					visible = "[PlayerShouldDisbandAll]"
+				visible = "[And( PlayerShouldDisbandAll, Not(IsGameViewOpen('barbershop')))]"
 				visible_at_creation = no
 
 				onclick = "[PlayerDisbandAll]"
@@ -3479,11 +3464,7 @@ widget = {
 				}
 
 				tooltip = "[GetDisbandAllTooltip]"
-				}
 			}
-
-			### Raise/Disband armies ###
-			
 
 			spacer = {
 				datacontext = "[GetPlayer]"
@@ -5965,7 +5946,15 @@ types HUD
 		using = tooltip_above
 		onclick = "[Activity.OpenActivityView]"
 
-		icon_round_button_base = {}
+		icon = {
+			texture = "gfx/interface/buttons/button_lifestyles_base.dds"
+			size = { 100% 100% }
+		}
+
+		# icon = {
+		# 	texture = "gfx/interface/buttons/button_lifestyles_active_frame.dds"
+		# 	size = { 100% 100% }
+		# }
 
 		icon = {
 			name = "progress_frame"
@@ -6044,7 +6033,7 @@ types HUD
 
 			hbox = {
 				layoutpolicy_horizontal = expanding
-				visible = "[Or( Or( GreaterThan_int32( Character.GetUnassignedVassalsCount, '(int32)0' ), Not( Character.HasTaxSlots ) ), GreaterThan_int32( Character.GetUntaxedJurisdictionCount, '(int32)0' ) )]"
+				visible = "[Or( Or( GreaterThan_int32( Character.GetUnassignedVassalsCount, '(int32)0' ), Not( Character.HasTaxSlots ) ), GreaterThan_int32( Character.GetTaxSlotsWithoutTaxCollectorCount, '(int32)0' ) )]"
 
 				icon = {
 					size = { 25 25 }
@@ -6053,10 +6042,10 @@ types HUD
 
 				vbox = {
 					layoutpolicy_horizontal = expanding
-					margin_left = 5
+					margin_left = 10
 
 					text_single = {
-						visible = "[GreaterThan_int32( Character.GetUntaxedJurisdictionCount, '(int32)0' )]"
+						visible = "[GreaterThan_int32( Character.GetTaxSlotsWithoutTaxCollectorCount, '(int32)0' )]"
 						layoutpolicy_horizontal = expanding
 						text = "TAX_SLOT_OVERVIEW_WINDOW_TAX_SLOTS_WARNING"
 						default_format = "#N"
@@ -6396,23 +6385,8 @@ types HUD
 		}
 	}
 
-	type icon_power_sharing_level = highlight_icon {
-		size = { 28 28 }
-
-		texture = "gfx/interface/window_regency/regency_level_button_badge.dds"
-
-		text_single = {
-			align = nobaseline
-			parentanchor = center
-			raw_text = "[Diarchy.GetPowerLevel]"
-		}
-	}
-
-
 	type legitimacy_hud_tooltip = object_tooltip_pop_out
 	{
-		visible = "[And(LegitimacyType.IsValid, Character.GetGovernment.HasRule( 'legitimacy' ))]"
-
 		blockoverride "title_text"
 		{
 			margin = { 0 8 }
