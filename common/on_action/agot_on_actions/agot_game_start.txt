@@ -25,6 +25,37 @@ agot_on_game_start = {
 
 		##### General setup start #####
 
+		# Magic Level set up
+		if = {
+			limit = {
+				any_living_dragon = {
+					count = 0
+				}
+			}
+			set_global_variable = {
+				name = magic_level
+				value = 0 # no magic
+			}
+		}
+		else_if = {
+			limit = {
+				any_living_dragon = {
+					count < 10
+				}
+			}
+
+			set_global_variable = {
+				name = magic_level
+				value = 1 # some magic
+			}
+		}
+		else = {
+			set_global_variable = {
+				name = magic_level
+				value = 2 # more magic
+			}
+		}
+
 		# House Customizer Dummies Spawn
 		agot_house_customizer_spawn_dummies_effect = yes
 
@@ -214,7 +245,6 @@ agot_on_game_start = {
 		agot_add_buildings_on_start = yes
 		agot_add_camp_buildings_on_start = yes
 		agot_add_estate_buildings_on_start = yes
-		cv_add_camp_buildings_on_start = yes
 
 		every_province = {
 			limit = {
@@ -283,7 +313,7 @@ agot_on_game_start = {
 
 		#Dynasty Divided
 		house:house_Blackfyre ?= { add_house_modifier = divided_dynasty_house_modifier }
-		
+
 		#Bastard House Restoration
 		house:house_Brightflame ?= { set_variable = { name = bastard_house_of value = dynasty:dynn_Targaryen.dynasty_founder.house} }
 		house:house_Crossing ?= { set_variable = { name = bastard_house_of value = dynasty:dynn_Frey.dynasty_founder.house} }
@@ -356,6 +386,9 @@ agot_on_game_start = {
 				house = { add_house_modifier = agot_historical_loyalty_blackfyre }
 			}
 		}
+
+		agot_house_head_setter = yes
+
 		###
 
 		### War of Succession Usurpation Setup
@@ -413,7 +446,6 @@ agot_on_game_start = {
 			}
 		}
 
-		### Zara Changes 
 		#Kingsguard Stuff
 		title:d_dummy_kingsguard = {
 			copy_title_history = title:d_kingsguard
@@ -476,9 +508,9 @@ agot_on_game_start = {
 					add_character_flag = lord_commander
 
 					scope:agot_crown = {
-						appoint_court_position = {
-							recipient = prev
-							court_position = zz_kingsguard_lord_commander_court_position
+						assign_councillor_type = {
+							type = kingsguard_lord_commander
+							target = prev
 						}
 					}
 					title:e_the_iron_throne = {
@@ -498,9 +530,9 @@ agot_on_game_start = {
 					save_temporary_scope_as = kingsguard_member
 					title:e_the_iron_throne = {
 						holder = {
-							appoint_court_position = {
-								recipient = scope:kingsguard_member
-								court_position =zz_kingsguard_court_position
+							assign_councillor_type = {
+								type = kingsguard_1
+								target = scope:kingsguard_member
 							}
 						}
 						set_variable = {
@@ -519,9 +551,9 @@ agot_on_game_start = {
 					save_temporary_scope_as = kingsguard_member
 					title:e_the_iron_throne = {
 						holder = {
-							appoint_court_position = {
-								recipient = scope:kingsguard_member
-								court_position =zz_kingsguard_court_position
+							assign_councillor_type = {
+								type = kingsguard_2
+								target = scope:kingsguard_member
 							}
 						}
 						set_variable = {
@@ -540,9 +572,9 @@ agot_on_game_start = {
 					save_temporary_scope_as = kingsguard_member
 					title:e_the_iron_throne = {
 						holder = {
-							appoint_court_position = {
-								recipient = scope:kingsguard_member
-								court_position =zz_kingsguard_court_position
+							assign_councillor_type = {
+								type = kingsguard_3
+								target = scope:kingsguard_member
 							}
 						}
 						set_variable = {
@@ -561,9 +593,9 @@ agot_on_game_start = {
 					save_temporary_scope_as = kingsguard_member
 					title:e_the_iron_throne = {
 						holder = {
-							appoint_court_position = {
-								recipient = scope:kingsguard_member
-								court_position =zz_kingsguard_court_position
+							assign_councillor_type = {
+								type = kingsguard_4
+								target = scope:kingsguard_member
 							}
 						}
 						set_variable = {
@@ -582,9 +614,9 @@ agot_on_game_start = {
 					save_temporary_scope_as = kingsguard_member
 					title:e_the_iron_throne = {
 						holder = {
-							appoint_court_position = {
-								recipient = scope:kingsguard_member
-								court_position =zz_kingsguard_court_position
+							assign_councillor_type = {
+								type = kingsguard_5
+								target = scope:kingsguard_member
 							}
 						}
 						set_variable = {
@@ -603,9 +635,9 @@ agot_on_game_start = {
 					save_temporary_scope_as = kingsguard_member
 					title:e_the_iron_throne = {
 						holder = {
-							appoint_court_position = {
-								recipient = scope:kingsguard_member
-								court_position =zz_kingsguard_court_position
+							assign_councillor_type = {
+								type = kingsguard_6
+								target = scope:kingsguard_member
 							}
 						}
 						set_variable = {
@@ -622,8 +654,6 @@ agot_on_game_start = {
 			title:e_the_iron_throne = { remove_variable = agot_kingsguard_can_fire_yes }
 			remove_global_variable = agot_startup_fire_councillors
 		}
-		
-		### Zara Changes
 		###
 
 		#every_ruler doesn't catch barons
@@ -862,8 +892,8 @@ agot_on_game_start = {
 
 			#set up weapon of choice
 			if = {
-				limit = { 
-					age > 5 
+				limit = {
+					age > 5
 					is_human = yes
 				}
 				trigger_event = agot_events_generic.0012
@@ -1228,11 +1258,11 @@ agot_on_game_start = {
 			}
 			if = { # Succession error log workaround
 				limit = { has_character_flag = unlegitimize_on_load }
-				if = { 
+				if = {
 					limit = { has_trait = legitimized_bastard }
 					remove_trait = legitimized_bastard
 				}
-				if = { 
+				if = {
 					limit = { has_trait = bastard_founder }
 					remove_trait = bastard_founder
 				}
@@ -1276,6 +1306,7 @@ agot_on_game_start = {
 				}
 			}
 		}
+
 		every_kingdom = {
 			limit = {
 				exists = holder
@@ -1992,37 +2023,6 @@ agot_on_game_start = {
 		agot_seed_archmaesters_effect = yes
 		agot_seed_maesters_effect = yes
 
-		# Magic Level set up
-		if = {
-			limit = {
-				any_living_dragon = {
-					count = 0
-				}
-			}
-			set_global_variable = {
-				name = magic_level
-				value = 0 # no magic
-			}
-		}
-		else_if = {
-			limit = {
-				any_living_dragon = {
-					count < 10
-				}
-			}
-
-			set_global_variable = {
-				name = magic_level
-				value = 1 # some magic
-			}
-		}
-		else = {
-			set_global_variable = {
-				name = magic_level
-				value = 2 # more magic
-			}
-		}
-
 		## Gold Cloak Setup
 		if = {
 			limit = {
@@ -2069,6 +2069,16 @@ agot_on_game_start = {
 					set_designated_heir_unsafe = character:Arryn_13
 				}
 			}
+
+			if = {
+				limit = {
+					character:Strickland_1 = { is_alive = yes }
+				}
+				character:Toyne_4 = {
+					set_designated_heir_unsafe = character:Strickland_1
+				}
+			}
+
 			# Nightswatch cleanup TO-DO set up by date
 			character:Qorgyle_69 = {
 				if = {

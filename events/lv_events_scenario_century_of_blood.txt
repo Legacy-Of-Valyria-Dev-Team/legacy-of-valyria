@@ -140,10 +140,53 @@ lv_scenario_cob.0004 = { #Tommen II Lannister
 		character = root
 		animation = marshal
 	}
-
+	option = {
+		name = lv_scenario_cob.0004.b
+		custom_tooltip = lv_scenario_cob.0004.b_tt
+		add_prestige = 500
+		hidden_effect = {
+			random_list = {
+				95 = { #dead
+					death = {
+						death_reason = death_lost_at_sea
+					}
+					if = {
+						limit = { any_artifact = { has_artifact_modifier = vs_brightroar_modifier } }
+							random_artifact = { 
+								limit = { has_artifact_modifier = vs_brightroar_modifier }
+								save_scope_as = brightroar
+							}
+  						destroy_artifact = scope:brightroar
+					}
+				}
+				5 = { #unscathed				
+					add_legitimacy = massive_legitimacy_gain
+					add_gold = 5000
+					add_prestige = 1000
+					agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
+					stress_impact = {
+						base = major_stress_loss
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 95 #0
+			#modifier = {
+			#	add = agot_historic_chain_outcome
+			#}
+		}
+	}
 	option = {
 		name = lv_scenario_cob.0004.a
+		custom_tooltip = lv_scenario_cob.0004.a_tt
 		add_prestige = 100
+		ai_chance = {
+			base = 5 #0
+			#modifier = {
+			#	add = agot_nonhistoric_chain_outcome
+			#}
+		}
 	}
 }
 
@@ -429,7 +472,10 @@ lv_scenario_cob.0501 = { #Aurion Varezys decides his path
 		name = lv_scenario_cob.0501.a
 		custom_tooltip = lv_scenario_cob.0501.a_tt
 		ai_chance = {
-			base = 60
+			base = 90
+			#modifier = {
+			#	add = agot_historic_chain_outcome
+			#}
 		}
 		add_prestige = 100
 		hidden_effect = {
@@ -459,7 +505,10 @@ lv_scenario_cob.0501 = { #Aurion Varezys decides his path
 	option = {
 		name = lv_scenario_cob.0005.b
 		ai_chance = {
-			base = 40
+			base = 10
+			#modifier = {
+			#	add = agot_nonhistoric_chain_outcome
+			#}
 		}
 		add_trait = zealous
 		start_war = {
