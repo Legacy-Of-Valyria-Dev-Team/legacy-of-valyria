@@ -4,7 +4,7 @@ tags={
 	"Gameplay"
 	"Total Conversion"
 }
-name="AGOT - Colonizable Valyria DEV"
+name="Legacy of Valyria - DEV"
 supported_version="1.15.0"
-path="mod/agot-valyria-mod"
+path="mod/legacy-of-valyria"
 remote_file_id="3322514934"
