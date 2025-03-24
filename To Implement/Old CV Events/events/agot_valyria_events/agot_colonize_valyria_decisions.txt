@@ -1,0 +1,486 @@
+﻿##settle_valyria_choose_colony
+
+namespace = colonize_valyria
+
+colonize_valyria.0001 = {
+	
+	type = character_event
+	
+	title = valyria.0001.t
+	desc = valyria.0001.desc
+	theme = diplomacy
+	left_portrait = {
+		character = ROOT
+		animation = personality_bold
+	}
+	right_portrait = {
+		character = cp:councillor_castellan
+		animation = worry
+	}
+
+	option = {
+		name = valyrian.0001.a
+		trigger_event = { 
+			id = colonize_valyria.0010
+		}
+	}
+	
+	option = {
+		name = valyrian.0001.b
+		add_gold = medium_gold_value
+	}
+}
+colonize_valyria.0002 = {
+	type = character_event
+	title = valyria.0002.t
+	desc = valyria.0002.desc
+	
+	theme = claim_throne_scheme
+	left_portrait = {
+		character = ROOT
+		animation = personality_bold
+	}
+	right_portrait = {
+		character = cp:councillor_castellan
+		animation = chancellor
+	}
+	override_background = docks
+	option = {
+		name = colonize_valyria.0002.a
+		get_title = title:c_nuqiria
+		title:c_nuqiria = {
+			set_county_faith = root.faith
+			set_county_culture = root.culture
+		}
+	}
+	option = {
+		name = colonize_valyria.0002.b
+		get_title = title:c_valyria
+		title:c_valyria = {
+			set_county_faith = root.faith
+			set_county_culture = root.culture
+		}
+	}
+
+}
+
+colonize_valyria.0010 = { #storm while travelling
+	type = character_event
+	title = colonize_valyria.0010.t
+	desc = colonize_valyria.0010.desc
+	theme = mental_health
+	override_background = ocean
+	left_portrait = {
+		character = ROOT
+		animation = fear
+	}
+	option = {
+		name = colonize_valyria.0010.a #Try to find a harbor.
+		random_list = {
+			20 = {
+				trigger_event = { 
+					id = colonize_valyria.0003
+				}
+			}
+			70 = {
+				trigger_event = { 
+					id = colonize_valyria.0004
+				}
+			}
+			10 = {
+				trigger_event = { 
+					id = colonize_valyria.0005
+				}
+			}
+		}
+	}
+
+
+	option = {
+		name = colonize_valyria.0010.b #Pray to the gods.
+
+		random_list = {
+			35 = {
+				trigger_event = { 
+					id = colonize_valyria.0003
+				}
+			}
+			50 = {
+				trigger_event = { 
+					id = colonize_valyria.0004
+				}
+			}
+			15 = {
+				trigger_event = { 
+					id = colonize_valyria.0005
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = colonize_valyria.0010.c #Full stand off.
+			
+		random_list = {
+			45 = {
+				trigger_event = { 
+					id = colonize_valyria.0003
+				}
+			}
+			25 = {
+				trigger_event = { 
+					id = colonize_valyria.0004
+				}
+			}
+			30 = {
+				trigger_event = { 
+					id = colonize_valyria.0005
+				}
+			}
+		}
+	}
+}
+
+
+colonize_valyria.0003 = { #You had more luck than your crew.
+	type = character_event
+	title = colonize_valyria.0003.t
+	desc = colonize_valyria.0003.desc
+	theme = mental_health
+	left_portrait = {
+		character = ROOT
+		animation = grief
+	}
+	override_background = ocean
+	option = {
+		name = colonize_valyria.0003.a
+		trigger_event = { 
+			id = colonize_valyria.0002			
+		}
+		every_courtier_or_guest = {
+			if = {
+				limit = {
+					NOR = {
+						this = root
+	
+					}
+	
+	
+				}
+				death = { death_reason = death_lost_at_sea }
+			}
+		}
+	}
+
+}
+
+colonize_valyria.0004 = { #You all remain unscathed.
+	type = character_event
+	title = colonize_valyria.0004.t
+	desc = colonize_valyria.0004.desc
+	theme = party
+	override_background = ocean
+	left_portrait = {
+		character = ROOT
+		animation = toast
+	}
+	option = {
+		name = colonize_valyria.0004.a
+		trigger_event = { 
+			id = colonize_valyria.0002
+		}
+	}
+}
+
+colonize_valyria.0005 = { #Nobody survives.
+	type = character_event
+	title = colonize_valyria.0005.t
+	desc = colonize_valyria.0005.desc
+	theme = death
+	override_background = ocean
+	left_portrait = {
+		character = ROOT
+		animation = fear
+	}
+	option = {
+		name = colonize_valyria.0005.a
+		trigger_event = { 
+			id = colonize_valyria.0002
+		}
+		every_courtier_or_guest = {
+			death = { death_reason = death_lost_at_sea }
+		}
+		death = {
+			death_reason = death_lost_at_sea
+		}
+	}
+}
+
+#colonize_valyria.0006 = { #What was that creature?
+	#type = character_event
+	#title = travel_valyria.0006.t
+	#desc = travel_valyria.0006.t
+	#theme = sailing_activity
+	#override_background = ocean
+	#left_portrait = {
+	#	character = ROOT
+	#	animation = shock
+	#}
+	#option 
+#}
+colonize_valyria.0007 = {  #made by CK3AGOT devs
+	type = character_event
+	title = colonize_valyria.0007.t
+	desc = colonize_valyria.0007.desc
+
+	theme = dragon
+
+	override_background = { reference = agot_dragonpit }
+
+	left_portrait = {
+		character = root
+		animation = brave
+	}
+
+	right_portrait = {
+		character = scope:head_dragonkeeper
+		animation = throne_room_writer
+	}
+
+	immediate = {
+		create_character = { # Create Head Dragonkeeper
+			template = agot_head_dragonkeeper_high_funding_template
+			employer = root
+			culture = root.location.culture
+			faith = root.location.faith
+			save_scope_as = head_dragonkeeper
+		}
+	}
+
+	# Yes, they raise a good point.
+	option = {
+		name = agot_dragonkeepers.0101.a
+		title:c_ilvonys = {
+			set_variable = { name = has_dragonkeeper_order }
+			holder = { agot_dragonpit_access_law_close_family_effect = yes }
+		}
+		appoint_court_position = {
+			recipient = scope:head_dragonkeeper
+			court_position = head_dragonkeeper_court_position
+		}
+		if = {
+			limit = {
+				has_ep1_dlc_trigger = yes
+			}
+			set_amenity_level = {
+				type = agot_dragonpit_amenities
+				value = 4 # High
+			}
+		}
+	}
+}
+colonize_valyria.00071 = {  #made by CK3AGOT devs
+	type = character_event
+	title = colonize_valyria.0007.t
+	desc = colonize_valyria.0007.desc
+
+	theme = dragon
+
+	override_background = { reference = agot_dragonpit }
+
+	left_portrait = {
+		character = root
+		animation = brave
+	}
+
+	right_portrait = {
+		character = scope:head_dragonkeeper
+		animation = throne_room_writer
+	}
+
+	immediate = {
+		create_character = { # Create Head Dragonkeeper
+			template = agot_head_dragonkeeper_high_funding_template
+			employer = root
+			culture = root.location.culture
+			faith = root.location.faith
+			save_scope_as = head_dragonkeeper
+		}
+	}
+
+	# Yes, they raise a good point.
+	option = {
+		name = agot_dragonkeepers.0101.a
+		title:c_valyria = {
+			set_variable = { name = has_dragonkeeper_order }
+			holder = { agot_dragonpit_access_law_close_family_effect = yes }
+		}
+		appoint_court_position = {
+			recipient = scope:head_dragonkeeper
+			court_position = head_dragonkeeper_court_position
+		}
+		if = {
+			limit = {
+				has_ep1_dlc_trigger = yes
+			}
+			set_amenity_level = {
+				type = agot_dragonpit_amenities
+				value = 4 # High
+			}
+		}
+	}
+}
+colonize_valyria.00072 = {  #made by CK3AGOT devs
+	type = character_event
+	title = colonize_valyria.0007.t
+	desc = colonize_valyria.0007.desc
+
+	theme = dragon
+
+	override_background = { reference = agot_dragonpit }
+
+	left_portrait = {
+		character = root
+		animation = brave
+	}
+
+	right_portrait = {
+		character = scope:head_dragonkeeper
+		animation = throne_room_writer
+	}
+
+	immediate = {
+		create_character = { # Create Head Dragonkeeper
+			template = agot_head_dragonkeeper_high_funding_template
+			employer = root
+			culture = root.location.culture
+			faith = root.location.faith
+			save_scope_as = head_dragonkeeper
+		}
+	}
+
+	# Yes, they raise a good point.
+	option = {
+		name = agot_dragonkeepers.0101.a
+		title:c_dragonfields = {
+			set_variable = { name = has_dragonkeeper_order }
+			holder = { agot_dragonpit_access_law_close_family_effect = yes }
+		}
+		appoint_court_position = {
+			recipient = scope:head_dragonkeeper
+			court_position = head_dragonkeeper_court_position
+		}
+		if = {
+			limit = {
+				has_ep1_dlc_trigger = yes
+			}
+			set_amenity_level = {
+				type = agot_dragonpit_amenities
+				value = 4 # High
+			}
+		}
+	}
+}
+colonize_valyria.00073 = {  #made by CK3AGOT devs
+	type = character_event
+	title = colonize_valyria.0007.t
+	desc = colonize_valyria.0007.desc
+
+	theme = dragon
+
+	override_background = { reference = agot_dragonpit }
+
+	left_portrait = {
+		character = root
+		animation = brave
+	}
+
+	right_portrait = {
+		character = scope:head_dragonkeeper
+		animation = throne_room_writer
+	}
+
+	immediate = {
+		create_character = { # Create Head Dragonkeeper
+			template = agot_head_dragonkeeper_high_funding_template
+			employer = root
+			culture = root.location.culture
+			faith = root.location.faith
+			save_scope_as = head_dragonkeeper
+		}
+	}
+
+	# Yes, they raise a good point.
+	option = {
+		name = agot_dragonkeepers.0101.a
+		title:c_kastaryia = {
+			set_variable = { name = has_dragonkeeper_order }
+			holder = { agot_dragonpit_access_law_close_family_effect = yes }
+		}
+		appoint_court_position = {
+			recipient = scope:head_dragonkeeper
+			court_position = head_dragonkeeper_court_position
+		}
+		if = {
+			limit = {
+				has_ep1_dlc_trigger = yes
+			}
+			set_amenity_level = {
+				type = agot_dragonpit_amenities
+				value = 4 # High
+			}
+		}
+	}
+}
+
+colonize_valyria.00074 = {  #made by CK3AGOT devs
+	type = character_event
+	title = colonize_valyria.0007.t
+	desc = colonize_valyria.0007.desc
+
+	theme = dragon
+
+	override_background = { reference = agot_dragonpit }
+
+	left_portrait = {
+		character = root
+		animation = brave
+	}
+
+	right_portrait = {
+		character = scope:head_dragonkeeper
+		animation = throne_room_writer
+	}
+
+	immediate = {
+		create_character = { # Create Head Dragonkeeper
+			template = agot_head_dragonkeeper_high_funding_template
+			employer = root
+			culture = root.location.culture
+			faith = root.location.faith
+			save_scope_as = head_dragonkeeper
+		}
+	}
+
+	# Yes, they raise a good point.
+	option = {
+		name = agot_dragonkeepers.0101.a
+		title:c_jarqanor = {
+			set_variable = { name = has_dragonkeeper_order }
+			holder = { agot_dragonpit_access_law_close_family_effect = yes }
+		}
+		appoint_court_position = {
+			recipient = scope:head_dragonkeeper
+			court_position = head_dragonkeeper_court_position
+		}
+		if = {
+			limit = {
+				has_ep1_dlc_trigger = yes
+			}
+			set_amenity_level = {
+				type = agot_dragonpit_amenities
+				value = 4 # High
+			}
+		}
+	}
+}
