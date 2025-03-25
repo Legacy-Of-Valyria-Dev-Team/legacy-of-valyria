@@ -531,18 +531,19 @@ agot_apply_dragon_aging_effect = {
 				#Natural Pit check
 				if = {
 					limit = {
-						var:pitted_dragon_location ?= title:c_dragonstone
+						var:pitted_dragon_location ?= {
+							lv_has_mid_tier_dragon_pit_county = yes
+						}
 					}
 					# Growth is not as impinged compared to manmade pits, volcano magic
 					random_list = {
-						5 = {}
-						55 = {
+						80 = {
 							add_prowess_skill = 1
 							change_dragon_size = {
 								VALUE = 1
 							}
 						}
-						15 = {
+						20 = {
 							add_prowess_skill = 2
 							change_dragon_size = {
 								VALUE = 2
@@ -558,13 +559,19 @@ agot_apply_dragon_aging_effect = {
 					}
 					# Growth is not as impinged compared to manmade pits, volcano magic
 					random_list = {
-						80 = {
+						20 = {
+							add_prowess_skill = 1
+							change_dragon_size = {
+								VALUE = 1
+							}
+						}
+						70 = {
 							add_prowess_skill = 2
 							change_dragon_size = {
 								VALUE = 2
 							}
 						}
-						20 = {
+						10 = {
 							add_prowess_skill = 3
 							change_dragon_size = {
 								VALUE = 3
@@ -574,8 +581,8 @@ agot_apply_dragon_aging_effect = {
 				}
 				else = {
 					random_list = {
-						30 = {} # Older dragons in a dragonpit do not grow as well
-						60 = {
+						25 = {} # Older dragons in a dragonpit do not grow as well
+						65 = {
 							add_prowess_skill = 1
 							change_dragon_size = {
 								VALUE = 1
@@ -593,9 +600,12 @@ agot_apply_dragon_aging_effect = {
 			else_if = {
 				limit = {
 					liege_or_court_owner.capital_province ?= { 
+						OR = {
 							geographical_region = world_valyria
+							geographical_region = world_far_essos_volcanos
 						}
 					}
+				}
 				random_list = {
 					80 = {
 						add_prowess_skill = 2
@@ -604,9 +614,30 @@ agot_apply_dragon_aging_effect = {
 						}
 					}
 					20 = {
-						add_prowess_skill = 5
+						add_prowess_skill = 3
 						change_dragon_size = {
-							VALUE = 5
+							VALUE = 3
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					liege_or_court_owner.capital_province ?= { 
+						this = title:c_dragonstone
+					}
+				}
+				random_list = {
+					60 = {
+						add_prowess_skill = 1
+						change_dragon_size = {
+							VALUE = 1							
+						}
+					}
+					40 = {
+						add_prowess_skill = 2
+						change_dragon_size = {
+							VALUE = 2
 						}
 					}
 				}
@@ -614,13 +645,13 @@ agot_apply_dragon_aging_effect = {
 			else = {
 				random_list = {
 					10 = {}
-					70 = {
+					65 = {
 						add_prowess_skill = 1
 						change_dragon_size = {
 							VALUE = 1
 						}
 					}
-					20 = {
+					25 = {
 						add_prowess_skill = 2
 						change_dragon_size = {
 							VALUE = 2
@@ -648,8 +679,7 @@ agot_create_generic_dragonpit_scripted_effect = {
 			random_held_county = {
 				limit = {
 					any_county_province = {
-						has_holding_type = castle_holding
-						has_building_or_higher = generic_dragon_pit_01
+						zz_has_dragon_pit_building = yes
 					}
 					NOT = { has_variable = has_dragonkeeper_order }
 				}
