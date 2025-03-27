@@ -1,9 +1,9 @@
 colonize_county_or_duchy_decision = {
 	picture = { reference = "gfx/interface/illustrations/decisions/fp2_decision_struggle_opening.dds" }
-	title = colonize_county_or_duchy_decision
 	desc = colonize_county_or_duchy_decision_desc
 	selection_tooltip = colonize_county_or_duchy_decision_tooltip
-	decision_group_type = major
+	sort_order = 200
+	decision_group_type = adventurer_minor
 	
 	is_shown = {
 		has_ep3_dlc_trigger = yes
@@ -34,6 +34,34 @@ colonize_county_or_duchy_decision = {
 	# is_valid for county has settler_camp_03 or higher
 	# is_valid for duchy has settler_camp_06
 
+	# widget = {
+	# 	gui = "decision_view_widget_option_list_generic"
+	# 	controller = decision_option_list_controller
+	# 	decision_to_second_step_button = "CHOOSE_CHARACTER_ROLE_DECISION_NEXT_STEP_BUTTON"
+	# 	show_from_start = yes
+
+	# 	item = { # Court Physician
+	# 		value = hire_physician_decision
+	# 		is_shown = {
+	# 			is_ruler = yes
+	# 			is_landless_adventurer = no
+	# 		}
+	# 		is_valid = {
+	# 			NOR = {
+	# 				employs_court_position = court_physician_court_position
+	# 				custom_tooltip = {
+	# 					text = recruit_court_physician_cooldown_tt
+	# 					has_character_flag = recruit_court_physician_cooldown
+	# 				}
+	# 			}
+	# 		}
+	# 		current_description = hire_physician_decision_desc
+	# 		localization = hire_physician_decision
+	# 		icon = "gfx/interface/icons/court_position_types/court_physician_court_position.dds"
+	# 		ai_chance = { value = 100 }
+	# 	} 
+	# }
+
 	widget = {
 		gui = "decision_view_widget_option_list_generic"
 		controller = decision_option_list_controller
@@ -43,7 +71,7 @@ colonize_county_or_duchy_decision = {
 			value = colonize_one_county
 			current_description = colonize_one_county_desc
 			localization = colonize_one_county
-			icon = "gfx/interface/icons/message_feed/a_catch_all_councillor_icon.dds"
+			icon = "gfx/interface/icons/county_crown.dds"duchy_crown.dds
 			is_valid = {
 				custom_tooltip = {
 					text = need_settler_camp_3_or_higher
@@ -53,24 +81,24 @@ colonize_county_or_duchy_decision = {
 				}
 			}
 			is_shown = {
-				domicile ?= { has_domicile_building_or_higher = settler_camp_01 }
+				domicile ?= { has_domicile_building_or_higher = settler_camp_03 }
 			}
 		}
 		item = { # Settle the whole duchy
 			value = colonize_a_duchy
 			current_description = colonize_a_duchy_desc
 			localization = colonize_a_duchy
-			icon = "gfx/interface/icons/message_feed/mercenary.dds"
+			icon = "gfx/interface/icons/duchy_crown.dds"
 			is_valid = {
 				custom_tooltip = {
 					text = need_settler_camp_6
 					domicile = {
-						has_domicile_building_or_higher = settler_camp_03
+						has_domicile_building_or_higher = settler_camp_06
 					}
 				}
 			}
 			is_shown = {
-				domicile ?= { has_domicile_building_or_higher = settler_camp_01 }
+				domicile ?= { has_domicile_building_or_higher = settler_camp_06 }
 			}
 		}
 	}
@@ -93,62 +121,56 @@ colonize_county_or_duchy_decision = {
 			}
 			add_trait = adventurer_follower
 		}
-		# if = {
-		# 	limit = { }	settles one county effects
-		# }
-		hidden_effect = {
-			if = {
-				limit = { scope:colonize_one_county = yes }
-				root.location.county = { save_temporary_scope_as = target_county }
-				root = { save_temporary_scope_as = new_holder }
-				create_title_and_vassal_change = {
-					type = returned
-					save_scope_as = change
-				}
-				scope:target_county = {
-					change_title_holder = {
-						holder = scope:new_holder
-						change = change
-						take_baronies = yes
-					}
-					set_county_faith = scope:new_holder.faith
-					set_county_culture = scope:new_holder.culture
-				}
-				resolve_title_and_vassal_change = scope:change
+		if = {
+			limit = { scope:colonize_one_county = yes }
+			root.location.county = { save_temporary_scope_as = target_county }
+			root = { save_temporary_scope_as = new_holder }
+			create_title_and_vassal_change = {
+				type = returned
+				save_scope_as = change
 			}
-			else_if = {
-				limit = { scope:colonize_a_duchy = yes }
-				root.location.duchy = { save_temporary_scope_as = target_duchy }
-				root = { save_temporary_scope_as = new_holder }
-				scope:target_duchy = {
-					every_dejure_county = {
-						save_temporary_scope_as = target_county
-						while = {
-							limit = { any_de_jure_county = { holder = { has_trait = ruin } } }
-							create_title_and_vassal_change = {
-								type = returned
-								save_scope_as = change
-							}
-							scope:target_county = {
-								change_title_holder = {
-									holder = scope:new_holder
-									change = change
-									take_baronies = yes
-								}
-								set_county_faith = scope:new_holder.faith
-								set_county_culture = scope:new_holder.culture
-							}
-							resolve_title_and_vassal_change = scope:change
+			scope:target_county = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = change
+					take_baronies = yes
+				}
+				set_county_faith = scope:new_holder.faith
+				set_county_culture = scope:new_holder.culture
+			}
+			resolve_title_and_vassal_change = scope:change
+		}
+		else_if = {
+			limit = { scope:colonize_a_duchy = yes }
+			root.location.duchy = { save_temporary_scope_as = target_duchy }
+			root = { save_temporary_scope_as = new_holder }
+			scope:target_duchy = {
+				every_dejure_county = {
+					save_temporary_scope_as = target_county
+					while = {
+						limit = { any_de_jure_county = { holder = { has_trait = ruin } } }
+						create_title_and_vassal_change = {
+							type = returned
+							save_scope_as = change
 						}
+						scope:target_county = {
+							change_title_holder = {
+								holder = scope:new_holder
+								change = change
+								take_baronies = yes
+							}
+							set_county_faith = scope:new_holder.faith
+							set_county_culture = scope:new_holder.culture
+						}
+						resolve_title_and_vassal_change = scope:change
 					}
 				}
 			}
 		}
-		# else_if = {
-		# 	limit = { }	settles one duchy effect
-		# }
-		
+		hidden_effect = {
+		}
 	}
+
 	ai_check_interval = 60
 
 	ai_potential = {
