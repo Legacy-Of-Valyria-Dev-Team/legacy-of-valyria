@@ -108,65 +108,102 @@ colonize_county_or_duchy_decision = {
 			view = decisions
 			player = root
 		}
-		if = {
-			limit = {
-				NOT = { has_trait = adventurer }
-			}
-			add_trait = adventurer
-		}
-		every_courtier = {
-			set_variable = {
-				name = former_camp_leader
-				value = root
-			}
-			add_trait = adventurer_follower
-		}
-		if = {
-			limit = { scope:colonize_one_county = yes }
-			root.location.county = { save_temporary_scope_as = target_county }
-			root = { save_temporary_scope_as = new_holder }
-			create_title_and_vassal_change = {
-				type = returned
-				save_scope_as = change
-			}
-			scope:target_county = {
-				change_title_holder = {
-					holder = scope:new_holder
-					change = change
-					take_baronies = yes
+		# if = {
+		# 	limit = {
+		# 		NOT = { has_trait = adventurer }
+		# 	}
+		# 	add_trait = adventurer
+		# }
+		# every_courtier = {
+		# 	set_variable = {
+		# 		name = former_camp_leader
+		# 		value = root
+		# 	}
+		# 	add_trait = adventurer_follower
+		# }
+		custom_tooltip = gain_trait
+		custom_tooltip = courtier_gain_trait
+		custom_tooltip = settle_location
+		hidden_effect = {
+			if = {
+				limit = { scope:colonize_one_county = yes }
+				root.location.county = { save_temporary_scope_as = target_county }
+				root = { save_temporary_scope_as = new_holder }
+				scope:target_county = {
+					add_to_list = colonized_titles
 				}
-				set_county_faith = scope:new_holder.faith
-				set_county_culture = scope:new_holder.culture
+				ep3_become_landed_transfer_no_ennobled_modifier_effect = {
+					TITLE_RECEIVER = scope:new_holder
+					TITLE_LIST = colonized_titles
+					TYPE = created
+					REASON = flag:conquest
+				}
 			}
-			resolve_title_and_vassal_change = scope:change
-		}
-		else_if = {
-			limit = { scope:colonize_a_duchy = yes }
-			root.location.duchy = { save_temporary_scope_as = target_duchy }
-			root = { save_temporary_scope_as = new_holder }
-			scope:target_duchy = {
-				every_dejure_county = {
-					save_temporary_scope_as = target_county
-					while = {
-						limit = { any_de_jure_county = { holder = { has_trait = ruin } } }
-						create_title_and_vassal_change = {
-							type = returned
-							save_scope_as = change
-						}
-						scope:target_county = {
-							change_title_holder = {
-								holder = scope:new_holder
-								change = change
-								take_baronies = yes
-							}
-							set_county_faith = scope:new_holder.faith
-							set_county_culture = scope:new_holder.culture
-						}
-						resolve_title_and_vassal_change = scope:change
+			else_if = {
+				limit = { scope:colonize_a_duchy = yes }
+				root.location.duchy = { save_temporary_scope_as = target_duchy }
+				root = { save_temporary_scope_as = new_holder }
+				scope:target_duchy = {
+					add_to_list = colonized_titles
+					every_de_jure_county = {
+						save_temporary_scope_as = target_counties
+						add_to_list = colonized_titles
 					}
 				}
+				ep3_become_landed_transfer_no_ennobled_modifier_effect = {
+					TITLE_RECEIVER = scope:new_holder
+					TITLE_LIST = colonized_titles
+					TYPE = created
+					REASON = flag:conquest
+				}
 			}
 		}
+		# if = {
+		# 	limit = { scope:colonize_one_county = yes }
+		# 	root.location.county = { save_temporary_scope_as = target_county }
+		# 	root = { save_temporary_scope_as = new_holder }
+		# 	create_title_and_vassal_change = {
+		# 		type = returned
+		# 		save_scope_as = change
+		# 	}
+		# 	scope:target_county = {
+		# 		change_title_holder = {
+		# 			holder = scope:new_holder
+		# 			change = change
+		# 			take_baronies = yes
+		# 		}
+		# 		set_county_faith = scope:new_holder.faith
+		# 		set_county_culture = scope:new_holder.culture
+		# 	}
+		# 	resolve_title_and_vassal_change = scope:change
+		# }
+		# else_if = {
+		# 	limit = { scope:colonize_a_duchy = yes }
+		# 	root.location.duchy = { save_temporary_scope_as = target_duchy }
+		# 	root = { save_temporary_scope_as = new_holder }
+		# 	scope:target_duchy = {
+		# 		every_dejure_county = {
+		# 			save_temporary_scope_as = target_county
+		# 			while = {
+		# 				limit = { any_de_jure_county = { holder = { has_trait = ruin } } }
+		# 				create_title_and_vassal_change = {
+		# 					type = returned
+		# 					save_scope_as = change
+		# 				}
+		# 				scope:target_county = {
+		# 					change_title_holder = {
+		# 						holder = scope:new_holder
+		# 						change = change
+		# 						take_baronies = yes
+		# 					}
+		# 					set_county_faith = scope:new_holder.faith
+		# 					set_county_culture = scope:new_holder.culture
+		# 				}
+		# 				resolve_title_and_vassal_change = scope:change
+		# 			}
+		# 		}
+		# 	}
+		# }
 		hidden_effect = {
 		}
 	}
