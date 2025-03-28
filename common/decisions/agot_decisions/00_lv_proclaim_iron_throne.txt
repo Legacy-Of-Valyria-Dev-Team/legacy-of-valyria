@@ -1,0 +1,152 @@
+agot_proclaim_iron_throne = {
+	picture = {
+		reference = "gfx/interface/illustrations/event_scenes/ironthrone/throneroom_ironthrone.dds"
+	}
+	decision_group_type = major
+	desc = agot_proclaim_iron_throne_desc
+	ai_goal	= yes
+	ai_potential = { always = yes }
+	ai_will_do = { base = 10000 }
+
+	is_shown = {
+		is_independent_ruler = yes
+		primary_title.tier >= tier_kingdom
+		OR = {
+			has_title = title:e_blackwater_bay
+			has_title = title:e_the_north
+			has_title = title:e_the_riverlands
+			has_title = title:e_the_iron_islands
+			has_title = title:e_the_vale
+			has_title = title:e_the_westerlands
+			has_title = title:e_the_reach
+			has_title = title:e_the_stormlands
+			has_title = title:e_dorne
+			primary_title.title_capital_county = {
+				title_province = {
+					geographical_region = world_westeros_seven_kingdoms
+				}
+			}
+		}
+		NOT = { exists = title:e_the_iron_throne.holder }
+		NOT = { government_has_flag = government_is_nw }
+	}
+
+	is_valid = {
+		custom_description = {
+			text = agot_proclaim_it
+			any_held_title = {
+				title_capital_county.title_province = { geographical_region = world_westeros_seven_kingdoms }
+				tier = tier_empire
+				count >= 5
+				save_temporary_scope_as = de_jure_empire
+				root = { completely_controls = scope:de_jure_empire }
+			}
+		}
+		has_title = title:d_kings_landing
+		has_title = title:c_kings_landing
+		is_imprisoned = no
+		agot_is_independent_ruler = yes
+	}
+
+	effect = {
+		hidden_effect = {
+			title:e_targaryen_it_title = {
+				if = {
+					limit = {
+						NOT = {
+							has_global_variable = pk_iron_throne_historic_copy
+						}
+					}
+				}
+				copy_title_history = title:e_the_iron_throne
+				set_coa = dynn_Targaryen
+				set_global_variable = pk_iron_throne_historic_copy
+			}
+		}
+		title:e_the_iron_throne = {
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change_it
+				add_claim_on_loss = no
+			}
+			change_title_holder = {
+				holder = root
+				change = scope:change_it
+			}
+			resolve_title_and_vassal_change = scope:change_it
+			hidden_effect = {
+				copy_title_history = root.primary_title
+                set_variable = kingsguard
+                agot_set_empire_tier_realm_paramountcy = yes
+			}
+		}
+		add_prestige = 7000
+		dynasty = { add_dynasty_prestige = 3500 }
+		add_legitimacy = 2100 #Max Legitimacy
+		add_dread = 100
+		add_tyranny	= -35
+		gain_legitimizing_legend_seed_tooltip_effect = yes
+		give_nickname = nick_the_conqueror
+		agot_create_fake_iron_throne_effect = { OWNER = this }
+		change_government = lp_feudal_government
+		hidden_effect = {
+			legend_seed_great_deed_dynasty_effect = yes
+			every_vassal_or_below = {
+				limit = {
+					agot_is_valid_lp_feudal_government_target = yes
+				}
+				change_government = lp_feudal_government
+			}
+		}
+		spawn_army = {
+			name = iron_throne_decision_troops
+			men_at_arms = {
+				type = westerosi_sellswords
+				men = 100
+			}
+			men_at_arms = {
+				type = barrow_knights #replace these with a riverlands cav MAA if they ever get one
+				men = 100
+			}
+			men_at_arms = {
+				type = winged_knights
+				men = 100
+			}
+			men_at_arms = {
+				type = summer_knights
+				men = 100
+			}
+			men_at_arms = {
+				type = storm_knights
+				men = 100
+			}
+			men_at_arms = {
+				type = westerlands_knights
+				men = 100
+			}
+			men_at_arms = {
+				type = sand_steeds
+				men = 100
+			}
+			inheritable = no
+			location = title:d_kings_landing.holder.capital_province
+			origin = title:d_kings_landing.holder.capital_province
+		}
+
+		hidden_effect = {
+			scope:fake_artifact = {
+				add_durability = -1000
+			}
+		}
+
+		save_scope_as = i_am_the_king
+		every_player = {
+			limit = { NOT = { this = scope:i_am_the_king } }
+			trigger_event = {
+				id = agot_proclaim.0001
+			}
+		}
+	}
+
+	cost = { gold = 7000 }
+}
