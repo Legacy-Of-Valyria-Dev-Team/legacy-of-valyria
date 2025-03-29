@@ -268,13 +268,13 @@ colony_03 = {
 #Blockers
 
 #For counties that have mines of the fourteen flames and other provinces that we deem that have caves
-caves_01 = {
+cave_01 = {
 	# construction_time = slow_construction_time
 	# cost_gold = expensive_building_tier_6_cost
 	cost_gold = 0
 	construction_time = 20
 	type_icon = "icon_structure_mines.dds"
-	next_building = caves_02
+	next_building = cave_02
 
 	can_construct_potential = {
 		always = no
@@ -299,13 +299,13 @@ caves_01 = {
 	flag = blocker
 	type = regular
 }
-caves_02 = {
+cave_02 = {
 	# construction_time = slow_construction_time
 	# cost_gold = expensive_building_tier_6_cost
 	cost_gold = 0
 	construction_time = 20
 	type_icon = "icon_structure_mines.dds"
-	next_building = caves_03
+	next_building = cave_03
 
 	can_construct_potential = {
 		NOT = {
@@ -334,7 +334,7 @@ caves_02 = {
 	flag = blocker
 	type = regular
 }
-caves_03 = {
+cave_03 = {
 	# construction_time = slow_construction_time
 	# cost_gold = expensive_building_tier_6_cost
 	cost_gold = 0
@@ -363,7 +363,7 @@ caves_03 = {
 		hidden_effect = {
 			county.holder = {
 				random_list = {
-					1 = {}	# find a dragon egg
+					# 1 = {}	# find a dragon egg
 					3 = {	# cave explored, deposit of a random gem/metal
 						if = {
 							limit = {
@@ -374,13 +374,20 @@ caves_03 = {
 									}
 								}
 							}
+							root = { remove_building = cave_03 }
+							add_gold = 100
 						}
 						else = {
-
+							add_gold = 200
 						}
 					}	
-					3 = {}	# cave collapses, add collapsed cave blocker
-					10 = { root = { remove_building = caves_03 } }	# clears building as normal
+					3 = {
+						root = {
+							remove_building = cave_03
+							add_building = cave_01
+						}
+					}	# cave collapses, add collapsed cave blocker
+					10 = { root = { remove_building = cave_03 } }	# clears building as normal
 				}
 			}
 		}
