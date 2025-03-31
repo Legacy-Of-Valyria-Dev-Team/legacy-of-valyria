@@ -163,71 +163,25 @@ valyria_volcano_03 = {
 
 }
 
-valyria_volcano_04_01 = {
-
-	construction_time = very_slow_construction_time
-	
-	can_construct = {
-		NOT = { has_holding_type = ruin_holding }
-	}
-
+valyria_volcano_04 = {
+	cost_gold = 0
+	construction_time = 10
 	type_icon = "icon_dragon_volcano.dds"
-	next_building = valyria_volcano_04_02
 
 	can_construct_potential = {
 		barony = title:b_valyria_5
 		building_requirement_tribal = no
 	}
 
+	can_construct = {
+		NOT = { has_holding_type = ruin_holding }
+	}
+
 	effect_desc = building_dragonmont_dragonpit_effect
 
-	duchy_capital_county_modifier = {
-		tax_mult = 0.05
-	}
-
-	county_modifier = {
-		hostile_raid_time = 0.3
-		defender_holding_advantage = 7
-		travel_danger = 25
-	}
-
-	character_modifier = {
-		dread_gain_mult = 0.20
-		stress_gain_mult = 0.1
-	}
 
 	province_modifier = {
-		fort_level = 5
-	}
-
-	ai_value = {
-		base = 100
-		culture_likely_to_fortify_modifier = yes
-	}
-	type = duchy_capital
-
-}
-
-valyria_volcano_04_02 = {
-
-	construction_time = slow_construction_time
-
-	type_icon = "icon_dragon_volcano.dds"
-	
-	can_construct = {
-		NOT = { has_holding_type = ruin_holding }
-	}
-
-	can_construct_potential = {
-		barony = title:b_valyria_5
-		building_requirement_tribal = no
-	}
-
-	effect_desc = building_dragonmont_dragonpit_effect
-	cost_gold = 300
-
-	duchy_capital_county_modifier = {
-		tax_mult = 0.05
+		fort_level = 6
 	}
 
 	county_modifier = {
@@ -236,14 +190,14 @@ valyria_volcano_04_02 = {
 		travel_danger = 25
 	}
 
+	duchy_capital_county_modifier = {
+		tax_mult = 0.05
+	}
+
 	character_modifier = {
 		dread_gain_mult = 0.25
 		stress_gain_mult = 0.1
 
-	}
-
-	province_modifier = {
-		fort_level = 6
 	}
 
 	ai_value = {
@@ -312,9 +266,19 @@ zz_valyria_tower_of_lyria_01 = {
 	can_construct_potential = {
 		building_requirement_castle_city_church = { LEVEL = 01 }
 		barony = title:b_kastaryia_4
-	} 
+	}
+
+	province_modifier = {
+		fort_level = 8
+		defender_advantage = 3
+	}
+
 	county_modifier = {
-		fort_level = great_building_fort_level_tier_5 
+		
+	}
+
+	character_modifier = {
+		
 	}
 
 	type = special
@@ -335,17 +299,32 @@ zz_valyria_tower_of_lyria_02 = {
 		building_requirement_castle_city_church = { LEVEL = 01 }
 		barony = title:b_kastaryia_4
 	} 
-	county_holding_modifier = {
-		holding = city_holding
-		income_mult = 1
+	# county_holding_modifier = {
+	# 	holding = city_holding
+	# 	income_mult = 1
+	# }
+	province_modifier = {
+		fort_level = 16
+		defender_advantage = 6
+		hostile_raid_time = 0.25
 	}
 	county_modifier = {
-		fort_level = great_building_fort_level_tier_8 
+		tax_mult = 0.1
+		development_growth_factor = 0.2
 	}
 
-	province_modifier = {
-		monthly_income = excellent_building_tax_tier_8
+	character_modifier = {
+		monthly_lifestyle_xp_gain_mult = 0.1
 	}
+
+	garrison = 1200
+
+	on_complete = {
+		county.holder = {
+			trigger_event = blockers.0003
+		}
+	}
+
 	type = special
 	flag = travel_point_of_interest_magic
 }
@@ -847,6 +826,19 @@ the_great_walls_of_valyria_01 = {
 		building_requirement_tribal = no
 	}
 
+	province_modifier = {
+		holding_build_speed = 0.3
+	}
+
+	county_modifier = {
+		fort_level = 4
+		hostile_raid_time = 0.25
+		defender_advantage = 2
+	}
+
+	character_modifier = {
+	}
+
 	type = special
 
 	flag = travel_point_of_interest_wonder
@@ -870,15 +862,21 @@ the_great_walls_of_valyria_02 = {
 		barony = title:b_valyria_5
 	}
 
-	county_modifier = {
-		fort_level = 40
-		hostile_raid_time = 0.99
+	province_modifier = {
+		
 	}
-	max_garrison = 8000
 
-	county_holder_character_modifier = {
-		monthly_prestige = 2
-		monthly_dynasty_prestige = 0.5
+	county_modifier = {
+		fort_level = 16
+		hostile_raid_time = 0.5
+		defender_advantage = 8
+		monthly_county_control_growth_factor = 0.2
+		garrison_size = 1
+	}
+
+	character_modifier = {
+		monthly_prestige_gain_mult = 0.4
+		monthly_dynasty_prestige_mult = 0.2
 	}
 
 	type = special
@@ -1387,11 +1385,11 @@ aurions_lost_expidition = {
 	}
 	
 	county_modifier = {
-	    monthly_county_control_growth_factor = -0.1		
+	    monthly_county_control_growth_factor = -0.1
 	}
 	
 	province_modifier = {
-	    travel_danger = 25
+		travel_danger = 25
 	}
 	
 	type = special
@@ -1401,9 +1399,9 @@ aurions_lost_expidition = {
 }
 
 redwyrms_wrath_1 = {
-    construction_time = very_slow_construction_time
-	next_building = redwyrms_wrath_2
+	construction_time = very_slow_construction_time
 	type_icon = "icon_building_lokiria_keep.dds"
+	next_building = redwyrms_wrath_2
 	
 	can_construct = {
 		NOT = { has_holding_type = ruin_holding }
@@ -1412,14 +1410,20 @@ redwyrms_wrath_1 = {
 	can_construct_potential = {
 		barony = title:b_ilvonys_1
 		building_requirement_tribal = no
+	}
+
+	province_modifier = {
+		fort_level = 8
+		defender_holding_advantage = 8
+		hostile_raid_time = 0.12
 	}
 	
 	type = special
 }
 
 redwyrms_wrath_2 = {
-    construction_time = very_slow_construction_time
 	cost_gold = 4000
+	construction_time = very_slow_construction_time
 	type_icon = "icon_building_lokiria_keep.dds"
 	
 	can_construct = {
@@ -1431,34 +1435,33 @@ redwyrms_wrath_2 = {
 		building_requirement_tribal = no
 	}
 	
-	character_modifier = {
-	    dread_gain_mult = 0.35
-		martial_per_prestige_level = 1
-		monthly_dynasty_prestige_mult = 0.05
-		legitimacy_gain_mult = 0.10
-		stress_loss_mult = 0.25
-		different_culture_opinion = -25
-		monthly_martial_lifestyle_xp_gain_mult = 0.2
-	}
-	
-	county_modifier = {
-	    garrison_size = 0.15
-		defender_holding_advantage = 10
-		development_growth = 0.2
-		development_growth_factor = 0.1
-	}
-	
 	province_modifier = {
-		stationed_siege_weapon_siege_value_mult = normal_maa_siege_value_tier_2
-		fort_level = 20
-		monthly_income = 2
+		defender_holding_advantage = 16
+		fort_level = 16
+		hostile_raid_time = 0.25
 	}
 
+	county_modifier = {
+		monthly_county_control_growth_factor = 0.2
+		# development_growth = 0.2
+		# development_growth_factor = 0.1
+	}
+
+	character_modifier = {
+		monthly_prestige_gain_mult = 0.2
+		dread_gain_mult = 0.35
+		monthly_dynasty_prestige_mult = 0.05
+	}
+
+	on_complete = {
+		county.holder = {
+			trigger_event = blockers.0002
+		}
+	}
 	
-	max_garrison = 6000
+	max_garrison = 1200
 	
 	type = special
-	
 	flag = travel_point_of_interest_martial
 	
 }
@@ -1477,6 +1480,14 @@ the_valyrian_gate_1 = {
 		building_requirement_castle_city_church = { LEVEL = 01 }
 		barony = title:b_valyria_2
 		building_requirement_tribal = no
+	}
+
+	province_modifier = {
+		defender_holding_advantage = 3
+	}
+
+	county_modifier = {
+		development_growth_factor = -0.2
 	}
 	
 	type = special
@@ -1498,27 +1509,19 @@ the_valyrian_gate_2 = {
 		barony = title:b_valyria_2
 		building_requirement_tribal = no
 	}
-	
-	character_modifier = {
-	    monthly_dynasty_prestige = 2
-		stewardship_per_prestige_level = 1
-		legitimacy_gain_mult = 0.10
-		county_opinion_add = 5
-		short_reign_duration_mult = -0.2
-		vassal_opinion = 5
-	}
-	county_modifier = {
-	    tax_mult = 0.1
-		garrison_size = 0.15
-		defender_holding_advantage = 15
-		development_growth = 0.2
-		development_growth_factor = 0.12
-	}
-	
+
 	province_modifier = {
-		stationed_siege_weapon_siege_value_mult = normal_maa_siege_value_tier_2
-		fort_level = 15
-		monthly_income = 1
+		monthly_income = 2
+		defender_holding_advantage = 6
+	}
+
+	county_modifier = {
+		tax_mult = 0.2
+		development_growth_factor = 0.2
+	}
+
+	character_modifier = {
+		
 	}
 	
 	type = special
@@ -1526,9 +1529,9 @@ the_valyrian_gate_2 = {
 	flag = travel_point_of_interest_economic
 }
 procrazion_1 = {
-    construction_time = very_slow_construction_time
-	next_building = procrazion_2
+	construction_time = very_slow_construction_time
 	type_icon = "icon_building_oreos_procrazion.dds"
+	next_building = procrazion_2
 	
 	can_construct = {
 		NOT = { has_holding_type = ruin_holding }
@@ -1554,8 +1557,8 @@ procrazion_1 = {
 }
 
 procrazion_2 = {
-    construction_time = very_slow_construction_time
 	cost_gold = 4000
+	construction_time = very_slow_construction_time
 	type_icon = "icon_building_oreos_procrazion.dds"
 	
 	can_construct = {
