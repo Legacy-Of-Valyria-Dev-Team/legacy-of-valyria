@@ -444,35 +444,6 @@ colony_03 = {
 
 #Colony buildings
 
-local_markets_01 = {
-	cost_gold = 100
-	construction_time = 250
-	type_icon = "icon_building_market_villages"
-
-	can_construct_potential = {
-		has_holding_type = settlement_holding
-	}
-
-	can_construct = {
-		has_building_or_higher = colony_02
-	}
-
-	province_modifier = {
-		monthly_income = 0.5
-		supply_limit = 350
-	}
-
-	county_modifier = {
-		development_growth_factor = 0.2
-	}
-
-	character_modifier = {
-		
-	}
-
-	type = regular
-}
-
 local_militia_01 = {
 	cost_gold = 50
 	construction_time = 125
@@ -511,7 +482,6 @@ stockades_01 = {
 	province_modifier = {
 		defender_advantage = 2
 		fort_level = 1
-		polish_opinion = 10
 	}
 
 	county_modifier = {
@@ -520,6 +490,60 @@ stockades_01 = {
 
 	levy = 75
 	garrison = 150
+
+	character_modifier = {
+		
+	}
+
+	type = regular
+}
+
+local_markets_01 = {
+	cost_gold = 100
+	construction_time = 250
+	type_icon = "icon_building_market_villages"
+
+	can_construct_potential = {
+		has_holding_type = settlement_holding
+	}
+
+	can_construct = {
+		has_building_or_higher = colony_02
+	}
+
+	province_modifier = {
+		monthly_income = 0.5
+		supply_limit = 350
+	}
+
+	county_modifier = {
+		development_growth_factor = 0.05
+	}
+
+	character_modifier = {
+		
+	}
+
+	type = regular
+}
+
+colony_port_01 = {
+	cost_gold = 100
+	construction_time = 250
+	type_icon = "icon_building_tradeport.dds"
+
+	can_construct_potential = {
+		building_common_tradeport_requirement_terrain = yes
+		has_holding_type = settlement_holding
+	}
+
+	province_modifier = {
+		monthly_income = normal_building_tax_tier_1
+	}
+
+	county_modifier = {
+		development_growth = 0.05
+	}
 
 	character_modifier = {
 		
@@ -546,7 +570,7 @@ construction_guilds_01 = {
 		holding_build_speed = -0.15
 	}
 	county_modifier = {
-		development_growth_factor = 0.15
+		development_growth_factor = 0.05
 	}
 
 	character_modifier = {
@@ -578,7 +602,7 @@ colony_quarries_01 = {
 		holding_build_speed = -0.15
 	}
 	county_modifier = {
-		development_growth_factor = 0.15
+		development_growth_factor = 0.05
 	}
 
 	character_modifier = {
@@ -608,7 +632,7 @@ colony_forestry_01 = {
 		holding_build_speed = -0.15
 	}
 	county_modifier = {
-		development_growth_factor = 0.15
+		development_growth_factor = 0.05
 	}
 
 	character_modifier = {
@@ -621,13 +645,13 @@ colony_forestry_01 = {
 #Blockers
 
 #Unexplored Caves
-unexplored_cave_01 = {
+unexplored_caves_01 = {
 	# construction_time = slow_construction_time
 	# cost_gold = expensive_building_tier_6_cost
 	cost_gold = 0
 	construction_time = 20
 	type_icon = "icon_structure_mines.dds"
-	next_building = unexplored_cave_02
+	next_building = unexplored_caves_02
 
 	can_construct_potential = {
 		always = no
@@ -641,7 +665,7 @@ unexplored_cave_01 = {
 	}
 
 	county_modifier = {
-		county_opinion_add = -15
+		county_opinion_add = -10
 		monthly_county_control_growth_factor = -0.2
 	}
 	
@@ -652,13 +676,13 @@ unexplored_cave_01 = {
 	flag = wilderness_blocker
 	type = regular
 }
-unexplored_cave_02 = {
+unexplored_caves_02 = {
 	# construction_time = slow_construction_time
 	# cost_gold = expensive_building_tier_6_cost
-	cost_gold = 0
-	construction_time = standard_construction_time
+	cost_gold = 100
+	construction_time = 720
 	type_icon = "icon_structure_mines.dds"
-	next_building = unexplored_cave_03
+	next_building = unexplored_caves_03
 
 	can_construct_potential = {
 		NOT = {
@@ -676,7 +700,7 @@ unexplored_cave_02 = {
 	}
 
 	county_modifier = {
-		county_opinion_add = -10
+		county_opinion_add = -5
 		monthly_county_control_growth_factor = -0.1
 	}
 
@@ -687,11 +711,11 @@ unexplored_cave_02 = {
 	flag = wilderness_blocker
 	type = regular
 }
-unexplored_cave_03 = {
+unexplored_caves_03 = {
 	# construction_time = slow_construction_time
 	# cost_gold = expensive_building_tier_6_cost
-	cost_gold = 0
-	construction_time = standard_construction_time
+	cost_gold = 200
+	construction_time = 720
 	type_icon = "icon_structure_mines.dds"
 
 	can_construct_potential = {
@@ -716,17 +740,24 @@ unexplored_cave_03 = {
 		hidden_effect = {
 			county.holder = {
 				random_list = {
-					# 1 = {}	# find a dragon egg
-					3 = {	# cave explored, deposit of a random gem/metal
-						add_gold = 200
+					1 = { # find a dragon egg
+						trigger_event = blockers.0001
 					}	
-					3 = {
-						root = {
-							remove_building = unexplored_cave_03
-							add_building = unexplored_cave_01
+					4 = {	# cave explored, deposit of a random gem/metal
+						send_interface_toast = {
+							title = find_gold_cache
+							left_icon = county.holder
+							add_gold = 200
 						}
-					}	# cave collapses, add collapsed cave blocker
-					6 = { root = { remove_building = unexplored_cave_03 } }	# clears building as normal
+					}
+					4 = {	# cave explored, deposit of a random gem/metal
+						send_interface_toast = {
+							title = find_gold_cache
+							left_icon = county.holder
+							add_gold = 100
+						}
+					}
+					10 = { root = { remove_building = unexplored_caves_03 } }	# clears building as normal
 				}
 			}
 		}
@@ -735,3 +766,17 @@ unexplored_cave_03 = {
 	flag = wilderness_blocker
 	type = regular
 }
+
+#Firewyrms
+
+#Swamp_01_
+
+#Swamp_02_
+
+#Floods
+
+#Noxious Gases_01_
+
+#Noxious Gases_02_
+
+#Stonemen Encampment
