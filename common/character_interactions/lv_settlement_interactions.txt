@@ -1,0 +1,42 @@
+﻿# Legacy of Valyria Settlement Character Interactions
+
+# Main code body borrowed from Lord of the Rings:Realms in Exile with permission
+lv_abandon_settlement = {
+	category = interaction_category_uncategorized
+	hidden = yes
+
+	desc = lv_abandon_settlement_desc
+
+	target_type = title
+	target_filter = actor_domain_titles
+	
+	auto_accept = yes
+
+	is_shown = { scope:actor = { this = scope:recipient } }
+	
+	can_be_picked_title = {
+		scope:target = {
+			holder = scope:actor
+			is_capital_barony = no # we'll use the county in that case
+			trigger_if = {
+				limit = { tier <= tier_county }
+				title_province = { has_holding_type = colony_holding }
+			}
+			trigger_else = {
+				custom_description = {
+					text = "feudalize_tribal_holding_interaction_title_not_county_or_below"
+					always = no
+				}
+			}
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			lv_abandon_settlement_effect = { COUNTY = scope:target }
+			# trigger_event = wastelands.0007
+		}
+	}
+
+	ai_will_do = { base = 150 }
+}
