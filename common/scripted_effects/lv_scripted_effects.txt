@@ -207,3 +207,108 @@ lv_adventurer_colonise = {
 		}
 	}
 }
+
+lv_abandon_settlement_effect = {
+	$COUNTY$ = {
+		# Determine progress on abandonment
+		# Level 3 colony building = Significant | Level 2 colony building = Minimal
+		title_province = {
+			if = {
+				limit = { has_building = colony_03 }
+				set_variable = {
+					name = ruin_progress
+					value = flag:ruin_progress_significant
+				}
+			}
+			else_if = {
+				limit = { has_building = colony_02 }
+				set_variable = {
+					name = ruin_progress
+					value = flag:ruin_progress_minimal
+				}
+			}
+		}
+
+		hidden_effect = {
+			create_title_and_vassal_change = {
+				type = revoked
+				save_scope_as = change
+			}
+			change_title_holder = {
+				holder = title:c_ruins.holder
+				change = scope:change
+				take_baronies = yes
+			}
+			resolve_title_and_vassal_change = scope:change
+			generate_coa = yes
+		}
+		every_county_province = {
+			limit = {
+				is_county_capital = no
+				has_holding = yes
+				NOT = { has_holding_type = ruin_holding }
+			}
+			set_holding_type = ruin_holding
+		}
+		every_county_province = {
+			limit = {
+				is_county_capital = yes
+				has_holding = yes
+			}
+			if = {
+				limit = { NOT = { has_holding_type = ruin_holding } }
+				set_holding_type = ruin_holding
+			}
+			# Revert to appropriate ruin size depending on progress
+			if = {
+				limit = { has_variable = ruin_size }
+				if = { # Large ruins
+					limit = { var:ruin_size = flag:ruin_size_large }
+					if = { # Ruin level 3 building
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = colony_03 } }
+						add_building = large_ruin_03
+					}
+					else_if = { # Ruin level 2 building
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = colony_02 } }
+						add_building = large_ruin_02
+					}
+					else = { # Ruin level 1 building (no progress)
+						add_building = large_ruin_01
+					}
+				}
+				else_if = { # Medium ruins
+					limit = { var:ruin_size = flag:ruin_size_medium }
+					if = { # Ruin level 3 building
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = colony_03 } }
+						add_building = medium_ruin_03
+					}
+					else_if = { # Ruin level 2 building
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = colony_02 } }
+						add_building = medium_ruin_02
+					}
+					else = { # Ruin level 1 building (no progress)
+						add_building = medium_ruin_01
+					}
+				}
+			}
+			else = { # Small ruins
+				if = { # Ruin level 3 building
+					limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = colony_03 } }
+					add_building = small_ruin_03
+				}
+				else_if = { # Ruin level 2 building
+					limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = colony_02 } }
+					add_building = small_ruin_02
+				}
+				else = { # Ruin level 1 building (no progress)
+					add_building = small_ruin_01
+				}
+			}
+		}
+		change_development_level = -100
+
+		# Clean up all temporary variables
+		remove_variable = ruin_size
+		remove_variable = ruin_progress
+	}
+}

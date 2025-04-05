@@ -670,28 +670,25 @@ cob_new_valyria_conquest_cb = {
 					}
 				}
 			}
-			scope:claimant = {
+			scope:claimant = { #I did it, I finally figured out how to make the Dragonlords Feudal
 				set_realm_capital = primary_title.title_capital_county
-				change_government = free_city_government
+				change_government = feudal_government
 
 				every_held_title = {
 					if = {
 						limit = {
 							OR = {
+								has_title_law = free_city_single_heir_succession_law
 								has_title_law = magisterial_life_succession_law
+								has_title_law = magisterial_life_succession_attached_titles_law
 								has_title_law = magisterial_limited_succession_law
+								has_title_law = magisterial_limited_succession_attached_titles_law
+								has_title_law = dictatorship_succession_law
 							}
 						}
-						if = {
-							limit = { has_title_law = magisterial_life_succession_law }
-							remove_title_law = magisterial_life_succession_law
-						}
-						else_if = {
-							limit = { has_title_law = magisterial_limited_succession_law }
-							remove_title_law = magisterial_limited_succession_law
-						}
-						add_title_law = dictatorship_succession_law
+						clear_title_laws = yes
 					}
+					add_title_law = single_heir_succession_law
 					set_de_jure_liege_title = scope:attacker.primary_title
 				}
 			}
