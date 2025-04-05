@@ -125,41 +125,36 @@
 				root = { save_temporary_scope_as = new_holder }
 				scope:target_county = {
 					add_to_list = colonized_titles
-
-					create_title_and_vassal_change = {
-						type = created
-						save_scope_as = change
-					}
-
-					every_in_list = {
-						list = colonized_titles
-						limit = {
-							title_province = {
-								tier >= tier_county
-								has_holding_type = ruin_holding
-							}
-						}
-						change_title_holder = {
-							holder = scope:new_holder
-							change = scope:change
-							take_baronies = yes
-						}
-						title_province = {
-							set_holding_type = colony_holding
-						}
-					}
-
-					ordered_in_list = {
-						list = $TITLE_LIST$
-						order_by = tier
-						save_scope_as = new_primary_title
-					}
-
-					resolve_title_and_vassal_change = scope:change
-
-					set_county_faith = scope:new_holder.faith
-					set_county_culture = scope:new_holder.culture
 				}
+				
+				create_title_and_vassal_change = {
+					type = created
+					save_scope_as = change
+				}
+
+				every_in_list = {
+					list = colonized_titles
+					limit = {
+						tier >= tier_county
+						title_province = {
+							has_holding_type = ruin_holding
+						}
+					}
+					change_title_holder = {
+						holder = scope:new_holder
+						change = scope:change
+						take_baronies = yes
+					}
+					title_province = {
+						set_holding_type = colony_holding
+					}
+					
+					# set_county_faith = scope:new_holder.faith
+					# set_county_culture = scope:new_holder.culture
+				}
+
+
+				resolve_title_and_vassal_change = scope:change
 				scope:new_holder = { change_government = feudal_government }
 				destroy_laamp_effect = { ADVENTURER = scope:new_holder }
 			}
@@ -174,33 +169,33 @@
 						save_temporary_scope_as = target_counties
 						add_to_list = colonized_titles
 					}
-	
-					create_title_and_vassal_change = {
-						type = created
-						save_scope_as = change
-					}
-					
-					every_in_list = {
-						list = colonized_titles
-						limit = {
-							title_province = {
-								tier >= tier_county
-								has_holding_type = ruin_holding
-							}
-						}
-						change_title_holder = {
-							holder = scope:new_holder
-							change = scope:change
-							take_baronies = yes
-						}
-						title_province = {
-							set_holding_type = colony_holding
-						}
-					}
-					resolve_title_and_vassal_change = scope:change
-					set_county_faith = scope:new_holder.faith
-					set_county_culture = scope:new_holder.culture
 				}
+
+				create_title_and_vassal_change = {
+					type = created
+					save_scope_as = change
+				}
+				
+				every_in_list = {
+					list = colonized_titles
+					limit = {
+						tier >= tier_county
+						title_province = {
+							has_holding_type = ruin_holding
+						}
+					}
+					change_title_holder = {
+						holder = scope:new_holder
+						change = scope:change
+						take_baronies = yes
+					}
+					title_province = {
+						set_holding_type = colony_holding
+					}
+					# set_county_faith = scope:new_holder.faith
+					# set_county_culture = scope:new_holder.culture
+				}
+				resolve_title_and_vassal_change = scope:change
 				scope:new_holder = { change_government = feudal_government }
 				destroy_laamp_effect = { ADVENTURER = scope:new_holder }
 			}
