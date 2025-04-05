@@ -1,0 +1,29 @@
+﻿# Check for valid forced containment regions
+agot_epidemic_spread_containment_trigger = {
+	OR = {
+		AND = { # Spreading out of BTW
+			scope:epidemic ?= { var:epidemic_containment ?= flag:btw }
+			NOT = { geographical_region = world_westeros_beyond_the_wall }
+		}
+		AND = { # Spreading out of LLT
+			scope:epidemic ?= { var:epidemic_containment ?= flag:llt }
+			NOT = { geographical_region = world_lands_less_traveled }
+		}
+		AND = { # Spreading to LLT or BTW
+			scope:epidemic ?= { var:epidemic_containment ?= flag:not_btw_or_llt }
+			OR = {
+				geographical_region = world_westeros_beyond_the_wall
+				geographical_region = world_lands_less_traveled
+			}
+		}
+		AND = { # Spring Sickness Spreading to Essos and Stepstones
+			scope:epidemic ?= { var:epidemic_containment_bubonic ?= flag:not_stepstones_or_essos }
+			OR = {
+				geographical_region = world_essos
+				geographical_region = world_stepstones
+			}
+		}
+		# Don't spread to ruins
+		is_ruin_or_wilderness_holding = yes
+	}
+}
