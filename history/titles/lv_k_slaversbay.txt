@@ -10,22 +10,53 @@ c_elos = { 7300.1.1 = { holder = Ruin_Empress } }
 # City of Meereen
 k_meereen = {
 	7898.1.1 = {
-		succession_laws = { magisterial_limited_succession_law }
 		government = oligarchic_government
 		holder = 150360003
 		effect = {
 			holder ?= {
 				if = {
-					limit = { NOT = { has_realm_law = slavery_allowed_law } }
-					add_realm_law = slavery_allowed_law
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+				# Term Length Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = term_length_historical }
+					}
+					add_realm_law_skip_effects = term_length_historical
+				}
+				# Francise Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = franchise_lean_democratic }
+					}
+					add_realm_law_skip_effects = franchise_lean_democratic
+				}
+				# Policy Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = policy_lean_mercantile }
+					}
+					add_realm_law_skip_effects = policy_lean_mercantile
+				}
+				# Slavery Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = slavery_allowed_law }
+					}
+					add_realm_law_skip_effects = slavery_allowed_law
 				}
 			}
 			every_in_de_jure_hierarchy = {
 				set_variable = historical_slavery
 				holder ?= {
 					if = {
-						limit = { NOT = { has_realm_law = slavery_allowed_law } }
-						add_realm_law = slavery_allowed_law
+						limit = {
+							NOT = { has_realm_law = slavery_allowed_law }
+						}
+						add_realm_law_skip_effects = slavery_allowed_law
 					}
 				}
 			}
@@ -63,9 +94,20 @@ k_meereen = {
 d_meereen = {
 	7898.1.1 = {
 		liege = k_meereen
-		succession_laws = { magisterial_limited_succession_attached_titles_law }
+		succession_laws = { magisterial_attached_titles_law }
 		government = oligarchic_government
 		holder = 150360003
+		effect = {
+			holder ?= {
+				if = {
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+			}
+			add_title_law = magisterial_attached_titles_law
+		}
 	} 
 	7905.1.1 = { holder = 344360007 } 
 	7908.1.1 = { holder = 343360007 } 
@@ -98,11 +140,20 @@ d_meereen = {
 c_meereen = {
 	7898.1.1 = {
 		liege = d_meereen
-		succession_laws = { magisterial_limited_succession_attached_titles_law }
+		succession_laws = { magisterial_attached_titles_law }
 		government = oligarchic_government
 		holder = 150360003
 		effect = {
 			add_county_modifier = slave_pop_8 # Significant slave city
+			holder ?= {
+				if = {
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+			}
+			add_title_law = magisterial_attached_titles_law
 		}
 	} 
 	7905.1.1 = { holder = 344360007 } 
@@ -700,21 +751,52 @@ b_dhazak_pyramid = {
 k_yunkai = {
 	7898.1.1 = {
 		government = oligarchic_government
-		succession_laws = { magisterial_limited_succession_law }
 		holder = 344360023
 		effect = {
 			holder ?= {
 				if = {
-					limit = { NOT = { has_realm_law = slavery_allowed_law } }
-					add_realm_law = slavery_allowed_law
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+				# Term Length Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = term_length_historical }
+					}
+					add_realm_law_skip_effects = term_length_historical
+				}
+				# Francise Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = franchise_lean_democratic }
+					}
+					add_realm_law_skip_effects = franchise_lean_democratic
+				}
+				# Policy Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = policy_lean_mercantile }
+					}
+					add_realm_law_skip_effects = policy_lean_mercantile
+				}
+				# Slavery Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = slavery_allowed_law }
+					}
+					add_realm_law_skip_effects = slavery_allowed_law
 				}
 			}
 			every_in_de_jure_hierarchy = {
 				set_variable = historical_slavery
 				holder ?= {
 					if = {
-						limit = { NOT = { has_realm_law = slavery_allowed_law } }
-						add_realm_law = slavery_allowed_law
+						limit = {
+							NOT = { has_realm_law = slavery_allowed_law }
+						}
+						add_realm_law_skip_effects = slavery_allowed_law
 					}
 				}
 			}
@@ -754,9 +836,20 @@ k_yunkai = {
 d_yunkai = {
 	7898.1.1 = {
 		liege = k_yunkai
-		succession_laws = { magisterial_limited_succession_attached_titles_law }
+		succession_laws = { magisterial_attached_titles_law }
 		government = oligarchic_government
 		holder = 344360023
+		effect = {
+			holder ?= {
+				if = {
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+			}
+			add_title_law = magisterial_attached_titles_law
+		}
 	} 
 	7900.1.1 = { holder = 344360024 } 
 	7907.1.1 = { holder = 343360022 } 
@@ -791,11 +884,20 @@ d_yunkai = {
 c_yunkai = {
 	7898.1.1 = {
 		liege = d_yunkai
-		succession_laws = { magisterial_limited_succession_attached_titles_law }
+		succession_laws = { magisterial_attached_titles_law }
 		government = oligarchic_government
 		holder = 344360023
 		effect = {
 			add_county_modifier = slave_pop_8 # Significant slave city
+			holder ?= {
+				if = {
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+			}
+			add_title_law = magisterial_attached_titles_law
 		}
 	} 
 	7900.1.1 = { holder = 344360024 } 
@@ -998,21 +1100,52 @@ c_vadhaahan = {
 k_astapor = {
 	7898.1.1 = {
 		government = oligarchic_government
-		succession_laws = { magisterial_limited_succession_law }
 		holder = 343360000
 		effect = {
 			holder ?= {
 				if = {
-					limit = { NOT = { has_realm_law = slavery_allowed_law } }
-					add_realm_law = slavery_allowed_law
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+				# Term Length Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = term_length_historical }
+					}
+					add_realm_law_skip_effects = term_length_historical
+				}
+				# Francise Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = franchise_lean_democratic }
+					}
+					add_realm_law_skip_effects = franchise_lean_democratic
+				}
+				# Policy Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = policy_lean_mercantile }
+					}
+					add_realm_law_skip_effects = policy_lean_mercantile
+				}
+				# Slavery Laws
+				if = {
+					limit = {
+						NOT = { has_realm_law = slavery_allowed_law }
+					}
+					add_realm_law_skip_effects = slavery_allowed_law
 				}
 			}
 			every_in_de_jure_hierarchy = {
 				set_variable = historical_slavery
 				holder ?= {
 					if = {
-						limit = { NOT = { has_realm_law = slavery_allowed_law } }
-						add_realm_law = slavery_allowed_law
+						limit = {
+							NOT = { has_realm_law = slavery_allowed_law }
+						}
+						add_realm_law_skip_effects = slavery_allowed_law
 					}
 				}
 			}
@@ -1046,9 +1179,20 @@ k_astapor = {
 d_astapor = {
 	7898.1.1 = {
 		liege = k_astapor
-		succession_laws = { magisterial_limited_succession_attached_titles_law }
+		succession_laws = { magisterial_attached_titles_law }
 		government = oligarchic_government
 		holder = 343360000
+		effect = {
+			holder ?= {
+				if = {
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+			}
+			add_title_law = magisterial_attached_titles_law
+		}
 	} 
 	7910.1.1 = { holder = 343360026 } 
 	7915.1.1 = { holder = 342360002 } 
@@ -1077,11 +1221,20 @@ d_astapor = {
 c_astapor = {
 	7898.1.1 = {
 		liege = d_astapor
-		succession_laws = { magisterial_limited_succession_attached_titles_law }
+		succession_laws = { magisterial_attached_titles_law }
 		government = oligarchic_government
 		holder = 343360000
 		effect = {
 			add_county_modifier = slave_pop_8 # Significant slave city
+			holder ?= {
+				if = {
+					limit = {
+						NOT = { has_realm_law = free_city_election_succession_law }
+					}
+					add_realm_law_skip_effects = free_city_election_succession_law
+				}
+			}
+			add_title_law = magisterial_attached_titles_law
 		}
 	}
 	7910.1.1 = { holder = 343360026 }
