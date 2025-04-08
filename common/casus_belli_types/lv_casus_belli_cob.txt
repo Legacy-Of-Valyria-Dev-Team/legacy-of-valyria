@@ -497,32 +497,6 @@ cob_new_valyria_conquest_cb = {
 	}
 
 	on_victory = {	
-		scope:claimant = {
-			if = {
-				limit = {
-					is_landless_adventurer = yes
-				}
-				hidden_effect = {
-					if = {
-						limit = {
-							NOT = { has_trait = adventurer }
-						}
-						add_trait = adventurer
-					}
-					save_scope_as = the_adventurer
-					every_courtier = {
-						limit = {
-							is_human = yes
-						}
-						set_variable = {
-							name = former_camp_leader
-							value = scope:the_adventurer
-						}
-						add_trait = adventurer_follower
-					}
-				}
-			}
-		}
 
 		scope:attacker = { 
 			release_prisoners_of_war_effect = yes
@@ -629,10 +603,12 @@ cob_new_valyria_conquest_cb = {
 				}
 			}
 			scope:claimant = { #I did it, I finally figured out how to make the Dragonlords Feudal
+				change_government = feudal_government
 				set_realm_capital = primary_title.title_capital_county
-				convert_to_feudalism_from_administrative_effect = yes
+				#convert_to_feudalism_from_administrative_effect = yes
 				clear_title_laws = yes
 				add_title_law = single_heir_succession_law
+				add_title_law = male_preference_law
 			}
 		}
 
