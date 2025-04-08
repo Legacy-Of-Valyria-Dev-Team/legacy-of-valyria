@@ -28,7 +28,7 @@ aurion_new_valyria = {
 		}
 	}
 
-	target_titles = claim
+	#target_titles = claim
 	#target_title_tier = all
 
 	on_declaration = {
@@ -118,30 +118,10 @@ aurion_new_valyria = {
 	}
 
 	on_victory = {	
-		scope:attacker = {
-			if = {
-				limit = {
-					is_landless_adventurer = yes
-				}
-				hidden_effect = {
-					if = {
-						limit = {
-							NOT = { has_trait = adventurer }
-						}
-						add_trait = adventurer
-					}
-					save_scope_as = the_adventurer
-					every_courtier = {
-						limit = {
-							is_human = yes
-						}
-						set_variable = {
-							name = former_camp_leader
-							value = scope:the_adventurer
-						}
-						add_trait = adventurer_follower
-					}
-				}
+
+		hidden_effect = {
+			title:k_volantis.holder = {
+				convert_to_feudalism_from_administrative_effect = yes
 			}
 		}
 
@@ -157,7 +137,7 @@ aurion_new_valyria = {
 		scope:attacker = { accolade_attacker_war_end_glory_gain_med_effect = yes }
 
 		create_title_and_vassal_change = {
-			type = conquest_claim
+			type = conquest
 			save_scope_as = change
 			add_claim_on_loss = yes
 		}
@@ -201,25 +181,9 @@ aurion_new_valyria = {
 			type = swear_fealty
 			save_scope_as = change
 		}
+		
 		resolve_title_and_vassal_change = scope:change
 
-		if = {
-			limit = {
-				NOT = { scope:claimant = scope:attacker }
-				scope:attacker = {
-					can_add_hook = {
-						type = favor_hook
-						target = scope:claimant
-					}
-				}
-			}
-			scope:attacker = {
-				add_hook = {
-					target = scope:claimant
-					type = favor_hook
-				}
-			}
-		}
 
 		# Attacker gets Prestige Experience, Defender loses Prestige, all other participants gain Prestige based on their war contribution.
 		modify_all_participants_fame_values = {
@@ -243,8 +207,8 @@ aurion_new_valyria = {
 			add_prestige = 500
 			add_gold = 1000 #for coronation
 			trigger_event = {
-				id = lv_scenario_cob.0510
-				days = 10
+				id = lv_scenario_cob.0530
+				#days = 10
 			}
 		}
 	}
@@ -662,37 +626,13 @@ cob_new_valyria_conquest_cb = {
 			limit = {
 				any_in_list = {
 					list = target_titles
-					OR = {
-						this = title:k_lys
-						this = title:k_tyrosh
-						this = title:k_myr
-						this = title:k_pentos
-					}
 				}
 			}
 			scope:claimant = { #I did it, I finally figured out how to make the Dragonlords Feudal
 				set_realm_capital = primary_title.title_capital_county
-				change_government = feudal_government
-
-				every_held_title = {
-					if = {
-						limit = {
-							OR = {
-								has_title_law = free_city_single_heir_succession_law
-								has_title_law = magisterial_life_succession_law
-								has_title_law = magisterial_life_succession_attached_titles_law
-								has_title_law = magisterial_limited_succession_law
-								has_title_law = magisterial_limited_succession_attached_titles_law
-								has_title_law = dictatorship_succession_law
-								#LV added
-								has_title_law = volantene_triarchy_succession_law
-							}
-						}
-						clear_title_laws = yes
-					}
-					add_title_law = single_heir_succession_law
-					#set_de_jure_liege_title = scope:attacker.primary_title
-				}
+				convert_to_feudalism_from_administrative_effect = yes
+				clear_title_laws = yes
+				add_title_law = single_heir_succession_law
 			}
 		}
 

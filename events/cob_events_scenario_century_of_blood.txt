@@ -693,28 +693,14 @@ lv_scenario_cob.0510 = { #Aurion Varezys cornonation
 		add_legitimacy = massive_legitimacy_gain
 		agot_create_artifact_valyrian_crown2_effect = { OWNER = this }
 
-		every_held_title = {
-			if = {
-				limit = {
-					OR = {
-						has_title_law = free_city_single_heir_succession_law
-						has_title_law = magisterial_life_succession_law
-						has_title_law = magisterial_life_succession_attached_titles_law
-						has_title_law = magisterial_limited_succession_law
-						has_title_law = magisterial_limited_succession_attached_titles_law
-						has_title_law = dictatorship_succession_law
-						#LV added
-						has_title_law = volantene_triarchy_succession_law
-					}
-				}
-				clear_title_laws = yes
-			}
-			add_title_law = single_heir_succession_law
-			set_de_jure_liege_title = title:e_new_valyria
-		}
 		title:c_old_volantis = {
 			set_county_faith = root.faith
 			set_county_culture = root.culture	
+		}
+		hidden_effect = {
+			every_held_title = {
+				set_de_jure_liege_title = title:e_new_valyria
+			}
 		}
 		trigger_event = {
 			id = lv_scenario_cob.0511 
@@ -2690,3 +2676,22 @@ lv_scenario_cob.0529 = { #Aurion returns home
 		remove_character_flag = varezys_valyria_event
 	}
 }
+
+lv_scenario_cob.0530 = { #Aurion returns home
+	hidden = yes
+
+	immediate = {
+		title:k_volantis.holder = {
+			every_held_title = {
+				clear_title_laws = yes
+				add_title_law = single_heir_succession_law
+				add_title_law = male_preference_law
+			}
+		}
+		trigger_event = {
+			id = lv_scenario_cob.0510 
+			days = 10
+		}
+	}
+}
+
