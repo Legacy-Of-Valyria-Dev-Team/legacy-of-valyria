@@ -186,3 +186,55 @@ lv_distribute_titles_government_parser = {
 		}
 	}
 }
+
+# For distributing singular counties
+# - Requires character scope
+lv_distribute_county_effect = {
+	save_scope_as = ruler
+	$COUNTY$ = {
+		create_character = {
+			location = this.title_province
+			culture = $VASSAL_CULTURE$
+			faith = $VASSAL_FAITH$
+			gender = male
+			gender_female_chance = $VASSAL_FEMALE_CHANCE$
+			save_scope_as = vassal
+		}
+		if = {
+			limit = { always = $GRANT_INDEPENDENCE$ }
+			create_title_and_vassal_change = {
+				type = independency
+				save_scope_as = change
+				add_claim_on_loss = yes
+			}
+			change_title_holder_include_vassals = {
+				holder = scope:vassal
+				change = scope:change
+			}
+			scope:vassal = { becomes_independent = { change = scope:change } }
+		}
+		else = {
+			create_title_and_vassal_change = {
+				type = granted
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			change_title_holder_include_vassals = {
+				holder = scope:vassal
+				change = scope:change
+				government_base = scope:ruler
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		scope:vassal = {
+			if = {
+				limit = { target_is_liege_or_above = scope:ruler }
+				if = {
+					limit = { always = $INHERIT_LIEGE_GOVERNMENT$ }
+					lv_distribute_titles_government_parser = { FALLBACK = $GOVERNMENT$ }
+				}
+				else = { change_government = $GOVERNMENT$ }
+			}
+		}
+	}
+}
