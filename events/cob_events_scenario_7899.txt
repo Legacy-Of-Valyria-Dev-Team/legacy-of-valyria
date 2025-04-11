@@ -2651,12 +2651,29 @@ cob_7899_scenerio.0530 = { #Aurion returns home
 	hidden = yes
 
 	immediate = {
-		title:k_volantis.holder = {
-			every_held_title = {
-				clear_title_laws = yes
-				add_title_law = single_heir_succession_law
-				add_title_law = male_preference_law
+		title:k_volantis = {
+			effect = {
+				if = {
+					limit = { NOT = { has_realm_law = slavery_allowed_law } }
+					add_realm_law_skip_effects = slavery_allowed_law
+				}
 			}
+			every_in_de_jure_hierarchy = {
+				set_variable = historical_slavery
+				holder ?= {
+					if = {
+						limit = { NOT = { has_realm_law = slavery_allowed_law } }
+						add_realm_law_skip_effects = slavery_allowed_law
+					}
+				}
+			}
+			add_title_law = male_preference_law
+		}
+		title:d_volantis = {
+			add_title_law = male_preference_law
+		}
+		title:c_old_volantis = {
+			add_title_law = male_preference_law
 		}
 		trigger_event = {
 			id = cob_7899_scenerio.0510 
