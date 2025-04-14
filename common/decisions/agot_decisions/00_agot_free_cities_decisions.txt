@@ -249,124 +249,22 @@ agot_seize_control = {
 
 	is_shown = {
 		is_independent_ruler = yes
-		any_held_title = {
-			tier = tier_kingdom
-			OR = {
-				this = title:k_lys
-				this = title:k_pentos
-				this = title:k_myr
-				this = title:k_tyrosh
-				this = title:k_braavos
-				this = title:k_volantis
-			}
+		government_has_flag = government_is_free_city
+		primary_title = {
+			tier >= tier_kingdom
 			has_title_law = dictatorship_succession_law
 		}
 	}
 
 	is_valid = {
 		is_independent_ruler = yes
+		has_realm_law = imperial_bureaucracy_3
 		dread >= 100
-		trigger_if = {
-			limit = {
-				has_title = title:k_lys
-				title:k_lys = {
-					has_title_law = dictatorship_succession_law
-				}
-			}
-			title:k_lys = {
-				title_held_years >= 20
-			}
+		primary_title = {
+			title_held_years >= 20
 			custom_tooltip = {
-				text = lys_full_county_control_tt
-				title:c_lys = {
-					county_control >= full_county_control
-				}
-			}
-		}
-		trigger_if = {
-			limit = {
-				has_title = title:k_pentos
-				title:k_pentos = {
-					has_title_law = dictatorship_succession_law
-				}
-			}
-			title:k_pentos = {
-				title_held_years >= 20
-			}
-			custom_tooltip = {
-				text = pentos_full_county_control_tt
-				title:c_pentos = {
-					county_control >= full_county_control
-				}
-			}
-		}
-		trigger_if = {
-			limit = {
-				has_title = title:k_myr
-				title:k_myr = {
-					has_title_law = dictatorship_succession_law
-				}
-			}
-			title:k_myr = {
-				title_held_years >= 20
-			}
-			custom_tooltip = {
-				text = myr_full_county_control_tt
-				title:c_myr = {
-					county_control >= full_county_control
-				}
-			}
-		}
-		trigger_if = {
-			limit = {
-				has_title = title:k_tyrosh
-				title:k_tyrosh = {
-					has_title_law = dictatorship_succession_law
-				}
-			}
-			title:k_tyrosh = {
-				title_held_years >= 20
-			}
-			custom_tooltip = {
-				text = tyrosh_full_county_control_tt
-				title:c_tyrosh = {
-					county_control >= full_county_control
-				}
-			}
-		}
-		trigger_if = {
-			limit = {
-				has_title = title:k_braavos
-				title:k_braavos = {
-					has_title_law = dictatorship_succession_law
-				}
-			}
-			title:k_braavos = {
-				title_held_years >= 20
-			}
-			custom_tooltip = {
-				text = braavos_full_county_control_tt
-				title:c_braavos = {
-					county_control >= full_county_control
-				}
-			}
-		}
-		trigger_if = {
-			limit = {
-				has_title = title:k_volantis
-				title:k_volantis = {
-					has_title_law = dictatorship_succession_law
-				}
-			}
-			title:k_volantis = {
-				title_held_years >= 20
-			}
-			custom_tooltip = {
-				text = volantis_full_county_control_tt
-				title:c_volantis = {
-					county_control >= full_county_control
-				}
-				title:c_old_volantis = {
+				text = agot_seize_control_full_county_control_tt
+				title_capital_county = {
 					county_control >= full_county_control
 				}
 			}
@@ -389,7 +287,8 @@ agot_seize_control = {
 	}
 
 	effect = {
-		change_government = feudal_government
+		convert_to_feudalism_from_administrative_effect = yes
+		end_diarchy = yes
 	}
 
 	cost = { prestige = 2500 }
@@ -480,6 +379,64 @@ agot_stepstones_rhoynish_culture = {
 	}
 }
 
+agot_seize_control = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_realm.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 120
+	desc = agot_seize_control_desc
+
+	is_shown = {
+		is_independent_ruler = yes
+		government_has_flag = government_is_free_city
+		primary_title = {
+			tier >= tier_kingdom
+			has_title_law = dictatorship_succession_law
+		}
+	}
+
+	is_valid = {
+		is_independent_ruler = yes
+		has_realm_law = imperial_bureaucracy_3
+		dread >= 100
+		primary_title = {
+			title_held_years >= 20
+			custom_tooltip = {
+				text = agot_seize_control_full_county_control_tt
+				title_capital_county = {
+					county_control >= full_county_control
+				}
+			}
+		}
+		custom_tooltip = {
+			text = strong_hook_on_all_powerful_vassals_tt
+			any_powerful_vassal = {
+				count = all
+				root = { has_strong_hook = prev }
+			}
+		}
+	}
+
+	ai_potential = {
+		always = no
+	}
+
+	ai_will_do = {
+		base = 0
+	}
+
+	effect = {
+		convert_to_feudalism_from_administrative_effect = yes
+		end_diarchy = yes
+	}
+
+	cost = { prestige = 2500 }
+
+	cooldown = { years = 10 }
+}
+
+
 agot_form_undisputed_lands = {
 	picture = {
 		reference = "gfx/interface/illustrations/decisions/decision_found_kingdom.dds"
@@ -507,7 +464,9 @@ agot_form_undisputed_lands = {
 		is_imprisoned = no
 		#Should have the highest prestige level.
 		prestige_level >= max_prestige_level
-		has_title = title:d_trade_cities
+		has_title = title:d_ibonanne
+		has_title = title:d_izuloktia
+		has_title = title:d_silkhead
 		has_title = title:d_aesomyr
 		has_title = title:d_hells_barrens
 		has_title = title:d_the_shambles
@@ -576,5 +535,69 @@ agot_form_undisputed_lands = {
 
 	ai_will_do = {
 		base = 100
+	}
+}
+
+agot_break_braavos_pentos_treaty = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_realm.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 120
+	desc = agot_break_braavos_pentos_treaty_desc
+
+	is_shown = {
+		has_title = title:k_pentos
+		exists = global_var:braavos_treaty
+		exists = title:k_braavos.holder
+	}
+
+	is_valid = {
+		is_at_war = no
+		is_imprisoned = no
+	}
+
+	cost = {
+		prestige = 5000
+		gold = 500
+	}
+
+	ai_potential = {
+		is_independent_ruler = yes
+		is_at_war = no
+	}
+
+	ai_will_do = {
+		base = 15
+	}
+
+	effect = {
+		custom_tooltip = agot_break_braavos_pentos_treaty_effect_tt
+		custom_tooltip = agot_break_braavos_pentos_treaty_effect_2_tt
+		trigger_event = agot_decisions_events.0202
+		show_as_tooltip = {
+			remove_character_modifier = agot_pentos_braavos_treaty
+		}
+		hidden_effect = {
+			every_living_character = {
+				limit = {
+					has_character_modifier = agot_pentos_braavos_treaty
+				}
+				remove_character_modifier = agot_pentos_braavos_treaty
+				if = {
+					limit = {
+						this != root
+					}
+					trigger_event = { id = agot_decisions_events.0201 days = 1 }
+				}
+			}
+			remove_global_variable = braavos_treaty
+			set_global_variable = {
+				name = braavos_treaty_broken
+				value = yes
+				years = 15
+			}
+		}
+		title:k_braavos.holder = { trigger_event = { id = agot_decisions_events.0200 days = 1 } }
 	}
 }

@@ -1,0 +1,54 @@
+﻿story_cob_aurion = {
+
+	#The Dragonlords
+	#Aurion - Varezys_1
+	#Sonaryen - Sonaryen_1
+	#Urnebar - Urnebar_1
+	#Mataeryon - Mataeryon_1
+	#Belaerys - Belaerys_cob_1
+
+
+	on_setup = {
+		debug_log = "Aurion Century of Blood Initialized"
+		##################################
+		#Initialise Events
+
+		#Gather the Dragonlords!
+		add_to_variable_list = {
+			name = emperor_of_valyria
+			target = character:Varezys_1 #Aurion
+		}
+
+		add_to_variable_list = {
+			name = restore_valyria
+			target = character:Varezys_1 #Aurion
+		}
+
+		#New Valyria Conquest counter
+		set_variable = {
+			name = new_valyria_conquest
+			value = 0
+		}
+	}
+
+	on_owner_death = {
+		if = {
+			limit = {
+				character:Varezys_1 = {
+					var:cob_restore_valyria = flag:positive
+				}
+			}
+			character:Varezys_1.location.barony.title_province = {
+				add_special_building_slot = aurions_lost_expidition
+				add_building = aurions_lost_expidition
+			}	
+		}
+		end_story = yes
+	}
+
+
+	# General daily checks
+	#effect_group = {
+	#	days = 1
+	#}
+}
