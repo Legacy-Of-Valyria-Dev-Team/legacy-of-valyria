@@ -4,9 +4,54 @@
 
 on_game_start = {
 	on_actions = {
+		cob_on_game_start
 		cob_set_legacies
 		cob_house_dna
-		#cob_house_dna_dynasty
+		cob_disputed_lands_cleanup
+		cob_set_dragonstone_faiths
+		cob_set_birthplaces
+	}
+}
+
+on_game_start_after_lobby = {
+	on_actions = {
+		cob_on_game_start_after_lobby
+	}
+}
+
+cob_on_game_start = {
+	effect = {
+		cv_add_camp_buildings_on_start = yes
+		if = {
+			limit = {
+				game_start_date < 7902.1.1
+			}
+			agot_set_legitimate_house = {
+				TITLE = title:k_the_riverlands
+				HOUSE = character:Teague_1.house
+			}
+		}
+	}
+}
+
+cob_on_game_start_after_lobby = {
+	effect = {
+		if = {
+			limit = {
+				NOR = {
+					has_game_rule = agot_shatter_duchies
+					has_game_rule = agot_shatter_duchies_even
+					has_game_rule = agot_shatter_petty_kingdoms
+					has_game_rule = agot_shatter_kingdoms
+					has_game_rule = agot_shatter_empires
+				}
+			}
+			if = { #LoV added - manage 7899.7.22 Century of Blood Scenerio
+				limit = { game_start_date = 7899.7.22 }
+
+				cob_7899_7_22_scenario_setup = yes
+			}
+		}
 	}
 }
 
@@ -22,12 +67,12 @@ restore_valyria_cob_travel_on_actions = {
  		if = {
  			limit = {
  				character:Varezys_1 ?= {
-						has_character_flag = varezys_valyria_travel
-						location = province:8983
+					has_character_flag = varezys_valyria_travel
+					location = province:9012
  				}
  			}
 			start_travel_plan = {
-				destination = province:9643
+				destination = province:9672
 				on_start_on_action = on_travel_relocation_start
 				on_arrival_on_action = on_travel_relocation_end
 				on_arrival_destinations = last
@@ -43,11 +88,11 @@ restore_valyria_cob_travel_on_actions = {
  			limit = {
  				character:Varezys_1 ?= {
 						has_character_flag = varezys_valyria_travel
-						location = province:9643
+						location = province:9672
  				}
  			}
 			start_travel_plan = {
-				destination = province:9542
+				destination = province:9571
 				on_start_on_action = on_travel_relocation_start
 				on_arrival_on_action = on_travel_relocation_end
 				on_arrival_destinations = last
@@ -63,11 +108,11 @@ restore_valyria_cob_travel_on_actions = {
  			limit = {
  				character:Varezys_1 ?= {
 						has_character_flag = varezys_valyria_travel
-						location = province:9542
+						location = province:9571
  				}
  			}
 			start_travel_plan = {
-				destination = province:9601
+				destination = province:9630
 				on_start_on_action = on_travel_relocation_start
 				on_arrival_on_action = on_travel_relocation_end
 				on_arrival_destinations = last
@@ -83,11 +128,111 @@ restore_valyria_cob_travel_on_actions = {
  			limit = {
  				character:Varezys_1 ?= {
 						has_character_flag = varezys_valyria_travel
-						location = province:9601
+						location = province:9630
  				}
  			}
 			start_travel_plan = {
-				destination = province:9509
+				destination = province:9625
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 ?= {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 ?= {
+						has_character_flag = varezys_valyria_travel
+						location = province:9625
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9604
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 ?= {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 ?= {
+						has_character_flag = varezys_valyria_travel
+						location = province:9604
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9538
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 ?= {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 ?= {
+						has_character_flag = varezys_valyria_travel
+						location = province:9538
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9528
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 ?= {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 ?= {
+						has_character_flag = varezys_valyria_travel
+						location = province:9528
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9496
+				on_start_on_action = on_travel_relocation_start
+				on_arrival_on_action = on_travel_relocation_end
+				on_arrival_destinations = last
+				return_trip = no # One way
+				travel_with_domicile = yes
+			}
+			character:Varezys_1 ?= {
+				remove_character_flag = varezys_valyria_travel
+				add_character_flag = varezys_valyria_event		
+			}
+ 		}
+		else_if = {
+ 			limit = {
+ 				character:Varezys_1 ?= {
+						has_character_flag = varezys_valyria_travel
+						location = province:9496
+ 				}
+ 			}
+			start_travel_plan = {
+				destination = province:9485
 				on_start_on_action = on_travel_relocation_start
 				on_arrival_on_action = on_travel_relocation_end
 				on_arrival_destinations = last
@@ -103,14 +248,14 @@ restore_valyria_cob_travel_on_actions = {
  			limit = {
  				character:Varezys_1 ?= {
 						has_character_flag = varezys_valyria_travel
-						location = province:9509
+						location = province:9485
  				}
  			}
 			start_travel_plan = {
-				destination = province:9448
+				destination = province:9470
 				on_start_on_action = on_travel_relocation_start
 				on_arrival_on_action = on_travel_relocation_end
-				on_arrival_event = lv_scenario_cob.0529
+				on_arrival_event = cob_7899_scenerio.0529
 				on_arrival_destinations = last
 				return_trip = no # One way
 				travel_with_domicile = yes
@@ -127,12 +272,111 @@ restore_valyria_cob_event_on_actions = {
 		has_character_flag = varezys_valyria_event
 	}
 	random_events = {
-		1 = lv_scenario_cob.0521 #Aurion encounters fyrewyrm
-		2 = lv_scenario_cob.0522 #Aurion encounters a Valyrian Robber
-		2 = lv_scenario_cob.0523 #Aurion encounters a former Valyrian Soldier
-		2 = lv_scenario_cob.0524 #Aurion encounters a Great Valyrian Soldier
-		2 = lv_scenario_cob.0525 #Aurion encounters a retired Valyrian Soldier
-		#1 = lv_scenario_cob.0526 #Aurion encounters a crack in the earth
-		2 = lv_scenario_cob.0527 #Aurion encounters a dragonlord
+		1 = cob_7899_scenerio.0521 #Aurion encounters fyrewyrm
+		2 = cob_7899_scenerio.0522 #Aurion encounters a Valyrian Robber
+		2 = cob_7899_scenerio.0523 #Aurion encounters a former Valyrian Soldier
+		2 = cob_7899_scenerio.0524 #Aurion encounters a Great Valyrian Soldier
+		2 = cob_7899_scenerio.0525 #Aurion encounters a retired Valyrian Soldier
+		#1 = cob_7899_scenerio.0526 #Aurion encounters a crack in the earth
+		2 = cob_7899_scenerio.0527 #Aurion encounters a dragonlord
+	}
+}
+
+cob_set_dragonstone_faiths = {
+	effect = {
+		if = {
+			limit = {
+				game_start_date < 7900.1.1
+			}
+			title:c_dragonstone = {
+				set_county_faith = faith:valyrian_pan_freehold
+				set_county_culture = culture:high_valyrian
+			}
+			title:c_driftmark = {
+				set_county_faith = faith:valyrian_pan_freehold
+				set_county_culture = culture:high_valyrian	
+			}
+			title:c_high_tide = {
+				set_county_faith = faith:valyrian_pan_freehold
+				set_county_culture = culture:high_valyrian	
+			}
+			title:c_claw_isle = {
+				set_county_faith = faith:valyrian_pan_freehold
+				set_county_culture = culture:high_valyrian	
+			}
+			title:c_the_scales = {
+				set_county_faith = faith:valyrian_pan_freehold
+				set_county_culture = culture:high_valyrian	
+			}
+		}
+	}
+}
+
+cob_set_birthplaces = {
+	effect = {
+		if = { 
+			##People
+			character:Justman_cob_2 = {
+				agot_set_birthplace = { LOCATION = c_kings_landing }
+			}
+			character:Varezys_1 = {
+				agot_set_birthplace = { LOCATION = c_valyria }
+			}
+			character:Urnebar_1 = {
+				agot_set_birthplace = { LOCATION = c_ilvonys }
+			}
+			character:Urnebar_9 = {
+				agot_set_birthplace = { LOCATION = c_ilvonys }
+			}
+			character:Urnebar_10 = {
+				agot_set_birthplace = { LOCATION = c_ilvonys }
+			}
+			character:Urnebar_11 = {
+				agot_set_birthplace = { LOCATION = c_ilvonys }
+			}
+			character:Mataeryon_1 = {
+				agot_set_birthplace = { LOCATION = c_port_of_sighs }
+			}
+			character:Mataeryon_2 = {
+				agot_set_birthplace = { LOCATION = c_port_of_sighs }
+			}
+			character:Mataeryon_3 = {
+				agot_set_birthplace = { LOCATION = c_port_of_sighs }
+			}
+			character:Mataeryon_4 = {
+				agot_set_birthplace = { LOCATION = c_port_of_sighss }
+			}
+			character:Belaerys_cob_1 = {
+				agot_set_birthplace = { LOCATION = c_oreos }
+			}
+			character:Belaerys_cob_2 = {
+				agot_set_birthplace = { LOCATION = c_oreos }
+			}
+			character:Belaerys_cob_3 = {
+				agot_set_birthplace = { LOCATION = c_oreos }
+			}
+			character:Belaerys_cob_4 = {
+				agot_set_birthplace = { LOCATION = c_oreos }
+			}
+			character:Sonaryen_1 = {
+				agot_set_birthplace = { LOCATION = c_kastaryia }
+			}
+			character:Sonaryen_2 = {
+				agot_set_birthplace = { LOCATION = c_kastaryia }
+			}
+			character:Sonaryen_3 = {
+				agot_set_birthplace = { LOCATION = c_kastaryia }
+			}
+			character:Sonaryen_4 = {
+				agot_set_birthplace = { LOCATION = c_kastaryias }
+			}
+			character:Sonaryen_5 = {
+				agot_set_birthplace = { LOCATION = c_kastaryia }
+			}
+			##Dragons
+			character:dragon_Alduin = { 
+				agot_set_birthplace = { LOCATION = c_oreos }
+			}
+		}
 	}
 }

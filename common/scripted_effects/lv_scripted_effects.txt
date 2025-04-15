@@ -95,7 +95,7 @@ lv_distribute_titles_government_parser = {
 
 			# AGOT Governments
 			lp_feudal_government = { scope:vassal = { change_government = lp_feudal_government } }
-			free_city_government = { scope:vassal = { change_government = free_city_government } }
+			administrative_government = { scope:vassal = { change_government = administrative_government } }
 			silent_sisterhood_government = { scope:vassal = { change_government = silent_sisterhood_government } }
 			kingsguard_government = { scope:vassal = { change_government = kingsguard_government } }
 			nights_watch_government = { scope:vassal = { change_government = nights_watch_government } }
@@ -141,7 +141,7 @@ lv_distribute_titles_government_parser = {
 								limit = {
 									liege = {
 										OR = {
-											has_government = free_city_government
+											has_government = administrative_government
 											has_government = oligarchic_government
 										}
 									}
@@ -149,9 +149,9 @@ lv_distribute_titles_government_parser = {
 								if = {
 									limit = {
 										highest_held_title_tier >= tier_county
-										liege = { has_government = free_city_government }
+										liege = { has_government = administrative_government }
 									}
-									change_government = free_city_government
+									change_government = administrative_government
 								}
 								else_if = {
 									limit = {
@@ -165,9 +165,9 @@ lv_distribute_titles_government_parser = {
 								if = {
 									limit = {
 										highest_held_title_tier >= tier_county
-										any_liege_or_above = { has_government = free_city_government }
+										any_liege_or_above = { has_government = administrative_government }
 									}
-									change_government = free_city_government
+									change_government = administrative_government
 								}
 								else_if = {
 									limit = {
@@ -182,6 +182,58 @@ lv_distribute_titles_government_parser = {
 					}
 					tribal_holding = { scope:vassal = { change_government = tribal_government } }
 				}
+			}
+		}
+	}
+}
+
+# For distributing singular counties
+# - Requires character scope
+lv_distribute_county_effect = {
+	save_scope_as = ruler
+	$COUNTY$ = {
+		create_character = {
+			location = this.title_province
+			culture = $VASSAL_CULTURE$
+			faith = $VASSAL_FAITH$
+			gender = male
+			gender_female_chance = $VASSAL_FEMALE_CHANCE$
+			save_scope_as = vassal
+		}
+		if = {
+			limit = { always = $GRANT_INDEPENDENCE$ }
+			create_title_and_vassal_change = {
+				type = independency
+				save_scope_as = change
+				add_claim_on_loss = yes
+			}
+			change_title_holder_include_vassals = {
+				holder = scope:vassal
+				change = scope:change
+			}
+			scope:vassal = { becomes_independent = { change = scope:change } }
+		}
+		else = {
+			create_title_and_vassal_change = {
+				type = granted
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			change_title_holder_include_vassals = {
+				holder = scope:vassal
+				change = scope:change
+				government_base = scope:ruler
+			}
+		}
+		resolve_title_and_vassal_change = scope:change
+		scope:vassal = {
+			if = {
+				limit = { target_is_liege_or_above = scope:ruler }
+				if = {
+					limit = { always = $INHERIT_LIEGE_GOVERNMENT$ }
+					lv_distribute_titles_government_parser = { FALLBACK = $GOVERNMENT$ }
+				}
+				else = { change_government = $GOVERNMENT$ }
 			}
 		}
 	}
