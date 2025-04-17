@@ -16,11 +16,13 @@
 	}
 
 	province_modifier = {
-		holding_build_speed = 0.30
+		# holding_build_speed = 0.3
 		travel_danger = 40
+		building_slot_add = -1
 	}
 
 	county_modifier = {
+		build_speed = 0.3
 		development_growth_factor = -0.5
 		monthly_county_control_growth_factor = -0.4
 	}
@@ -30,12 +32,12 @@
 		stress_loss_mult = -0.4
 	}
 
-	flag = blocker
+	flag = wilderness_blocker
 	type = regular
 }
 valyria_mines_02 = {
 	cost_gold = 1200
-	construction_time = very_slow_construction_time
+	construction_time = slow_construction_time
 	type_icon = "icon_structure_mines.dds"
 	next_building = valyria_mines_03
 
@@ -50,13 +52,15 @@ valyria_mines_02 = {
 
 	can_construct = {
 	}
-
+	
 	province_modifier = {
-		holding_build_speed = 0.15
+		# holding_build_speed = 0.15
 		travel_danger = 30
 		monthly_income = special_mine_building_tax_tier_5
+		building_slot_add = -1
 	}
 	county_modifier = {
+		build_speed = 0.15
 		development_growth_factor = -0.25
 		monthly_county_control_growth_factor = -0.25
 		tax_mult = 0.15
@@ -67,10 +71,35 @@ valyria_mines_02 = {
 		stress_loss_mult = -0.2
 	}
 
+	on_complete = {
+		hidden_effect = {
+			county.holder = {
+				if = {
+					limit = {
+						root = { NOT = { has_variable = upgraded_mine } }
+					}
+					random_list = {
+						2 = {
+							trigger_event = blockers.0001
+						}
+						6 = {
+							send_interface_toast = {
+								title = find_gold_cache
+								left_icon = county.holder
+								add_gold = 800
+							}
+						}
+					}
+				}
+			}
+			set_variable = { name = upgraded_mine }
+		}
+	}
+
 	ai_value = {
 		base = 100
 	}
-	flag = blocker
+	flag = wilderness_blocker
 	type = regular
 }
 valyria_mines_03 = {
@@ -87,14 +116,14 @@ valyria_mines_03 = {
 		}
 	}
 	can_construct = {
-		NOT = { has_holding_type = ruin_holding }
+		NOT = { has_holding_type = colony_holding }
 		# building_requirement_castle_city_church = { LEVEL = 03 }
 	}
-
+	
 	province_modifier = {
 		monthly_income = special_mine_building_tax_tier_10
 		building_slot_add = 1
-
+		
 	}
 	county_modifier = {
 		development_growth_factor = 0.25
@@ -102,10 +131,36 @@ valyria_mines_03 = {
 		tax_mult = 0.4
 	}
 
+	on_complete = {
+		save_scope_as = valyria_mine_province
+		hidden_effect = {
+			county.holder = {
+				if = {
+					limit = {
+						root = { NOT = { has_variable = completed_mine } }
+					}
+					random_list = {
+						4 = {
+							trigger_event = blockers.0001
+						}
+						6 = {
+							send_interface_toast = {
+								title = find_gold_cache
+								left_icon = county.holder
+								add_gold = 800
+							}
+						}
+					}
+				}
+			}
+			set_variable = { name = completed_mine }
+		}
+	}
+
 	ai_value = {
 		base = 100
 	}
-
+	
 	type = regular
 }
 
@@ -127,11 +182,13 @@ valyria_mines_dormant_01 = {
 	}
 
 	province_modifier = {
-		holding_build_speed = 0.20
+		# holding_build_speed = 0.20
 		travel_danger = 20
+		building_slot_add = -1
 	}
 
 	county_modifier = {
+		build_speed = 0.2
 		development_growth_factor = -0.3
 		monthly_county_control_growth_factor = -0.2
 	}
@@ -140,12 +197,12 @@ valyria_mines_dormant_01 = {
 		stress_gain_mult = 0.2
 		stress_loss_mult = -0.2
 	}
-	flag = blocker
+	flag = wilderness_blocker
 	type = regular
 }
 valyria_mines_dormant_02 = {
 	cost_gold = 900
-	construction_time = very_slow_construction_time
+	construction_time = slow_construction_time
 	type_icon = "icon_structure_mines.dds"
 	next_building = valyria_mines_dormant_03
 
@@ -160,13 +217,15 @@ valyria_mines_dormant_02 = {
 	can_construct = {
 		# building_requirement_castle_city_church = { LEVEL = 02 }
 	}
-
+	
 	province_modifier = {
-		holding_build_speed = 0.10
+		# holding_build_speed = 0.10
 		travel_danger = 10
 		monthly_income = special_mine_building_tax_tier_2
+		building_slot_add = -1
 	}
 	county_modifier = {
+		build_speed = 0.1
 		monthly_county_control_growth_factor = -0.05
 		tax_mult = 0.05
 	}
@@ -176,10 +235,35 @@ valyria_mines_dormant_02 = {
 		stress_loss_mult = -0.1
 	}
 
+	on_complete = {
+		hidden_effect = {
+			county.holder = {
+				if = {
+					limit = {
+						root = { NOT = { has_variable = upgraded_mine } }
+					}
+					random_list = {
+						1 = {
+							trigger_event = blockers.0001
+						}
+						6 = {
+							send_interface_toast = {
+								title = find_gold_cache
+								left_icon = county.holder
+								add_gold = 400
+							}
+						}
+					}
+				}
+			}
+			set_variable = { name = upgraded_mine }
+		}
+	}
+
 	ai_value = {
 		base = 100
 	}
-	flag = blocker
+	flag = wilderness_blocker
 	type = regular
 }
 valyria_mines_dormant_03 = {
@@ -196,10 +280,10 @@ valyria_mines_dormant_03 = {
 		}
 	}
 	can_construct = {
-		NOT = { has_holding_type = ruin_holding }
+		NOT = { has_holding_type = colony_holding }
 		# building_requirement_castle_city_church = { LEVEL = 03 }
 	}
-
+	
 	province_modifier = {
 		monthly_income = special_mine_building_tax_tier_6
 		building_slot_add = 1
@@ -209,65 +293,132 @@ valyria_mines_dormant_03 = {
 		tax_mult = 0.2
 	}
 
+	on_complete = {
+		save_scope_as = valyria_mine_province
+		hidden_effect = {
+			county.holder = {
+				if = {
+					limit = {
+						root = { NOT = { has_variable = completed_mine } }
+					}
+					random_list = {
+						2 = {
+							trigger_event = blockers.0001
+						}
+						6 = {
+							send_interface_toast = {
+								title = find_gold_cache
+								left_icon = county.holder
+								add_gold = 400
+							}
+						}
+					}
+				}
+			}
+			set_variable = { name = completed_mine }
+		}
+	}
+
 	ai_value = {
 		base = 100
 	}
-
+	
 	type = regular
 }
 
 lokirian_barracks_01 = {
-	construction_time = very_slow_construction_time
+	construction_time = 20
 	next_building = lokirian_barracks_02
 	cost_gold = 1
 	type_icon = "icon_building_lokiria_barracks.dds"
 
 	can_construct_potential = {
 		barony = title:b_ilvonys_1
-		building_requirement_tribal = no
 	}
 
-	province_modifier = { building_slot_add = 1 }
+	province_modifier = {
+		defender_holding_advantage = 3
+		# holding_build_speed = 0.3
+	}
+	
+	county_modifier = {
+		build_speed = 0.3
+	}
 
+	character_modifier = {
+		monthly_prestige_gain_mult = -0.2
+	}
+
+	# province_modifier = { building_slot_add = 1 }
+	flag = wilderness_blocker
 	type = regular
 }
 
 lokirian_barracks_02 = {
-	construction_time = very_slow_construction_time
-	cost_gold = 3500
+	construction_time = slow_construction_time
+	next_building = lokirian_barracks_03
+	cost_gold = 1500
 	type_icon = "icon_building_lokiria_barracks.dds"
 
 	can_construct_potential = {
 		barony = title:b_ilvonys_1
-		building_requirement_tribal = no
+	}
+
+	province_modifier = {
+		travel_danger = -5
+		monthly_income = -3
+		stationed_maa_damage_mult = high_maa_damage_tier_4
+		stationed_maa_toughness_mult = high_maa_toughness_tier_4
 	}
 
 	character_modifier = {
-		knight_effectiveness_mult = 0.25
-		knight_limit = 8
-		men_at_arms_maintenance = -0.025
-		martial_per_prestige_level = 1
-		monthly_county_control_growth_factor = 0.15
+		knight_effectiveness_mult = 0.10
+		knight_limit = 2
+		men_at_arms_maintenance = -0.05
 	}
+	flag = wilderness_blocker
+	type = regular
+}
 
-	county_modifier = {
-		garrison_size = 0.15
-		levy_size = 0.15
-		defender_holding_advantage = 10
+lokirian_barracks_03 = {
+	construction_time = very_slow_construction_time
+	cost_gold = 3000
+	type_icon = "icon_building_lokiria_barracks.dds"
+
+	can_construct_potential = {
+		barony = title:b_ilvonys_1
 	}
-
-	levy = 2000
 
 	province_modifier = {
-		fort_level = 5
-		monthly_income = -8
+		monthly_income = -6
 		stationed_maa_damage_mult = high_maa_damage_tier_8
 		stationed_maa_toughness_mult = high_maa_toughness_tier_8
-		travel_danger = -15
+		travel_danger = -10
 		building_slot_add = 1
 	}
 
+	character_modifier = {
+		knight_effectiveness_mult = 0.20
+		knight_limit = 4
+		men_at_arms_maintenance = -0.1
+	}
+	# on_complete = {
+	# 	save_scope_as = lokiria_province
+	# 	hidden_effect = {
+	# 		county.holder = {
+	# 			if = {
+	# 				limit = {
+	# 					root = { NOT = { has_variable = rebuilt_barracks } }
+	# 				}
+	# 				trigger_event = blockers.0002
+	# 			}
+	# 		}
+	# 		set_variable = { name = rebuilt_barracks }
+	# 	}
+	# }
+	
+	levy = 2000
 	max_garrison = 2000
-
+	
 	type = regular
 }
