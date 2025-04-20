@@ -1,0 +1,87 @@
+﻿# Legacy of Valyria Settlement Character Interactions
+
+lv_abandon_settlement = {
+	category = interaction_category_uncategorized
+	hidden = yes
+
+	desc = lv_abandon_settlement_desc
+
+	target_type = title
+	target_filter = actor_domain_titles
+
+	auto_accept = yes
+
+	is_shown = { scope:actor = { this = scope:recipient } }
+
+	can_be_picked_title = {
+		scope:target = {
+			holder = scope:actor
+			trigger_if = {
+				limit = { tier <= tier_county }
+				title_province = { has_holding_type = colony_holding }
+			}
+			trigger_else = {
+				custom_description = {
+					text = "feudalize_tribal_holding_interaction_title_not_county_or_below"
+					always = no
+				}
+			}
+		}
+	}
+
+	on_accept = {
+		scope:actor = { lv_abandon_settlement_effect = { COUNTY = scope:target } }
+	}
+
+	ai_will_do = { base = 150 }
+}
+
+lv_upgrade_settlement = {
+	category = interaction_category_uncategorized
+	hidden = yes
+
+	desc = lv_upgrade_settlement_desc
+
+	target_type = title
+	target_filter = actor_domain_titles
+
+	auto_accept = yes
+
+	is_shown = { scope:actor = { this = scope:recipient } }
+
+	can_be_picked_title = {
+		scope:target = {
+			holder = scope:actor
+			trigger_if = {
+				limit = { tier <= tier_county }
+				title_province = { has_holding_type = colony_holding }
+			}
+			trigger_else = {
+				custom_description = {
+					text = "feudalize_tribal_holding_interaction_title_not_county_or_below"
+					always = no
+				}
+			}
+		}
+	}
+	is_valid = {
+		scope:target = {
+			development_level >= 3
+			title_province = {
+				NOT = {
+					custom_description = {
+						text = lv_has_settlement_blockers
+						has_building_with_flag = wilderness_blocker
+					}
+				}
+			}
+		}
+	}
+
+	on_accept = {
+		scope:target = { title_province = { save_scope_as = completed_ruin } }
+		scope:actor = { trigger_event = agot_ruins.1000 }
+	}
+
+	ai_will_do = { base = 150 }
+}
