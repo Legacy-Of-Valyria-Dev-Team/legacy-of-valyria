@@ -1292,13 +1292,13 @@ window = {
 				}
 			}
 
-			# LEGACY OF VALYRIA ADDED
-			### UPGRADE SETTLEMENT TO HOLDING OF CHOICE ###
-			widget = {
-				allow_outside = yes
+			flowcontainer = {
 				parentanchor = center
-				position = { 89 32 }
+				position = { 89 50 }
+				righttoleft = yes
 
+				# LEGACY OF VALYRIA ADDED
+				### UPGRADE SETTLEMENT TO HOLDING OF CHOICE ###
 				button_round  = {
 					datacontext = "[HoldingView.GetGUIHoldingBuilding]"
 					datacontext = "[HoldingView.GetTitle]"
@@ -1310,22 +1310,16 @@ window = {
 					clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
 					onclick = "[Character.OpenPlayerInteractionWithTargetTitle('lv_upgrade_settlement', Title.Self)]"
 					size = { 35 35 }
-
 					button_feudalize_tribe = {
 						size = { 21 21 }
 						parentanchor = center
 						alwaystransparent = yes
+						texture = "gfx/interface/icons/flat_icons/upgrade_colony_holding.dds"
 					}
 				}
-			}
 
-			# LEGACY OF VALYRIA ADDED
-			### RETURN SETTLEMENT BACK TO WILDERNESS ###
-			widget = {
-				allow_outside = yes
-				parentanchor = center
-				position = { 55 32 }
-
+				# LEGACY OF VALYRIA ADDED
+				### RETURN SETTLEMENT BACK TO WILDERNESS ###
 				button_round  = {
 					datacontext = "[HoldingView.GetGUIHoldingBuilding]"
 					datacontext = "[HoldingView.GetTitle]"
@@ -1339,10 +1333,10 @@ window = {
 					size = { 35 35 }
 
 					button_feudalize_tribe = {
-						size = { 21 21 }
+						size = { 35 35 }
 						parentanchor = center
 						alwaystransparent = yes
-						texture = "gfx/interface/icons/flat_icons/cancel.dds"
+						texture = "gfx/interface/icons/flat_icons/cancel_small.dds"
 					}
 				}
 			}
@@ -1824,16 +1818,96 @@ window = {
 					margin_right = -3
 
 					# Upgrade buildings
-					flowcontainer = {
-						name = "buildings_grid"
-						datamodel = "[HoldingView.GetBuildings]"
+					scrollarea = {
 						ignoreinvisible = yes
-						spacing = 3
-						margin_right = 3
+						maximumsize = { 464 58 }
+						autoresizescrollarea = yes
+
+						scrollbarpolicy_vertical = always_off
 						righttoleft = yes
 
-						item = {
-							widget_building_item = {}
+						scrollbar_horizontal = {
+							scrollbar = {
+								name = "horizontal_scrollbar"
+								size = { 12 12 }
+								wheelstep = 60
+								direction = horizontal
+
+								alpha = 0.0
+
+								state = {
+									name = _mouse_hierarchy_enter
+									using = Animation_FadeIn_Quick
+								}
+								state = {
+									name = _mouse_hierarchy_leave
+									using = Animation_FadeOut_Quick
+								}
+
+								track = {
+									button = {
+										size = { 12 12 }
+										gfxtype = buttongfx
+
+										texture = "gfx/interface/scrollbars/scrollbar_track_horizontal.dds"
+										spriteType = Corneredtiled
+										spriteborder = { 3 0 }
+										effectname = "NoHighlight"
+										intersectionmask = yes
+									}
+								}
+
+								slider = {
+									button = {
+										gfxtype = framedbuttongfx
+										effectname = "NoHighlight"
+
+										texture = "gfx/interface/scrollbars/scrollbar_slider_horizontal.dds"
+										spriteType = Corneredtiled
+										spriteborder = { 3 0 }
+										framesize = { 40 12 }
+										minimumsize = { 15 -1 }
+
+										upframe = 1
+										overframe = 2
+										downframe = 2
+
+										intersectionmask = yes
+										oversound = "event:/SFX/UI/Generic/sfx_ui_generic_icon_pointer_over"
+
+										state = {
+											name = _mouse_press
+											start_sound = {
+												soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_icon_select"
+											}
+										}
+
+										state = {
+											name = _mouse_release
+											start_sound = {
+												soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_icon_select"
+											}
+										}
+									}
+								}
+
+								dec_button = { button = {} }
+								inc_button = { button = {} }
+							}
+						}
+
+						scrollwidget = {
+							# Upgrade buildings
+							flowcontainer = {
+								name = "buildings_grid"
+								datamodel = "[HoldingView.GetBuildings]"
+								ignoreinvisible = yes
+								spacing = 3
+								margin_right = 3
+								righttoleft = yes
+
+								item = { widget_building_item = {} }
+							}
 						}
 					}
 
