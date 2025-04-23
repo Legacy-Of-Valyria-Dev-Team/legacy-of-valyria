@@ -1,0 +1,112 @@
+types LVInfoTypes
+{
+	type lv_info_incompatibility_window = window {
+		# Add an Or('','') here once the other entries are in
+		visible = "[GetVariableSystem.Exists('lv_info_incompatibility_county_view')]""
+		parentanchor = center
+        layer = top
+
+		using = Window_Decoration_Spike
+        using = Window_Background
+        
+        vbox = {
+            using = Window_Margins
+            set_parent_size_to_minimum = yes
+            
+            widget_header_with_picture = {
+                layoutpolicy_horizontal = expanding
+
+				blockoverride "illustration_texture" { texture = "gfx/interface/illustrations/activity_header_backgrounds/activity_valyria_settle_ruins.dds" }
+                blockoverride "header_text" { text = "INCOMPATIBILITY_WINDOW_HEADER" }
+            }
+            
+            text_multi = {
+				margin_top = 15
+                autoresize = yes
+                max_width = 540
+                align = center
+                text = "INCOMPATIBILITY_WINDOW_TEXT"
+            }
+
+			vbox = {
+				layoutpolicy_horizontal = expanding
+				margin = { 15 15 }
+				spacing = 5
+
+				lv_info_incompatibility_colonisation = {}
+				# Put other system warnings here once made
+			}
+        }
+
+		blockoverride "button_close" { onclick = "[GetVariableSystem.Clear('lv_info_incompatibility_county_view')]" }
+	}
+
+	# Template
+	type lv_info_incompatibility_vbox = vbox {
+		layoutpolicy_horizontal = expanding
+
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			margin = { 15 15 }
+
+			background = { using = Background_Area_Dark }
+
+			header_text = { block "incompatibility_type" { raw_text = "The affected mechanic" } }
+			divider_light = {
+				layoutpolicy_horizontal = growing
+				alpha = 0.5
+			}
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				margin = { 15 15 }
+
+				vbox = {
+					layoutpolicy_vertical = expanding
+					icon = {
+						block "incompatibility_icon" {
+							size = { 71 60 }
+							texture = "gfx/interface/icons/holding_types_tab/colony_holding.dds"
+						}
+
+						using = Master_Button_Modify_Texture
+					}
+					expand = {}
+				}
+
+				vbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					margin_left = 15
+
+					text_multi = {
+						layoutpolicy_horizontal = expanding
+						max_width = 500
+						autoresize = yes
+						block "incompatibility_text" { raw_text = "Explain mechanic affected and kinds of mods likely to cause the conflict." }
+					}
+					expand = {}
+				}
+			}
+		}
+    }
+
+	# Colonisation
+	type lv_info_incompatibility_colonisation_check = widget {
+		state = {
+			name = _show
+			on_start = "[GetVariableSystem.Set( 'lv_info_incompatibility_county_view', 'true' )]"
+		}
+	}
+	type lv_info_incompatibility_colonisation = lv_info_incompatibility_vbox {
+        visible = "[GetVariableSystem.Exists('lv_info_incompatibility_county_view')]"
+		
+		blockoverride "incompatibility_type" { text = "INCOMPATIBILITY_WINDOW_COLONISATION_TYPE" }
+		blockoverride "incompatibility_icon" {
+			size = { 71 60 }
+			texture = "gfx/interface/icons/holding_types_tab/colony_holding.dds"
+		}
+		blockoverride "incompatibility_text" { text = "INCOMPATIBILITY_WINDOW_COLONISATION_TEXT" }
+    }
+}
