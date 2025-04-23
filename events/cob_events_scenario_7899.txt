@@ -124,7 +124,6 @@ cob_7899_scenerio.0003 = { #Qhorwyn Hoare
 		stress_impact = {
 			base = medium_stress_impact_gain
 		}
-		#cv_create_artifact_vs_abyss_effect = { OWNER = root }
 	}
 }
 cob_7899_scenerio.0004 = { #Tommen II Lannister
@@ -144,36 +143,22 @@ cob_7899_scenerio.0004 = { #Tommen II Lannister
 		name = cob_7899_scenerio.0004.b
 		custom_tooltip = cob_7899_scenerio.0004.b_tt
 		add_prestige = 500
-		hidden_effect = {
-			random_list = {
-				95 = { #dead
-					death = {
-						death_reason = death_lost_at_sea
-					}
-					if = {
-						limit = { any_artifact = { has_artifact_modifier = vs_brightroar_modifier } }
-							random_artifact = {
-								limit = { has_artifact_modifier = vs_brightroar_modifier }
-								save_scope_as = brightroar
-							}
-  						destroy_artifact = scope:brightroar
-						remove_list_global_variable = {
-							name = unavailable_unique_decisions
-							target = flag:recovered_brightroar
-						}
-					}
-				}
-				5 = { #unscathed
-					add_legitimacy = massive_legitimacy_gain
-					add_gold = 7000
-					add_prestige = 1000
-					agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
-					agot_create_random_dragon_egg_artifact = { OWNER = this }
-					stress_impact = {
-						base = major_stress_loss
-					}
-				}
-			}
+		start_travel_plan = {
+			destination = province:3494
+			on_start_on_action = on_travel_relocation_start
+			on_arrival_on_action = on_travel_relocation_end
+			on_arrival_event = cob_7899_scenerio.0400
+			on_arrival_destinations = last
+			return_trip = no # One way
+			players_use_planner = no
+			travel_with_domicile = yes
+		}
+		current_travel_plan = {
+			add_travel_waypoint = province:6261
+		}
+		set_variable = {
+			name = cob_tommens_quest
+			value = flag:positive
 		}
 		ai_chance = {
 			base = 95
@@ -251,7 +236,6 @@ cob_7899_scenerio.0005 = { #Aurion Varezys
 				location = character:Varezys_1.location
 				name = aurion_qohor_army
 			}
-			#cv_create_artifact_vs_stormbringer_effect = { OWNER = root }
 			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}
 		start_travel_plan = {
