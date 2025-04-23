@@ -144,22 +144,23 @@ cob_7899_scenerio.0004 = { #Tommen II Lannister
 		custom_tooltip = cob_7899_scenerio.0004.b_tt
 		add_prestige = 500
 		start_travel_plan = {
+			destination = province:6261
 			destination = province:3494
+			destination = province:6301
+			destination = province:4945
 			on_start_on_action = on_travel_relocation_start
 			on_arrival_on_action = on_travel_relocation_end
-			on_arrival_event = cob_7899_scenerio.0400
+			#on_arrival_event = cob_7899_scenerio.0400
 			on_arrival_destinations = last
 			return_trip = no # One way
 			players_use_planner = no
 			travel_with_domicile = yes
 		}
-		current_travel_plan = {
-			add_travel_waypoint = province:6261
-		}
 		set_variable = {
 			name = cob_tommens_quest
 			value = flag:positive
 		}
+		add_character_flag = cob_tommen_travel
 		ai_chance = {
 			base = 95
 			modifier = {
@@ -370,6 +371,45 @@ cob_7899_scenerio.0006 = { #Lucifer Justman
 #######################################
 ### Tommen II Lannister Event Chain ###
 #######################################
+
+cob_7899_scenerio.0400 = { #Aurion Varezys arrives in Ny Sar
+	type = character_event
+	title = cob_7899_scenerio.0400.t
+	desc = cob_7899_scenerio.0400.desc
+
+	override_background = {
+		reference = AGOT_ocean_fp3_docks
+	}
+
+	theme = realm
+
+	left_portrait = {
+		character = root
+		animation = toast_goblet
+	}
+
+	right_portrait = {
+		character = title:c_oldtown.holder
+		animation = toast_goblet
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		current_travel_plan = { pause_travel_plan = yes }
+	}
+
+	option = {
+		name = cob_7899_scenerio.0400.a
+		custom_tooltip = cob_7899_scenerio.0400.a_tt
+		add_prestige = 100
+	}
+
+	after = {
+		current_travel_plan = { resume_travel_plan = yes }
+	}
+}
 
 
 ###########################
