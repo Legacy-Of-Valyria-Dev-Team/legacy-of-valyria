@@ -853,33 +853,21 @@ cob_7899_scenerio.0511 = { #Aurion Varezys takes Volantis and calls upon other D
 	}
 
 	immediate = {
-		character:Urnebar_1 = {
-			save_scope_as = urnebar
-			set_variable = dragonlord_of_valyria
-		}
-		scope:urnebar.house.house_head = {
+		character:Urnebar_1.house.house_head = {
 			save_scope_as = urnebar_house
-		}
-		character:Mataeryon_1 = {
-			save_scope_as = mataeryon
 			set_variable = dragonlord_of_valyria
 		}
-		scope:mataeryon.house.house_head = {
+		character:Mataeryon_1.house.house_head = {
 			save_scope_as = mataeryon_house
-		}
-		character:Sonaryen_1 = {
-			save_scope_as = sonaryen
 			set_variable = dragonlord_of_valyria
 		}
-		scope:sonaryen.house.house_head = {
+		character:Sonaryen_1.house.house_head = {
 			save_scope_as = sonaryen_house
-		}
-		character:Belaerys_cob_1 = {
-			save_scope_as = belaerys
 			set_variable = dragonlord_of_valyria
 		}
-		scope:belaerys.house.house_head = {
+		character:Belaerys_cob_1.house.house_head = {
 			save_scope_as = belaerys_house
+			set_variable = dragonlord_of_valyria
 		}
 	}
 
@@ -986,8 +974,8 @@ cob_7899_scenerio.0511 = { #Aurion Varezys takes Volantis and calls upon other D
 	}
 }
 
-# Recursive Aurion War Declaration Event
-cob_7899_scenerio.0512 = {
+
+cob_7899_scenerio.0512 = { # Recursive Aurion War Declaration Event
 	type = character_event
 	title = cob_7899_scenerio.0512.t
 	desc = cob_7899_scenerio.0512.desc
@@ -1018,33 +1006,21 @@ cob_7899_scenerio.0512 = {
 		character:Varezys_1 = { #For loc
 			save_scope_as = aurion
 		}
-		character:Urnebar_1 = {
-			save_scope_as = urnebar
-			set_variable = dragonlord_of_valyria
-		}
-		scope:urnebar.house.house_head = {
+		character:Urnebar_1.house.house_head = {
 			save_scope_as = urnebar_house
-		}
-		character:Mataeryon_1 = {
-			save_scope_as = mataeryon
 			set_variable = dragonlord_of_valyria
 		}
-		scope:mataeryon.house.house_head = {
+		character:Mataeryon_1.house.house_head = {
 			save_scope_as = mataeryon_house
-		}
-		character:Sonaryen_1 = {
-			save_scope_as = sonaryen
 			set_variable = dragonlord_of_valyria
 		}
-		scope:sonaryen.house.house_head = {
+		character:Sonaryen_1.house.house_head = {
 			save_scope_as = sonaryen_house
-		}
-		character:Belaerys_cob_1 = {
-			save_scope_as = belaerys
 			set_variable = dragonlord_of_valyria
 		}
-		scope:belaerys.house.house_head = {
+		character:Belaerys_cob_1.house.house_head = {
 			save_scope_as = belaerys_house
+			set_variable = dragonlord_of_valyria
 		}
 		if = {
 			limit = {
@@ -1105,14 +1081,14 @@ cob_7899_scenerio.0512 = {
 					is_vassal_of = root
 				}
 			}
-			character:Urnebar_1 ?= {
+			scope:urnebar_house = {
 				is_alive = yes
 			}
 		}
 		start_war = {
 			casus_belli = cob_new_valyria_conquest_cb_tyrosh
 			target = title:k_tyrosh.holder
-			claimant = character:Urnebar_1
+			claimant = scope:urnebar_house
 			target_title = title:k_tyrosh
 		}
 		add_legitimacy = massive_legitimacy_gain
@@ -1127,14 +1103,14 @@ cob_7899_scenerio.0512 = {
 					is_vassal_of = root
 				}
 			}
-			character:Sonaryen_1 ?= {
+			scope:sonaryen_house = {
 				is_alive = yes
 			}
 		}
 		start_war = {
 			casus_belli = cob_new_valyria_conquest_cb_lys
 			target = title:k_lys.holder
-			claimant = character:Sonaryen_1
+			claimant = scope:sonaryen_house
 			target_title = title:k_lys
 		}
 		add_legitimacy = massive_legitimacy_gain
@@ -1149,14 +1125,14 @@ cob_7899_scenerio.0512 = {
 					is_vassal_of = root
 				}
 			}
-			character:Mataeryon_1 ?= {
+			scope:mataeryon_house = {
 				is_alive = yes
 			}
 		}
 		start_war = {
 			casus_belli = cob_new_valyria_conquest_cb_myr
 			target = title:k_myr.holder
-			claimant = character:Mataeryon_1
+			claimant = scope:mataeryon_house
 			target_title = title:k_myr
 		}
 		add_legitimacy = massive_legitimacy_gain
@@ -1174,31 +1150,20 @@ cob_7899_scenerio.0512 = {
 			title:k_myr.holder = { #No marching through Myr to march back
 				is_vassal_of = root
 			}
-			character:Belaerys_cob_1 ?= {
+			scope:belaerys_house = {
 				is_alive = yes
 			}
 		}
 		start_war = {
 			casus_belli = cob_new_valyria_conquest_cb_pentos
 			target = title:k_pentos.holder
-			claimant = character:Belaerys_cob_1
+			claimant = scope:belaerys_house
 			target_title = title:k_pentos
 		}
 	}
 
 	#Dragonlords Join Together
 	after = {
-		# root = {
-		# 	every_character_war = {
-		# 		limit = {
-		# 			is_attacker = root
-		# 		}
-		# 		add_attacker = title:d_laamp_Mataeryon_1.holder
-		# 		add_attacker = title:d_laamp_Urnebar_1.holder
-		# 		add_attacker = title:d_laamp_Sonaryen_1.holder
-		# 		add_attacker = title:d_laamp_Belaerys_1.holder
-		# 	}
-		# }
 	}
 }
 
