@@ -398,17 +398,20 @@ cob_7899_scenerio.0400 = { #Tommen departs from Lannisport
 
 	left_portrait = {
 		character = root
-		animation = toast_goblet
+		animation = personality_bold
 	}
 
 	right_portrait = {
 		character = title:c_lannisport.holder
-		animation = toast_goblet
+		animation = worry
 	}
 
 	immediate = {
 		location = {
 			save_scope_as = location
+		}
+		character = title:c_lannisport.holder = {
+			save_scope_as = lannisport
 		}
 		current_travel_plan = { pause_travel_plan = yes }
 	}
@@ -449,13 +452,33 @@ cob_7899_scenerio.0401 = { #Tommen arrives in Oldtown
 		location = {
 			save_scope_as = location
 		}
+
 		current_travel_plan = { pause_travel_plan = yes }
 	}
 
 	option = {
 		name = cob_7899_scenerio.0401.a
 		custom_tooltip = cob_7899_scenerio.0401.a_tt
-		add_prestige = 100
+		gold = -100
+		hidden_effect = {
+			add_character_modifier = {
+				modifier = good_omen_modifier
+				years = 5
+			}
+		}
+		add_stress = minor_stress_loss
+	}
+
+	option = {
+		name = cob_7899_scenerio.0401.b
+		custom_tooltip = cob_7899_scenerio.0401.b_tt
+		hidden_effect = {
+			add_character_modifier = {
+				modifier = bad_omen_modifier
+				years = 5
+			}
+		}
+		add_stress = minor_stress_gain
 	}
 
 	after = {
@@ -493,7 +516,40 @@ cob_7899_scenerio.0402 = { #Tommen arrives in Plankytown
 	option = {
 		name = cob_7899_scenerio.0402.a
 		custom_tooltip = cob_7899_scenerio.0402.a_tt
-		add_prestige = 100
+		gold = -200
+		hidden_effect = {
+			add_character_modifier = {
+				modifier = best_meal_of_my_life_modifier
+				years = 5
+			}
+		}
+		add_stress = minor_stress_loss
+	}
+
+	option = {
+		name = cob_7899_scenerio.0402.b
+		custom_tooltip = cob_7899_scenerio.0402.b_tt
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:root = {
+						has_character_modifier =  bad_omen_modifier
+					}
+				}
+				add_character_modifier = {
+					modifier = moldy_gruel_diet
+					years = 5
+				}
+				add_stress = major_stress_gain
+			}
+			else = {
+				add_character_modifier = {
+					modifier = bad_omen_modifier
+					years = 5
+				}
+				add_stress = minor_stress_gain
+			}
+		}
 	}
 
 	after = {
