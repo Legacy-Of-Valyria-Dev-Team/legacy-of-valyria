@@ -410,7 +410,7 @@ cob_7899_scenerio.0400 = { #Tommen departs from Lannisport
 		location = {
 			save_scope_as = location
 		}
-		character = title:c_lannisport.holder = {
+		title:c_lannisport.holder = {
 			save_scope_as = lannisport
 		}
 		current_travel_plan = { pause_travel_plan = yes }
@@ -452,14 +452,19 @@ cob_7899_scenerio.0401 = { #Tommen arrives in Oldtown
 		location = {
 			save_scope_as = location
 		}
+		title:c_oldtown.holder = {
+			save_scope_as = oldtown
+		}
 
 		current_travel_plan = { pause_travel_plan = yes }
 	}
 
 	option = {
 		name = cob_7899_scenerio.0401.a
-		custom_tooltip = cob_7899_scenerio.0401.a_tt
-		gold = -100
+		remove_short_term_gold = 300	
+		scope:oldtown = {
+			add_gold = 300
+		}	
 		hidden_effect = {
 			add_character_modifier = {
 				modifier = good_omen_modifier
@@ -474,7 +479,7 @@ cob_7899_scenerio.0401 = { #Tommen arrives in Oldtown
 		custom_tooltip = cob_7899_scenerio.0401.b_tt
 		hidden_effect = {
 			add_character_modifier = {
-				modifier = bad_omen_modifier
+				modifier = moldy_gruel_diet
 				years = 5
 			}
 		}
@@ -510,19 +515,18 @@ cob_7899_scenerio.0402 = { #Tommen arrives in Plankytown
 		location = {
 			save_scope_as = location
 		}
+		title:c_plankytown.holder = {
+			save_scope_as = plankytown
+		}
 		current_travel_plan = { pause_travel_plan = yes }
 	}
 
 	option = {
 		name = cob_7899_scenerio.0402.a
-		custom_tooltip = cob_7899_scenerio.0402.a_tt
-		gold = -200
-		hidden_effect = {
-			add_character_modifier = {
-				modifier = best_meal_of_my_life_modifier
-				years = 5
-			}
-		}
+		remove_short_term_gold = 600
+		scope:plankytown = {
+			add_gold = 600
+		}	
 		add_stress = minor_stress_loss
 	}
 
@@ -530,26 +534,12 @@ cob_7899_scenerio.0402 = { #Tommen arrives in Plankytown
 		name = cob_7899_scenerio.0402.b
 		custom_tooltip = cob_7899_scenerio.0402.b_tt
 		hidden_effect = {
-			if = {
-				limit = {
-					scope:root = {
-						has_character_modifier =  bad_omen_modifier
-					}
-				}
-				add_character_modifier = {
-					modifier = moldy_gruel_diet
-					years = 5
-				}
-				add_stress = major_stress_gain
-			}
-			else = {
-				add_character_modifier = {
-					modifier = bad_omen_modifier
-					years = 5
-				}
-				add_stress = minor_stress_gain
+			add_character_modifier = {
+				modifier = bad_omen_modifier
+				years = 5
 			}
 		}
+		add_stress = minor_stress_gain
 	}
 
 	after = {
