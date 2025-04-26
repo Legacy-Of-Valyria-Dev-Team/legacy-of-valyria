@@ -206,23 +206,23 @@ cob_7899_scenerio.0004 = { #Tommen II Lannister
 			}
 		}
 		ai_chance = {
-			base = 95
+			base = 100
 			modifier = {
 				add = agot_historic_chain_outcome
 			}
 		}
 	}
-	option = {
-		name = cob_7899_scenerio.0004.a
-		custom_tooltip = cob_7899_scenerio.0004.a_tt
-		add_prestige = 100
-		ai_chance = {
-			base = 5
-			modifier = {
-				add = agot_nonhistoric_chain_outcome
-			}
-		}
-	}
+	# option = {
+	# 	name = cob_7899_scenerio.0004.a
+	# 	custom_tooltip = cob_7899_scenerio.0004.a_tt
+	# 	add_prestige = 100
+	# 	ai_chance = {
+	# 		base = 0
+	# 		modifier = {
+	# 			add = agot_nonhistoric_chain_outcome
+	# 		}
+	# 	}
+	# }
 }
 
 cob_7899_scenerio.0005 = { #Aurion Varezys
@@ -281,7 +281,6 @@ cob_7899_scenerio.0005 = { #Aurion Varezys
 				location = character:Varezys_1.location
 				name = aurion_qohor_army
 			}
-			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}
 		start_travel_plan = {
 			destination = province:8721
@@ -334,6 +333,7 @@ cob_7899_scenerio.0006 = { #Lucifer Justman
 					change_provisions = max_provisions
 				}
 			}
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}
 		title:e_the_reach.holder.capital_province = {
 			save_scope_as = relocation_destination_reach
@@ -359,6 +359,7 @@ cob_7899_scenerio.0006 = { #Lucifer Justman
 					change_provisions = max_provisions
 				}
 			}
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}
 		title:e_the_westerlands.holder.capital_province = {
 			save_scope_as = relocation_destination_rock
@@ -384,6 +385,7 @@ cob_7899_scenerio.0006 = { #Lucifer Justman
 					change_provisions = max_provisions
 				}
 			}
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}
 		title:e_the_vale.holder.capital_province = {
 			save_scope_as = relocation_destination_eyrie
@@ -408,6 +410,7 @@ cob_7899_scenerio.0006 = { #Lucifer Justman
 					change_provisions = max_provisions
 				}
 			}
+			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 		}
 	}
 }
@@ -805,15 +808,6 @@ cob_7899_scenerio.0500 = { #Aurion Varezys arrives in Ny Sar
 		name = cob_7899_scenerio.0500.a
 		custom_tooltip = cob_7899_scenerio.0500.a_tt
 		add_prestige = 100
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
-		}
 		start_travel_plan = {
 			destination = province:8889
 			on_start_on_action = on_travel_relocation_start
@@ -885,15 +879,6 @@ cob_7899_scenerio.0501 = { #Aurion Varezys decides his path
 		name = cob_7899_scenerio.0501.a
 		custom_tooltip = cob_7899_scenerio.0501.a_tt
 		add_prestige = 100
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
-		}
 		add_trait = zealous
 		start_travel_plan = {
 			destination = province:8227
@@ -995,15 +980,6 @@ cob_7899_scenerio.0502 = { #Aurion Varezys arrives in Volantis
 		name = cob_7899_scenerio.0502.a
 		custom_tooltip = cob_7899_scenerio.0502.a_tt
 		add_prestige = 100
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
-		}
 		start_travel_plan = {
 			destination = province:8409
 			on_start_on_action = on_travel_relocation_start
@@ -1051,13 +1027,6 @@ cob_7899_scenerio.0503 = { #Aurion Varezys arrives in Little Valyria
 		custom_tooltip = cob_7899_scenerio.0503.a_tt
 		add_prestige = 100
 		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-			add_character_modifier = laamp_provisions_forgiveness_travel_modifier
 			set_variable = {
 				name = cob_restore_valyria
 				value = flag:positive
@@ -1120,7 +1089,10 @@ cob_7899_scenerio.0510 = { #Aurion Varezys cornonation
 			remove_character_flag = not_had_coronation
 			remove_character_modifier = uncoronated_modifier
 			title:e_new_valyria = {
-				add_title_law = male_preference_law
+				add_realm_law = male_preference_law
+			}
+			title:k_volantis = {
+				clear_title_laws = yes
 			}
 		}
 		add_character_modifier = coronation_appropriate_modifier
@@ -1130,6 +1102,7 @@ cob_7899_scenerio.0510 = { #Aurion Varezys cornonation
 		title:c_old_volantis = {
 			set_county_faith = root.faith
 			set_county_culture = root.culture
+			clear_title_laws = yes
 		}
 		hidden_effect = {
 			every_held_title = {
@@ -1773,14 +1746,6 @@ cob_7899_scenerio.0521 = { #Aurion encounters fyrewyrm
 		}
 	}
 	after = {
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-		}
 	}
 }
 
@@ -2261,14 +2226,6 @@ cob_7899_scenerio.0522 = { #Aurion encounters a former Valyrian Freeholder tryin
 		}
 	}
 	after = {
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-		}
 	}
 }
 
@@ -2377,14 +2334,6 @@ cob_7899_scenerio.0523 = { #Aurion encounters a freehold soldier
 		}
 	}
 	after = {
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-		}
 	}
 }
 
@@ -2493,14 +2442,6 @@ cob_7899_scenerio.0524 = { #Aurion encounters a great freehold soldier
 		}
 	}
 	after = {
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-		}
 	}
 }
 
@@ -2645,14 +2586,6 @@ cob_7899_scenerio.0525 = { #Aurion encounters a retired freehold soldier
 		}
 	}
 	after = {
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-		}
 	}
 }
 
@@ -2977,14 +2910,6 @@ cob_7899_scenerio.0527 = { #Aurion encounters a freehold dragonrider
 		}
 	}
 	after = {
-		hidden_effect = {
-			domicile = {
-				if = {
-					limit = { provisions < max_provisions }
-					change_provisions = max_provisions
-				}
-			}
-		}
 	}
 }
 
