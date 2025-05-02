@@ -1,0 +1,224 @@
+namespace = cos_blocker
+
+# Wyvern Choices
+cos_blocker.1001 = {
+	type = character_event
+	title = cos_blocker.1001.t
+	desc = cos_blocker.1001.desc
+
+	theme = battle 
+	override_background = { reference = sothoryos_green_pass }
+
+	left_portrait = {
+		character = root
+		animation = marshal 
+	}
+
+	option = {
+		name = cos_blocker.1001.a	
+		custom_tooltip = wyvern_duel_tooltip_1
+		trigger_event = cos_blocker.1002
+	}
+	option = {
+		name = cos_blocker.1001.b
+		duel = {
+			skill = prowess
+			value = medium_skill_rating
+			50 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_blocker.1001.b.success.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = slain_alpha
+					}
+					scope:slain_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1001.b.success.desc
+					add_prestige = 750
+				}
+			}
+			50 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_blocker.1001.b.failure.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = vengeful_alpha
+					}
+					scope:vengeful_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+						add_building = cos_wyvern_alpha_1
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1001.b.failure.desc
+					add_prestige = minor_prestige_loss
+				}
+			}
+		}
+	}
+	option = {
+		name = cos_blocker.1001.c
+		duel = {
+			skill = intrigue
+			value = high_skill_rating
+			50 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_blocker.1001.c.success.desc
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1001.c.success.desc
+					add_prestige = 125
+					every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = slain_alpha
+					}
+					scope:slain_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+					}
+				}
+			}
+			50 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_blocker.1001.c.failure.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = vengeful_alpha
+					}
+					scope:vengeful_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+						add_building = cos_wyvern_alpha_1
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1001.c.failure.desc
+				}
+			}
+		}
+		add_prestige = -250
+	}
+	option = {
+		name = cos_blocker.1001.d
+		add_prestige = -250
+		every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = vengeful_alpha
+					}
+					scope:vengeful_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+						add_building = cos_wyvern_alpha_1
+					}
+	}
+}
+
+# Wyvern Duel
+cos_blocker.1002 = {
+	type = character_event
+	title = cos_blocker.1002.t
+	desc = cos_blocker.1002.desc
+
+	theme = battle 
+	override_background = { reference = sothoryos_green_pass }
+
+	left_portrait = {
+		character = root
+		animation = marshal 
+	}
+
+	option = {
+		name = cos_blocker.1002.a
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			34 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_blocker.1002.a.success.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = slain_alpha
+					}
+					scope:slain_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1002.a.success.desc
+					add_prestige = 750
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_blocker.1002.a.failure.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = slain_alpha
+					}
+					scope:slain_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1002.a.failure.desc
+					add_prestige = -125
+					add_trait = wounded_2
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_blocker.1002.a.critical.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = vengeful_alpha
+					}
+					scope:vengeful_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+						add_building = cos_wyvern_alpha_1
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1002.a.critical.desc
+					death = {
+						death_reason = death_dragon_ate
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = cos_blocker.1002.b
+		duel = {
+			skill = prowess
+			value = medium_skill_rating
+			50 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_blocker.1002.b.success.desc
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1002.b.success.desc
+					add_prestige = 750
+					every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = vengeful_alpha
+					}
+					scope:vengeful_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+						add_building = cos_wyvern_alpha_1
+					}
+					add_trait = wounded_1
+				}
+			}
+			50 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_blocker.1002.b.failure.desc
+				every_province = {
+						limit = { has_building = cos_wyvern_alpha_2 }
+						save_scope_as = vengeful_alpha
+					}
+					scope:vengeful_alpha = {		
+						remove_building = cos_wyvern_alpha_2
+						add_building = cos_wyvern_alpha_1
+					}
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_blocker.1002.b.failure.desc
+					add_prestige = minor_prestige_loss
+					add_trait = wounded_2
+				}
+			}
+		}
+	}
+}
+
