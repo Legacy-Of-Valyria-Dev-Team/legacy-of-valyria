@@ -1,5 +1,6 @@
 ﻿byzantine = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		has_ep3_dlc_trigger = yes
 		#AGOT Modified
 		#OR = {
@@ -34,6 +35,7 @@
 
 mediterranean = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		exists = capital_county
 		capital_county.culture = {
 			OR = {
@@ -85,21 +87,80 @@ mediterranean = {
 	}
 }
 
+steppe = {
+	trigger = {
+		has_mpo_dlc_trigger = yes
+		OR = {
+			government_has_flag = government_is_nomadic
+			capital_county ?= {
+				culture = {
+					has_graphical_steppe_culture_group_trigger = yes
+				}
+				title_province ?= {
+					has_holding = yes
+					OR = {
+						has_holding_type = nomad_holding
+						has_holding_type = tribal_holding
+					}
+				}
+			}
+		}
+		#AGOT Added
+		NOT = {
+			capital_county = title:c_kings_landing
+			capital_county = title:c_pyke
+			capital_county = title:c_casterly_rock
+			capital_county = title:c_dragonstone
+			capital_county = title:c_highgarden
+			capital_county = title:c_winterfell
+			capital_county = title:c_the_eyrie
+			capital_county = title:c_riverrun
+			capital_county = title:c_storms_end
+			capital_county = title:c_valyria
+			capital_county = title:c_ilvonys
+			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
+		}
+	}
+}
+
 mena = {
 	trigger = {
+		trigger_if = {
+			limit = {
+				has_mpo_dlc_trigger = no
+			}
 		exists = capital_county
-		capital_county.culture = {
-			OR = {
-				has_graphical_mena_culture_group_trigger = yes
-				has_graphical_iranian_culture_group_trigger = yes
-				has_graphical_african_culture_group_trigger = yes
+			capital_county.culture = {
 				has_graphical_steppe_culture_group_trigger = yes
-				AND = {
-					has_graphical_iberian_culture_group_trigger  = yes
-					#AGOT Modified
-					# prev.religion = religion:islam_religion
-					any_parent_culture_or_above = {
-						this = culture:rhoynish
+			}
+		}
+		trigger_else = {
+			NOT = { government_has_flag = government_is_nomadic }
+			exists = capital_county
+			OR = {
+				capital_county = {
+					has_graphical_steppe_culture_group_trigger = yes
+					title_province ?= {
+						has_holding = yes
+						NOT = {
+							has_holding_type = tribal_holding
+						}
+					}
+				}
+				capital_county.culture = {
+					OR = {
+						has_graphical_mena_culture_group_trigger = yes
+						has_graphical_iranian_culture_group_trigger = yes
+						has_graphical_african_culture_group_trigger = yes
+						AND = {
+							has_graphical_iberian_culture_group_trigger  = yes
+							#AGOT Modified
+							#prev.religion = religion:islam_religion
+							any_parent_culture_or_above = {
+								this = culture:rhoynish
+							}
+						}
 					}
 				}
 			}
@@ -125,6 +186,7 @@ mena = {
 
 indian = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		exists = capital_county
 		capital_county.culture = {
 			has_graphical_india_culture_group_trigger = yes
@@ -150,6 +212,7 @@ indian = {
 
 western = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		exists = capital_county
 		#AGOT Modified
 		# capital_county.culture = {
@@ -185,4 +248,3 @@ western = {
 		}
 	}
 }
-
