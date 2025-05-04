@@ -116,7 +116,9 @@ window = {
 						expand = {}
 					}
 
+					# LEGACY OF VALYRIA MODIFIED
 					vbox = {
+						visible = "[Not(HoldingView.GetCountyTitle.GetHolder.HasTrait(GetTrait('ruin').Self))]"
 						datacontext = "[HoldingView.GetCountyTitle.GetHolder]"
 						layoutpolicy_horizontal = expanding
 
@@ -1128,6 +1130,7 @@ window = {
 
 									widget = {
 										size = { 30 30 }
+										visible = "[Or(HoldingView.PotentialSetRealmCapital, HoldingView.CanSetCountyCapital)]" # LEGACY OF VALYRIA ADDED
 
 										button_move_capital = {
 											name = "set_realm_capital_button"
@@ -1540,8 +1543,9 @@ window = {
 
 				### CONSTRUCT NEW HOLDING & CONSTRUCTING PROGRESS
 				vbox = {
+					# LEGACY OF VALYRIA MODIFIED
 					hbox = {
-						visible = "[And(Not(HoldingView.HasHolding), Not(HoldingView.IsBeingConstructed))]"
+						visible = "[And(And(Not(HoldingView.HasHolding), Not(HoldingView.IsBeingConstructed)), Not(HoldingView.GetCountyTitle.GetHolder.HasTrait(GetTrait('ruin').Self)))]"
 						margin_bottom = 30
 
 						button_standard_big = {
@@ -1818,21 +1822,26 @@ window = {
 											datacontext = "[HoldingView.GetTitle]"
 											datacontext = "[Title.GetHolder]"
 										}
+
+										# LEGACY OF VALYRIA ADDED
+										widget = {
+											visible = "[And(And(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ), GreaterThan_int32(GetDataModelSize(HoldingView.GetBuildings), '(int32)6') )]"
+											size = { 0 59 }
+										}
 									}
 								}
 							}
 							#AGOT Added
-							flowcontainer = {
+							vbox = {
 								parentanchor = bottom|left
 								margin_left = -28
 								margin_bottom = 12
-								direction = vertical
 								ignoreinvisible = yes
 								agot_county_view_restore_ruins_button = {}
-								#widget = {
-								#	visible = "[GreaterThan_int32(GetDataModelSize(HoldingView.GetBuildings), '(int32)4')]"
-								#	size = { 0 59 }
-								#}
+								widget = {
+									visible = "[And(Or(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ), GreaterThan_int32(GetDataModelSize(HoldingView.GetBuildings), '(int32)4'))]"
+									size = { 0 59 }
+								}
 							}
 						}
 					}
@@ -2078,16 +2087,98 @@ window = {
 								ignoreinvisible = yes
 								parentanchor = right
 
+								# LEGACY OF VALYRIA MODIFIED
 								# Upgrade buildings
-								flowcontainer = {
-									name = "buildings_grid"
-									datamodel = "[HoldingView.GetBuildings]"
+								scrollarea = {
 									ignoreinvisible = yes
-									spacing = 3
+									maximumsize = { 464 58 }
+									autoresizescrollarea = yes
+
+									scrollbarpolicy_vertical = always_off
 									righttoleft = yes
 
-									item = {
-										widget_building_item = {}
+									scrollbar_horizontal = {
+										scrollbar = {
+											name = "horizontal_scrollbar"
+											size = { 12 12 }
+											wheelstep = 60
+											direction = horizontal
+
+											alpha = 0.0
+
+											state = {
+												name = _mouse_hierarchy_enter
+												using = Animation_FadeIn_Quick
+											}
+											state = {
+												name = _mouse_hierarchy_leave
+												using = Animation_FadeOut_Quick
+											}
+
+											track = {
+												button = {
+													size = { 12 12 }
+													gfxtype = buttongfx
+
+													texture = "gfx/interface/scrollbars/scrollbar_track_horizontal.dds"
+													spriteType = Corneredtiled
+													spriteborder = { 3 0 }
+													effectname = "NoHighlight"
+													intersectionmask = yes
+												}
+											}
+
+											slider = {
+												button = {
+													gfxtype = framedbuttongfx
+													effectname = "NoHighlight"
+
+													texture = "gfx/interface/scrollbars/scrollbar_slider_horizontal.dds"
+													spriteType = Corneredtiled
+													spriteborder = { 3 0 }
+													framesize = { 40 12 }
+													minimumsize = { 15 -1 }
+
+													upframe = 1
+													overframe = 2
+													downframe = 2
+
+													intersectionmask = yes
+													oversound = "event:/SFX/UI/Generic/sfx_ui_generic_icon_pointer_over"
+
+													state = {
+														name = _mouse_press
+														start_sound = {
+															soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_icon_select"
+														}
+													}
+
+													state = {
+														name = _mouse_release
+														start_sound = {
+															soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_icon_select"
+														}
+													}
+												}
+											}
+
+											dec_button = { button = {} }
+											inc_button = { button = {} }
+										}
+									}
+
+									scrollwidget = {
+										# Upgrade buildings
+										flowcontainer = {
+											name = "buildings_grid"
+											datamodel = "[HoldingView.GetBuildings]"
+											ignoreinvisible = yes
+											spacing = 3
+											margin_right = 3
+											righttoleft = yes
+
+											item = { widget_building_item = {} }
+										}
 									}
 								}
 
