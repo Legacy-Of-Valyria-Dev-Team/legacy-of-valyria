@@ -1,0 +1,1572 @@
+﻿namespace = cob_dragon_event
+
+## Events
+
+################################
+#### Start of Dragon Events ####
+################################
+
+
+cob_dragon_event.0001 = { # I get chased by a giant cannibal dragon!
+	type = character_event
+	title = cob_dragon_event.0001.t
+	window = dragon_character_event
+	desc = cob_dragon_event.0001.desc
+
+	theme = dragon
+
+	# override_background = {
+	# 	reference = agot_open_sky_video
+	# }
+
+	override_background = {
+		reference = agot_night_sky_video
+	}
+
+	left_portrait = {
+		character = scope:aurion
+		camera = camera_dragonrider_up_close_looking_left
+		animation = dragon_main
+		outfit_tags = { dragonrider linear_camera_zoom }
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_slay_dragon_event_right
+		animation = dragon_main
+		outfit_tags = { dragonrider linear_camera_zoom }
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+		scope:aurion = {
+			add_character_flag = currently_riding_dragon
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_flying
+				RIDING_DRAGON = yes
+			}
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = NO } }
+	}
+
+	option = { #face it
+		name = cob_dragon_event.0001.a
+		custom_tooltip = cob_dragon_event.0001.a_tt
+
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+	}
+
+	option = {
+		name = {
+			trigger = {
+				knows_language = language_valyrian
+			}
+			text = cob_dragon_event.0001.b.valyrian
+		}
+		name = {
+			trigger = {
+				NOT = { knows_language = language_valyrian }
+			}
+			text = cob_dragon_event.0001.b
+		}
+		flavor = cob_dragon_event.0001.b.f
+		random_list = {
+			20 = {
+				modifier = {
+					add = 30
+					has_game_rule = agot_silly_mode
+				}
+				modifier = {
+					add = {
+						value = 20
+						if = {
+							limit = {
+								has_game_rule = agot_silly_mode
+							}
+							add = 5
+						}
+					}
+					OR = {
+						scope:ridden_dragon = { has_trait = dragon_slow }
+						scope:cannibal_dragon = { has_trait = dragon_swift }
+					}
+				}
+				modifier = {
+					add = 60
+					NOT = { has_game_rule = agot_silly_mode }
+					scope:ridden_dragon = { dragon_combat_effectiveness >= level_three_dragon_combat }
+				}
+				scope:ridden_dragon = {
+					death = {
+						death_reason = death_dragon_ate
+						killer = scope:cannibal_dragon
+					}
+				}
+				death = {
+					death_reason = death_dragon_ate
+					killer = scope:cannibal_dragon
+				}
+				hidden_effect = {
+					scope:cannibal_dragon = {
+						change_dragon_size = {
+							VALUE = 1
+						}
+					}
+				}
+			}
+			80 = {
+				modifier = {
+					add = -30
+					has_game_rule = agot_silly_mode
+				}
+				modifier = {
+					add = {
+						value = 20
+						if = {
+							limit = {
+								has_game_rule = agot_silly_mode
+							}
+							add = 5
+						}
+					}
+					OR = {
+						scope:ridden_dragon = { has_trait = dragon_swift }
+						scope:cannibal_dragon = { has_trait = dragon_slow }
+					}
+				}
+				send_interface_toast = {
+					title = cob_dragon_event.0001.escape_t
+					custom_tooltip = cob_dragon_event.0001.escape_tt
+					left_icon = scope:ridden_dragon
+					right_icon = scope:cannibal_dragon
+					add_prestige = medium_prestige_gain
+					stress_impact = {
+						base = minor_stress_gain
+						paranoid = minor_stress_gain
+						craven = major_stress_gain
+						brave = minor_stress_loss
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		if = {
+			limit = { is_alive = yes }
+			remove_character_flag = currently_riding_dragon
+			agot_clear_dragon_animation_flags = yes
+		}
+		scope:cannibal_dragon = {
+			if = {
+				limit = {
+					is_alive = yes
+				}
+				agot_clear_dragon_animation_flags = yes
+			}
+		}
+	}
+}
+
+cob_dragon_event.0002 = { # Night Flight with family
+	type = character_event
+	window = dragon_character_event
+	title = cob_dragon_event.0002.t
+	desc = cob_dragon_event.0002.desc
+
+	theme = dragon
+
+	# override_background = {
+	# 	reference = agot_open_sky_video
+	# }
+
+	override_background = {
+		reference = agot_night_sky_video
+	}
+
+	left_portrait = {
+		character = scope:aurion
+		camera = camera_dragon_event_standing
+		animation = dragon_main
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_six_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_five_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_four_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_three_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_two_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_one_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_dragon
+		animation = dragon_main
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_nine_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_eight_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_seven_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_six_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_five_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_four_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_three_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_two_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_one_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				OR = {
+					scope:aurion.var:current_dragon = { level_zero_dragon_size_trigger = yes }
+					scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+				}
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			culture = culture:dragon_culture
+			faith = faith:valyrian_pan_freehold
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:Varezys_1 = {
+			save_scope_as = aurion
+		}
+		character:Varezys_1.var:current_dragon = {
+			save_scope_as = vassarion
+		}
+		scope:aurion = {
+			add_character_flag = currently_riding_dragon
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_flying
+				RIDING_DRAGON = yes
+			}
+		}
+		# random_living_dragon = {
+		# 	limit = {
+		# 		has_trait = dragon_cannibal
+		# 		NOT = { has_character_flag = owned_dragon }
+		# 		location = { duchy = root.location.duchy }
+		# 		can_dragon_chomp = {
+		# 			CHOMPING_DRAGON = this
+		# 			CHOMPED_DRAGON = root.var:current_dragon
+		# 		}
+		# 	}
+		# 	save_scope_as = cannibal_dragon
+		# }
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = NO } }
+	}
+
+	option = { #face it
+		name = cob_dragon_event.0002.a
+		custom_tooltip = cob_dragon_event.0002.a_tt
+
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+	}
+
+	option = {
+		name = {
+			trigger = {
+				knows_language = language_valyrian
+			}
+			text = cob_dragon_event.0002.b.valyrian
+		}
+		name = {
+			trigger = {
+				NOT = { knows_language = language_valyrian }
+			}
+			text = cob_dragon_event.0002.b
+		}
+		flavor = cob_dragon_event.0002.b.f
+		random_list = {
+			20 = {
+				modifier = {
+					add = 30
+					has_game_rule = agot_silly_mode
+				}
+				modifier = {
+					add = {
+						value = 20
+						if = {
+							limit = {
+								has_game_rule = agot_silly_mode
+							}
+							add = 5
+						}
+					}
+					OR = {
+						scope:vassarion = { has_trait = dragon_slow }
+						scope:cannibal_dragon = { has_trait = dragon_swift }
+					}
+				}
+				modifier = {
+					add = 60
+					NOT = { has_game_rule = agot_silly_mode }
+					scope:vassarion = { dragon_combat_effectiveness >= level_three_dragon_combat }
+				}
+				scope:vassarion = {
+					death = {
+						death_reason = death_dragon_ate
+						killer = scope:cannibal_dragon
+					}
+				}
+				death = {
+					death_reason = death_dragon_ate
+					killer = scope:cannibal_dragon
+				}
+				hidden_effect = {
+					scope:cannibal_dragon = {
+						change_dragon_size = {
+							VALUE = 1
+						}
+					}
+				}
+			}
+			80 = {
+				modifier = {
+					add = -30
+					has_game_rule = agot_silly_mode
+				}
+				modifier = {
+					add = {
+						value = 20
+						if = {
+							limit = {
+								has_game_rule = agot_silly_mode
+							}
+							add = 5
+						}
+					}
+					OR = {
+						scope:vassarion = { has_trait = dragon_swift }
+						scope:cannibal_dragon = { has_trait = dragon_slow }
+					}
+				}
+				send_interface_toast = {
+					title = cob_dragon_event.0002.escape_t
+					custom_tooltip = cob_dragon_event.0002.escape_tt
+					left_icon = scope:vassarion
+					right_icon = scope:cannibal_dragon
+					add_prestige = medium_prestige_gain
+					stress_impact = {
+						base = minor_stress_gain
+						paranoid = minor_stress_gain
+						craven = major_stress_gain
+						brave = minor_stress_loss
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		if = {
+			limit = { is_alive = yes }
+			remove_character_flag = currently_riding_dragon
+			agot_clear_dragon_animation_flags = yes
+		}
+		scope:cannibal_dragon = {
+			if = {
+				limit = {
+					is_alive = yes
+				}
+				agot_clear_dragon_animation_flags = yes
+			}
+		}
+	}
+}
+
+################################
+#### Dragon Encounter Chain ####
+################################
+
+cob_dragon_event.0100 = { # Fear as a dragon decends!
+	type = character_event
+	window = cob_dragon_character_event
+	title = cob_dragon_event.0100.t
+	desc = cob_dragon_event.0100.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = battlefield
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = cob_camera_dragon_hover_right
+		animation = dragon_main
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	widgets = {
+		widget = {
+			gui = "agot_shader_event_sparks"
+			container = "agot_shader_event_foreground"
+		}
+		widget = {
+			gui = "agot_shader_event_fire"
+			container = "agot_shader_event_background"
+		}
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:root = {
+			save_scope_as = root
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_hover RIDING_DRAGON = NO } }
+	}
+
+	option = {
+		name = cob_dragon_event.0100.a
+		custom_tooltip = cob_dragon_event.0100.a_tt
+		add_prestige = 500
+	}
+
+	after = {
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+
+cob_dragon_event.0101 = { # fight the dragon with a sword while he's landed
+	type = character_event
+	window = dragon_character_event
+	title = cob_dragon_event.0101.t
+	desc = cob_dragon_event.0101.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = battlefield
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = aggressive_sword
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_dragon_facing_human
+		animation = dragon_main
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	widgets = {
+		widget = {
+			gui = "agot_shader_event_sparks"
+			container = "agot_shader_event_foreground"
+		}
+		widget = {
+			gui = "agot_shader_event_fire"
+			container = "agot_shader_event_background"
+		}
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:root = {
+			save_scope_as = root
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_roar RIDING_DRAGON = NO } }
+	}
+
+	option = {
+		name = cob_dragon_event.0101.a
+		custom_tooltip = cob_dragon_event.0101.a_tt
+		add_prestige = 500
+	}
+
+	after = {
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+
+cob_dragon_event.0102 = { # I charge the dragon with a spear while it hovers!
+	type = character_event
+	window = dragon_character_event
+	title = cob_dragon_event.0102.t
+	desc = cob_dragon_event.0102.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = battlefield
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = jockey_spear_couched_gallop
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_slay_dragon_event_right
+		animation = dragon_main
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	widgets = {
+		widget = {
+			gui = "agot_shader_event_sparks"
+			container = "agot_shader_event_foreground"
+		}
+		widget = {
+			gui = "agot_shader_event_fire"
+			container = "agot_shader_event_background"
+		}
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:root = {
+			save_scope_as = root
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_hover RIDING_DRAGON = NO } }
+	}
+
+	option = {
+		name = cob_dragon_event.0102.a
+		custom_tooltip = cob_dragon_event.0102.a_tt
+		add_prestige = 500
+	}
+
+	after = {
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+
+cob_dragon_event.0103 = { # dragon lands with his side to me and my sword out
+	type = character_event
+	window = dragon_character_event
+	title = cob_dragon_event.0103.t
+	desc = cob_dragon_event.0103.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = battlefield
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = aggressive_sword
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_dragonrider_up_close_looking_right
+		animation = dragon_main
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	widgets = {
+		widget = {
+			gui = "agot_shader_event_sparks"
+			container = "agot_shader_event_foreground"
+		}
+		widget = {
+			gui = "agot_shader_event_fire"
+			container = "agot_shader_event_background"
+		}
+	}
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:root = {
+			save_scope_as = root
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_roar RIDING_DRAGON = NO } }
+	}
+
+	option = {
+		name = cob_dragon_event.0103.a
+		custom_tooltip = cob_dragon_event.0103.a_tt
+		add_prestige = 500
+	}
+
+	after = {
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+cob_dragon_event.0104 = { # dragon flys over battlefield
+	type = character_event
+	window = dragon_character_event
+	title = cob_dragon_event.0104.t
+	desc = cob_dragon_event.0104.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = agot_flying_over_field
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_soldier_on_battlefield
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		camera = camera_dragonrider_over_battlefield
+		animation = dragon_main
+		outfit_tags = { dragonrider linear_camera_zoom }
+	}
+
+	# widgets = {
+	# 	widget = {
+	# 		gui = "agot_shader_event_sparks"
+	# 		container = "agot_shader_event_foreground"
+	# 	}
+	# 	widget = {
+	# 		gui = "agot_shader_event_fire"
+	# 		container = "agot_shader_event_background"
+	# 	}
+	# }
+
+	immediate = {
+		play_music_cue = CK3AGOT_dragonflight_wonder_interrupted
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		character:root = {
+			save_scope_as = root
+		}
+		random_living_dragon = {
+			limit = {
+				has_trait = dragon_cannibal
+				NOT = { has_character_flag = owned_dragon }
+				location = { duchy = root.location.duchy }
+				can_dragon_chomp = {
+					CHOMPING_DRAGON = this
+					CHOMPED_DRAGON = root.var:current_dragon
+				}
+			}
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_flying RIDING_DRAGON = NO } }
+	}
+
+	option = {
+		name = cob_dragon_event.0104.a
+		custom_tooltip = cob_dragon_event.0104.a_tt
+		add_prestige = 500
+	}
+
+	after = {
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+
+cob_dragon_event.0105 = { #Human vs Dragon single combat test
+	type = character_event
+	window = cob_dragon_duel_event
+	title = cob_dragon_event.0105.t
+	desc = cob_dragon_event.0105.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = battlefield
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = aggressive_sword
+		camera = cob_camera_human_dragon_duel
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		animation = dragon_main
+		camera = cob_camera_dragon_facing_human
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	widgets = {
+		widget = {
+			gui = "agot_shader_event_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			culture = culture:dragon_culture
+			faith = faith:valyrian_pan_freehold
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
+		}
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_roar RIDING_DRAGON = NO } }
+	}
+
+	option = { #face it
+		name = cob_dragon_event.0105.a
+		custom_tooltip = cob_dragon_event.0105.a_tt
+
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+	}
+}
+
+cob_dragon_event.0106 = { #working.. ish
+	type = character_event
+	window = dragon_duel_event
+	title = cob_dragon_event.0106.t
+	desc = cob_dragon_event.0106.desc
+
+	theme = dragon
+
+	override_background = {
+		reference = battlefield
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = aggressive_sword
+		camera = cob_camera_human_dragon_duel
+	}
+
+	right_portrait = {
+		character = scope:freeholder_dragonlord
+		animation = dragon_main
+		camera = cob_camera_dragon_facing_human
+		outfit_tags = { dragonrider linear_camera_zoom }
+	}
+
+	override_background = {
+		trigger = { has_character_flag = dragon_night_ride }
+		reference = agot_night_sky_video
+	}
+	override_background = {
+		trigger = { NOT = { has_character_flag = dragon_night_ride } }
+		reference = agot_open_sky_video
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = freeholder_dragonrider_character
+			culture = culture:high_valyrian
+			faith = faith:valyrian_pan_freehold
+			dynasty = none
+			location = root.location
+			gender_female_chance = 20
+			save_scope_as = freeholder_dragonlord
+		}
+		scope:freeholder_dragonlord = {
+			var:current_dragon = {
+				save_scope_as = enemy_dragon
+			}
+		}
+		scope:freeholder_dragonlord = {
+			add_character_flag = currently_riding_dragon
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_roar
+				RIDING_DRAGON = yes
+			}
+		}
+	}
+
+	option = { #face it
+		name = cob_dragon_event.0106.a
+		custom_tooltip = cob_dragon_event.0106.a_tt
+
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+		configure_start_dragon_combat_effect = {
+			DSC_INITIATOR = scope:freeholder_dragonlord
+			DSC_ATTACKER = scope:freeholder_dragonlord
+			DSC_DEFENDER = root
+		}
+	}
+
+	option = { #run away
+		name = cob_dragon_event.0106.b
+		random_list = {
+			50 = { #dead
+				death = {
+					death_reason = death_dragon_fire
+					killer = scope:freeholder_dragonlord
+				}
+			}
+			30 = { #injured, knights die
+				add_trait = burned
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+			20 = { #unscathed
+				custom_tooltip = cob_dragon_event.0106.b_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+	}
+}
