@@ -696,7 +696,7 @@ cob_7899_scenerio.0403 = { #Tommen arrives in Lys
 	}
 }
 
-cob_7899_scenerio.0404 = { #Tommen arrives in Volantis
+cob_7899_scenerio.0404 = { #Tommen arrives in Volantis, hears about Aurion
 	type = character_event
 	title = cob_7899_scenerio.0404.t
 	desc = cob_7899_scenerio.0404.desc
@@ -737,37 +737,156 @@ cob_7899_scenerio.0404 = { #Tommen arrives in Volantis
 
 cob_7899_scenerio.0499 = { #Tommen Dies
 	type = character_event
+	window = cob_dragon_event
 	title = cob_7899_scenerio.0499.t
 	desc = cob_7899_scenerio.0499.desc
 
+	theme = dragon
+
 	override_background = {
-		reference = AGOT_ocean_fp3_docks
+		reference = battlefield
 	}
 
-	theme = realm
+	override_effect_2d = {
+		reference = smoke
+	}
 
 	left_portrait = {
 		character = root
-		animation = marshal
+		animation = aggressive_sword
+		camera = cob_camera_human_dragon_duel
+	}
+
+	right_portrait = {
+		character = scope:cannibal_dragon
+		animation = dragon_main
+		camera = cob_camera_dragon_facing_human
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_ten_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_nine_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_eight_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_seven_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.3 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_six_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_five_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_four_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_three_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.2 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_two_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_one_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.1 }
+		}
+		triggered_outfit = {
+			trigger = {
+				scope:cannibal_dragon = { level_zero_dragon_size_trigger = yes }
+			}
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+		#End Dynamic Camera Zoom
+	}
+
+	widgets = {
+		widget = {
+			gui = "agot_shader_event_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	trigger = {
 	}
 
 	immediate = {
-		location = {
-			save_scope_as = location
+		root = { add_character_flag = need_military_outfit }
+		create_character = {
+			location = location
+			template = cob_cannibal_dragon_template
+			culture = culture:dragon_culture
+			faith = faith:valyrian_pan_freehold
+			random_traits = no
+			location = root.location
+			save_scope_as = cannibal_dragon
 		}
-		current_travel_plan = { pause_travel_plan = yes }
+		scope:cannibal_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_roar RIDING_DRAGON = NO } }
 	}
 
-	option = {
+	option = { #face it
 		name = cob_7899_scenerio.0499.a
 		custom_tooltip = cob_7899_scenerio.0499.a_tt
+
 		death = {
-			death_reason = death_died_in_the_doom
+			death_reason = death_battle_dragon_ate
+			killer = scope:cannibal_dragon
 		}
 	}
 
 	after = {
-		#current_travel_plan = { resume_travel_plan = yes }
+		hidden_effect = {
+			if = {
+				limit = {
+					scope:cannibal_dragon = {
+						is_alive = yes
+					}
+				}
+				scope:cannibal_dragon = {
+					death = {
+						death_reason = death_vanished
+					}
+				}
+			}
+		}
+		root = {
+			remove_character_flag = need_military_outfit
+			set_variable = {
+				name = cob_tommens_quest
+				value = flag:negative
+			}
+			remove_character_flag = cob_tommen_travel
+		}
 	}
 }
 
