@@ -1017,8 +1017,15 @@ window = {
 					margin_top = 3
 				}
 
+				# LEGACY OF VALYRIA ADDED
 				background = {
-					visible = "[HoldingView.HasHolding]"
+					visible = "[And(HoldingView.HasHolding, GetScriptedGui('lv_ruin_is_unique').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).End))]"
+					using = Background_Ruin_Valyria
+				}
+
+				# LEGACY OF VALYRIA MODIFIED
+				background = {
+					visible = "[And(HoldingView.HasHolding, Not(GetScriptedGui('lv_ruin_is_unique').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).End)))]"
 					texture = "[HoldingView.GetHolding.GetIllustration]"
 					alpha = 0.8
 
@@ -1031,6 +1038,7 @@ window = {
 					}
 				}
 
+				# LEGACY OF VALYRIA MODIFIED
 				background = {
 					visible = "[Not(HoldingView.HasHolding)]"
 					texture = "[HoldingView.GetProvince.GetTerrain.GetIllustration]"
@@ -1361,8 +1369,8 @@ window = {
 									flowcontainer = {
 										datacontext = "[HoldingStatus.GetTimedModifier]"
 										#AGOT Modified
-										# visible = "[HoldingStatus.IsTimedModifier]"
-										visible = "[And(HoldingStatus.IsTimedModifier, ProvinceIsNotRuin)]"
+										visible = "[HoldingStatus.IsTimedModifier]" # LEGACY OF VALYRIA MODIFIED
+										# visible = "[And(HoldingStatus.IsTimedModifier, ProvinceIsNotRuin)]" # LEGACY OF VALYRIA MODIFIED
 										ignoreinvisible = yes
 
 										modifier_item_icon = {
@@ -2090,12 +2098,12 @@ window = {
 								# LEGACY OF VALYRIA MODIFIED
 								# Upgrade buildings
 								scrollarea = {
-									ignoreinvisible = yes
+									#ignoreinvisible = yes
 									maximumsize = { 464 58 }
 									autoresizescrollarea = yes
 
 									scrollbarpolicy_vertical = always_off
-									righttoleft = yes
+									#righttoleft = yes
 
 									scrollbar_horizontal = {
 										scrollbar = {
@@ -3657,4 +3665,19 @@ types CountyViewTypes
 
 types LVInfoTypes {
     type lv_info_incompatibility_colonisation_check = widget { visible = no }
+}
+
+# Ruin Background Templates
+template Background_Ruin_Valyria
+{
+	texture = "gfx/interface/illustrations/activities/valyria_ruin.dds"
+	alpha = 0.8
+
+	fittype = centercrop
+
+	modify_texture = {
+		texture = "gfx/interface/window_county/mask_holding_illustration.dds"
+		blend_mode = alphamultiply
+		alpha = 0.95
+	}
 }
