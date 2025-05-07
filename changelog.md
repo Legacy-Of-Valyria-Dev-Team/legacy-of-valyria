@@ -198,7 +198,7 @@ Repaired some missing events for fire mysteries
 - Added 10 new events for colonisation and settlement phases
 - Added Valyrian pretender states mechanic
 - Added Legacy of Valyria version number text in the main menu and pause menu, just below the AGOT version text
-- Added so Elyria is able to see the special decision to form North Valyria kingdom title
+- Added so Elyria is able to see the special decision to form Northern Valyria kingdom title
 - Added Braavos and Volantis to the AGOT Seize Power decision (decision for Free Cities to turn feudal)
 - Added Dna's for Xhore dynasty
 - Added new vassals in New Ghis - house Sumbhaz + i landed house Marlaq
