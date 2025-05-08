@@ -2,6 +2,7 @@
 
 # Events
 ## Durrandon - 0100-0199
+### Durrandon Ironborn Invasion - 0180-0189
 
 ## Targaryen - 0200-0299
 
@@ -9,6 +10,7 @@
 ### Hoare Riverland War = 0380-0389
 
 ## Lannister - 0400-0499
+### Lannister Quest to Valyria - 0400-0409
 
 ## Varezys - 0500-0599
 ### Varezys Old valyria - 501-509
@@ -175,44 +177,12 @@ cob_7899_scenerio.0004 = { #Tommen II Lannister
 			on_arrival_destinations = last
 			return_trip = no # One way
 			players_use_planner = no
-			#travel_with_domicile = yes
 		}
 		set_variable = {
 			name = cob_tommens_quest
 			value = flag:positive
 		}
 		add_character_flag = cob_tommen_travel
-		# hidden_effect = {
-		# 	random_list = {
-		# 		95 = { #dead
-		# 			death = {
-		# 				death_reason = death_lost_at_sea
-		# 			}
-		# 			if = {
-		# 				limit = { any_artifact = { has_artifact_modifier = vs_brightroar_modifier } }
-		# 					random_artifact = {
-		# 						limit = { has_artifact_modifier = vs_brightroar_modifier }
-		# 						save_scope_as = brightroar
-		# 					}
-  		# 				destroy_artifact = scope:brightroar
-		# 				remove_list_global_variable = {
-		# 					name = unavailable_unique_decisions
-		# 					target = flag:recovered_brightroar
-		# 				}
-		# 			}
-		# 		}
-		# 		5 = { #unscathed
-		# 			add_legitimacy = massive_legitimacy_gain
-		# 			add_gold = 7000
-		# 			add_prestige = 1000
-		# 			agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
-		# 			agot_create_random_dragon_egg_artifact = { OWNER = this }
-		# 			stress_impact = {
-		# 				base = major_stress_loss
-		# 			}
-		# 		}
-		# 	}
-		# }
 		ai_chance = {
 			base = 100
 			modifier = {
@@ -641,7 +611,7 @@ cob_7899_scenerio.0381 = { #A letter from House Hoare
 		resolve_title_and_vassal_change = scope:change
 
 		save_scope_as = recipient
-		trigger_event = cob_7899_scenerio.0389
+		trigger_event = cob_7899_scenerio.0390
 	}
 
 	option = { #Stay loyal to Durrandon
@@ -649,11 +619,111 @@ cob_7899_scenerio.0381 = { #A letter from House Hoare
 	}
 }
 
-cob_7899_scenerio.0399 = { #Effect to bring riverlanders into war
+cob_7899_scenerio.0390 = { #Effect to bring riverlanders into war
 	hidden = yes
 
 	immediate = {
 		riverlanders_join_hoare_effect = yes
+	}
+}
+
+cob_7899_scenerio.0396 = { #Take Harrenhal Province and begin construction on Harrenhal
+	type = character_event
+	title = cob_7899_scenerio.0396.t
+	desc = cob_7899_scenerio.0396.desc
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = cob_7899_scenerio.0396.a
+
+		get_title = title:d_harrenhal
+		get_title = title:c_harrenhal
+
+		trigger_event = {
+			id = cob_7899_scenerio.0397
+			days = 3650
+		}
+	}
+}
+
+#Setup Harrenhal Completion
+cob_7899_scenerio.0397 = {
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = {
+				title:c_harrenhal.holder = character:Hoare_25.house.house_head
+			}
+			character:Hoare_25.house.house_head = {
+				trigger_event = cob_7899_scenerio.0401
+			}
+		}
+		else = {
+			title:c_harrenhal.holder = {
+				trigger_event = cob_7899_scenerio.0402
+			}
+		}
+	}
+}
+
+#Harrenhal Completed
+cob_7899_scenerio.0398 = {
+	type = character_event
+	title = cob_7899_scenerio.0398.t
+	desc = cob_7899_scenerio.0398.desc
+
+	theme = faith
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+
+	immediate = {
+		title:b_harrenhal = {
+			title_province = { add_special_building = harrenhal_01 }
+			save_scope_as = harrenhal_location
+		}
+	}
+
+	option = {
+		name = cob_7899_scenerio.0398.a
+	}
+}
+#Harrenhal Completed as not Hoare
+cob_7899_scenerio.0399 = {
+	type = character_event
+	title = cob_7899_scenerio.0399.t
+	desc = cob_7899_scenerio.0399.desc
+
+	theme = faith
+
+	left_portrait = {
+		character = root
+		animation = personality_forgiving
+	}
+
+	immediate = {
+		title:b_harrenhal = {
+			title_province = { add_special_building = harrenhal_01 }
+			save_scope_as = harrenhal_location
+		}
+	}
+
+	option = {
+		name = cob_7899_scenerio.0399.a
+	}
+
+	option = {
+		name = cob_7899_scenerio.0399.b
 	}
 }
 
