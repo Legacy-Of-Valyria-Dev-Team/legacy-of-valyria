@@ -177,9 +177,10 @@ cob_7899_scenerio.0004 = { #Tommen II Lannister
 			destination = province:6922
 			destination = province:9521 #travel to Jarqanor
 			destination = province:9496 #travel to Tyria
+			destination = province:9470 #travel to Valyria
 			#on_start_on_action = on_travel_relocation_start
 			#on_arrival_on_action = on_travel_relocation_end
-			on_arrival_event = cob_7899_scenerio.0499
+			on_arrival_event = cob_7899_scenerio.0499 #99% chance of death Icarus
 			on_arrival_destinations = last
 			return_trip = no # One way
 			players_use_planner = no
@@ -1088,7 +1089,7 @@ cob_7899_scenerio.0410 = { #Tommen arrives in Volantis, hears about Aurion
 	}
 }
 
-cob_7899_scenerio.0499 = { #Tommen Enters Lokiria and dies
+cob_7899_scenerio.0499 = { #Tommen's Final Boss
 	type = character_event
 	window = cob_dragon_event
 	title = cob_7899_scenerio.0499.t
@@ -1199,7 +1200,7 @@ cob_7899_scenerio.0499 = { #Tommen Enters Lokiria and dies
 		root = { add_character_flag = need_military_outfit }
 		create_character = {
 			location = location
-			template = cob_lokiria_dragon_template
+			template = cob_final_boss_dragon_template
 			culture = culture:dragon_culture
 			faith = faith:valyrian_pan_freehold
 			random_traits = no
@@ -1213,9 +1214,23 @@ cob_7899_scenerio.0499 = { #Tommen Enters Lokiria and dies
 		name = cob_7899_scenerio.0499.a
 		custom_tooltip = cob_7899_scenerio.0499.a_tt
 
-		death = {
-			death_reason = death_battle_dragon_ate
-			killer = scope:lokiria_dragon
+		hidden_effect = {
+			random_list = {
+				99 = {
+					death = {
+						death_reason = death_dragon_duel_ate
+						killer = scope:lokiria_dragon
+					}
+				}
+				1 = {
+					scope:lokiria_dragon = {
+						death = {
+							death_reason = death_dragon_slain
+							killer = root
+						}
+					}
+				}
+			}
 		}
 	}
 
