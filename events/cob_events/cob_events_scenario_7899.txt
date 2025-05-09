@@ -11,6 +11,7 @@
 
 ## Lannister - 0400-0499
 ### Lannister Quest to Valyria - 0400-0409
+### Boss Battles - 0490-0499
 
 ## Varezys - 0500-0599
 ### Varezys Old valyria - 501-509
@@ -1088,6 +1089,9 @@ cob_7899_scenerio.0410 = { #Tommen arrives in Volantis, hears about Aurion
 	after = {
 	}
 }
+
+### Boss Battles
+
 cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 	type = character_event
 	title = cob_7899_scenerio.0490.t
@@ -1156,48 +1160,66 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 	}
 	option = { #attempt to convince them to join us
 		name = cob_7899_scenerio.0490.b
-		random_list = {
-			10 = { #joins
-				add_courtier = scope:guardian_of_lokiria
-				send_interface_toast = {
-					title = cob_7899_scenerio.0490.b.joined
-					left_icon = root
-					right_icon = scope:guardian_of_lokiria
+		stress_impact = { base = minor_stress_gain }
+		add_prestige = minor_prestige_gain
+		hidden_effect = {
+			random_list = {
+				10 = { #joins
+					add_courtier = scope:guardian_of_lokiria
+					send_interface_toast = {
+						title = cob_7899_scenerio.0490.b.joined
+						left_icon = root
+						right_icon = scope:guardian_of_lokiria
+					}
 				}
-			}
-			90 = { #duel anyway
-				custom_tooltip = cob_7899_scenerio.0490.b_tt
-				configure_start_single_combat_effect = {
-					SC_INITIATOR = scope:guardian_of_lokiria
-					SC_ATTACKER = scope:guardian_of_lokiria
-					SC_DEFENDER = root
-					FATALITY = always
-					FIXED = no
-					LOCALE = lov_event_lokiria
-					OUTPUT_EVENT = single_combat.0001
-					INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+				90 = { #duel anyway
+					custom_tooltip = cob_7899_scenerio.0490.b_tt
+					configure_start_single_combat_effect = {
+						SC_INITIATOR = scope:guardian_of_lokiria
+						SC_ATTACKER = scope:guardian_of_lokiria
+						SC_DEFENDER = root
+						FATALITY = always
+						FIXED = no
+						LOCALE = lov_event_lokiria
+						OUTPUT_EVENT = single_combat.0001
+						INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+					}
 				}
 			}
 		}
 	}
 	option = { #run away
 		name = cob_7899_scenerio.0490.c
-		random_list = {
-			70 = { #dead
-				death = {
-					death_reason = death_shot_arrow_murder
-					killer = scope:guardian_of_lokiria
+		stress_impact = { base = major_stress_gain }
+		add_prestige = major_prestige_loss
+		hidden_effect = {
+			random_list = {
+				70 = { #dead
+					death = {
+						death_reason = death_shot_arrow_murder
+						killer = scope:guardian_of_lokiria
+					}
 				}
-			}
-			30 = { #unscathed
-				custom_tooltip = cob_7899_scenerio.0490.c_tt
-				stress_impact = {
-					base = medium_stress_impact_gain
+				30 = { #unscathed
+					custom_tooltip = cob_7899_scenerio.0490.c_tt
+					stress_impact = {
+						base = medium_stress_impact_gain
+					}
 				}
 			}
 		}
 	}
 	after = {
+		effect = {
+			if = {
+				limit = {
+					character:Lannister_62 = {
+						is_alive = yes
+					}
+				}
+				remove_character_flag = need_military_outfit
+			}
+		}
 	}
 }
 
