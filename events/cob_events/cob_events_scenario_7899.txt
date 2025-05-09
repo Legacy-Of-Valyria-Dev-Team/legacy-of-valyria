@@ -1105,9 +1105,9 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		animation = fear
 		camera = cob_camera_event_left
 	}
-	
+
 	right_portrait = {
-		character = scope:freeholder_survivor
+		character = scope:guardian_of_lokiria
 		animation = aggressive_sword
 		camera = cob_camera_event_right
 	}
@@ -1126,8 +1126,12 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		create_character = {
 			template = guardian_of_lokiria_template
 			location = root.location
-			save_scope_as = freeholder_survivor
+			save_scope_as = guardian_of_lokiria
 		}
+		character:Lannister_62 = {
+			save_scope_as = tommen
+		}
+		root = { add_character_flag = need_military_outfit }
 	}
 
 	option = { #face it
@@ -1140,12 +1144,12 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 			knight = minor_stress_loss
 		}
 		configure_start_single_combat_effect = {
-			SC_INITIATOR = scope:freeholder_survivor
-			SC_ATTACKER = scope:freeholder_survivor
+			SC_INITIATOR = scope:guardian_of_lokiria
+			SC_ATTACKER = scope:guardian_of_lokiria
 			SC_DEFENDER = root
 			FATALITY = always
 			FIXED = no
-			LOCALE = terrain_scope
+			LOCALE = lov_event_lokiria
 			OUTPUT_EVENT = single_combat.0001
 			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
 		}
@@ -1154,22 +1158,22 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		name = cob_7899_scenerio.0490.b
 		random_list = {
 			10 = { #joins
-				add_courtier = scope:freeholder_survivor
+				add_courtier = scope:guardian_of_lokiria
 				send_interface_toast = {
 					title = cob_7899_scenerio.0490.b.joined
 					left_icon = root
-					right_icon = scope:freeholder_survivor
+					right_icon = scope:guardian_of_lokiria
 				}
 			}
 			90 = { #duel anyway
 				custom_tooltip = cob_7899_scenerio.0490.b_tt
 				configure_start_single_combat_effect = {
-					SC_INITIATOR = scope:freeholder_survivor
-					SC_ATTACKER = scope:freeholder_survivor
+					SC_INITIATOR = scope:guardian_of_lokiria
+					SC_ATTACKER = scope:guardian_of_lokiria
 					SC_DEFENDER = root
 					FATALITY = always
 					FIXED = no
-					LOCALE = terrain_scope
+					LOCALE = lov_event_lokiria
 					OUTPUT_EVENT = single_combat.0001
 					INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
 				}
@@ -1179,13 +1183,13 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 	option = { #run away
 		name = cob_7899_scenerio.0490.c
 		random_list = {
-			60 = { #dead
+			70 = { #dead
 				death = {
 					death_reason = death_shot_arrow_murder
-					killer = scope:freeholder_survivor
+					killer = scope:guardian_of_lokiria
 				}
 			}
-			40 = { #unscathed
+			30 = { #unscathed
 				custom_tooltip = cob_7899_scenerio.0490.c_tt
 				stress_impact = {
 					base = medium_stress_impact_gain
@@ -1316,12 +1320,14 @@ cob_7899_scenerio.0499 = { #Tommen's Final Boss
 			save_scope_as = lokiria_dragon
 		}
 		scope:lokiria_dragon = { agot_set_dragon_animation_flag_effect = { FLAG = dragon_roar RIDING_DRAGON = NO } }
+		character:Lannister_62 = {
+			save_scope_as = tommen
+		}
 	}
 
 	option = { #face it
 		name = cob_7899_scenerio.0499.a
 		custom_tooltip = cob_7899_scenerio.0499.a_tt
-
 		hidden_effect = {
 			random_list = {
 				95 = {
