@@ -1088,6 +1088,106 @@ cob_7899_scenerio.0410 = { #Tommen arrives in Volantis, hears about Aurion
 	after = {
 	}
 }
+cob_7899_scenerio.0490 = { #The Guardian of Lokiria
+	type = character_event
+	title = cob_7899_scenerio.0523.t
+	desc = cob_7899_scenerio.0523.desc
+
+	theme = travel_danger
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+	right_portrait = {
+		character = scope:freeholder_survivor
+		animation = anger
+	}
+
+	override_effect_2d = {
+		reference = smoke
+	}
+
+	trigger = {
+	}
+
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = guardian_of_lokiria_template
+			location = root.location
+			save_scope_as = freeholder_survivor
+		}
+	}
+
+	option = { #face it
+		name = cob_7899_scenerio.0523.a
+		custom_tooltip = cob_7899_scenerio.0523.a_tt
+
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+		configure_start_single_combat_effect = {
+			SC_INITIATOR = scope:freeholder_survivor
+			SC_ATTACKER = scope:freeholder_survivor
+			SC_DEFENDER = root
+			FATALITY = always
+			FIXED = no
+			LOCALE = terrain_scope
+			OUTPUT_EVENT = single_combat.0001
+			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+		}
+	}
+	option = { #attempt to convince them to join us
+		name = cob_7899_scenerio.0523.b
+		random_list = {
+			20 = { #joins
+				add_courtier = scope:freeholder_survivor
+				send_interface_toast = {
+					title = cob_7899_scenerio.0523.b.joined
+					left_icon = root
+					right_icon = scope:freeholder_survivor
+				}
+			}
+			80 = { #duel anyway
+				custom_tooltip = cob_7899_scenerio.0523.b_tt
+				configure_start_single_combat_effect = {
+					SC_INITIATOR = scope:freeholder_survivor
+					SC_ATTACKER = scope:freeholder_survivor
+					SC_DEFENDER = root
+					FATALITY = always
+					FIXED = no
+					LOCALE = terrain_scope
+					OUTPUT_EVENT = single_combat.0001
+					INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = cob_7899_scenerio.0523.c
+		random_list = {
+			60 = { #dead
+				death = {
+					death_reason = death_shot_arrow_murder
+					killer = scope:freeholder_survivor
+				}
+			}
+			40 = { #unscathed
+				custom_tooltip = cob_7899_scenerio.0523.c_tt
+				stress_impact = {
+					base = medium_stress_impact_gain
+				}
+			}
+		}
+	}
+	after = {
+	}
+}
 
 cob_7899_scenerio.0499 = { #Tommen's Final Boss
 	type = character_event
@@ -2338,7 +2438,7 @@ cob_7899_scenerio.0522 = { #Aurion encounters a former Valyrian Freeholder tryin
 			template = freeholder_raider
 			culture = culture:high_valyrian
 			faith = faith:valyrian_pan_freehold
-			dynasty = none
+			dynasty = generate
 			location = root.location
 			gender_female_chance = 2
 			save_scope_as = freeholder_looter
@@ -2817,7 +2917,7 @@ cob_7899_scenerio.0523 = { #Aurion encounters a freehold soldier
 			template = freeholder_soldier
 			culture = culture:high_valyrian
 			faith = faith:valyrian_pan_freehold
-			dynasty = none
+			dynasty = generate
 			location = root.location
 			gender_female_chance = 20
 			save_scope_as = freeholder_survivor
@@ -2925,7 +3025,7 @@ cob_7899_scenerio.0524 = { #Aurion encounters a great freehold soldier
 			template = great_freeholder_soldier
 			culture = culture:high_valyrian
 			faith = faith:valyrian_pan_freehold
-			dynasty = none
+			dynasty = generate
 			location = root.location
 			gender_female_chance = 20
 			save_scope_as = freeholder_survivor
@@ -3033,7 +3133,7 @@ cob_7899_scenerio.0525 = { #Aurion encounters a retired freehold soldier
 			template = retired_freeholder_soldier
 			culture = culture:high_valyrian
 			faith = faith:valyrian_pan_freehold
-			dynasty = none
+			dynasty = generate
 			location = root.location
 			gender_female_chance = 20
 			save_scope_as = freeholder_survivor
@@ -3395,7 +3495,7 @@ cob_7899_scenerio.0527 = { #Aurion encounters a freehold dragonrider
 			template = freeholder_dragonrider_character
 			culture = culture:high_valyrian
 			faith = faith:valyrian_pan_freehold
-			dynasty = none
+			dynasty = generate
 			location = root.location
 			gender_female_chance = 20
 			save_scope_as = freeholder_dragonlord
