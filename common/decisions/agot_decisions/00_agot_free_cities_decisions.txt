@@ -10,7 +10,10 @@ agot_attempt_triarchy = {
 	is_shown = {
 		is_independent_ruler = yes
 		government_has_flag = government_is_free_city
-		NOT = { exists = title:e_three_daughters.holder }
+		NOR = {
+			exists = title:e_three_daughters.holder
+			exists = global_var:three_daughters_confederation
+		}
 		NOT = { any_held_title = { has_variable = lv_pretender_empire } }
 		OR = {
 			has_title = title:k_tyrosh
@@ -26,7 +29,10 @@ agot_attempt_triarchy = {
 
 	is_valid = {
 		is_independent_ruler = yes
-		NOT = { exists = title:e_three_daughters.holder }
+		NOR = {
+			exists = title:e_three_daughters.holder
+			exists = global_var:three_daughters_confederation
+		}
 		exists = title:k_tyrosh.holder
 		title:k_tyrosh.holder = { government_has_flag = government_is_free_city }
 		exists = title:k_lys.holder
@@ -145,7 +151,10 @@ agot_attempt_triarchy = {
 	ai_potential = {
 		is_independent_ruler = yes
 		government_has_flag = government_is_free_city
-		NOT = { exists = title:e_three_daughters.holder }
+		NOR = {
+			exists = title:e_three_daughters.holder
+			exists = global_var:three_daughters_confederation
+		}
 		exists = title:k_tyrosh.holder
 		exists = title:k_lys.holder
 		exists = title:k_myr.holder
@@ -212,7 +221,10 @@ agot_create_three_daughters = {
 
 	is_shown = {
 		is_independent_ruler = yes
-		NOT = { exists = title:e_three_daughters.holder }
+		NOR = {
+			exists = title:e_three_daughters.holder
+			exists = global_var:three_daughters_confederation
+		}
 		NOT = { any_held_title = { has_variable = lv_pretender_empire } }
 		has_title = title:k_tyrosh
 		has_title = title:k_lys
@@ -356,7 +368,7 @@ agot_stepstones_rhoynish_culture = {
 		set_global_variable = stepstones_rhoynish_culture_decision
 		custom_tooltip = agot_stepstones_rhoynish_culture_tooltip
 		hidden_effect = {
-			create_divergent_culture_with_side_effects_excluding_cost  = yes
+			create_divergent_culture_with_side_effects_excluding_cost = yes
 			culture = {
 				set_culture_name = {
 					noun = somberysh
@@ -480,7 +492,10 @@ agot_form_undisputed_lands = {
 		#Can't already be a kingdom.
 		NOT = { highest_held_title_tier = tier_kingdom }
 		NOT = { has_primary_title = title:e_blackfyre_rebellion }
-		NOT = { has_primary_title = title:e_three_daughters }
+		NOR = {
+			exists = title:e_three_daughters.holder
+			exists = global_var:three_daughters_confederation
+		}
 		NOT = { exists = title:k_disputed_lands.holder }
 	}
 
@@ -599,5 +614,89 @@ agot_break_braavos_pentos_treaty = {
 			}
 		}
 		title:k_braavos.holder = { trigger_event = { id = agot_decisions_events.0200 days = 1 } }
+	}
+}
+
+agot_break_braavos_pentos_treaty_as_braavos = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_realm.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 120
+	desc = agot_break_braavos_pentos_treaty_as_braavos_desc
+
+	is_shown = {
+		has_title = title:k_braavos
+		exists = global_var:braavos_treaty
+		exists = title:k_pentos.holder
+	}
+
+	is_valid_showing_failures_only = {
+		is_at_war = no
+		is_imprisoned = no
+		NOT = {
+			culture = {
+				has_cultural_tradition = tradition_astute_diplomats
+			}
+		}
+	}
+
+	cost = {
+		prestige = 5000
+		gold = 500
+	}
+
+	ai_potential = {
+		is_independent_ruler = yes
+		is_at_war = no
+	}
+
+	ai_will_do = {
+		base = 5
+		modifier = {
+			add = 10
+			ai_has_warlike_personality = yes
+		}
+	}
+
+	effect = {
+		custom_tooltip = agot_break_braavos_pentos_treaty_effect_tt
+		custom_tooltip = agot_break_braavos_pentos_treaty_as_braavos_effect_tt
+		remove_global_variable = braavos_treaty
+		add_prestige_level = -1
+		if = {
+			limit = {
+				is_ai = no
+			}
+			trigger_event = agot_decisions_events.0205
+		}
+		hidden_effect = {
+			title:k_pentos.holder = {
+				if = {
+					limit = {
+						has_character_modifier = agot_pentos_braavos_treaty
+					}
+					remove_character_modifier = agot_pentos_braavos_treaty
+				}
+				every_vassal_or_below = {
+					limit = {
+						has_character_modifier = agot_pentos_braavos_treaty
+					}
+					remove_character_modifier = agot_pentos_braavos_treaty
+				}
+				if = {
+					limit = {
+						is_ai = no
+					}
+					trigger_event = agot_decisions_events.0205
+				}
+				every_vassal_or_below = {
+					limit = {
+						is_ai = no
+					}
+					trigger_event = agot_decisions_events.0205
+				}
+			}
+		}
 	}
 }
