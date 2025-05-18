@@ -15,9 +15,7 @@ pregnancy.0001 = {
 		random_list = {
 			200 = { #All goes smoothly!
 				modifier = {
-					location = {
-						geographical_region = world_asshai
-					}
+					location = { geographical_region = world_asshai }
 					add = -500000
 				}
 				#Less likely if health is bad
@@ -69,23 +67,23 @@ pregnancy.0001 = {
 				}
 
 				add_character_flag = {
-					flag = birth_will_go_smoothly 
+					flag = birth_will_go_smoothly
 					days = 270
 				}
 			}
-			#AGOT Added - Targaryen Scaly Baby 
+			#AGOT Added - Targaryen Scaly Baby
 			1 = {
-				trigger = { #Mom or Dad are lizard people 
+				trigger = { #Mom or Dad are lizard people
 					OR = {
 						AND = {
-							has_dynasty = yes 
+							has_dynasty = yes
 							dynasty = {
 								has_dynasty_modifier = valyrian_heritage_dynasty_modifier
 							}
 						}
 						scope:real_father = {
 							AND = {
-								has_dynasty = yes 
+								has_dynasty = yes
 								dynasty = {
 									has_dynasty_modifier = valyrian_heritage_dynasty_modifier
 								}
@@ -93,7 +91,7 @@ pregnancy.0001 = {
 						}
 					}
 				}
-				modifier = { #Close family ups the chance to balance free inbreeding 
+				modifier = { #Close family ups the chance to balance free inbreeding
 					add = 5 #2%
 					scope:mother = {
 						any_close_or_extended_family_member = {
@@ -192,7 +190,7 @@ pregnancy.0001 = {
 					days = 270
 				}
 			}
-			#AGOT added
+			#AGOT Added
 			0 = {
 				modifier = {
 					add = 10000
@@ -249,6 +247,8 @@ pregnancy.1001 = {
 	}
 
 	trigger = {
+		#AGOT Disabled
+		#NOT = { has_variable = borte_first_child_var }
 		any_consort = {
 			this = scope:real_father
 		}
@@ -270,28 +270,70 @@ pregnancy.1001 = {
 			pregnancy_spouse_suspicion_chance_effect = yes
 		}
 	}
-	
+
 	option = {
 		name = pregnancy.1001.a
+	}
+
+	#AGOT Added
+	option = {
+		trigger = {
+			is_ai = no
+			agot_believes_in_the_seven = yes
+		}
+		name = pregnancy.1001.motheroffering
+		custom_tooltip = pregnancy.1001.motheroffering.self
+		root = {
+			add_piety = minor_piety_gain
+			remove_short_term_gold = tiny_gold_value
+		}
 	}
 }
 
 #for the father if it's the first child or the first dynastic heir (assumed biological father)
 pregnancy.1002 = {
 	title = pregnancy.1002.t
-	desc = pregnancy.1002.d
+	desc = {
+		first_valid = {
+			#AGOT Disabled
+			#triggered_desc = {
+			#	trigger = {
+			#		this = character:125501 # You are Temüjin
+			#		scope:mother = { has_variable = borte_first_child_var }
+			#	}
+			#	desc = pregnancy.1002.d.borte
+			#}
+			desc = pregnancy.1002.d
+		}
+	}
 	theme = pregnancy
 	override_background = { reference = bedchamber }
 	left_portrait = {
 		character = scope:mother
+		#AGOT Disabled
+		#triggered_animation = {
+		#	trigger = {
+		#		scope:mother = { has_variable = borte_first_child_var }
+		#	}
+		#	animation = worry
+		#}
 		animation = love
 	}
 	right_portrait = {
 		character = root
-		triggered_animation = {
-			trigger = { has_any_bad_relationship_with_character_trigger = { CHARACTER = root } }
-			animation = stress
-		}
+		#AGOT Disabled
+		#triggered_animation = {
+		#	trigger = {
+		#		OR = {
+		#			has_any_bad_relationship_with_character_trigger = { CHARACTER = root }
+		#			AND = {
+		#				scope:mother = { has_variable = borte_first_child_var }
+		#				this = character:125501
+		#			}
+		#		}
+		#	}
+		#	animation = stress
+		#}
 		animation = happiness
 	}
 
@@ -300,7 +342,40 @@ pregnancy.1002 = {
 	}
 
 	option = {
-		name = pregnancy.1002.a
+		#AGOT Disabled
+		#name = {
+		#	trigger = {
+		#		scope:mother = { has_variable = borte_first_child_var }
+		#	}
+		#	text = pregnancy.1002.a.borte
+		#}
+		name = {
+			#AGOT Disabled
+			#trigger = {
+			#	NOT = {
+			#		scope:mother = { has_variable = borte_first_child_var }
+			#	}
+			#}
+			text = pregnancy.1002.a
+		}
+		show_as_tooltip = {
+			scope:mother = {
+				add_trait_force_tooltip = pregnant
+			}
+		}
+	}
+	#AGOT Added
+	option = {
+		trigger = {
+			is_ai = no
+			agot_believes_in_the_seven = yes
+		}
+		name = pregnancy.1001.motheroffering
+		flavor = pregnancy.1001.motheroffering.father
+		root = {
+			add_piety = minor_piety_gain
+			remove_short_term_gold = tiny_gold_value
+		}
 		show_as_tooltip = {
 			scope:mother = {
 				add_trait_force_tooltip = pregnant
@@ -310,7 +385,7 @@ pregnancy.1002 = {
 }
 
 scripted_trigger former_consort_was_father = {
-	OR = {	
+	OR = {
 		any_former_spouse = {
 			even_if_dead = yes
 			this = scope:father
@@ -375,7 +450,7 @@ pregnancy.1101 = {
 				desc = pregnancy.1101.desc.dead
 			}
 			desc = pregnancy.1101.desc.divorced
-			
+
 		}
 		desc = pregnancy.1101.desc.end
 	}
@@ -435,6 +510,27 @@ pregnancy.1101 = {
 			}
 		}
 	}
+	#AGOT Added
+	option = {
+		trigger = {
+			is_ai = no
+			scope:ex_spouse = {
+				is_alive = no
+			}
+			agot_believes_in_the_seven = yes
+		}
+		name = pregnancy.1001.motheroffering
+		flavor = pregnancy.1001.motheroffering.deadhusband
+		root = {
+			add_piety = minor_piety_gain
+			remove_short_term_gold = tiny_gold_value
+		}
+		show_as_tooltip = {
+			scope:mother = {
+				add_trait_force_tooltip = pregnant
+			}
+		}
+	}
 }
 
 # For the mother's husband (not father) to explain why their spouse is pregnant and that it is okay.
@@ -454,7 +550,7 @@ pregnancy.1102 = {
 		}
 		animation = happiness
 	}
-	
+
 
 	option = {
 		name = pregnancy.1102.a
@@ -745,18 +841,18 @@ pregnancy.2002 = {
 	}
 	right_portrait = scope:father
 	lower_center_portrait = scope:real_father
-	
+
 	trigger = {
 		# If we are married and/or have concubines, but the real father is not one of them, it's a bastard!
 		any_consort = {
 			is_male = yes
 		}
 		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }	
+			NOT = {	is_consort_of = root }
 		}
 
 		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {	
+		NOT = {
 			former_consort_was_father = yes
 		}
 	}
@@ -778,7 +874,7 @@ pregnancy.2002 = {
 		}
 
 		save_scope_as = mother
-		hidden_effect = {	
+		hidden_effect = {
 			set_num_pregnancy_children = 1
 			if = {
 				limit = {
@@ -921,7 +1017,7 @@ pregnancy.2002 = {
 				add = 10000
 				scope:mother.pregnancy_assumed_father = {
 					has_character_flag = agot_father_will_not_suspect_pregnancy
-				}	
+				}
 			}
 		}
 	}
@@ -1004,7 +1100,7 @@ pregnancy.2005 = {
 		animation = sadness
 	}
 
-	immediate = {	
+	immediate = {
 		if = {
 			limit = {
 				is_married = no
@@ -1073,11 +1169,11 @@ pregnancy.2050 = {
 			NOT = { is_male = yes }
 		}
 		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }	
+			NOT = {	is_consort_of = root }
 		}
 
 		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {	
+		NOT = {
 			former_consort_was_father = yes
 		}
 
@@ -1091,7 +1187,7 @@ pregnancy.2050 = {
 		play_music_cue = "mx_cue_succession"
 
 		save_scope_as = mother
-		hidden_effect = {	
+		hidden_effect = {
 			set_num_pregnancy_children = 1
 			if = {
 				limit = {
@@ -1189,7 +1285,7 @@ pregnancy.2101 = {
 		character = root
 		animation = personality_cynical
 	}
-	
+
 	trigger = {
 		is_pregnant = yes
 	}
@@ -1295,7 +1391,7 @@ pregnancy.3001 = {
 	}
 	theme = pregnancy
 	left_portrait = scope:mother
-	
+
 	trigger = {
 		scope:mother = {
 			is_pregnant = yes
@@ -1499,7 +1595,7 @@ pregnancy.3003 = {
 		ai_chance = {
 			base = 25
 		}
-	}	
+	}
 }
 
 
@@ -1538,7 +1634,7 @@ pregnancy.3004 = {
 
 	option = { #This must be kept secret!
 		name = pregnancy.3004.a
-	}	
+	}
 }
 
 #5000: Follow-ups
@@ -1681,10 +1777,10 @@ pregnancy.5003 = {
 		character = scope:mother
 		animation = personality_callous
 	}
-	
+
 	option = { #Are they really telling the truth?
 		name = pregnancy.5003.a
-	}	
+	}
 }
 
 

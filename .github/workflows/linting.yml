@@ -1,0 +1,23 @@
+
+name: Lint CK3 Mod
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ck3_lint:
+    name: Run CK3-Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout mod repository
+        uses: actions/checkout@v3
+
+      - name: Run CK3-Linter in Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:${{ github.workspace }} \
+            -w ${{ github.workspace }} \
+            thomasmldejong2004/ck3-lint:v0.0.2 \
+            CK3-Lint .

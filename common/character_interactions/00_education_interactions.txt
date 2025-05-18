@@ -91,7 +91,7 @@ educate_child_interaction = {
 						exists = employer
 						NOT = { employer = scope:actor }
 					}
-					
+
 					employer = {
 						save_scope_as = actor
 					}
@@ -117,12 +117,12 @@ educate_child_interaction = {
 						# AGOT Added
 						is_human = yes # Prevent redirect on dragon
 					}
-					
+
 					employer = {
 						save_scope_as = recipient
 					}
 				}
-			}		
+			}
 		}
 	}
 
@@ -248,9 +248,9 @@ educate_child_interaction = {
 			}
 		}
 	}
-	
+
 	prompt = {
-		first_valid = {	
+		first_valid = {
 			triggered_desc = {
 				trigger = {
 					NOT = { exists = scope:secondary_actor }
@@ -452,6 +452,19 @@ educate_child_interaction = {
 				LAAMP = scope:actor
 			}
 		}
+		#AGOT Added
+		scope:recipient = {
+			agot_is_available_for_anything = yes
+		}
+		trigger_if = {
+			limit = {
+				exists = scope:secondary_recipient
+			}
+			scope:secondary_recipient = {
+				agot_is_available_for_anything = yes
+			}
+		}
+
 		#AGOT Added so canon children with canon guardians can only get guardians through players
 		agot_canon_children_should_allow_guardian_trigger = yes
 	}
@@ -565,11 +578,11 @@ educate_child_interaction = {
 	}
 
 	auto_accept = yes
-	
+
 	ai_accept = {
 		base = 100
 	}
-	
+
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
@@ -699,8 +712,8 @@ educate_child_interaction = {
 			NOT = { scope:secondary_actor = scope:actor }
 		}
 		is_valid = {
-			scope:actor = { 
-				has_usable_hook = scope:secondary_actor 
+			scope:actor = {
+				has_usable_hook = scope:secondary_actor
 			}
 		}
 		flag = education_hook
@@ -713,13 +726,13 @@ educate_child_interaction = {
 	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
 
 	send_options_exclusive = no
-	
+
 	ai_targets = {
 		ai_recipients = self
 	}
-	
+
 	ai_frequency = 24
-	
+
 	ai_potential = {
 		OR = {
 			AND = {
@@ -742,14 +755,14 @@ educate_child_interaction = {
 			}
 		}
 	}
-	
+
 	ai_will_do = {
 		base = 100
-		
+
 		modifier = { # Slight preference for older heirs
 			add = scope:secondary_recipient.age
 		}
-		
+
 		modifier = { # Prefer to educate your own heirs
 			add = 900
 			scope:actor = scope:secondary_actor
@@ -757,7 +770,7 @@ educate_child_interaction = {
 				is_heir_of = scope:actor
 			}
 		}
-		
+
 		modifier = { # Otherwise, find a good educator for them
 			add = 200
 			scope:secondary_actor = {
@@ -770,14 +783,14 @@ educate_child_interaction = {
 				is_heir_of = scope:actor
 			}
 		}
-		
+
 		modifier = { # Generally prefer your own flesh & blood to educate children
 			add = 200
 			exists = scope:secondary_actor.dynasty
 			exists = scope:actor.dynasty
 			scope:secondary_actor.dynasty = scope:actor.dynasty
 		}
-		
+
 		modifier = { # Also prefer friends & lovers
 			add = 100
 			scope:secondary_actor = {
@@ -883,7 +896,7 @@ educate_child_interaction = {
 		# modifier = { # Don't spend gold on this unless very, very rich
 		# 	factor = 0
 		# 	scope:send_to_university = yes
-			
+
 		# 	scope:actor.short_term_gold < scope:actor.monumental_gold_value
 		# }
 	}
@@ -920,7 +933,7 @@ offer_ward_interaction = {
 					save_scope_as = recipient
 				}
 			}
-		}		
+		}
 	}
 
 	populate_actor_list = {
@@ -1033,9 +1046,9 @@ offer_ward_interaction = {
 			}
 		}
 	}
-	
+
 	prompt = {
-		first_valid = {	
+		first_valid = {
 			triggered_desc = {
 				trigger = {
 					exists = scope:secondary_actor
@@ -1095,7 +1108,7 @@ offer_ward_interaction = {
 			scope:recipient = { has_trait = nightswatch }
 		}
 	}
-	
+
 	is_valid_showing_failures_only = {
 		custom_description = {
 			text = character_to_guard_exists
@@ -1310,7 +1323,7 @@ offer_ward_interaction = {
 				random_relation = {
 					type = guardian
 					save_scope_as = old_guardian
-					
+
 					#Letter event to guardian
 					if = {
 						limit = {
@@ -1367,8 +1380,8 @@ offer_ward_interaction = {
 
 		scope:actor = {
 			if = {
-				limit = { 
-					NOT = { this = scope:recipient } 
+				limit = {
+					NOT = { this = scope:recipient }
 					scope:ward = {
 						#num_of_relation_guardian = 0
 						NOR = {
@@ -1398,7 +1411,7 @@ offer_ward_interaction = {
 			VALUE = miniscule_unity_gain
 			DESC = clan_unity_ward_offerage.desc
 			REVERSE_NON_HOUSE_TARGET = yes
-		}		
+		}
 	}
 
 	on_decline = {
@@ -1435,7 +1448,7 @@ offer_ward_interaction = {
 		scope:secondary_recipient = { remove_character_flag = under_offer_as_guardian_flag }
 		scope:secondary_actor = { remove_character_flag = under_offer_as_ward_flag }
 	}
-	
+
 	auto_accept = {
 		custom_description = {
 			text = "spending_hook"
@@ -1445,7 +1458,7 @@ offer_ward_interaction = {
 			scope:actor = { has_strong_hook = scope:recipient }
 		}
 	}
-	
+
 	ai_accept = {
 		base = 0
 
@@ -1491,7 +1504,7 @@ offer_ward_interaction = {
 			scope:actor = { NOT = { has_strong_hook = scope:recipient } }
 			desc = SCHEME_WEAK_HOOK_USED
 		}
-		
+
 		modifier = { # Respect the liege
 			add = 50
 			scope:recipient = { target_is_liege_or_above = scope:actor }
@@ -1538,7 +1551,7 @@ offer_ward_interaction = {
 			}
 			desc = AI_NOT_CULTURE
 		}
-		
+
 		modifier = {
 			add = -20
 			trigger = {
@@ -1847,7 +1860,7 @@ offer_ward_interaction = {
 			}
 			desc = AI_RANK_DIFF
 		}
-		
+
 		modifier = {
 			add = intimidated_reason_value
 			scope:recipient = {
@@ -1870,7 +1883,7 @@ offer_ward_interaction = {
 			}
 			desc = COWED_REASON
 		}
-		
+
 		modifier = {
 			add = intimidated_external_reason_value
 			scope:recipient = {
@@ -1904,7 +1917,7 @@ offer_ward_interaction = {
 			VALUE = 100
 		}
 	}
-	
+
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
@@ -2046,14 +2059,14 @@ offer_ward_interaction = {
 	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
 
 	send_options_exclusive = no
-	
+
 	ai_targets = {
 		ai_recipients = vassals
 		ai_recipients = head_of_faith
 	}
-	
+
 	ai_frequency = 12
-	
+
 	ai_potential = {
 		primary_title.tier >= tier_duchy
 		any_courtier = {
@@ -2070,7 +2083,7 @@ offer_ward_interaction = {
 			}
 		}
 	}
-	
+
 	ai_will_do = {
 		base = 0
 
@@ -2196,7 +2209,7 @@ offer_ward_interaction = {
 		# modifier = { # Don't spend gold on this unless very, very rich
 		# 	factor = 0
 		# 	scope:send_to_university = yes
-			
+
 		# 	scope:actor.short_term_gold <= scope:actor.monumental_gold_value
 		# }
 	}
@@ -2310,7 +2323,7 @@ offer_guardianship_interaction = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					# I assign, myself, to educate not you, but your... 
+					# I assign, myself, to educate not you, but your...
 					scope:actor = scope:secondary_actor
 					NOT = { scope:recipient = scope:secondary_recipient }
 				}
@@ -2326,7 +2339,7 @@ offer_guardianship_interaction = {
 			}
 			triggered_desc = {
 				trigger = {
-				# I assign, not myself, to educate not you, but your... 
+				# I assign, not myself, to educate not you, but your...
 					NOT = { scope:recipient = scope:secondary_recipient }
 					NOT = { scope:actor = scope:secondary_actor }
 				}
@@ -2338,13 +2351,13 @@ offer_guardianship_interaction = {
 					scope:recipient = scope:secondary_recipient
 					NOT = { scope:actor = scope:secondary_actor }
 				}
-				desc = EDUCATE_RECIPIENT_REQUEST 
+				desc = EDUCATE_RECIPIENT_REQUEST
 			}
 		}
 	}
-	
+
 	prompt = {
-		first_valid = {	
+		first_valid = {
 			triggered_desc = {
 				trigger = {
 					NOT = { exists = scope:secondary_actor }
@@ -2398,7 +2411,7 @@ offer_guardianship_interaction = {
 			agot_is_available_for_anything = yes
 		}
 	}
-	
+
 	is_valid_showing_failures_only = {
 		custom_description = {
 			text = character_to_educate_exists
@@ -2549,7 +2562,7 @@ offer_guardianship_interaction = {
 			NOT = { exists = var:hostage_travelling_to_warden }
 		}
 	}
-	
+
 	on_send = {
 		scope:secondary_recipient = {
 			add_character_flag = {
@@ -2570,7 +2583,7 @@ offer_guardianship_interaction = {
 		scope:actor = { save_scope_as = guardian_liege }
 		scope:secondary_recipient = { save_scope_as = ward }
 		scope:recipient = { save_scope_as = ward_liege }
-		
+
 		if = {
 			limit = { scope:ward.age >= 15 }
 			custom_description_no_bullet = {
@@ -2599,7 +2612,7 @@ offer_guardianship_interaction = {
 			limit = {
 				scope:guardian = { num_of_relation_ward < zz_valyria_max_wards	}
 			}
-		
+
 			save_scope_value_as = { #To give right tooltip in char_interaction.0080
 				name = offer_guardianship_interaction
 				value = yes
@@ -2628,12 +2641,12 @@ offer_guardianship_interaction = {
 			VALUE = miniscule_unity_gain
 			DESC = clan_unity_guardianship.desc
 			REVERSE_NON_HOUSE_TARGET = yes
-		}		
+		}
 	}
 
 	# AGOT Added
 	on_auto_accept = {
-		scope:recipient = { 
+		scope:recipient = {
 			trigger_event = agot_char_interaction.0200
 		}
 	}
@@ -2680,7 +2693,7 @@ offer_guardianship_interaction = {
 		scope:secondary_recipient = { remove_character_flag = under_offer_as_ward_flag }
 		scope:secondary_actor = { remove_character_flag = under_offer_as_guardian_flag }
 	}
-	
+
 	auto_accept = {
 		custom_description = {
 			text = "spending_hook"
@@ -2690,7 +2703,7 @@ offer_guardianship_interaction = {
 			scope:actor = { has_strong_hook = scope:recipient }
 		}
 	}
-	
+
 	ai_accept = {
 		base = -50
 
@@ -2701,7 +2714,7 @@ offer_guardianship_interaction = {
 			scope:actor = { NOT = { has_strong_hook = scope:recipient } }
 			desc = SCHEME_WEAK_HOOK_USED
 		}
-		
+
 		modifier = { # Respect the liege
 			add = 100
 			scope:recipient = { target_is_liege_or_above = scope:actor }
@@ -2731,7 +2744,7 @@ offer_guardianship_interaction = {
 			NOT = { scope:recipient = { target_is_liege_or_above = scope:actor } }
 			desc = AI_FOREIGN_COURT
 		}
-		
+
 		modifier = {
 			add = -100
 			scope:secondary_actor.court_owner = {
@@ -2845,7 +2858,7 @@ offer_guardianship_interaction = {
 			}
 			desc = AI_NOT_CULTURE
 		}
-		
+
 		modifier = {
 			add = -10
 			trigger = {
@@ -3079,7 +3092,7 @@ offer_guardianship_interaction = {
 			scope:actor = { is_allied_to = scope:recipient }
 			desc = AI_HAS_ALLIANCE
 		}
-		
+
 		modifier = {
 			add = 50
 			scope:recipient = {
@@ -3102,7 +3115,7 @@ offer_guardianship_interaction = {
 			}
 			desc = COWED_REASON
 		}
-		
+
 		modifier = {
 			add = 10
 			scope:recipient = {
@@ -3175,7 +3188,7 @@ offer_guardianship_interaction = {
 			VALUE = 100
 		}
 	}
-	
+
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
@@ -3309,28 +3322,28 @@ offer_guardianship_interaction = {
 	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
 
 	send_options_exclusive = no
-	
+
 	ai_targets = {
 		ai_recipients = vassals
 	}
-	
+
 	ai_frequency = 48
-	
+
 	ai_potential = {
 		is_imprisoned = no
 		NOT = { has_trait = incapable }
 	}
-	
+
 	ai_will_do = {
 		base = 0
-		
+
 		# AGOT Disabled
 		# modifier = { # Liege's should want to culture/faith convert their vassal's children
 		# 	add = 100
-			
+
 		# 	scope:convert_culture = yes
 		# 	scope:convert_faith = yes
-			
+
 		# 	scope:secondary_actor = {
 		# 		culture = scope:actor.culture
 		# 		faith = scope:actor.faith
@@ -3342,13 +3355,13 @@ offer_guardianship_interaction = {
 		# 		}
 		# 	}
 		# }
-		
+
 		# AGOT Disabled
 		# modifier = { # Liege's should want to culture/faith convert their vassal's children
 		# 	add = 95
-			
+
 		# 	scope:convert_culture = yes
-			
+
 		# 	scope:secondary_actor = {
 		# 		culture = scope:actor.culture
 		# 	}
@@ -3359,12 +3372,12 @@ offer_guardianship_interaction = {
 		# 		}
 		# 	}
 		# }
-		
+
 		modifier = { # Liege's should want to culture/faith convert their vassal's children
 			add = 90
-			
+
 			scope:convert_faith = yes
-			
+
 			scope:secondary_actor = {
 				faith = scope:actor.faith
 			}
@@ -3375,10 +3388,10 @@ offer_guardianship_interaction = {
 				}
 			}
 		}
-		
+
 		modifier = { # Players shouldn't be spammed
 			add = -90
-			
+
 			scope:secondary_recipient = {
 				is_ai = no
 			}
@@ -3388,21 +3401,21 @@ offer_guardianship_interaction = {
 		evaluate_action_increasing_house_unity = {
 			VALUE = 100
 		}
-		
+
 		modifier = { # Players shouldn't be spammed
 			factor = 0
-			
+
 			scope:recipient = {
 				has_character_flag = ai_guardianship_ask_cooldown
 			}
 		}
-		
+
 		modifier = { # Don't ask to convert faith if that's already a thing
 			factor = 0
-			
+
 			scope:convert_faith = yes
 			NOT = { scope:convert_culture = yes }
-			
+
 			scope:secondary_recipient = {
 				any_relation = {
 					faith = scope:actor.faith
@@ -3415,13 +3428,13 @@ offer_guardianship_interaction = {
 				}
 			}
 		}
-		
+
 		modifier = { # Don't ask to convert culture if that's already a thing
 			factor = 0
-			
+
 			scope:convert_culture = yes
 			NOT = { scope:convert_faith = yes }
-			
+
 			scope:secondary_recipient = {
 				any_relation = {
 					culture = scope:actor.culture
@@ -3434,13 +3447,13 @@ offer_guardianship_interaction = {
 				}
 			}
 		}
-		
+
 		modifier = { # Don't ask to convert culture and faith if that's already a thing
 			factor = 0
-			
+
 			scope:convert_culture = yes
 			scope:convert_faith = yes
-			
+
 			scope:secondary_recipient = {
 				any_relation = {
 					culture = scope:actor.culture
@@ -3459,7 +3472,7 @@ offer_guardianship_interaction = {
 		# modifier = { # Don't spend gold on this unless very, very rich
 		# 	factor = 0
 		# 	scope:send_to_university = yes
-			
+
 		# 	scope:actor.short_term_gold <= scope:actor.monumental_gold_value
 		# }
 
@@ -3477,7 +3490,7 @@ remove_guardian_interaction = {
 	category = interaction_category_friendly
 	desc = remove_guardian_interaction_desc
 	icon = child
-	
+
 	force_notification = yes
 	greeting = positive
 	notification_text = REMOVE_GUARDIAN_INTERACTION
@@ -3507,14 +3520,14 @@ remove_guardian_interaction = {
 
 				#Diplo availability/not imprisoned
 				#is_busy_in_events_localised = yes
-				
+
 				any_relation = {
 					type = ward
-					
+
 					remove_guardian_interaction_visible_ward_trigger = yes
 					remove_guardian_interaction_available_ward_trigger = yes
 				}
-				
+
 
 				#War blocker
 				NOR = {
@@ -3565,7 +3578,7 @@ remove_guardian_interaction = {
 		else = {
 			scope:recipient = { every_relation = { type = guardian save_scope_as = guardian } }
 		}
-		
+
 		#Save ward(s) scope(s)
 		scope:guardian = {
 			#If the recipient is the ward, always pick them as ward
@@ -3607,8 +3620,8 @@ remove_guardian_interaction = {
 								this = scope:ward
 								this = scope:recipient
 							}
-						}	
-						save_scope_as = ward_2		
+						}
+						save_scope_as = ward_2
 					}
 				}
 			}
@@ -3716,7 +3729,7 @@ remove_guardian_interaction = {
 					GUARDIAN = scope:guardian
 					WARD = scope:ward_2
 					WARD_LIEGE = scope:ward_2.liege
-				} 	
+				}
 			}
 		}
 
@@ -3735,7 +3748,7 @@ remove_guardian_interaction = {
 					opinion = -15
 				}
 			}
-		}	
+		}
 		if = {
 			limit = {
 				exists = scope:ward_2
@@ -3753,7 +3766,7 @@ remove_guardian_interaction = {
 				}
 			}
 		}
-		
+
 		if = {
 			limit = {
 				scope:actor = {
@@ -3848,7 +3861,7 @@ make_child_learn_language_interaction = {
 					exists = employer
 					NOT = { employer = scope:recipient }
 				}
-				
+
 				employer = {
 					save_scope_as = recipient
 				}
@@ -3929,7 +3942,7 @@ make_child_learn_language_interaction = {
 	notification_text = {
 		desc = MAKE_LEARN_LANGUAGE_REQUEST
 	}
-	
+
 	prompt = {
 		desc = SELECT_TARGET_LANGUAGE_SCHEME
 	}
@@ -3948,10 +3961,10 @@ make_child_learn_language_interaction = {
 				is_ai = yes
 			}
 		}
-		
+
 		#AGOT Added, no non-human interactions
 		scope:actor = { is_human = yes }
-		scope:recipient = { is_human = yes }		
+		scope:recipient = { is_human = yes }
 		trigger_if = {
 			limit = {
 				exists = scope:secondary_actor
@@ -4041,12 +4054,24 @@ make_child_learn_language_interaction = {
 				}
 			}
 		}
+		#AGOT Added
+		scope:recipient = {
+			agot_is_available_for_anything = yes
+		}
+		trigger_if = {
+			limit = {
+				exists = scope:secondary_recipient
+			}
+			scope:secondary_recipient = {
+				agot_is_available_for_anything = yes
+			}
+		}
 	}
 
 	can_be_picked = {
 		is_at_home = yes
 	}
-	
+
 	on_accept = {
 		scope:actor = {
 			send_interface_message = {
@@ -4384,17 +4409,17 @@ make_child_learn_language_interaction = {
 	}
 
 	auto_accept = yes
-	
+
 	ai_accept = {
 		base = 100
 	}
-	
+
 	ai_frequency = 24
-	
+
 	ai_targets = {
 		ai_recipients = children
 	}
-	
+
 	ai_potential = {
 		has_ep1_court_positions_dlc_trigger = yes
 		#AGOT Modified
@@ -4406,7 +4431,7 @@ make_child_learn_language_interaction = {
 		}
 		primary_title.tier >= tier_county
 	}
-	
+
 	ai_will_do = {
 		base = 0
 
