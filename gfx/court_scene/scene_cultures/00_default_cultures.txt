@@ -1,7 +1,7 @@
 ﻿byzantine = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		has_ep3_dlc_trigger = yes
-		capital_county = title:c_old_volantis
 		#AGOT Modified
 		#OR = {
 		#	capital_county ?= title:c_byzantion
@@ -28,12 +28,14 @@
 			capital_county = title:c_valyria
 			capital_county = title:c_ilvonys
 			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
 		}
 	}
 }
 
 mediterranean = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		exists = capital_county
 		capital_county.culture = {
 			OR = {
@@ -73,33 +75,32 @@ mediterranean = {
 			capital_county = title:c_casterly_rock
 			capital_county = title:c_dragonstone
 			capital_county = title:c_highgarden
-			capital_county = title:c_valyria
-			capital_county = title:c_ilvonys
-			capital_county = title:c_kastaryia
 			capital_county = title:c_winterfell
 			capital_county = title:c_the_eyrie
 			capital_county = title:c_riverrun
 			capital_county = title:c_storms_end
-			capital_county = title:c_old_volantis
+			capital_county = title:c_valyria
+			capital_county = title:c_ilvonys
+			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
 		}
 	}
 }
 
-mena = {
+steppe = {
 	trigger = {
-		exists = capital_county
-		capital_county.culture = {
-			OR = {
-				has_graphical_mena_culture_group_trigger = yes
-				has_graphical_iranian_culture_group_trigger = yes
-				has_graphical_african_culture_group_trigger = yes
-				has_graphical_steppe_culture_group_trigger = yes
-				AND = {
-					has_graphical_iberian_culture_group_trigger  = yes
-					#AGOT Modified
-					# prev.religion = religion:islam_religion
-					any_parent_culture_or_above = {
-						this = culture:rhoynish
+		has_mpo_dlc_trigger = yes
+		OR = {
+			government_has_flag = government_is_nomadic
+			capital_county ?= {
+				culture = {
+					has_graphical_steppe_culture_group_trigger = yes
+				}
+				title_province ?= {
+					has_holding = yes
+					OR = {
+						has_holding_type = nomad_holding
+						has_holding_type = tribal_holding
 					}
 				}
 			}
@@ -111,20 +112,94 @@ mena = {
 			capital_county = title:c_casterly_rock
 			capital_county = title:c_dragonstone
 			capital_county = title:c_highgarden
-			capital_county = title:c_valyria
-			capital_county = title:c_ilvonys
-			capital_county = title:c_kastaryia
 			capital_county = title:c_winterfell
 			capital_county = title:c_the_eyrie
 			capital_county = title:c_riverrun
 			capital_county = title:c_storms_end
-			capital_county = title:c_old_volantis
+			capital_county = title:c_valyria
+			capital_county = title:c_ilvonys
+			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
+		}
+	}
+}
+
+mena = {
+	trigger = {
+		trigger_if = {
+			limit = {
+				has_mpo_dlc_trigger = no
+			}
+		exists = capital_county
+			capital_county.culture = {
+				OR = {
+				has_graphical_steppe_culture_group_trigger = yes
+					has_graphical_mena_culture_group_trigger = yes
+					has_graphical_iranian_culture_group_trigger = yes
+					has_graphical_african_culture_group_trigger = yes				
+					AND = {
+						has_graphical_iberian_culture_group_trigger  = yes
+						#AGOT Modified
+						#prev.religion = religion:islam_religion
+						any_parent_culture_or_above = {
+							this = culture:rhoynish
+						}
+					}
+				}
+			}
+		}
+		trigger_else = {
+			NOT = { government_has_flag = government_is_nomadic }
+			exists = capital_county
+			OR = {
+				capital_county = {
+					culture = { has_graphical_steppe_culture_group_trigger = yes }
+					title_province ?= {
+						has_holding = yes
+						NOT = {
+							has_holding_type = tribal_holding
+						}
+					}
+				}
+				capital_county.culture = {
+					OR = {
+						has_graphical_mena_culture_group_trigger = yes
+						has_graphical_iranian_culture_group_trigger = yes
+						has_graphical_african_culture_group_trigger = yes
+						AND = {
+							has_graphical_iberian_culture_group_trigger  = yes
+							#AGOT Modified
+							#prev.religion = religion:islam_religion
+							any_parent_culture_or_above = {
+								this = culture:rhoynish
+							}
+						}
+					}
+				}
+			}
+		}
+		#AGOT Added
+		NOT = {
+			capital_county = title:c_kings_landing
+			capital_county = title:c_pyke
+			capital_county = title:c_casterly_rock
+			capital_county = title:c_dragonstone
+			capital_county = title:c_highgarden
+			capital_county = title:c_winterfell
+			capital_county = title:c_the_eyrie
+			capital_county = title:c_riverrun
+			capital_county = title:c_storms_end
+			capital_county = title:c_valyria
+			capital_county = title:c_ilvonys
+			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
 		}
 	}
 }
 
 indian = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		exists = capital_county
 		capital_county.culture = {
 			has_graphical_india_culture_group_trigger = yes
@@ -136,20 +211,21 @@ indian = {
 			capital_county = title:c_casterly_rock
 			capital_county = title:c_dragonstone
 			capital_county = title:c_highgarden
-			capital_county = title:c_valyria
-			capital_county = title:c_ilvonys
-			capital_county = title:c_kastaryia
 			capital_county = title:c_winterfell
 			capital_county = title:c_the_eyrie
 			capital_county = title:c_riverrun
 			capital_county = title:c_storms_end
-			capital_county = title:c_old_volantis
+			capital_county = title:c_valyria
+			capital_county = title:c_ilvonys
+			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
 		}
 	}
 }
 
 western = {
 	trigger = {
+		NOT = { government_has_flag = government_is_nomadic }
 		exists = capital_county
 		#AGOT Modified
 		# capital_county.culture = {
@@ -174,15 +250,14 @@ western = {
 			capital_county = title:c_casterly_rock
 			capital_county = title:c_dragonstone
 			capital_county = title:c_highgarden
-			capital_county = title:c_valyria
-			capital_county = title:c_ilvonys
-			capital_county = title:c_kastaryia
 			capital_county = title:c_winterfell
 			capital_county = title:c_the_eyrie
 			capital_county = title:c_riverrun
 			capital_county = title:c_storms_end
-			capital_county = title:c_old_volantis
+			capital_county = title:c_valyria
+			capital_county = title:c_ilvonys
+			capital_county = title:c_kastaryia
+			#capital_county = title:c_oreos
 		}
 	}
 }
-
