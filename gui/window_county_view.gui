@@ -1897,7 +1897,8 @@ window = {
 
 								onclick = "[GUIBuildingItem.OnClick]"
 								down = "[GUIBuildingItem.IsHighlighted]"
-								enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
+								#AGOT Disabled; This removes the ability to swap out disabled buildings
+								# enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
 
 								tooltip = "[GUIBuildingItem.GetTooltip]"
 
@@ -2288,7 +2289,7 @@ window = {
 
 				vbox = {
 					layoutpolicy_horizontal = expanding
-					minimumsize = { 0 700 }
+					minimumsize = { 0 730 }
 
 					## New Building
 					vbox = {
@@ -2316,16 +2317,16 @@ window = {
 						building_in_vassal_warning_hbox = {}
 
 						text_single = {
-							layoutpolicy_horizontal = shrinking
 							name = "prompt"
+							layoutpolicy_horizontal = shrinking
 							text = "[HoldingView.GetTracksViewPrompt]"
 							margin_bottom = 10
 						}
 
 						text_single = {
+							name = "no_potential_buildings_text"
 							visible = "[IsDataModelEmpty(HoldingView.GetPotentialBuildings)]"
 							layoutpolicy_horizontal = shrinking
-							name = "no_potential_buildings_text"
 							text = "NO_POTENTIAL_BUILDINGS_WARNING"
 							margin_bottom = 10
 						}
@@ -2570,9 +2571,9 @@ window = {
 								name = "upgrade"
 								datacontext = "[HoldingView.GetTrack]"
 								layoutpolicy_horizontal = expanding
-								#minimumsize = { 0 700 }
-								using = Window_Background_Subwindow
 								margin_bottom = 10
+
+								using = Window_Background_Subwindow
 
 								hbox = {
 									layoutpolicy_horizontal = expanding
@@ -2950,26 +2951,27 @@ window = {
 												text_multi = {
 													layoutpolicy_horizontal = expanding
 													layoutpolicy_vertical = expanding
-													margin = { 10 5 }
 													autoresize = yes
-													max_width = 330
-													min_width = 330
+													max_width = 300
+													min_width = 300
 													text = "[GUITrackItem.GetSelectedBuilding.GetDescription]"
+
+													margin = { 15 5 }
 												}
 
 												text_single = {
 													datacontext = "[GUITrackItem.GetSelectedBuilding]"
 													visible = "[InDebugMode]"
-													margin = { 10 5 }
-
 													layoutpolicy_horizontal = expanding
 													text = "BUILDING_DEBUG_FULL"
+
+													margin = { 10 5 }
 												}
 
 												hbox = {
 													visible = "[And( And( Or( GUITrackItem.CanReplace, GUITrackItem.CanCancel ), GUITrackItem.IsCurrentBuildingSelected), Not( GUITrackItem.IsConstructing ) )]"
 													spacing = 10
-													margin_bottom = 5
+													margin_bottom = 10
 
 													text_single = {
 														text = "CURRENT_BUILDING"
@@ -2982,8 +2984,6 @@ window = {
 													visible = "[And(And(GreaterThan_int32(GUITrackItem.GetSelectedBuilding.GetLevel,GUITrackItem.GetCurrentBuilding.GetLevel),GreaterThan_int32(GUITrackItem.GetSelectedBuilding.GetLevel,'(int32)1')), Not(GUITrackItem.IsNextBuildingSelected))]"
 													layoutpolicy_horizontal = expanding
 													margin_left = 10
-													margin_bottom = 5
-													spacing = 5
 
 													text_label_left = {
 														layoutpolicy_horizontal = expanding
@@ -3068,14 +3068,28 @@ window = {
 												layoutpolicy_vertical = expanding
 											}
 
-											text_multi = {
+											scrollbox = {
+												size = { 375 310 }
 												layoutpolicy_horizontal = expanding
 												layoutpolicy_vertical = expanding
-												autoresize = yes
-												max_width = 355
-												min_width = 355
-												text = "[GUITrackItem.GetSelectedBuilding.GetEffectDescriptionAtProvince( Character.Self, HoldingView.GetProvince )]"
-												margin = { 15 10 }
+
+												blockoverride "scrollbox_margins" {}
+
+												blockoverride "scrollbox_background" {}
+
+												blockoverride "scrollbox_background_fade" {}
+
+												blockoverride "scrollbox_content" {
+													text_multi = {
+														layoutpolicy_horizontal = expanding
+														layoutpolicy_vertical = expanding
+														autoresize = yes
+														max_width = 355
+														min_width = 355
+														text = "[GUITrackItem.GetSelectedBuilding.GetEffectDescriptionAtProvince( Character.Self, HoldingView.GetProvince )]"
+														margin = { 5 5 }
+													}
+												}
 											}
 										}
 									}
@@ -3386,7 +3400,8 @@ types CountyViewTypes
 {
 	type widget_building_item = widget {
 		size = { 55 55 }
-		enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
+		#AGOT Disabled; This removes the ability to swap out disabled buildings
+		# enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
 		tooltip = "[GUIBuildingItem.GetTooltip]"
 		using = tooltip_ne
 
