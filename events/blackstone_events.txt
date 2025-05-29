@@ -217,7 +217,7 @@ blackstone.4 = {
                         option = study_type_faith
                     }
                 }
-                trigger_event = (YOUR FIRST FAITH/RELIGION EVENT)
+                #trigger_event = (YOUR FIRST FAITH/RELIGION EVENT)
             }
             else_if = {
                 limit = {
@@ -226,7 +226,7 @@ blackstone.4 = {
                         option = study_type_excavation
                     }
                 }
-                trigger_event = (YOUR FIRST EXCAVATION EVENT)
+                #trigger_event = (YOUR FIRST EXCAVATION EVENT)
             }
             else_if = {
                 limit = {
@@ -235,7 +235,7 @@ blackstone.4 = {
                         option = study_type_occult
                     }
                 }
-                trigger_event = (YOUR FIRST OCCULT EVENT)
+                trigger_event = blackstone.14
             }
         }
     }
@@ -372,7 +372,7 @@ blackstone.6 = {
                     }
                     modifier = {
                         add = 15
-                        has_trait = shy 
+                        has_trait = shy
                     }
                     modifier = {
                         add = 35
@@ -431,11 +431,13 @@ blackstone.8 = {
     option = {
         name = citadel.4
         add_short_term_gold = 300
+        trigger_event = blackstone.13
     }
 
     option = {
         name = citadel.5
         #XP for later dont forget to add it 
+        trigger_event = blackstone.13
     }
 }
 
@@ -559,7 +561,7 @@ blackstone.10 = {
 
     option = {
         citadel.10
-        trigger_event = blackstone
+        trigger_event = blackstone.13
     }
 }
 
@@ -596,6 +598,7 @@ blackstone.11 = {
                         } 
                     }
                     trigger_event = blackstone.12
+                    add_short_term_gold = 300
                 }
                 50 = {
                     title:b_the_citadel = {
@@ -608,6 +611,206 @@ blackstone.11 = {
                 }
             }
         }
+    }
+}
+
+blackstone.12 = {
+    type = character_event
+    title = blackstone.12_t #Stolen GOODS
+    desc = blackstone.12_desc
+
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = scheme
+    }
+
+    option = {
+        name = citadel.13
+        #trigger_event = blackstone.13
+    }
+}
+
+blackstone.14 = {
+    type = character_event
+    title = blackstone.14_t #Choosing the Route of the Occult
+    desc = blackstone.14_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = occult.1 # Obelisk
+        trigger_event = blackstone.15
+    }
+    option = {
+        name = occult.2 #Blood Sacrifice
+
+    }
+
+    option = {
+        name = occult.3 #Dark ones Summoning
+
+        trigger_event = blackstone.17
+    }
+
+    option = {
+        name = occult.4 #Glass Candle
+        trigger = {
+            has_any_artifact = {
+                artifact_type = glass_candle
+            }
+        }
+
+        trigger_event = blackstone.20
+    }
+}
+
+blackstone.15 = {
+    type = character_event
+    title = blackstone.15_t #Obelisk of Death
+    desc = blackstone.15_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    option = {
+        name = occult.5 #Nah im good 
+    }
+
+    option = {
+        name = occult.6 #channelling Power
+        hidden_effect = {
+            70 = {
+                death = {
+                    death_reason = death_consumed_by_demonic_powers
+                }
+            }
+
+            30 = {
+                trigger_event = blackstone.16 #Success
+            }
+        }
+    }
+}
+
+blackstone.16 = {
+    type = character_event
+    title = blackstone.16_t #Success we had a Vision
+    desc = blackstone.16_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = reading
+    }
+
+    option = {
+        name = occult.7 #Great Success 
+        trigger_event = blackstone.13
+        add_prestige = 1200
+    }
+}
+
+blackstone.17 = {
+    type = character_event
+    title = blackstone.17_t #Summoning a Great Dark one
+    desc = blackstone.17_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    option = {
+        name = occult.8
+        add_trait = craven
+    }
+
+    option = {
+        name = occult.9
+        hidden_effect = {
+            random_list = {
+                20 = {
+                    trigger_event = blackstone.18
+                }
+                80 = {
+                    trigger_event = blackstone.19 #Death by Dark one
+                }
+            }
+        }
+    }
+}
+
+blackstone.18 = {
+    type = character_event
+    title = blackstone.18_t #Praise be in his name
+    desc = blackstone.18_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    option = {
+        name = occult.10
+        add_prestige = 1500
+        trigger_event = blackstone.13
+        set_character_religion = eldritch_yellow
+    }
+}
+
+blackstone.19 = {
+    type = character_event
+    title = blackstone.19_t #what have i done
+    desc = blackstone.19_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = crying
+    }
+
+    option = {
+        name = occult.11 #Mind is Eaten by the Yellow signed god
+        death = {
+            death_reason = death_consumed_by_demonic_powers
+        }
+    }
+}
+
+blackstone.20 = {
+    type = character_event
+    title = blackstone.20_t #Visions throught the Candle
+    desc = blackstone.20_desc
+
+    theme = witchcraft
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name = occult.12 #The Glass Candle Lightss the way
+        add_prestige = 2000
+        trigger_event= blackstone.13
     }
 }
 
