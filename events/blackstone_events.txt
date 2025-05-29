@@ -104,10 +104,518 @@ blackstone.2 = {
     }
 }
 
+blackstone.3 = {
+    type = character_event
+    title = blackstone.3_t
+    desc = {
+        first_valid = {
+
+        }
+    } 
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = active.01
+        involved_activity = {
+            if = {
+                limit = {
+                    has_activity_option = { # Do this if you selected the scholar option
+                        category = special
+                        option = study_type_scholarly
+                    }
+                }
+                province:3499 = { # Province 3499 is the Citadel
+                    save_scope_as = study_destination
+                }
+            }
+            else_if = {
+                limit = {
+                    has_activity_option = { # Do this if you selected the religion option
+                        category = special
+                        option = study_type_faith
+                    }
+                    faith = { any_holy_site = {} } # Gotta make sure the faith has any holy sites first
+                }
+                faith = {
+                    random_holy_site = { # Pick any holy random site of our faith to go to
+                        title_province = { save_scope_as = study_destination }
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    has_activity_option = { # Do this if you selected the rock licker option
+                        category = special
+                        option = study_type_excavation
+                    }
+                }
+                random_county = {
+                    limit = { # Must be any of the blackstone counties
+                        OR = {
+                            this = province:9763
+                            this = province:9470
+                            this = province:9434
+                            this = province:9618
+                            this = province:9150
+                            this = province:8223
+                            this = province:9520
+                            this = province:7351
+                            this = province:4415
+                        }
+                    }
+                    title_province = { save_scope_as = study_destination }
+                }
+            }
+            else_if = { # For the occult one we can polish this more later, but for now let's make it the same as the faith
+                limit = {
+                    has_activity_option = { # Do this if you selected the occult option
+                        category = special
+                        option = study_type_occult
+                    }
+                    faith = { any_holy_site = {} } # Gotta make sure the faith has any holy sites first
+                }
+                faith = {
+                    random_holy_site = { # Pick any holy random site of our faith to go to
+                        title_province = { save_scope_as = study_destination }
+                    }
+                }
+            }
+        }
+        start_travel_plan = {
+			destination = scope:study_destination
+			return_trip = yes
+			on_arrival_event = blackstone.4
+		}
+    }
+}
+
+blackstone.4 = {
+    type = character_event
+    hidden = yes
+
+    immediate = {
+        involved_activity = {
+            if = {
+                limit = {
+                    has_activity_option = {
+                        category = special
+                        option = study_type_scholarly
+                    }
+                }
+                trigger_event = blackstone.5
+            }
+            else_if = {
+                limit = {
+                    has_activity_option = {
+                        category = special
+                        option = study_type_faith
+                    }
+                }
+                trigger_event = (YOUR FIRST FAITH/RELIGION EVENT)
+            }
+            else_if = {
+                limit = {
+                    has_activity_option = {
+                        category = special
+                        option = study_type_excavation
+                    }
+                }
+                trigger_event = (YOUR FIRST EXCAVATION EVENT)
+            }
+            else_if = {
+                limit = {
+                    has_activity_option = {
+                        category = special
+                        option = study_type_occult
+                    }
+                }
+                trigger_event = (YOUR FIRST OCCULT EVENT)
+            }
+        }
+    }
+}
+
+blackstone.5 = {
+    type = character_event
+    title = blackstone.5_t #Let me in
+    desc = blackstone.5_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    option = {
+        name = citadel.01 #Pls Sir Can i cum in
+        hidden_effect = {
+            random = {
+                50 = { trigger_event = blackstone.6 }
+                50 = { trigger_event = blackstone.7 }
+            }
+        } 
+    }
+}
+
+blackstone.6 = {
+    type = character_event
+    title = blackstone.6_t #Mone pls
+    desc = blackstone.6_desc
+
+    immediate = {
+        random_living_character = {
+            limit = { has_trait = archmaester }
+            save_scope_as = big_nerd
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    left_portrait = {
+        character = scope:big_nerd
+        animation = page_flipping
+    }
+
+    option = {
+        name = citadel.2
+        hidden_effect = {
+            random_list = {
+                50 = { 
+
+                    trigger_event = blackstone.8
+                    modifier = {
+                        add = 10
+                        has_trait = theologion
+                    }
+                    modifier = {
+                        multiply = 3
+                        has_trait = scholar
+                    }
+                    modifier = {
+                        add = 25
+                        has_trait = shrewd
+                    }
+                    modifier = {
+                        add = 10
+                        has_trait = calm
+                    }
+                    modifier = {
+                        add = 5
+                        has_trait = ambitious
+                    }
+                    modifier = {
+                        multiply = 2
+                        has_trait = diligent
+                    }
+                    modifier = {
+                        add = 20
+                        has_trait = gregarious
+                    }
+                    modifier = {
+                        add = 15
+                        has_trait = honest
+                    }
+                    modifier = {
+                        add = 20
+                        has_trait = patient
+                    }
+                    modifier = {
+                        add = 10
+                        has_trait = temperate
+                    }
+                    modifier = {
+                        add = 10
+                        has_trait = eccentric
+                    }
+                } #Yes
+                50 = {
+                    trigger_event = blackstone.9
+                    modifier = {
+                        add = 15
+                        has_trait = craven
+                    }
+                    modifier = {
+                        multiply = 2
+                        has_trait = wrathful
+                    }
+                    modifier = {
+                        add = 10
+                        has_trait = lustful
+                    }
+                    modifier = {
+                        add = 20
+                        has_trait = content
+                    }
+                    modifier = {
+                        multiply = 2
+                        has_trait = lazy
+                    }
+                    modifier = {
+                        add = 15
+                        has_trait vengeful
+                    }
+                    modifier = {
+                        add = 10
+                        has_trait = greedy
+                    }
+                    modifier = {
+                        add = 15
+                        has_trait = shy 
+                    }
+                    modifier = {
+                        add = 35
+                        has_trait = deceitful
+                    }
+                    modifier = {
+                        add = 15
+                        has_trait = arrogant
+                    }
+                    modifier = {
+                        add = 10
+                        has_trait = sadistic
+                    }
+                    modifier = {
+                        add = 15
+                        has_trait = impatient
+                    }
+                    modifier = {
+                        add = 15
+                        has_trait = cynical
+                    }
+                } #No, fuck you
+            }
+        }
+    }
+
+    option = {
+        name = citadel.3
+        trigger = {
+            learning >= 900
+        }
+        hidden_effect = {
+            trigger_event = blackstone.8
+        }
+    }
+}
+
+blackstone.8 = {
+    type = character_event
+    title = blackstone.8_t #Maester said yes
+    desc = blackstone.8_desc
+
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    left_portrait = {
+        character = scope:big_nerd
+        animation = page_flipping
+    }
+
+    option = {
+        name = citadel.4
+        add_short_term_gold = 300
+    }
+
+    option = {
+        name = citadel.5
+        #XP for later dont forget to add it 
+    }
+}
+
+blackstone.9 = {
+    type = character_event
+    title = blackstone.7_t #NO FUCKA YOU Vol 2
+    desc = blackstone.7_desc
+
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    left_portrait = {
+        character = scope:big_nerd
+        animation = page_flipping
+    }
+
+    option = {
+        name = citadel.9
+        trigger_event = blackstone.10
+    }
+
+    option = {
+        name = citadel.8
+        trigger = {
+            intruige >= 16
+        }
+
+        hidden_effect = {
+            50 = {  #Stole papers and Gold and got hate
+                trigger_event = blackstone.12
+                title:b_the_citadel = {
+                    holder = {
+                        add_opinion = {
+                            modifier = dirty_thief
+                            years = 35
+                            target = ROOT # this is you
+                        }
+                    } 
+                }
+                add_short_term_gold = 300
+            }
+
+
+            50 = { #Got caught and Imprisoned
+                title:b_the_citadel = {
+                    holder = {
+                        imprison = {
+                            target = ROOT # this is you
+                        }
+                    }
+                }
+            } 
+        }
+    }
+}
+
+
+blackstone.7 = {
+    type = character_event
+    title = blackstone.7_t #Turned away at the gate
+    desc = blackstone.7_desc
+
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    left_portrait = {
+        character = scope:big_nerd
+        animation = page_flipping
+    }
+
+    option = {
+        name = citadel.6
+        trigger_event = blackstone.10
+    }
+
+    option = {
+        name = citadel.7
+        trigger = {
+            intruige >= 14
+        }
+
+        hidden_effect = {
+            random_list = {
+                50 = { 
+                    title:b_the_citadel = {
+                        holder = {
+                            imprison = {
+                                target = ROOT # this is you
+                            }
+                        }
+                    } 
+                }
+                50 = { trigger_event = blackstone.11 }
+            }
+        }
+    }
+}
+
+blackstone.10 = {
+    type = character_event
+    title = blackstone.10_t #Rejected and Continuing on
+    desc = blackstone.10_desc
+
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = dancing
+    }
+
+    option = {
+        citadel.10
+        trigger_event = blackstone
+    }
+}
+
+blackstone.11 = {
+    type = character_event
+    title = blackstone.11_t #breaking and Entering
+    desc = blackstone.11_desc
+
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = scheme
+    }
+
+    option = {
+        citadel.11 #No Stealing is Wrong
+        trigger_event = blackstone.10
+    }
+
+    option = {
+        citadel.12
+        hidden_effect = {
+            random_list = {
+                50 = { 
+                    title:b_the_citadel = {
+                        holder = {
+                            add_opinion = {
+                                modifier = dirty_thief
+                                years = 35
+                                target = ROOT # this is you
+                            }
+                        } 
+                    }
+                    trigger_event = blackstone.12
+                }
+                50 = {
+                    title:b_the_citadel = {
+                        holder = {
+                            imprison = {
+                                target = ROOT # this is you
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 ##########################
 
 namespace = bla 
+
+###########################
 
 bla.01 = { #Peasants dont like us meddling
     type = character_event
