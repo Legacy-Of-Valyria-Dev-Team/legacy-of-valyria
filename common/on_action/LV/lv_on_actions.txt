@@ -1,10 +1,259 @@
 ﻿# Legacy of Valyria general on actions
 on_game_start = {
     on_actions = {
+		lv_world_setup
 		lv_titles_setup
 		lv_vassals_setup
 		lv_on_game_start
     }
+}
+
+# World-setup
+lv_world_setup = {
+	on_actions = {
+		lv_valyria_setup
+		lv_ruins_setup
+	}
+}
+
+lv_valyria_setup = {
+	effect = {
+		if = {
+			limit = { has_game_rule = lv_valyria_default }
+			every_county_in_region = {
+				region = world_valyria_mainland
+				add_county_modifier = wasteland_valyria
+			}
+		}
+	}
+}
+
+lv_ruins_setup = {
+	trigger = { NOT = { has_game_rule = lv_colonisation_agot } }
+	effect = {
+		# Set up blockers
+		every_county_in_region = {
+			limit = { title_province = { has_holding_type = ruin_holding } }
+			region = world_valyria_mainland
+			title_province = {
+				# PREDEFINED: Wyrm-Infested Valyrian Mines
+				if = {
+					limit = { lv_valyrian_mine = yes }
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = valyria_mines_01
+					}
+				}
+				else_if = {
+					limit = { lv_dormant_mine = yes }
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = valyria_mines_dormant_01
+					}
+				}
+				# PREDEFINED: Toxic gases for provinces of the Fourteen Flames
+				if = {
+					limit = { lv_is_fourteen_flames = yes }
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = noxious_gases_02_01
+					}
+				}
+
+				# RANDOMLY-GENERATED BLOCKERS
+				if = {
+					limit = { NOT = { has_game_rule = lv_colonisation_lite } }
+
+					# Volcanic fumes (noxious_gases_02_)
+					random = {
+						chance = {
+							value = 15
+							if = {
+								limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
+								multiply = 6
+							}
+							else_if = {
+								limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
+								multiply = 2
+							}
+						}
+						lv_add_blocker_effect = {
+							FORCE = no
+							BLOCKER_BUILDING = noxious_gases_02_01
+						}
+					}
+					# Lingering fumes (noxious_gases_01_)
+					if = {
+						limit = { NOT = { has_building_or_higher = noxious_gases_02_01 } }
+						random = {
+							chance = {
+								value = 15
+								if = {
+									limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
+									value = 100 # Guarantee if neighbor of one of the Fourteen Flames doesn't have the volcanic fumes
+								}
+								else_if = {
+									limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
+									multiply = 6
+								}
+								else = { multiply = 2 }
+							}
+							lv_add_blocker_effect = {
+								FORCE = no
+								BLOCKER_BUILDING = noxious_gases_01_01
+							}
+						}
+					}
+
+					# Unexplored Caves
+					random = {
+						chance = {
+							value = 25
+							if = {
+								limit = { agot_is_mountains_terrain = yes }
+								multiply = 2
+							}
+							if = {
+								limit = { agot_is_cloudforest_terrain = yes }
+								multiply = 1.9
+							}
+							if = {
+								limit = {
+									OR = {
+										agot_is_jungle_terrain = yes
+										agot_is_highlands_terrain = yes
+										agot_is_hills_terrain = yes
+									}
+								}
+								multiply = 1.75
+							}
+							if = {
+								limit = { agot_is_forest_terrain = yes }
+								multiply = 1.5
+							}
+							if = {
+								limit = {
+									OR = {
+										agot_is_the_bog_terrain = yes
+										agot_is_farmlands_terrain = yes
+										agot_is_floodplains_terrain = yes
+									}
+								}
+								multiply = 0.5
+							}
+							if = {
+								limit = { agot_is_urban_terrain = yes }
+								multiply = 0
+							}
+						}
+						lv_add_blocker_effect = {
+							FORCE = no
+							BLOCKER_BUILDING = unexplored_caves_01
+						}
+					}
+
+					# Swamp
+					random = {
+						chance = {
+							value = 25
+							if = {
+								limit = { agot_is_the_bog_terrain = yes }
+								multiply = 3
+							}
+							if = {
+								limit = { agot_is_floodplains_terrain = yes }
+								multiply = 2
+							}
+							if = {
+								limit = { agot_is_cloudforest_terrain = yes }
+								multiply = 1.5
+							}
+							if = {
+								limit = { agot_is_jungle_terrain = yes }
+								multiply = 1.2
+							}
+							if = {
+								limit = { agot_is_farmlands_terrain = yes }
+								multiply = 0.75
+							}
+							if = {
+								limit = { agot_is_plains_terrain = yes }
+								multiply = 0.5
+							}
+							if = {
+								limit = {
+									OR = {
+										agot_is_mountains_terrain = yes
+										agot_is_hills_terrain = yes
+										agot_is_highlands_terrain = yes
+									}
+								}
+								multiply = 0.25
+							}
+							if = {
+								limit = { agot_is_urban_terrain = yes }
+								multiply = 0
+							}
+						}
+						lv_add_blocker_effect = {
+							FORCE = no
+							BLOCKER_BUILDING = swamp_02_01
+						}
+					}
+					if = {
+						limit = { NOT = { has_building_or_higher = swamp_02_01 } }
+						random = {
+							chance = {
+								value = 25
+								if = {
+									limit = { agot_is_the_bog_terrain = yes }
+									multiply = 4 # Pretty much guarantee if a bog has no swamp blocker yet
+								}
+								if = {
+									limit = { agot_is_floodplains_terrain = yes }
+									multiply = 3
+								}
+								if = {
+									limit = { agot_is_cloudforest_terrain = yes }
+									multiply = 2
+								}
+								if = {
+									limit = { agot_is_jungle_terrain = yes }
+									multiply = 1.5
+								}
+								if = {
+									limit = { agot_is_farmlands_terrain = yes }
+									multiply = 0.75
+								}
+								if = {
+									limit = { agot_is_plains_terrain = yes }
+									multiply = 0.5
+								}
+								if = {
+									limit = {
+										OR = {
+											agot_is_mountains_terrain = yes
+											agot_is_hills_terrain = yes
+											agot_is_highlands_terrain = yes
+										}
+									}
+									multiply = 0.25
+								}
+								if = {
+									limit = { agot_is_urban_terrain = yes }
+									multiply = 0
+								}
+							}
+							lv_add_blocker_effect = {
+								FORCE = no
+								BLOCKER_BUILDING = swamp_01_01
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 # Set up title-related stuff here
@@ -534,6 +783,27 @@ lv_on_game_start = {
 			}
 		}
 		title:k_the_basilisk_isles = {
+			if = {
+				limit = { exists = holder }
+				holder = {
+					every_vassal_or_below = {
+						limit = { highest_held_title_tier >= tier_county }
+						if = {
+							limit = { has_dlc_feature = admin_gov }
+							change_government = administrative_government
+						}
+						else = {
+							change_government = republic_government
+						}
+					}
+				}
+				set_variable = {
+					name = years_since_election
+					value = title_held_years
+				}
+			}
+		}
+		title:k_gogossos = {
 			if = {
 				limit = { exists = holder }
 				holder = {
