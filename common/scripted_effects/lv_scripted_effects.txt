@@ -67,9 +67,7 @@ lv_distribute_titles_effect = {
 					limit = { always = $INHERIT_LIEGE_GOVERNMENT$ }
 					lv_distribute_titles_government_parser = { FALLBACK = $GOVERNMENT$ }
 				}
-				else = {
-					change_government = $GOVERNMENT$
-				}
+				else = { change_government = $GOVERNMENT$ }
 			}
 		}
 	}
@@ -247,9 +245,82 @@ lv_add_blocker_effect = {
 			limit = { always = $FORCE$ }
 			add_province_modifier = extra_building_slot
 			add_building = $BLOCKER_BUILDING$
+			lv_set_or_change_blocker_count_effect = yes
 		}
 	}
-	else = { add_building = $BLOCKER_BUILDING$ }
+	else = {
+		add_building = $BLOCKER_BUILDING$
+		lv_set_or_change_blocker_count_effect = yes
+	}
+}
+
+lv_set_or_change_blocker_count_effect = {
+	if = {
+		limit = { NOT = { has_variable = lv_blocker_total } }
+		set_variable = {
+			name = lv_blocker_total
+			value = 1
+		}
+	}
+	else = {
+		change_variable = {
+			name = lv_blocker_total
+			add = 1
+		}
+	}
+	if = {
+		limit = { NOT = { has_variable = lv_blocker_count } }
+		set_variable = {
+			name = lv_blocker_count
+			value = 1
+		}
+	}
+	else = {
+		change_variable = {
+			name = lv_blocker_count
+			add = 1
+		}
+	}
+	lv_recalculate_county_modifiers = yes
+}
+
+lv_blocker_cleared_effect = {
+	if = {
+		limit = {
+			has_variable = lv_blocker_total
+			has_variable = lv_blocker_count
+			var:lv_blocker_count > 1
+		}
+		change_variable = {
+			name = lv_blocker_count
+			subtract = 1
+		}
+	}
+	else = {
+		remove_variable = lv_blocker_total
+		remove_variable = lv_blocker_count
+		lv_recalculate_county_modifiers = yes
+	}
+}
+
+lv_recalculate_county_modifiers = {
+	if = {
+		limit = {
+			has_game_rule = lv_valyria_default
+			geographical_region = world_valyria_mainland
+		}
+		county = {
+			if = {
+				limit = {
+					has_variable = lv_blocker_total
+					has_variable = lv_blocker_count
+				}
+				remove_county_modifier = wasteland_valyria
+				add_county_modifier = wasteland_valyria
+			}
+			else = { remove_county_modifier = wasteland_valyria }
+		}
+	}
 }
 
 # Savi's effect
