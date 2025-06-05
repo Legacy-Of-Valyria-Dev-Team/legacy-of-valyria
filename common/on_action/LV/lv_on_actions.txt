@@ -36,6 +36,81 @@ lv_ruins_setup = {
 			limit = { title_province = { has_holding_type = ruin_holding } }
 			region = world_valyria_mainland
 			title_province = {
+				# PREDEFINED: Significant Ruined Holdings
+				if = { # Large
+					limit = {
+						OR = {
+							county = title:c_valyria
+							county = title:c_ilvonys
+							county = title:c_kastaryia
+							county = title:c_oreos
+						}
+					}
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = large_ruined_holding_01
+					}
+				}
+				else_if = { # Medium
+					limit = {
+						OR = {
+							lv_is_fourteen_flames = yes
+							has_special_building = yes
+							has_special_building_slot = yes
+							county = {
+								any_neighboring_county = {
+									any_county_province = {
+										OR = {
+											county = title:c_valyria
+											county = title:c_ilvonys
+											county = title:c_kastaryia
+											county = title:c_oreos
+										}
+									}
+								}
+							}
+						}
+					}
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = medium_ruined_holding_01
+					}
+				}
+				else_if = {
+					limit = {
+						OR = {
+							empire ?= title:e_valyria
+							county = title:c_dravathor
+							county = title:c_volandrys
+							county = {
+								any_neighboring_county = {
+									OR = {
+										any_county_province = {
+											lv_is_fourteen_flames = yes
+											has_special_building = yes
+											has_special_building_slot = yes
+										}
+										any_neighboring_county = {
+											any_county_province = {
+												OR = {
+													county = title:c_valyria
+													county = title:c_ilvonys
+													county = title:c_kastaryia
+													county = title:c_oreos
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = small_ruined_holding_01
+					}
+				}
+
 				# PREDEFINED: Wyrm-Infested Valyrian Mines
 				if = {
 					limit = { lv_valyrian_mine = yes }
@@ -62,19 +137,26 @@ lv_ruins_setup = {
 
 				# RANDOMLY-GENERATED BLOCKERS
 				if = {
-					limit = { NOT = { has_game_rule = lv_colonisation_lite } }
+					limit = {
+						NOT = {
+							has_game_rule = lv_colonisation_lite
+							has_building_or_higher = noxious_gases_02_01
+						}
+					}
 
 					# Volcanic fumes (noxious_gases_02_)
 					random = {
 						chance = {
 							value = 15
-							if = {
-								limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
-								multiply = 6
-							}
-							else_if = {
-								limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
-								multiply = 2
+							county = {
+								if = {
+									limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
+									multiply = 6
+								}
+								else_if = {
+									limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
+									multiply = 2
+								}
 							}
 						}
 						lv_add_blocker_effect = {
@@ -88,15 +170,17 @@ lv_ruins_setup = {
 						random = {
 							chance = {
 								value = 15
-								if = {
-									limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
-									value = 100 # Guarantee if neighbor of one of the Fourteen Flames doesn't have the volcanic fumes
+								county = {
+									if = {
+										limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
+										value = 100 # Guarantee if neighbor of one of the Fourteen Flames doesn't have the volcanic fumes
+									}
+									else_if = {
+										limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
+										multiply = 6
+									}
+									else = { multiply = 2 }
 								}
-								else_if = {
-									limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
-									multiply = 6
-								}
-								else = { multiply = 2 }
 							}
 							lv_add_blocker_effect = {
 								FORCE = no
@@ -248,6 +332,74 @@ lv_ruins_setup = {
 								FORCE = no
 								BLOCKER_BUILDING = swamp_01_01
 							}
+						}
+					}
+
+					# Stonemen Encampment
+					random = {
+						chance = {
+							value = 25
+							if = {
+								limit = { empire ?= title:e_valyria }
+								multiply = 0
+							}
+							if = {
+								limit = {
+									OR = {
+										has_building_or_higher = noxious_gases_01_01
+										has_building_or_higher = noxious_gases_02_01
+									}
+								}
+								divide = 2
+							}
+							if = {
+								limit = {
+									OR = {
+										has_building_or_higher = swamp_01_01
+										has_building_or_higher = swamp_02_01
+										has_building_or_higher = lv_floods_01
+									}
+								}
+								multiply = 3
+							}
+						}
+						lv_add_blocker_effect = {
+							FORCE = no
+							BLOCKER_BUILDING = stonemen_encampment_01
+						}
+					}
+
+					# Bandit Camps
+					random = {
+						chance = {
+							value = 25
+							if = {
+								limit = {
+									OR = {
+										has_building_or_higher = noxious_gases_01_01
+										has_building_or_higher = noxious_gases_02_01
+									}
+								}
+								multiply = 0
+							}
+							if = {
+								limit = { has_building_or_higher = unexplored_caves_01 }
+								multiply = 2
+							}
+							if = {
+								limit = {
+									OR = {
+										has_building_or_higher = swamp_01_01
+										has_building_or_higher = swamp_02_01
+										has_building_or_higher = lv_floods_01
+									}
+								}
+								divide = 2
+							}
+						}
+						lv_add_blocker_effect = {
+							FORCE = no
+							BLOCKER_BUILDING = bandit_camps_01
 						}
 					}
 				}

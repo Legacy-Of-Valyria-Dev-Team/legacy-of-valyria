@@ -30,7 +30,16 @@ lv_abandon_settlement = {
 	}
 
 	on_accept = {
-		scope:actor = { lv_abandon_settlement_effect = { COUNTY = scope:target } }
+		scope:actor = {
+			lv_abandon_settlement_effect = { COUNTY = scope:target }
+			if = {
+				limit = { is_ruler = no }
+				create_landless_adventurer_title_effect = {
+					REASON = flag:voluntary
+					FLAVOR_CHAR = scope:recipient
+				}
+			}
+		}
 	}
 
 	ai_will_do = { base = 150 }
