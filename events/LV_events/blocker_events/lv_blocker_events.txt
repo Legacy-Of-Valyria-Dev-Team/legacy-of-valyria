@@ -1,9 +1,56 @@
-﻿namespace = lv_blocker_clearance
+﻿# Scripted Triggers and Effects
+scripted_trigger lv_has_blocker_swamp = {
+	OR = {
+		has_building_or_higher = swamp_01_03
+		has_building_or_higher = swamp_02_03
+	}
+}
+
+scripted_trigger lv_has_blocker_noxious_gases = {
+	OR = {
+		has_building_or_higher = noxious_gases_01_03
+		has_building_or_higher = noxious_gases_02_03
+	}
+}
+
+scripted_trigger lv_blocker_stewardship_challenge = {
+	OR = {
+		lv_has_blocker_swamp = yes
+		has_building_or_higher = lv_floods_03
+		lv_has_blocker_noxious_gases = yes
+	}
+}
+
+scripted_trigger lv_blocker_martial_challenge = {
+	OR = {
+		has_building_or_higher = stonemen_encampment_03
+		has_building_or_higher = bandit_camps_03
+	}
+}
+
+scripted_trigger lv_blocker_diplomacy_challenge = { has_building_or_higher = bandit_camps_03 }
+
+namespace = lv_blocker_clearance
 
 # Directory
 # lv_blocker_clearance.0001 - Successful clearance
-# lv_blocker_clearance.0002 - Hard reset
-# lv_blocker_clearance.0003 - Challenge event
+# lv_blocker_clearance.0002 - Challenge event
+# lv_blocker_clearance.0003 - Success (Leads back to 0001)
+# lv_blocker_clearance.0004 - Failure (Resets back to either 2nd level or 1st)
+
+# lv_blocker_clearance.0011 - Swamp: Challenge event
+
+# lv_blocker_clearance.0021 - Floods: Challenge event
+
+# lv_blocker_clearance.0031 - Noxious Gases: Challenge event
+# lv_blocker_clearance.0032 - Noxious Gases: Failure
+# lv_blocker_clearance.0033 - Noxious Gases: Critical Failure (Hard Reset)
+# lv_blocker_clearance.0034 - Noxious Gases: Success
+# lv_blocker_clearance.0035 - Noxious Gases: Critical Success (Guaranteed Reward)
+
+# lv_blocker_clearance.0041 - Stonemen Encampment: Challenge event
+
+# lv_blocker_clearance.0051 - Bandit Camps: Challenge event
 
 # Successful clearance
 lv_blocker_clearance.0001 = {
@@ -24,10 +71,7 @@ lv_blocker_clearance.0001 = {
 					trigger = {
 						scope:blocker_province = {
 							has_variable = blocker_outcome
-							OR = {
-								has_building_or_higher = swamp_01_03
-								has_building_or_higher = swamp_02_03
-							}
+							lv_has_blocker_swamp = yes
 						}
 					}
 					desc = lv_blocker_clearance.0001.t.swamp.reward
@@ -45,10 +89,7 @@ lv_blocker_clearance.0001 = {
 					trigger = {
 						scope:blocker_province = {
 							has_variable = blocker_outcome
-							OR = {
-								has_building_or_higher = noxious_gases_01_03
-								has_building_or_higher = noxious_gases_02_03
-							}
+							lv_has_blocker_noxious_gases = yes
 						}
 					}
 					desc = lv_blocker_clearance.0001.t.noxious_gases.reward
@@ -98,14 +139,7 @@ lv_blocker_clearance.0001 = {
 					desc = lv_blocker_clearance.0001.t.unexplored_caves
 				}
 				triggered_desc = {
-					trigger = {
-						scope:blocker_province = {
-							OR = {
-								has_building_or_higher = swamp_01_03
-								has_building_or_higher = swamp_02_03
-							}
-						}
-					}
+					trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
 					desc = lv_blocker_clearance.0001.t.swamp
 				}
 				triggered_desc = {
@@ -113,14 +147,7 @@ lv_blocker_clearance.0001 = {
 					desc = lv_blocker_clearance.0001.t.floods
 				}
 				triggered_desc = {
-					trigger = {
-						scope:blocker_province = {
-							OR = {
-								has_building_or_higher = noxious_gases_01_03
-								has_building_or_higher = noxious_gases_02_03
-							}
-						}
-					}
+					trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
 					desc = lv_blocker_clearance.0001.t.noxious_gases
 				}
 				triggered_desc = {
@@ -155,14 +182,7 @@ lv_blocker_clearance.0001 = {
 				desc = lv_blocker_clearance.0001.desc.unexplored_caves
 			}
 			triggered_desc = {
-				trigger = {
-					scope:blocker_province = {
-						OR = {
-							has_building_or_higher = swamp_01_03
-							has_building_or_higher = swamp_02_03
-						}
-					}
-				}
+				trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
 				desc = lv_blocker_clearance.0001.desc.swamp
 			}
 			triggered_desc = {
@@ -170,14 +190,7 @@ lv_blocker_clearance.0001 = {
 				desc = lv_blocker_clearance.0001.desc.floods
 			}
 			triggered_desc = {
-				trigger = {
-					scope:blocker_province = {
-						OR = {
-							has_building_or_higher = noxious_gases_01_03
-							has_building_or_higher = noxious_gases_02_03
-						}
-					}
-				}
+				trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
 				desc = lv_blocker_clearance.0001.desc.noxious_gases
 			}
 			triggered_desc = {
@@ -214,15 +227,7 @@ lv_blocker_clearance.0001 = {
 				desc = lv_blocker_clearance.0001.desc.unexplored_caves.dragon_egg
 			}
 			triggered_desc = {
-				trigger = {
-					scope:blocker_province = {
-						var:blocker_outcome ?= flag:dragon_egg
-						OR = {
-							has_building_or_higher = swamp_01_03
-							has_building_or_higher = swamp_02_03
-						}
-					}
-				}
+				trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
 				desc = lv_blocker_clearance.0001.desc.swamp.dragon_egg
 			}
 			triggered_desc = {
@@ -238,10 +243,7 @@ lv_blocker_clearance.0001 = {
 				trigger = {
 					scope:blocker_province = {
 						var:blocker_outcome ?= flag:dragon_egg
-						OR = {
-							has_building_or_higher = noxious_gases_01_03
-							has_building_or_higher = noxious_gases_02_03
-						}
+						lv_has_blocker_noxious_gases = yes
 					}
 				}
 				desc = lv_blocker_clearance.0001.desc.noxious_gases.dragon_egg
@@ -288,15 +290,7 @@ lv_blocker_clearance.0001 = {
 					desc = lv_blocker_clearance.0001.desc.unexplored_caves.gold_high
 				}
 				triggered_desc = {
-					trigger = {
-						scope:blocker_province = {
-							var:blocker_outcome ?= flag:gold_high
-							OR = {
-								has_building_or_higher = swamp_01_03
-								has_building_or_higher = swamp_02_03
-							}
-						}
-					}
+					trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
 					desc = lv_blocker_clearance.0001.desc.swamp.gold_high
 				}
 				triggered_desc = {
@@ -312,10 +306,7 @@ lv_blocker_clearance.0001 = {
 					trigger = {
 						scope:blocker_province = {
 							var:blocker_outcome ?= flag:gold_high
-							OR = {
-								has_building_or_higher = noxious_gases_01_03
-								has_building_or_higher = noxious_gases_02_03
-							}
+							lv_has_blocker_noxious_gases = yes
 						}
 					}
 					desc = lv_blocker_clearance.0001.desc.noxious_gases.gold_high
@@ -373,10 +364,7 @@ lv_blocker_clearance.0001 = {
 					trigger = {
 						scope:blocker_province = {
 							var:blocker_outcome ?= flag:gold_low
-							OR = {
-								has_building_or_higher = swamp_01_03
-								has_building_or_higher = swamp_02_03
-							}
+							lv_has_blocker_swamp = yes
 						}
 					}
 					desc = lv_blocker_clearance.0001.desc.swamp.gold_low
@@ -394,10 +382,7 @@ lv_blocker_clearance.0001 = {
 					trigger = {
 						scope:blocker_province = {
 							var:blocker_outcome ?= flag:gold_low
-							OR = {
-								has_building_or_higher = noxious_gases_01_03
-								has_building_or_higher = noxious_gases_02_03
-							}
+							lv_has_blocker_noxious_gases = yes
 						}
 					}
 					desc = lv_blocker_clearance.0001.desc.noxious_gases.gold_low
@@ -461,14 +446,7 @@ lv_blocker_clearance.0001 = {
 		reference = agot_dragonstone_cave
 	}
 	override_background = {
-		trigger = {
-			scope:blocker_province = {
-				OR = {
-					has_building_or_higher = swamp_01_03
-					has_building_or_higher = swamp_02_03
-				}
-			}
-		}
+		trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
 		reference = agot_taiga_bog
 	}
 	override_background = {
@@ -476,14 +454,11 @@ lv_blocker_clearance.0001 = {
 		reference = wilderness_wetlands
 	}
 	override_background = {
-		trigger = {
-			scope:blocker_province = {
-				OR = {
-					has_building_or_higher = noxious_gases_01_03
-					has_building_or_higher = noxious_gases_02_03
-				}
-			}
-		}
+		trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
+		reference = battlefield
+	}
+	override_background = {
+		trigger = { scope:blocker_province = { has_building_or_higher = stonemen_encampment_03 } }
 		reference = battlefield
 	}
 	override_background = {
@@ -574,6 +549,1008 @@ lv_blocker_clearance.0001 = {
 			hidden_effect = {
 				lv_blocker_cleared_effect = yes
 				remove_variable = blocker_outcome
+			}
+		}
+	}
+}
+
+# Challenge event
+lv_blocker_clearance.0002 = {
+	type = character_event
+	title = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
+				desc = lv_blocker_clearance.0002.t.swamp
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { has_building_or_higher = lv_floods_03 } }
+				desc = lv_blocker_clearance.0002.t.floods
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
+				desc = lv_blocker_clearance.0002.t.noxious_gases
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { has_building_or_higher = stonemen_encampment_03 } }
+				desc = lv_blocker_clearance.0002.t.stonemen
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+				desc = lv_blocker_clearance.0002.t.bandit_camps
+			}
+			# Generic challenge title here
+			# desc = lv_blocker_clearance.0002.t.generic
+		}
+	}
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
+				desc = lv_blocker_clearance.0002.desc.swamp
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { has_building_or_higher = lv_floods_03 } }
+				desc = lv_blocker_clearance.0002.desc.floods
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
+				desc = lv_blocker_clearance.0002.desc.noxious_gases
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { has_building_or_higher = stonemen_encampment_03 } }
+				desc = lv_blocker_clearance.0002.desc.stonemen
+			}
+			triggered_desc = {
+				trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+				desc = lv_blocker_clearance.0002.desc.bandit_camps
+			}
+			# Generic desc here
+			# desc = lv_blocker_clearance.0002.desc.generic
+		}
+	}
+	theme = realm
+
+	right_portrait = {
+		character = root
+		scripted_animation = {
+			triggered_animation = {
+				trigger = { scope:blocker_province = { has_variable = blocker_outcome } }
+				animation = { happiness }
+			}
+			animation = idle
+		}
+	}
+
+	override_background = {
+		trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
+		reference = agot_taiga_bog
+	}
+	override_background = {
+		trigger = { scope:blocker_province = { has_building_or_higher = lv_floods_03 } }
+		reference = wilderness_wetlands
+	}
+	override_background = {
+		trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
+		reference = battlefield
+	}
+	override_background = {
+		trigger = { scope:blocker_province = { has_building_or_higher = stonemen_encampment_03 } }
+		reference = battlefield
+	}
+	override_background = {
+		trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+		reference = ep2_hunt_poachers_camp
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				scope:blocker_province = { lv_blocker_stewardship_challenge = yes }
+				has_councillor_for_skill = stewardship
+			}
+			random_stewardship_councillor = { save_scope_as = first_councillor }
+		}
+		else_if = {
+			limit = {
+				scope:blocker_province = { lv_blocker_martial_challenge = yes }
+				has_councillor_for_skill = martial
+			}
+			random_stewardship_councillor = {
+				if = {
+					limit = { exists = scope:first_councillor }
+					save_scope_as = second_councillor
+				}
+				else = { save_scope_as = first_councillor }
+			}
+		}
+		else_if = {
+			limit = {
+				scope:blocker_province = { lv_blocker_diplomacy_challenge = yes }
+				has_councillor_for_skill = diplomacy
+			}
+			random_stewardship_councillor = {
+				if = {
+					limit = { exists = scope:first_councillor }
+					save_scope_as = second_councillor
+				}
+				else = { save_scope_as = first_councillor }
+			}
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = {
+			trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
+			text = lv_blocker_clearance.0002.a.swamp
+		}
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = lv_floods_03 } }
+			text = lv_blocker_clearance.0002.a.floods
+		}
+		name = {
+			trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
+			text = lv_blocker_clearance.0002.a.noxious_gases
+		}
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = stonemen_encampment_03 } }
+			text = lv_blocker_clearance.0002.a.stonemen
+		}
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+			text = lv_blocker_clearance.0002.a.bandit_camps
+		}
+		# Generic desc here
+		# desc = lv_blocker_clearance.0002.a.generic
+
+		scope:blocker_province = {
+			if = {
+				limit = { lv_blocker_stewardship_challenge = yes }
+				root = {
+					duel = {
+						skill = stewardship
+						value = high_skill_rating
+						10 = {
+							compare_modifier = {
+								value = scope:duel_value
+								multiplier = 3.5
+								min = 2
+							}
+							desc = reinforce_soldiers_skill_success
+							root = { trigger_event = lv_blocker_clearance.0001 }
+						}
+						10 = {
+							compare_modifier = {
+								value = scope:duel_value
+								multiplier = -3.5
+								min = 2
+							}
+							desc = reinforce_soldiers_skill_failure
+							# Failure event
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:first_councillor }
+		name = {
+			trigger = { scope:blocker_province = { lv_has_blocker_swamp = yes } }
+			text = lv_blocker_clearance.0002.b.swamp
+		}
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = lv_floods_03 } }
+			text = lv_blocker_clearance.0002.b.floods
+		}
+		name = {
+			trigger = { scope:blocker_province = { lv_has_blocker_noxious_gases = yes } }
+			text = lv_blocker_clearance.0002.b.noxious_gases
+		}
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = stonemen_encampment_03 } }
+			text = lv_blocker_clearance.0002.b.stonemen
+		}
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+			text = lv_blocker_clearance.0002.b.bandit_camps
+		}
+		# Generic desc here
+		# desc = lv_blocker_clearance.0002.b.generic
+
+		scope:blocker_province = {
+			if = {
+				limit = { lv_blocker_stewardship_challenge = yes }
+				scope:first_councillor = {
+					duel = {
+						skill = stewardship
+						value = high_skill_rating
+						10 = {
+							compare_modifier = {
+								value = scope:duel_value
+								multiplier = 3.5
+								min = 2
+							}
+							desc = reinforce_soldiers_skill_success
+							trigger_event = lv_blocker_clearance.0001
+						}
+						10 = {
+							compare_modifier = {
+								value = scope:duel_value
+								multiplier = -3.5
+								min = 2
+							}
+							desc = reinforce_soldiers_skill_failure
+							# Failure event
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Ruler performs the second skill check
+	option = {
+		trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+			text = lv_blocker_clearance.0002.c.bandit_camps
+		}
+
+		scope:second_councillor = {
+			duel = {
+				skill = diplomacy
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					trigger_event = lv_blocker_clearance.0001
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+				}
+			}
+		}
+	}
+
+	# Councilor B performs the second skill check
+	option = {
+		trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+		name = {
+			trigger = { scope:blocker_province = { has_building_or_higher = bandit_camps_03 } }
+			text = lv_blocker_clearance.0002.d.bandit_camps
+		}
+
+		scope:second_councillor = {
+			if = {
+				limit = { lv_blocker_diplomacy_challenge = yes }
+				scope:first_councillor = {
+					duel = {
+						skill = diplomacy
+						value = high_skill_rating
+						10 = {
+							compare_modifier = {
+								value = scope:duel_value
+								multiplier = 3.5
+								min = 2
+							}
+							desc = reinforce_soldiers_skill_success
+							trigger_event = lv_blocker_clearance.0001
+						}
+						10 = {
+							compare_modifier = {
+								value = scope:duel_value
+								multiplier = -3.5
+								min = 2
+							}
+							desc = reinforce_soldiers_skill_failure
+							# Failure event
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# Swamp: Challenge
+lv_blocker_clearance.0011 = {
+	type = character_event
+	title = lv_blocker_clearance.0011.t
+	desc = lv_blocker_clearance.0011.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	override_background = agot_taiga_bog
+
+	immediate = {
+		if = {
+			limit = { has_councillor_for_skill = stewardship }
+			random_stewardship_councillor = { save_scope_as = councillor }
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = lv_blocker_clearance.0011.a
+		duel = {
+			skill = stewardship
+			value = high_skill_rating
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_success
+				root = { trigger_event = lv_blocker_clearance.0001 }
+			}
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_failure
+				# Failure event
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:councillor }
+		name = lv_blocker_clearance.0011.b
+		scope:councillor = {
+			duel = {
+				skill = stewardship
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					trigger_event = lv_blocker_clearance.0001
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+				}
+			}
+		}
+	}
+}
+
+# Floods: Challenge
+lv_blocker_clearance.0021 = {
+	type = character_event
+	title = lv_blocker_clearance.0021.t
+	desc = lv_blocker_clearance.0021.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	override_background = wilderness_wetlands
+
+	immediate = {
+		if = {
+			limit = { has_councillor_for_skill = stewardship }
+			random_stewardship_councillor = { save_scope_as = councillor }
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = lv_blocker_clearance.0021.a
+		duel = {
+			skill = stewardship
+			value = high_skill_rating
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_success
+				root = { trigger_event = lv_blocker_clearance.0001 }
+			}
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_failure
+				# Failure event
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:councillor }
+		name = lv_blocker_clearance.0021.b
+		scope:councillor = {
+			duel = {
+				skill = stewardship
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					trigger_event = lv_blocker_clearance.0001
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+				}
+			}
+		}
+	}
+}
+
+# Noxious Gases: Challenge
+lv_blocker_clearance.0031 = {
+	type = character_event
+	title = lv_blocker_clearance.0031.t
+	desc = lv_blocker_clearance.0031.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	override_background = battlefield
+
+	immediate = {
+		if = {
+			limit = { has_councillor_for_skill = stewardship }
+			random_stewardship_councillor = { save_scope_as = councillor }
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = lv_blocker_clearance.0031.a
+		save_scope_as = challenger
+		duel = {
+			skill = stewardship
+			value = high_skill_rating
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_success
+				random_list = {
+					50 = { trigger_event = lv_blocker_clearance.0034 } # Success
+					50 = { trigger_event = lv_blocker_clearance.0035 } # Critical Success
+				}
+			}
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_failure
+				random_list = {
+					50 = { trigger_event = lv_blocker_clearance.0032 } # Failure
+					50 = { trigger_event = lv_blocker_clearance.0033 } # Critical Failure
+				}
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:councillor }
+		name = lv_blocker_clearance.0031.b
+		scope:councillor = {
+			save_scope_as = challenger
+			duel = {
+				skill = stewardship
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					root = {
+						random_list = {
+							50 = { trigger_event = lv_blocker_clearance.0034 } # Success
+							50 = { trigger_event = lv_blocker_clearance.0035 } # Critical Success
+						}
+					}
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+					# Revise
+					root = {
+						random_list = {
+							50 = { trigger_event = lv_blocker_clearance.0032 } # Failure
+							50 = { trigger_event = lv_blocker_clearance.0033 } # Critical Failure
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# Noxious Gases: Failure
+lv_blocker_clearance.0032 = {
+	type = character_event
+	title = lv_blocker_clearance.0032.t
+	desc = {
+		desc = lv_blocker_clearance.0032.desc
+		triggered_desc = {
+			trigger = {
+				scope:challenger ?= {
+					this = root
+					has_trait = ill
+				}
+			}
+			desc = lv_blocker_clearance.0032.desc.illness.self
+		}
+		triggered_desc = {
+			trigger = {
+				scope:challenger ?= {
+					this = scope:councillor
+					has_trait = ill
+				}
+			}
+			desc = lv_blocker_clearance.0032.desc.illness.councillor
+		}
+	}
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = worry
+	}
+
+	override_background = battlefield
+
+	# Challenger has a chance of becoming ill
+	immediate = {
+		scope:challenger = {
+			random = {
+				chance = { # Add more modifiers
+					value = 25
+				}
+				add_trait = ill
+			}
+		}
+	}
+
+	option = {
+		name = lv_blocker_clearance.0032.a
+		add_prestige = medium_prestige_loss
+	}
+
+	after = {
+		scope:blocker_province = {
+			if = {
+				limit = { has_building = noxious_gases_01_03 }
+				remove_building = noxious_gases_01_03
+				add_building = noxious_gases_01_02
+			}
+			if = {
+				limit = { has_building = noxious_gases_02_03 }
+				remove_building = noxious_gases_02_03
+				add_building = noxious_gases_02_02
+			}
+			hidden_effect = { remove_variable = blocker_outcome }
+		}
+	}
+}
+
+# Noxious Gases: Critical Failure (Hard Reset)
+# Note to self: Set an immediate with a chance of starting a plague, then add additional triggered desc to main text body
+lv_blocker_clearance.0033 = {
+	type = character_event
+	title = lv_blocker_clearance.0033.t
+	desc = lv_blocker_clearance.0033.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = stress
+	}
+
+	override_background = battlefield
+
+	# Chance of starting an outbreak
+	#immediate = {
+	#	create_epidemic_outbreak = {
+	#		type = smallpox
+	#		intensity = major
+	#		save_scope_as = new_epidemic # optional
+	#	}
+	#}
+
+	option = {
+		name = lv_blocker_clearance.0033.a
+		add_prestige = major_prestige_loss
+	}
+
+	after = {
+		scope:blocker_province = {
+			if = {
+				limit = { has_building = noxious_gases_01_03 }
+				remove_building = noxious_gases_01_03
+				add_building = noxious_gases_01_01
+			}
+			if = {
+				limit = { has_building = noxious_gases_02_03 }
+				remove_building = noxious_gases_02_03
+				add_building = noxious_gases_02_01
+			}
+			hidden_effect = { remove_variable = blocker_outcome }
+		}
+	}
+}
+
+# Noxious Gases: Success
+lv_blocker_clearance.0034 = {
+	type = character_event
+	title = lv_blocker_clearance.0034.t
+	desc = {
+		desc = lv_blocker_clearance.0034.desc
+		triggered_desc = {
+			trigger = {
+				scope:challenger ?= {
+					this = root
+					has_trait = ill
+				}
+			}
+			desc = lv_blocker_clearance.0034.desc.illness.self
+		}
+		triggered_desc = {
+			trigger = {
+				scope:challenger ?= {
+					this = scope:councillor
+					has_trait = ill
+				}
+			}
+			desc = lv_blocker_clearance.0034.desc.illness.councillor
+		}
+	}
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = happiness
+	}
+
+	override_background = battlefield
+
+	# Challenger has a chance of becoming ill
+	immediate = {
+		scope:challenger = {
+			random = {
+				chance = { # Add more modifiers
+					value = 25
+				}
+				add_trait = ill
+			}
+		}
+	}
+
+	option = {
+		name = lv_blocker_clearance.0034.a
+		add_prestige = medium_prestige_gain
+	}
+
+	after = { trigger_event = lv_blocker_clearance.0001 }
+}
+
+# Noxious Gases: Critical Success
+lv_blocker_clearance.0035 = {
+	type = character_event
+	title = lv_blocker_clearance.0035.t
+	desc = lv_blocker_clearance.0035.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = ecstasy
+	}
+
+	override_background = battlefield
+
+	option = {
+		name = lv_blocker_clearance.0035.a
+		add_prestige = major_prestige_gain
+	}
+
+	after = {
+		scope:blocker_province = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+			}
+		}
+		trigger_event = lv_blocker_clearance.0001
+	}
+}
+
+# Stonemen: Challenge
+lv_blocker_clearance.0041 = {
+	type = character_event
+	title = lv_blocker_clearance.0041.t
+	desc = lv_blocker_clearance.0041.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	override_background = battlefield
+
+	immediate = {
+		if = {
+			limit = { has_councillor_for_skill = martial }
+			random_martial_councillor = { save_scope_as = councillor }
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = lv_blocker_clearance.0041.a
+		duel = {
+			skill = martial
+			value = high_skill_rating
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_success
+				root = { trigger_event = lv_blocker_clearance.0001 }
+			}
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_failure
+				# Failure event
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:councillor }
+		name = lv_blocker_clearance.0041.b
+		scope:councillor = {
+			duel = {
+				skill = martial
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					trigger_event = lv_blocker_clearance.0001
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+				}
+			}
+		}
+	}
+}
+
+# Bandit Camps: Challenge
+lv_blocker_clearance.0051 = {
+	type = character_event
+	title = lv_blocker_clearance.0051.t
+	desc = lv_blocker_clearance.0051.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	override_background = ep2_hunt_poachers_camp
+
+	immediate = {
+		if = {
+			limit = { has_councillor_for_skill = martial }
+			random_martial_councillor = { save_scope_as = martial_councillor }
+		}
+		if = {
+			limit = { has_councillor_for_skill = diplomacy }
+			random_diplomacy_councillor = { save_scope_as = diplomacy_councillor }
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = lv_blocker_clearance.0051.a
+		duel = {
+			skill = martial
+			value = high_skill_rating
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_success
+				root = { trigger_event = lv_blocker_clearance.0001 }
+			}
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_failure
+				# Failure event
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:martial_councillor }
+		name = lv_blocker_clearance.0051.b
+		scope:martial_councillor = {
+			duel = {
+				skill = martial
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					trigger_event = lv_blocker_clearance.0001
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+				}
+			}
+		}
+	}
+
+	# Ruler performs the skill check
+	option = {
+		name = lv_blocker_clearance.0051.c
+		duel = {
+			skill = diplomacy
+			value = high_skill_rating
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_success
+				root = { trigger_event = lv_blocker_clearance.0001 }
+			}
+			10 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = 2
+				}
+				desc = reinforce_soldiers_skill_failure
+				# Failure event
+			}
+		}
+	}
+
+	# Councilor A performs the skill check
+	option = {
+		trigger = { exists = scope:diplomacy_councillor }
+		name = lv_blocker_clearance.0051.d
+		scope:diplomacy_councillor = {
+			duel = {
+				skill = martial
+				value = high_skill_rating
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = 3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_success
+					trigger_event = lv_blocker_clearance.0001
+				}
+				10 = {
+					compare_modifier = {
+						value = scope:duel_value
+						multiplier = -3.5
+						min = 2
+					}
+					desc = reinforce_soldiers_skill_failure
+					# Failure event
+				}
 			}
 		}
 	}
