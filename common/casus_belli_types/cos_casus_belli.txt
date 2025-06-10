@@ -1,0 +1,63 @@
+﻿cos_spider_ambush_cb = {
+	group = ambush
+	#ai_only_against_neighbors = yes
+
+	target_titles = all
+	target_title_tier = all
+	target_top_liege_if_outside_realm = no
+	on_declaration = {
+		on_declared_war = yes
+	}
+
+	# Root is the title
+	# scope:attacker is the attacker
+	# scope:defender is the defender
+
+	transfer_behavior = transfer
+	on_victory_desc = {}
+	on_white_peace_desc = {}
+	on_defeat_desc = {}
+	on_invalidated_desc = {}
+	on_invalidated = {
+		war = {end_war = defender}
+	}
+	on_defeat = {
+		scope:attacker = {
+			trigger_event = {
+				id = agot_events_generic.0001
+				days = 5
+			}
+		}
+
+		scope:defender = { add_gold = 15 }
+	}
+	on_victory = {
+		scope:defender = {
+			trigger_event = {
+				id = agot_events_generic.0001
+				days = 5
+			}
+		}
+
+		scope:defender.dynasty = {add_dynasty_prestige = -100}
+	}
+	attacker_allies_inherit = yes
+	defender_allies_inherit = yes
+
+	war_name = SPIDER_AMBUSH_CB_NAME
+	war_name_base = SPIDER_AMBUSH_CB_NAME_BASE
+	cb_name = SPIDER_AMBUSH_CB
+	interface_priority = 59
+
+	ticking_war_score_targets_entire_realm = no
+	max_defender_score_from_occupation = 150
+	max_attacker_score_from_occupation = 150
+	attacker_ticking_warscore = 0
+	attacker_wargoal_percentage = 0.8
+
+	max_ai_diplo_distance_to_title = 500
+
+	on_primary_defender_death = invalidate
+	on_primary_attacker_death = invalidate
+	#transfer_behavior = invalidate
+}

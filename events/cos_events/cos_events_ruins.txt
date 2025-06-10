@@ -348,8 +348,96 @@ cos_yeen_ruins.1003 = { #
 	option = {
 		name = cos_yeen_ruins.1003.a #Take Terrax's Egg
 		agot_create_artifact_glass_candle_effect = { OWNER = scope:host  COLOR = purple }	
-		agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = scope:host } 	
+		agot_create_artifact_vs_valyrian_longsword_silver_historical_effect = { OWNER = scope:host } 	
 		add_gold = 750
+	}
+}
+
+cos_ambush_events.1000 = {
+	title = cos_ambush_events.1000.title
+	type = character_event
+	
+	theme = war
+	override_background = {
+		reference = wilderness_wetlands
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	desc = cos_ambush_events.1000.desc
+	option = {
+		name = cos_ambush_events.1000.attack
+		add_stress = 5
+		trigger_event = {
+			id = cos_ambush_events.1001
+			#days = { 1 2 }
+		}
+	
+	}
+}
+
+cos_ambush_events.1001 = {
+	title = cos_ambush_events.1001.title
+	type = character_event
+	#trigger = {
+	#	#scope:army = {
+	#	#	location = { geographical_region = world_westeros_the_neck }
+	#	#	is_army_in_combat = no
+	#	#	#army_is_moving = yes
+	#	#}
+	#	#scope:army.location.county.holder = { save_temporary_scope_as = shrek }
+	#	#
+	#	#OR = {
+	#	#	scope:shrek = {
+	#	#		is_at_war_with = root
+	#	#	}
+	#	#	scope:shrek = {
+	#	#		any_liege_or_above = {
+	#	#			is_at_war_with = root
+	#	#		}
+	#	#	}
+	#	#}
+	#	#NOR = {
+	#	#	#don't share a top liege
+	#	#	root = scope:shrek.top_liege
+	#	#	top_liege = scope:shrek.top_liege
+	#	#	root.culture = { has_cultural_tradition = agot_tradition_crannogman }
+	#	#	has_culture = culture:crannogman
+	#	#	any_character_war = {
+	#	#		using_cb = crannogman_ambush_cb
+	#	#	}
+	#	#}
+	#}
+	immediate = {
+		hidden_effect = {
+			root = {
+				#scope:army = { location = { save_scope_as = target_location } }
+				#province:10313.county.holder = { save_temporary_scope_as = shrek }
+				province:10313 = { save_scope_as = target_location }
+				agot_create_spider_ambush = {
+					TARGET = root
+				}
+			}
+		}
+	}
+	theme = war
+	override_background = {
+		reference = sothoryos_yeen_spider_1
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	desc = cos_ambush_events.1001.desc
+	option = {
+		name = cos_ambush_events.1001.attack
+		stress_impact = {
+			craven = major_stress_impact_gain
+		}
+		agot_spawn_spider_army = {TARGET = root}
 	}
 }
 
