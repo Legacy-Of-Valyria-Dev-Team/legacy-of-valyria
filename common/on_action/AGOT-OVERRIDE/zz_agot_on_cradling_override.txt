@@ -197,13 +197,22 @@ on_dragon_lay_master_on_action = {
 					add = 1
 				}
 				modifier = {
-					has_trait = dragon_fertile
+					OR = {
+						has_trait = dragon_fertile
+						AND = {
+							has_inactive_trait = dragon_fertile
+							has_variable = dragon_is_fertile
+						}
+					}
 					add = 4
 				}
 				modifier = {
 					any_relation = {
 						type = soulmate
-						has_trait = dragon_fertile
+						OR = {
+							has_trait = dragon_fertile
+							has_inactive_trait = dragon_fertile # Males won't be visibly fertile necessarily
+						}
 					}
 					add = 2
 				}
@@ -217,15 +226,24 @@ on_dragon_lay_master_on_action = {
 				modifier = {
 					exists = var:clutches
 					var:clutches > 1
-					NOT = { has_trait = dragon_fertile }
+					NOR = {
+						has_trait = dragon_fertile
+						AND = {
+							has_inactive_trait = dragon_fertile
+							has_variable = dragon_is_fertile
+						}
+					}
 					add = clutches_subtract_script_val
 				}
 				modifier = {
 					exists = var:clutches
 					var:clutches > 2
-					has_trait = dragon_fertile
-					NOR = {
-						has_trait = immortal
+					OR = {
+						has_trait = dragon_fertile
+						AND = {
+							has_inactive_trait = dragon_fertile
+							has_variable = dragon_is_fertile
+						}
 					}
 					add = clutches_subtract_script_val
 				}
@@ -288,7 +306,15 @@ on_dragon_lay_master_on_action = {
 					random_list = {
 						1 = {
 							trigger = {
-								NOT = { scope:dragon_parent = { has_trait = dragon_fertile } }
+								scope:dragon_parent = {
+									NOR = {
+										has_trait = dragon_fertile
+										AND = {
+											has_inactive_trait = dragon_fertile
+											has_variable = dragon_is_fertile
+										}
+									}
+								}
 								agot_dragon_population_low = no
 							}
 							trigger_event = {
