@@ -1,10 +1,10 @@
-version="1.14.1"
+version="1.14.2.3"
 tags={
 	"Alternative History"
 	"Gameplay"
 	"Total Conversion"
 }
 name="Legacy of Valyria - DEV"
-supported_version="1.16.0.1"
+supported_version="1.16.2.3"
 path="mod/legacy-of-valyria"
 remote_file_id="3322514934"
