@@ -16,7 +16,7 @@
 		has_dlc_feature = advanced_activities
 		#AGOT Added
 		NOT = { government_has_flag = government_is_nw }
-		NOT = { has_government = ruins_government }
+		NOT = { government_has_flag = government_is_uninteractable }
 		NOT = { has_government = pirate_government }
 	}
 
@@ -808,6 +808,7 @@
 		if = {
 			limit = {
 				OR = {
+					has_building_or_higher = generic_harrenhal_01
 					has_building_or_higher = harrenhal_01
 					has_building_or_higher = ruins_harrenhal_01
 				}
@@ -1069,6 +1070,10 @@
 			limit = {
 				#AGOT Added, Harrenhal
 				has_building_or_higher = ruins_harrenhal_01
+				#AGOT Added, Harrenhal
+				has_building_or_higher = harrenhal_01
+				#AGOT Added, Harrenhal
+				has_building_or_higher = generic_harrenhal_01
 				#AGOT Added, Ashford
 				has_building_or_higher = agot_ashford_tourney_grounds_01
 				#CV Added
@@ -1277,6 +1282,40 @@
 						desc = tournament_cost_discount_harrenhal
 					}
 				}
+				#AGOT Added, Harrenhal
+				if = {
+					limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
+					add = {
+						value = 0
+						add = {
+							value = tournament_base_cost
+							add = {
+								value = tournament_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_base_cost
+							}
+						}
+						multiply = tournament_activity_cost_max_discount_value
+						desc = tournament_cost_discount_harrenhal
+					}
+				}
+				#AGOT Added, Harrenhal
+				if = {
+					limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
+					add = {
+						value = 0
+						add = {
+							value = tournament_base_cost
+							add = {
+								value = tournament_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_base_cost
+							}
+						}
+						multiply = tournament_activity_cost_max_discount_value
+						desc = tournament_cost_discount_harrenhal
+					}
+				}
 				#AGOT Added, Ashford
 				if = {
 					limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } }
@@ -1461,7 +1500,7 @@
 			add = prowess
 		}
 
-		#AGOT modified
+		#AGOT Modified
 		#max = 15
 		max = 8
 		ai_max = 3
@@ -2376,7 +2415,7 @@
 					tournament_contest_team_composition_effect = { CONTEST = melee SKILL = melee } # Create two teams
 					tournament_team_pulse_effect = { CONTEST = melee }
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 			}
@@ -2540,6 +2579,40 @@
 						}
 						#AGOT Added, Harrenhal
 						if = {
+							limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
+							add = {
+								value = 0
+								add = {
+									value = tournament_contest_base_cost
+									add = {
+										value = tournament_contest_base_cost
+										multiply = activity_cost_scale_by_era
+										subtract = tournament_contest_base_cost
+									}
+								}
+								multiply = tournament_activity_cost_max_discount_value
+								desc = tournament_cost_discount_harrenhal
+							}
+						}
+						#AGOT Added, Harrenhal
+						if = {
+							limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
+							add = {
+								value = 0
+								add = {
+									value = tournament_contest_base_cost
+									add = {
+										value = tournament_contest_base_cost
+										multiply = activity_cost_scale_by_era
+										subtract = tournament_contest_base_cost
+									}
+								}
+								multiply = tournament_activity_cost_max_discount_value
+								desc = tournament_cost_discount_harrenhal
+							}
+						}
+						#AGOT Added, Harrenhal
+						if = {
 							limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } }
 							add = {
 								value = 0
@@ -2643,7 +2716,7 @@
 					tournament_contest_turn_composition_effect = { CONTEST = archery SKILL = archery } # Create competitor list and log entry
 					tournament_turn_pulse_effect = { CONTEST = archery }
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 			}
@@ -2877,7 +2950,7 @@
 					tournament_contest_turn_composition_effect = { CONTEST = recital SKILL = recital } # Create competitor list and log entry
 					tournament_turn_pulse_effect = { CONTEST = recital }
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 			}
@@ -3191,7 +3264,7 @@
 					scope:activity = { progress_activity_phase_after = { months = tournament_versus_duration_months } }
 					tournament_contest_versus_composition_effect = { CONTEST = joust SKILL = horse } # Create competitor list and log entry
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 
@@ -3490,7 +3563,7 @@
 					scope:activity = { progress_activity_phase_after = { months = tournament_versus_duration_months } }
 					tournament_contest_versus_composition_effect = { CONTEST = wrestling SKILL = pugilism } # Create competitor list and log entry
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 			}
@@ -3567,7 +3640,7 @@
 						desc = game_rule_category_culture
 					}
 				}
-				#AGOT added
+				#AGOT Added
 				if = {
 					limit = {
 						culture = {
@@ -3710,7 +3783,7 @@
 					scope:activity = { progress_activity_phase_after = { months = tournament_versus_duration_months } }
 					tournament_contest_versus_composition_effect = { CONTEST = duel SKILL = foot } # Create competitor list and log entry
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 			}
@@ -3905,7 +3978,7 @@
 					scope:activity = { progress_activity_phase_after = { months = tournament_versus_duration_months } }
 					tournament_contest_versus_composition_effect = { CONTEST = board_game SKILL = board_game } # Create competitor list and log entry
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 			}
@@ -4122,7 +4195,7 @@
 					tournament_contest_race_composition_effect = { CONTEST = horse_race SKILL = horse_race } # Create competitor list and log entry
 					tournament_race_pulse_effect = { CONTEST = horse_race }
 				}
-				#AGOT modified: Vanilla bugfix
+				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
 
@@ -4436,7 +4509,7 @@
 		is_pool_guest = no
 		#AGOT Added
 		NOT = { government_has_flag = government_is_nw }
-		NOT = { has_government = ruins_government }
+		NOT = { government_has_flag = government_is_uninteractable }
 		OR = {
 			AND = {
 				culture = { agot_is_wildling_culture = yes }
@@ -4624,9 +4697,38 @@
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_westeros_seven_kingdoms }
 			trigger_if = {
-				limit = { exists = capital_province }
+				limit = {
+					exists = capital_province
+				}
 				NOT = {
 					capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= {
 						OR = {
 							geographical_region = world_westeros_seven_kingdoms
 							geographical_region = world_stepstones
@@ -4644,8 +4746,33 @@
 		modifier = {
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
-			NOT = {
-				capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
+			trigger_if = {
+				limit = {
+					exists = capital_province
+				}
+				NOT = {
+					capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= { geographical_region = world_westeros_beyond_the_wall }
+				}
+			}
+			trigger_else = {
+				always = no
 			}
 
 			add = -5000
@@ -4655,9 +4782,40 @@
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_stepstones }
 			trigger_if = {
-				limit = { exists = capital_province }
+				limit = {
+					exists = capital_province
+				}
 				NOT = {
 					capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= {
 						OR = {
 							geographical_region = world_westeros_seven_kingdoms
 							geographical_region = world_stepstones
@@ -4677,9 +4835,38 @@
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_essos }
 			trigger_if = {
-				limit = { exists = capital_province }
+				limit = {
+					exists = capital_province
+				}
 				NOT = {
 					capital_province ?= {
+						OR = {
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= {
+						OR = {
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= {
 						OR = {
 							geographical_region = world_stepstones
 							geographical_region = world_essos
@@ -5041,7 +5228,7 @@
 					limit = { activity_tournament_versus_contest_trigger = yes }
 					set_variable = {
 						name = progress_to_victory_threshold
-						#AGOT modified
+						#AGOT Modified
 						#value = 10
 						value = 35
 					}
@@ -5049,7 +5236,7 @@
 				else = {
 					set_variable = {
 						name = progress_to_victory_threshold
-						#AGOT modified
+						#AGOT Modified
 						#value = 20
 						value = 35
 					}
@@ -5511,7 +5698,7 @@
 					limit = { activity_tournament_versus_contest_trigger = yes }
 					set_variable = {
 						name = progress_to_victory_threshold
-						#AGOT modified
+						#AGOT Modified
 						#value = 10
 						value = 35
 					}
@@ -5519,7 +5706,7 @@
 				else = {
 					set_variable = {
 						name = progress_to_victory_threshold
-						#AGOT modified
+						#AGOT Modified
 						#value = 20
 						value = 35
 					}
@@ -5570,7 +5757,7 @@
 					limit = { activity_tournament_versus_contest_trigger = yes }
 					set_variable = {
 						name = progress_to_victory_threshold
-						#AGOT modified
+						#AGOT Modified
 						#value = 10
 						value = 35
 					}
@@ -5578,7 +5765,7 @@
 				else = {
 					set_variable = {
 						name = progress_to_victory_threshold
-						#AGOT modified
+						#AGOT Modified
 						#value = 20
 						value = 35
 					}
