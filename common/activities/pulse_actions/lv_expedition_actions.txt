@@ -1,0 +1,849 @@
+﻿#Activity Pulse Actions for Pilgrimages
+#
+#Adult education means guests are always AI and unlanded, some of these are therefore only for the host
+#There won't always be an entourage of more than a caravan master
+#There will be other students, and teachers. These are identified with flags and are generated/picked out by the activity.
+#APAs marked with * involve or can happen to characters other than the host
+
+#Study Hard Intent:
+#apa_leveraging_language_skills
+
+#Revelry Intent:
+#
+
+#Stress - University life requires work
+#apa_procrastination
+
+##Lifestyles, etc
+#apa_studying_scripture - Shared/From other File
+#apa_visited_markets - Shared/From other File
+#apa_foreign_custom - Shared/From other File
+
+##Random Education APAs
+#apa_sight_seeing_group - Shared/From other File
+#apa_university_discussions - Pick up lifestyle xp from teacher
+
+## PROGRESS INCREASE
+# You discover a half-buried monument
+lv_apa_expedition_monument = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+		scope:province = { culture = { save_scope_as = second } }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_monument
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.positive.tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+# You made impressive progress charting the terrain
+lv_apa_expedition_chart_terrain = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+		scope:province = { save_scope_as = second }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_chart_terrain
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.positive.tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+# You find some ruined roads, making both travel and mapping the area easier
+lv_apa_expedition_ruined_roads = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.positive.tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+# You find an old map of the region in one of the ruins
+lv_apa_expedition_old_map = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.positive.tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+# You found the conditions for the expedition to be optimal
+lv_apa_expedition_optimal_conditions = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.positive.tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+## PROGRESS DECREASE
+# A batch of your supplies becomes spoiled
+lv_apa_expedition_spoiled_supplies = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = {
+		value = 0.5
+		if = {
+			limit = {
+				scope:activity = {
+					has_activity_type = lv_activity_expedition
+					has_activity_option = {
+						category = expedition_preparation
+						option = expedition_preparation_standard
+					}
+				}
+			}
+			add = -0.4
+		}
+		else_if = {
+			limit = {
+				scope:activity = {
+					has_activity_type = lv_activity_expedition
+					has_activity_option = {
+						category = expedition_preparation
+						option = expedition_preparation_heavy
+					}
+				}
+			}
+			add = -0.45
+		}
+	}
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_spoiled_supplies
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.negative
+			scope:activity = { activity_special_type_progression_negative = yes }
+		}
+	}
+}
+
+# A storm turns the nearby roads to muck, stalling the entire expedition
+lv_apa_expedition_mired_in_mud = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = {
+		value = 0.5
+		if = {
+			limit = {
+				scope:province = {
+					OR = {
+						agot_is_cloudforest_terrain = yes
+						agot_is_jungle_terrain = yes
+					}
+				}
+			}
+			add = 0.5
+		}
+		if = {
+			limit = { scope:province = { agot_is_wetlands_terrain = yes } }
+			add = 0.4
+		}
+		if = {
+			limit = {
+				scope:province = {
+					OR = {
+						agot_is_the_bog_terrain = yes
+						agot_is_forest_terrain = yes
+						agot_is_floodplains_terrain = yes
+					}
+				}
+			}
+			add = 0.3
+		}
+		if = {
+			limit = {
+				scope:activity = {
+					has_activity_type = lv_activity_expedition
+					has_activity_option = {
+						category = expedition_preparation
+						option = expedition_preparation_standard
+					}
+				}
+			}
+			multiply = 0.67
+		}
+		else_if = {
+			limit = {
+				scope:activity = {
+					has_activity_type = lv_activity_expedition
+					has_activity_option = {
+						category = expedition_preparation
+						option = expedition_preparation_heavy
+					}
+				}
+			}
+			multiply = 0.33
+		}
+	}
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.negative
+			scope:activity = { activity_special_type_progression_negative = yes }
+		}
+	}
+}
+
+# Some food and tools went missing during the night
+lv_apa_expedition_missing_supplies = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 0.5 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.negative
+			scope:activity = { activity_special_type_progression_negative = yes }
+		}
+	}
+}
+
+# An argument breaks out during the day, delaying the expedition
+lv_apa_expedition_heated_argument = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.negative
+			scope:activity = { activity_special_type_progression_negative = yes }
+		}
+	}
+}
+
+# Something unseen panicked your animals, forcing you to bring them back
+lv_apa_expedition_frightened_animals = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_ruined_roads
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = lv_expedition.tt.negative
+			scope:activity = { activity_special_type_progression_negative = yes }
+		}
+	}
+}
+
+## Relationship positive
+# You shared the nighttime watch with someone (Positive)
+lv_apa_expedition_night_shift_positive = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = {
+			save_scope_as = first
+			current_travel_plan = { random_entourage_character = { save_scope_as = second } }
+		}
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_night_shift_positive
+			tags = { pulse_action }
+			character = scope:first
+			target = scope:second
+
+			custom_tooltip = lv_apa_expedition_night_shift_positive.tt
+			scope:second = {
+				progress_towards_friend_effect = {
+					REASON = lv_apa_expedition_night_shift_positive.reason
+					CHARACTER = scope:first
+					OPINION = default_friend_opinion
+				}
+			}
+		}
+	}
+}
+
+# You shared a campfire with someone (Positive)
+lv_apa_expedition_campfire_positive = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = {
+			save_scope_as = first
+			current_travel_plan = { random_entourage_character = { save_scope_as = second } }
+		}
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_campfire_positive
+			tags = { pulse_action }
+			character = scope:first
+			target = scope:second
+
+			custom_tooltip = lv_apa_expedition_campfire_positive.tt
+			scope:second = {
+				progress_towards_friend_effect = {
+					REASON = lv_apa_expedition_campfire_positive.reason
+					CHARACTER = scope:first
+					OPINION = default_friend_opinion
+				}
+			}
+		}
+	}
+}
+
+## Relationship negative
+# You shared the nighttime watch with someone (Negative)
+lv_apa_expedition_night_shift_negative = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = {
+			save_scope_as = first
+			current_travel_plan = { random_entourage_character = { save_scope_as = second } }
+		}
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_night_shift_negative
+			tags = { pulse_action }
+			character = scope:first
+			target = scope:second
+
+			custom_tooltip = lv_apa_expedition_night_shift_negative.tt
+			scope:first = {
+				if = {
+					limit = { can_set_relation_rival_trigger = { CHARACTER = scope:second } }
+					progress_towards_rival_effect = {
+						REASON = lv_apa_expedition_night_shift_negative.reason
+						CHARACTER = scope:second
+						OPINION = default_rival_opinion
+					}
+				}
+				else_if = {
+					limit = { is_ai = yes }
+					add_opinion = {
+						target = scope:second
+						modifier = annoyed_opinion
+						opinion = -10
+					}
+				}
+				else = {
+					scope:second = {
+						add_opinion = {
+							target = scope:first
+							modifier = annoyed_opinion
+							opinion = -10
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# You shared a campfire with someone (Negative)
+lv_apa_expedition_campfire_negative = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = {
+			save_scope_as = first
+			current_travel_plan = { random_entourage_character = { save_scope_as = second } }
+		}
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_campfire_negative
+			tags = { pulse_action }
+			character = scope:first
+			target = scope:second
+
+			custom_tooltip = lv_apa_expedition_campfire_negative.tt
+			scope:first = {
+				if = {
+					limit = { can_set_relation_rival_trigger = { CHARACTER = scope:second } }
+					progress_towards_rival_effect = {
+						REASON = lv_apa_expedition_campfire_negative.reason
+						CHARACTER = scope:second
+						OPINION = default_rival_opinion
+					}
+				}
+				else_if = {
+					limit = { is_ai = yes }
+					add_opinion = {
+						target = scope:second
+						modifier = annoyed_opinion
+						opinion = -10
+					}
+				}
+				else = {
+					scope:second = {
+						add_opinion = {
+							target = scope:first
+							modifier = annoyed_opinion
+							opinion = -10
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+lv_apa_expedition_hidden_crevasse = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_hidden_crevasse
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_restless_night = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_restless_night
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_foul_weather = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_foul_weather
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_saved_companion = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_saved_companion
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_inspiring_tale = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_inspiring_tale
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_quiet_moment = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_quiet_moment
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_clever_solution = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_quiet_moment
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+
+
+lv_apa_expedition_wounded_scout = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_wounded_scout
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_thoughtful_gesture = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_thoughtful_gesture
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_strange_sounds = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_strange_sounds
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_dreams_of_fire = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_dreams_of_fire
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_odd_relic = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_odd_relic
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_strange_whispers = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_strange_whispers
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}
+
+lv_apa_expedition_raven = {
+	icon = learning
+	is_valid = {
+		is_current_phase_active = yes
+		# Replace with event chain variable once coded in
+	}
+
+	weight = { value = 1 }
+
+	effect = {
+		scope:host = { save_scope_as = first }
+
+		add_activity_log_entry = {
+			key = lv_apa_expedition_raven
+			tags = { pulse_action }
+			character = scope:first
+	
+			custom_tooltip = adult_education_tt_positive_tiny
+			scope:activity = { activity_special_type_progression_tiny = yes }
+		}
+	}
+}

@@ -1,0 +1,56 @@
+﻿namespace = lv_mines_pulse
+
+# Directory
+# lv_mines_pulse.0001 - Biannual firewyrm pulse event
+# lv_mines_pulse.0002 - Firewyrm event proceeds, choose who to send
+
+# Biannual firewyrm pulse event
+# - This event will provide a random chance of either flavour text or actually spawning a firewyrm
+lv_mines_pulse.0001 = {
+	type = character_event
+	title = lv_mines_pulse.0001.t
+	desc = lv_mines_pulse.0001.desc
+	theme = dragon
+
+	override_background = { reference = lv_valyria_surface }
+	override_effect_2d = { reference = smoke }
+
+	immediate = {
+		scope:mines_province = {
+			random_list = {
+				# Uncomment and finalize chances only once all firewyrm-related stuff are done
+				#50 = {
+				#	set_variable = {
+				#		name = lv_mines_outcome
+				#		value = flag:firewyrm
+				#	}
+				#}
+				50 = {}
+			}
+		}
+	}
+
+	option = {
+		name = lv_mines_pulse.0001.a
+		if = {
+			limit = { scope:mines_province = { var:lv_mines_outcome ?= flag:firewyrm } }
+			custom_tooltip = {
+				text = lv_mines_pulse.0001.a.tt.firewyrm
+				scope:mines_province = { # Give at least a year before another one can happen
+					set_variable = {
+						name = lv_mines_cooldown
+						value = yes
+						months = 12
+					}
+				}
+				trigger_event = {
+					id = lv_firewyrm_event.0001
+					months = { 7 28 }
+				}
+			}
+		}
+		else = { custom_tooltip = lv_mines_pulse.0001.a.tt }
+	}
+
+	after = { scope:mines_province = { remove_variable = lv_mines_outcome } }
+}

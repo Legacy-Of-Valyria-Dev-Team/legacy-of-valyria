@@ -4,18 +4,184 @@
 
 types CountyViewTypes
 {
-	type agot_county_view_restore_ruins_button = button_standard_big
-	{
-		name = "restore_ruins"
-		datacontext = "[HoldingView.GetTitle]"
-		visible = "[GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)]"
+	#type agot_county_view_restore_ruins_button = button_standard_big
+	#{
+	#	name = "restore_ruins"
+	#	datacontext = "[HoldingView.GetTitle]"
+	#	visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_ruin_restoration').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)) )]"
 
-		position = { 5 -5 }
-		size = { 235 55 }
-		text = "agot_ruin_begin_reconstruction"
-		tooltip = "[HoldingView.GetProvince.Custom('RuinsReconstructTooltip')]"
-		enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
-		onclick = "[GetVariableSystem.Toggle('window_ruins_confirm')]"
+	#	position = { 5 -5 }
+	#	size = { 235 55 }
+	#	text = "agot_ruin_begin_reconstruction"
+	#	tooltip = "[HoldingView.GetProvince.Custom('RuinsReconstructTooltip')]"
+	#	enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
+	#	onclick = "[GetVariableSystem.Toggle('window_ruins_confirm')]"
+	#}
+
+	# Transformed this into a container holding both the AGOT button and LoV's
+	# That way, even IF someone still has a mod that conflicts with the county UI, at least the button will work provided it's patched for AGOT
+	type agot_county_view_restore_ruins_button = vbox
+	{
+		# Failsafes
+		# If another submod conflicts with the county view, have these as failsafes for calculating the costs
+		state = {
+			name = _show
+			on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_show').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+		}
+		state = {
+			name = _hide
+			on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_hide').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+		}
+
+		button_standard_big = {
+			name = "restore_ruins"
+			datacontext = "[HoldingView.GetTitle]"
+			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_ruin_restoration').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)) )]"
+
+			#position = { 5 -5 }
+			size = { 235 55 }
+			text = "agot_ruin_begin_reconstruction"
+			tooltip = "[HoldingView.GetProvince.Custom('RuinsReconstructTooltip')]"
+			enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
+			onclick = "[GetVariableSystem.Toggle('window_ruins_confirm')]"
+		}
+		button_standard_big = {
+			name = "lv_restore_ruins"
+			datacontext = "[HoldingView.GetTitle]"
+			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), GetScriptedGui('lv_use_ruin_restoration').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End) )]"
+
+			#position = { 5 -5 }
+			size = { 235 55 }
+			text = "agot_ruin_begin_reconstruction"
+			#tooltip = "[HoldingView.GetProvince.Custom('LV_RuinsReconstructTooltip')]"
+			enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
+			onclick = "[GetScriptedGui('reconstruct_ruin').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+
+			tooltipwidget = {
+				container = {
+					using = GeneralTooltipSetup
+					alwaystransparent = no
+
+					object_tooltip_pop_out = {
+						blockoverride "title_text" {
+							raw_text = "[Title.GetNameWithUnderlyingNoTooltip|U]"
+						}
+
+						blockoverride "subheading" {
+							text_single = {
+								layoutpolicy_horizontal = expanding
+								raw_text = "[HoldingView.GetProvince.Custom('LV_RuinsReconstructTooltip_RuinType')]"
+							}
+						}
+
+						blockoverride "concept_link" {}
+
+						blockoverride "main_description" {
+							vbox = {
+								layoutpolicy_horizontal = expanding
+
+								cooltip_paragraph = { text = "[GetPlayer.Custom('LV_RuinsReconstructTooltip')]" }
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									text_single = { text = "[GetPlayer.Custom('LV_RuinsReconstructTooltip_Cost')]" }
+									text_single = {
+										margin_left = 6
+										text = "lv_ruins_reconstruct_tooltip_cost_value"
+										default_format = "#game_link"
+
+										tooltipwidget = {
+											container = {
+												using = GeneralTooltipSetup
+												alwaystransparent = no
+
+												object_tooltip_pop_out = {
+													blockoverride "title_text" { text = "lv_ruins_reconstruct_tooltip_breakdown_title" }
+													blockoverride "subheading" {
+														text_single = {
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_subheading"
+														}
+													}
+													blockoverride "main_description" {
+														# Settlement Cost Breakdown
+														text_single = {
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement"
+														}
+														text_single = {
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_base"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_valyrian_architecture').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_valyrian_architecture"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_hard_working').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_hard_working"
+														}
+														
+														spacer = { size = { 0 6 } }
+
+														# Expedition Cost Breakdown
+														text_single = {
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition"
+														}
+														text_single = {
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_base"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_isolationist').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_isolationist"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_republican_legacy').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_republican_legacy"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_valyrian').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_valyrian"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_north_valyrian_1').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_north_valyrian_1"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_north_valyrian_2').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_north_valyrian_2"
+														}
+														text_single = {
+															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_doom').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+															layoutpolicy_horizontal = expanding
+															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_doom"
+														}
+													}
+												}
+											}
+										}
+									}
+									expand = {}
+								}
+								text_single = {
+									visible = "[Not(GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End))]"
+									layoutpolicy_horizontal = expanding
+									text = "lv_ruins_reconstruct_tooltip_cost_insufficient"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	type agot_county_view_dragonpit_button = widget

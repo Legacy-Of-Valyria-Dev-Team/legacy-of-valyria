@@ -1,0 +1,165 @@
+﻿namespace = lv_firewyrm_event
+
+# Directory
+
+# lv_firewyrm_event.0001 - Firewyrm encounter
+
+# Firewyrm encounter
+lv_firewyrm_event.0001 = {
+	type = character_event
+	title = lv_firewyrm_event.0001.t
+	desc = lv_firewyrm_event.0001.desc
+
+	window = lv_firewyrm_character_event
+	theme = dragon
+
+	override_background = { reference = lv_valyria_surface }
+	override_effect_2d = { reference = smoke }
+
+	left_portrait = {
+		character = root
+		camera = camera_human_back_to_camera
+		scripted_animation = duel_wield_weapon
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	immediate = {
+		create_character = {
+			template = lv_firewyrm_template
+			save_scope_as = firewyrm
+			location = root.location
+			after_creation = { add_character_flag = dragon_roar }
+		}
+		if = {
+			limit = {
+				has_trait = dragonrider
+				any_relation = { type = agot_dragon is_alive = yes }
+			}
+			random_relation = {
+				type = agot_dragon
+				limit = {
+					has_trait = dragon
+					has_variable = current_rider
+					any_relation = { type = agot_dragon }
+				}
+				save_scope_as = dragon
+			}
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_event.0001.dragon
+		trigger = {
+			has_trait = dragonrider
+			exists = scope:dragon
+		}
+		custom_tooltip = lv_firewyrm_event.0001.dragon.tt
+		trigger_event = lv_firewyrm_duel.0001
+		#scope:firewyrm = { death = { death_reason = death_monster_duel } }
+	}
+
+	option = {
+		name = lv_firewyrm_event.0001.a
+		custom_tooltip = lv_firewyrm_event.0001.a.tt
+		scope:firewyrm = { death = { death_reason = death_monster_duel } }
+	}
+
+	option = {
+		name = lv_firewyrm_event.0001.b
+		scope:firewyrm = { death = { death_reason = death_monster_duel } }
+	}
+}
+
+namespace = lv_firewyrm_duel
+
+lv_firewyrm_duel.0001 = {
+	type = character_event
+	title = lv_firewyrm_duel.0001.t
+	desc = lv_firewyrm_duel.0001.desc
+
+	window = lv_firewyrm_duel_event
+	theme = dragon
+
+	override_background = { reference = lv_valyria_surface }
+	override_effect_2d = { reference = smoke }
+
+	left_portrait = {
+		character = root
+		camera = lv_camera_firewyrm_duel_left
+		scripted_animation = {
+			triggered_animation = {
+				trigger = { exists = scope:dragon }
+				animation = dragon_main
+			}
+		}
+
+		triggered_outfit = {
+			#trigger = {
+			#	OR = {
+			#		root.var:current_dragon = { level_ten_dragon_size_trigger = yes }
+			#	}
+			#}
+			outfit_tags = { dragonrider linear_camera_zoom }
+		}
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_duel_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				no_clothes
+				bald
+				linear_camera_zoom
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	immediate = {
+		agot_clear_dragon_animation_flags = yes
+		agot_set_dragon_animation_flag_effect = {
+			FLAG = dragon_idle
+			RIDING_DRAGON = yes
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.a
+		custom_tooltip = lv_firewyrm_event.0001.dragon.tt
+		scope:firewyrm = { death = { death_reason = death_monster_duel } }
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.b
+		custom_tooltip = lv_firewyrm_event.0001.a.tt
+		scope:firewyrm = { death = { death_reason = death_monster_duel } }
+	}
+}

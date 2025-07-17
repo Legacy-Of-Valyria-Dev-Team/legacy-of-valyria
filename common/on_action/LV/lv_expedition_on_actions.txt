@@ -1,4 +1,99 @@
-﻿# Expedition on_actions
+﻿# Legacy of Valyria Expedition on actions
+on_travel_plan_movement = { on_actions = { lv_special_location_on_action } }
+
+# Flavour text for when you travel for the first time to historically ruined regions
+lv_special_location_on_action = {
+	trigger = { is_ai = no }
+	effect = {
+		current_travel_plan = {
+			current_location = {
+				if = {
+					limit = { geographical_region = world_valyria_proper }
+					root = {
+						if = {
+							limit = {
+								OR = {
+									NOT = { has_variable = lv_visited_valyria }
+									var:lv_visited_valyria ?= flag:ruined
+								}
+								any_county_in_region = {
+									region = world_valyria_proper
+									percent >= 0.5
+									title_province = { NOT = { has_holding_type = ruin_holding } }
+								}
+							}
+							trigger_event = lv_special_region_event.0001
+							set_variable = {
+								name = lv_visited_valyria
+								value = flag:restored
+							}
+						}
+						else_if = {
+							limit = {
+								OR = {
+									NOT = { has_variable = lv_visited_valyria }
+									var:lv_visited_valyria ?= flag:restored
+								}
+								any_county_in_region = {
+									region = world_valyria_proper
+									percent >= 0.5
+									title_province = { has_holding_type = ruin_holding }
+								}
+							}
+							trigger_event = lv_special_region_event.0001
+							set_variable = {
+								name = lv_visited_valyria
+								value = flag:ruined
+							}
+						}
+					}
+				}
+				else_if = {
+					limit = { geographical_region = world_valyria_lands_of_the_long_summer }
+					root = {
+						if = {
+							limit = {
+								OR = {
+									NOT = { has_variable = lv_visited_lands_of_the_long_summer }
+									var:lv_visited_lands_of_the_long_summer ?= flag:ruined
+								}
+								any_county_in_region = {
+									region = world_valyria_lands_of_the_long_summer
+									percent >= 0.5
+									title_province = { NOT = { has_holding_type = ruin_holding } }
+								}
+							}
+							trigger_event = lv_special_region_event.0001
+							set_variable = {
+								name = lv_visited_lands_of_the_long_summer
+								value = flag:restored
+							}
+						}
+						else_if = {
+							limit = {
+								OR = {
+									NOT = { has_variable = lv_visited_lands_of_the_long_summer }
+									var:lv_visited_lands_of_the_long_summer ?= flag:restored
+								}
+								any_county_in_region = {
+									region = world_valyria_lands_of_the_long_summer
+									percent >= 0.5
+									title_province = { has_holding_type = ruin_holding }
+								}
+							}
+							trigger_event = lv_special_region_event.0001
+							set_variable = {
+								name = lv_visited_lands_of_the_long_summer
+								value = flag:ruined
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 expedition_quest_start_on_action = {
 	effect = {
 		add_character_flag = agot_is_at_unknown_place
