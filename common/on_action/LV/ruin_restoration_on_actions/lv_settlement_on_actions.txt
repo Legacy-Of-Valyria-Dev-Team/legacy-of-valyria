@@ -1,5 +1,31 @@
 ﻿# Legacy of Valyria Settlement on actions
+on_title_gain = { on_actions = { lv_settlement_failsafe } }
 
+# If somehow someone gains a ruin title, execute the change to a colony holding
+lv_settlement_failsafe = {
+	trigger = {
+		NOT = { has_game_rule = lv_colonisation_agot }
+		scope:title = { tier = tier_county }
+	}
+	effect = {
+		scope:title = {
+			if = {
+				limit = {
+					title_province = {
+						has_holding_type = ruin_holding
+						save_temporary_scope_as = ruin
+					}
+				}
+				lv_settlement_establish_effect = {
+					ACTOR = root
+					PROVINCE = scope:ruin
+				}
+			}
+		}
+	}
+}
+
+# On actions associated with the travel plan
 lv_settlement_on_start = {
 	trigger = {
 		has_variable = lv_settlement_expedition_liege
