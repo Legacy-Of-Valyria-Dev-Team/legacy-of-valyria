@@ -217,7 +217,7 @@ blackstone.4 = {
                         option = study_type_faith
                     }
                 }
-                #trigger_event = (YOUR FIRST FAITH/RELIGION EVENT)
+                trigger_event = blackstone.21
             }
             else_if = {
                 limit = {
@@ -226,7 +226,7 @@ blackstone.4 = {
                         option = study_type_excavation
                     }
                 }
-                #trigger_event = (YOUR FIRST EXCAVATION EVENT)
+                trigger_event = blackstone.24
             }
             else_if = {
                 limit = {
@@ -238,6 +238,8 @@ blackstone.4 = {
                 trigger_event = blackstone.14
             }
         }
+
+        save_scope_as = blackstone_root
     }
 }
 
@@ -1004,7 +1006,7 @@ blackstone.22 = {
             }
             triggered_desc = {
                 trigger = { religion = religion:the_others_religion } #Meme , Why are you here bro
-                desc = relig.t
+                desc = relig.0t
             }
         }
     }
@@ -1026,17 +1028,1208 @@ blackstone.22 = {
 
 blackstone.23 = {
     type = character_event
-    title = blackstone.23_t
+    title = blackstone.23_t #Rhllor
     desc = blackstone.23_desc
 
     theme = hunting 
+
+    immediate = {
+        random_courtier = {
+            limit = { NOT = { faith = prev.faith } }
+            save_scope_as = sacrifice_1
+        }
+        random_courtier = {
+            limit = { NOT = { faith = prev.faith } }
+            save_scope_as = sacrifice_2
+        }
+        random_courtier = {
+            limit = { NOT = { faith = prev.faith } }
+            save_scope_as = sacrifice_3
+        }
+        if = {
+            limit = {
+                NOT = {
+                    exists = scope:sacrifice_1
+                    exists = scope:sacrifice_2
+                    exists = scope:sacrifice_3           
+                }
+            }
+
+            create_character = {
+                gender = male
+                random_traits_list = { count = 3 }
+                culture = culture:riverlander
+                faith = faith:fots_seven
+
+                save_scope_as = sacrifice_4
+            }
+        }
+    }
 
     right_portrait = {
         character = root
         animation = prayer
     }
 
+    option = {
+        name = relig.3 #Burny Burny 
+        trigger = {
+            exists = scope:sacrifice_1 
+        }
+        scope:sacrifice_1 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }
+        random_list = {
+            50 = {
+                trigger_event = blackstone.13
+            }
+            50 = {
+                trigger_event = blackstone.23
+                custom_tooltip = {
+                    text = rhllor.1
+                }
+            }
+        }
+    }
 
+    option = {
+        name = relig.4 #Burny Burny
+        trigger = {
+            exists = scope:sacrifice_2 
+        } 
+        scope:sacrifice_2 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }
+        random_list = {
+            50 = {
+                trigger_event = blackstone.13
+            }
+            50 = {
+                trigger_event = blackstone.23
+                custom_tooltip = {
+                    text = rhllor.1
+                }
+            }
+        }
+        
+    }
+
+    option = {
+        name = relig.5 #Burny Burny 
+        trigger = {
+            exists = scope:sacrifice_3 
+        }
+        scope:sacrifice_3 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }
+        random_list = {
+            50 = {
+                trigger_event = blackstone.13
+            }
+            50 = {
+                trigger_event = blackstone.23
+                custom_tooltip = {
+                    text = rhllor.1
+                }
+            }
+        }
+    }
+
+    option = {
+        name = relig.7
+        trigger = {
+            NOT = {
+                exists = scope:sacrifice_1
+                exists = scope:sacrifice_2
+                exists = scope:sacrifice_3           
+            }
+        }
+        scope:sacrifice_4 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }
+        random_list = {
+            50 = {
+                trigger_event = blackstone.13
+            }
+            50 = {
+                trigger_event = blackstone.23
+                custom_tooltip = {
+                    text = rhllor.1
+                }
+            }
+        }
+
+    }
+
+    option = {
+        name = relig.8
+        trigger = {
+            exists = scope:sacrifice_1
+            exists = scope:sacrifice_2
+            exists = scope:sacrifice_3
+            has_trait = sadistic
+        } 
+        scope:sacrifice_1 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }-
+
+        scope:sacrifice_2 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }
+
+        scope:sacrifice_3 = {
+            death = {
+                death_reason = death_sacrificed
+                killer = root
+            }
+        }
+
+        trigger_event = blackstone.13
+    }
+
+    option = {
+        name = relig.6 #No im good
+        current_activity = {
+            complete_activity = yes
+        }
+    }
+}
+
+blackstone.24 = {
+    type = character_event
+    title = blackstone.24_t #Rocks for study
+    desc = blackstone.24_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = rocks.01a
+        start_travel_plan = {
+            destination = province:9763
+            on_arrival_event = blackstone.25 #Gogossos
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01b
+        start_travel_plan = {
+            destination = province:9470
+            on_arrival_event = blackstone.26 #Valyria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01c
+        start_travel_plan = {
+            destination = province:9434
+            on_arrival_event = blackstone.27 #Lokiria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01d
+        start_travel_plan = {
+            destination = province:9618
+            on_arrival_event = blackstone.28 #Maritavia
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01e
+        start_travel_plan = {
+            destination = province:9150
+            on_arrival_event = blackstone.29 #Eylria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01f
+        start_travel_plan = {
+            destination = province:8223
+            on_arrival_event = blackstone.30 #Volantis
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01g
+        start_travel_plan = {
+            destination = province:9520
+            on_arrival_event = blackstone.31 #Lyria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01h
+        start_travel_plan = {
+            destination = province:7351
+            on_arrival_event = blackstone.32 #Tyrosh
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = rocks.01h
+        start_travel_plan = {
+            destination = province:4415
+            on_arrival_event = blackstone.33 #Dragonstone
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+}
+
+############ BEAR These are Ruined and non Ruined versions of the Rock Study Events incase they are Burned down by Dragon Fire or not Colonised yet
+
+blackstone.25 = {
+    type = character_event
+    title = blackstone.25_t #Gogossos
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.02 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.03 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.26 = {
+    type = character_event
+    title = blackstone.26_t #Valyria
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.05 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.06 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.27 = {
+    type = character_event
+    title = blackstone.27_t #Lokiria
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.07 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.08 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.28 = {
+    type = character_event
+    title = blackstone.28_t #Maritavia
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.09 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.10 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.29 = {
+    type = character_event
+    title = blackstone.29_t #Elyria
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.11 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.12 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.30 = {
+    type = character_event
+    title = blackstone.30_t #Volantis
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.13 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.14 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.31 = {
+    type = character_event
+    title = blackstone.31_t #Ergoria
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.15 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.16 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.32 = {
+    type = character_event
+    title = blackstone.32_t #Tyrosh
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.17 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.18 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.33 = {
+    type = character_event
+    title = blackstone.33_t #Dragonstone
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    location = {
+                        province_owner = { NOT = { has_trait = ruin } }
+                    }
+                }
+                desc = rocks.19 #Not Ruined
+            }
+
+            triggered_desc = {
+                trigger = {    
+                    location = {
+                        province_owner = { has_trait = ruin } 
+                    }
+                }
+                desc = rocks.20 #Ruined
+            }
+        }
+    }
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = rocks.04
+        trigger_event = blackstone.13
+    }
+}
+
+blackstone.13 = {
+    type = character_event
+    title = blackstone.13_t #We got Samples and info now to Experiment
+    desc = blackstone.13_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = Experiment.01 #Study myself
+        hidden_effect = {
+            random_list = {
+                20 = {
+                    trigger_event = blackstone.34
+                    xp huge amount
+                }
+                20 = {
+                    trigger_event = blackstone.34
+                    add_trait = wounded_1
+                    xp big 
+                }
+                20 = {
+                    wounded_1
+                    add lil xp here
+                }
+                20 = {
+                    wounded_2
+                    add lil xp here
+                }
+                20 = {
+                    death = {
+                        death_reason = death_explosion
+                    }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = Experiment.02 #Full Metal Alchemist
+        remove_short_term_gold = 500
+        hidden_effect = {
+            random_list = { #Better Results
+                random_list = {
+                40 = {
+                    trigger_event = blackstone.34
+                    xp huge amount
+                }
+                20 = {
+                    trigger_event = blackstone.34
+                    add_trait = wounded_1
+                    xp big 
+                }
+                20 = {
+                    wounded_1
+                    add lil xp here
+                }
+                10 = {
+                    wounded_2
+                    add lil xp here
+                }
+                10 = {
+                    death = {
+                        death_reason = death_explosion
+                    }
+                }
+            }
+            }
+        }
+    }
+
+    option = {
+        name = Experiment.03 #Eat Rock
+        trigger = {
+            has_trait = lunatic_1
+        }
+        xp humungus 
+        trigger_event = blackstone.34
+    }
+}
+
+blackstone.34 = {
+    type = character_event
+    title = blackstone.34_t #Rocks for study
+    desc = blackstone.34_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = trav.01a
+        start_travel_plan = {
+            destination = province:9763
+            on_arrival_event = blackstone.35 #Gogossos
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01b
+        start_travel_plan = {
+            destination = province:9470
+            on_arrival_event = blackstone.35 #Valyria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01c
+        start_travel_plan = {
+            destination = province:9434
+            on_arrival_event = blackstone.35 #Lokiria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01d
+        start_travel_plan = {
+            destination = province:9618
+            on_arrival_event = blackstone.35 #Maritavia
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01e
+        start_travel_plan = {
+            destination = province:9150
+            on_arrival_event = blackstone.35 #Eylria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01f
+        start_travel_plan = {
+            destination = province:8223
+            on_arrival_event = blackstone.35 #Volantis
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01g
+        start_travel_plan = {
+            destination = province:9520
+            on_arrival_event = blackstone.35 #Lyria
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01h
+        start_travel_plan = {
+            destination = province:7351
+            on_arrival_event = blackstone.35 #Tyrosh
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+
+    option = {
+        name = trav.01h
+        start_travel_plan = {
+            destination = province:4415
+            on_arrival_event = blackstone.35 #Dragonstone
+            on_arrival_destinations = last
+            return_trip = no
+        }  
+    }
+}
+
+blackstone.35 = {
+    type = character_event
+    title = blackstone.35_t 
+    desc = blackstone.35_desc
+
+    theme = learning
+
+    immediate = {
+        location = {
+            province_owner = {
+                if = {    
+                    limit = {
+                        NOT = { has_trait = ruin }
+                    }
+                    save_scope_as = owner.1 
+                }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    left_portrait = {
+        character = scope:owner.1
+        animation = thinking
+    }
+
+    option = {
+        name = province.1
+        scope:owner.1 = {
+            trigger_event = blackstone.37 #Asking for Permission
+        }
+    }
+
+    option = {
+        name = province.2
+        trigger = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+
+        trigger_event = blackstone.36 #Camp set up
+    }
+
+}
+
+blackstone.37 = {
+    type = character_event
+    title = blackstone.37_t #AI yes or no
+    desc = blackstone.37_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name = province.3
+
+        scope:blackstone_root = {
+            trigger_event = blackstone.38 #said no
+        }
+
+        ai_chance = {
+            modifier = {
+                add = 50
+                has_trait = sadistic
+            }
+
+            modifier = {
+                add = 50
+                has_trait = vengeful
+            }
+
+            modifier = {
+                add = 50
+                has_trait = wraitful
+            }
+
+            modifier = {
+                add = 30
+                has_trait = greedy
+            }
+        }
+    }
+
+    option = {
+        name = pronvince.4
+
+        scope:blackstone_root = {
+            trigger_event = blackstone.36 #said yes
+        }
+
+        ai_chance = {
+            modifier = {
+                add = 100
+                has_trait scholar
+            }
+
+            modifier = {
+                add = 50
+                has_trait = eccentric
+            }
+
+            modifier = {
+                add = 40
+                has_trait = temperate
+            }
+
+            modifier = {
+                add = 60
+                has_trait = diplomat
+            }
+
+            modifier = {
+                add = 50
+                has_trait = dragonrider
+            }
+        }
+    }
+}
+
+blackstone.36 = {
+    type = character_event
+    title = blackstone.36_t
+    desc = blackstone.36_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        trigger_event = blackstone.40 #Random events and shit
+    }
+}
+
+blackstone.40 = {
+    type = character_event
+    title = blackstone.40_t #Site Set up
+    desc = blackstone.40_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        hidden_effect = {
+            random_list = {
+                4 = {
+                    trigger_event = bla.01
+                }
+                4 = {
+                    trigger_event = bla.04
+                }
+                4 = {
+                    trigger_event = bla.05
+                }
+                3 = {
+                    trigger_event = bla.06
+                }
+                4 = {
+                    trigger_event = bla.07
+                }
+                4 = {
+                    trigger_event = bla.08
+                }
+                4 = {
+                    trigger_event = bla.09
+                }
+                4 = {
+                    trigger_event = bla.10
+                }
+                3 = {
+                    trigger_event = bla.11
+                }
+                4 = {
+                    trigger_event = bla.12
+                }
+                4 = {
+                    trigger_event = bla.13
+                }
+                4 = {
+                    trigger_event = bla.14
+                }
+                4 = {
+                    trigger_event = bla.15
+                }
+                3 = {
+                    trigger_event = bla.16
+                }
+                4 = {
+                    trigger_event = bla.17
+                }
+                4 = {
+                    trigger_event = bla.18
+                }
+                4 = {
+                    trigger_event = bla.19
+                }
+                4 = {
+                    trigger_event = bla.20
+                }
+                3 = {
+                    trigger_event = bla.21
+                }
+                4 = {
+                    trigger_event = bla.22
+                }
+                4 = {
+                    trigger_event = bla.23
+                }
+                4 = {
+                    trigger_event = bla.24
+                }
+                4 = {
+                    trigger_event = bla.25
+                }
+                4 = {
+                    trigger_event = bla.26
+                }
+                4 = {
+                    trigger_event = bla.27
+                }
+                4 = {
+                    trigger_event = bla.28
+                }
+                
+            }
+        }
+    }
+}
+
+blackstone.41 = {
+    type = character_event
+    title = blackstone.41_t #I know have all i need to try recreate Blackstone
+    desc = blackstone.41_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name = Experiment.5
+
+        custom_tooltip = {
+            text = Exp.1
+
+            trigger_event = {
+                id = blackstone.42
+                days = 90
+            }
+        }
+    }
+
+    option = {
+        name = Experiment.6
+
+        trigger = {
+            learning >= 18
+            has_trait = lunatic_1
+        }
+
+        trigger_event = blackstone.43
+    }
+}
+
+blackstone.43 = {
+    type = character_event
+    title = blackstone.43_t #Put rock in oven at 220 for 7 minutes
+    desc = blackstone.43_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name = Experiment.7
+
+        trigger_event = #Add Event final here Bear!!
+    }
+}
+
+blackstone.42 = {
+    type = character_event
+    title = blackstone.42_t #Put rock in oven at 220 for 7 minutes
+    desc = blackstone.42_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name Experiment.8 #Im smort
+
+        trigger = {
+            learning >= 20
+        }
+
+        hidden_effect = {
+            add_trait = brave
+        }
+
+        trigger_event = blackstone.44
+    }
+
+    option = {
+        name = experiment.9
+
+        hidden_effect = {
+            random_list = {
+                80 = {
+                    trigger_event = blackstone.45
+                }
+
+                20 = {
+                    trigger_event = blackstone.46
+                }
+            }
+        }
+    }
+}
+
+blackstone.45 = {
+    type = character_event
+    title = blackstone.45_t #I did it I AM A GOD
+    desc = blackstone.45_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name = Experiment.10
+
+        #innovation add here
+    }
+}
+
+
+blackstone.46 = {
+    type = character_event
+    title = blackstone.46_t #I did it I AM A GOD or maybe not.....
+    desc = blackstone.46_desc
+
+    theme = learning
+
+    right_portrait = {
+        character = root
+        animation = thinking
+    }
+
+    option = {
+        name = Experiment.11 #OH NO
+
+        death = {
+            death_reason = death_explosion
+        }
+    }
 }
 
 ##########################
@@ -1080,6 +2273,13 @@ bla.01 = { #Peasants dont like us meddling
                 30 = {
                     add_trait = brave
                     prestige = 1000
+
+                    hidden_effect = {
+                        trigger_event = {
+                            id = blackstone.40
+                            days = { 14 65 }
+                        }
+                    }
                 }
             }
         }
@@ -1105,26 +2305,18 @@ bla.02 = { #Peasants dont like us meddling fail
         }
 
         prestige = 500
+
+        hidden_effect = {
+            id = blackstone.40
+            days = { 14 60 }
+        }
     }
 
     option = {
         name = black.4 #eaten by Peasants
 
-        random_list = {
-            55 = {
-                add_trait = wounded_1
-            }
-            20 = {
-                add_trait = wounded_2
-            }
-            10 = {
-                add_trait = maimed
-            }
-            10 = {
-                death = {
-                    death_reason = death_starving_peasant_horde
-                }
-            }
+        death = {
+            death_reason = death_starving_peasant_horde
         }
     }
 }
@@ -1152,6 +2344,11 @@ bla.03 = { #Peasants dont like us meddling success
         name = black.6 # move dem rocks
 
         #More xp for you Enchanting Table bro 
+
+        hidden_effect = {
+            id = blackstone.40
+            days = { 14 60 }
+        }
     }
 }
 
@@ -1168,24 +2365,12 @@ bla.04 = {
     }
 
     option = {
-        name = black.07 #You are Next
+        name = black.07 #You are Next (im not Afraid)
+        
         hidden_effect = {
-            random_list = {
-            55 = {
-                add_trait = wounded_1
+            death = {
+                death_reason = death_crushed_by_boulder
             }
-            20 = {
-                add_trait = wounded_2
-            }
-            10 = {
-                add_trait = maimed
-            }
-            10 = {
-                death = {
-                    death_reason = death_crushed_by_boulder
-                }
-            }
-        }
         }
     }
 
@@ -1193,6 +2378,10 @@ bla.04 = {
         name = black.08 #Pay the Guards for Protection
         remove_short_term_gold = -100
         #Minor Xp
+        hidden_effect = {
+            id = blackstone.40
+            days = { 14 60 }
+        }
     }
 }
 
@@ -1221,6 +2410,11 @@ bla.05 = {
                     add_trait = incapable #Yeah rats are bad man
                 }
             }
+
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
         }
 
     }
@@ -1228,12 +2422,24 @@ bla.05 = {
     option = {
         name = black.10
         remove_short_term_gold = 250  #Rat Poison and Full Restock
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
     }
 
     option = {
         name = black.11 # Ignore the Rats RIP
         hidden_effect = {
             add_trait = bubonic_plague
+
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
         }
     }
 }
@@ -1253,6 +2459,11 @@ bla.06 = {
     option = {
         name = black.12
         add_short_term_gold = 500
+
+        hidden_effect = {
+            id = blackstone.40
+            days = { 14 65 }
+        }
     }
 
     option = {
@@ -1261,5 +2472,1297 @@ bla.06 = {
         }
 
         add_short_term_gold = 750 #I am smurt i see gold
+
+        hidden_effect = {
+            id = blackstone.40
+            days = { 14 65 }
+        }
     }
 }
+
+bla.07 = {
+    type = character_event
+    title = bla.07_t #cave in at the site
+    desc = bla.07_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = black.13 #brought supplies to fix and support the EXCAVATION
+
+        trigger = {
+            stewardship >= 18
+        }
+
+        xp = good
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.14 #they are only peasants
+
+        add_character_modifier = grouchy_ruler_modifier
+        
+        xp = mid
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+
+    }
+
+
+    option = {
+        name = black.15 #Compensate the people
+
+        remove_short_term_gold = 500
+
+        xp = good
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.08 = {
+    type = character_event
+    title = bla.08_t # hostile Wildlife
+    desc = bla.08_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = black .16 #Bear Spray
+
+        trigger = {
+            learning >= 20
+        }
+
+        xp = Great
+
+        add_prestige = 500
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.17 #Fight Bear
+
+        custom_tooltip = {
+            text = bears.1
+            random_list = {
+                20 = {
+                    add_trait = wounded_1
+                }
+                20 = {
+                    add_prestige = 800
+                    give_nickname = nick_the_bear #Bro Killed Bear and then became him lol
+                }
+
+                20 = {
+                    add_trait = wounded_2
+                }
+
+                20 = {
+                    add_trait = maimed
+                }
+
+                10 = {
+                    add_trait = wounded_3
+                }
+
+                10 = {
+                    death = {
+                        death_reason = death_eaten_by_bear
+                    }
+                }
+            }
+
+            hidden_effect = {
+                trigger_event = {
+                    id = blackstone.40
+                    days = { 14 65 }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = black.18 #Feed Bear in hopes he leaves
+
+        custom_tooltip = {
+            text = bears.2
+            random_list = {
+                40 = {
+                    prestige = 400
+                }
+
+                20 = {
+                    wounded_1
+                }
+
+                20 = {
+                    wounded_2
+                }
+
+                10 = {
+                    wounded_3
+                }
+
+                9 = {
+                    death = {
+                        death_reason = death_eaten_by_bear
+                    }
+                }
+                
+                1 = {
+                    add_trait = silly_bear #You've been Beared
+                }
+            }
+            hidden_effect = {
+                trigger_event = {
+                    id = blackstone.40
+                    days = { 14 65 }
+                }
+            }
+        }
+    }
+}
+
+bla.09 = {
+    type = character_event
+    title = bla.09_t #Rival Maester comes to Camp
+    desc = bla.09_Desc
+
+    theme = learning
+
+    immediate = {
+        create_character = {
+            gender = male
+            random_traits_list = { count = 3 }
+            culture = culture:riverlander
+            faith = faith:fots_seven
+            add_trait = maester 
+            add_trait = education_martial_prowess_2
+
+            save_scope_as = rival.1
+        }
+    }
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = angry
+    }
+
+    left_portrait = {
+        character = scope:rival.1
+        animation = angry
+    }
+
+    option = {
+        name = black.19 #Sharing
+
+        trigger = {
+            diplomacy >= 18
+        }
+
+        prestige = 500
+        add_short_term_gold = 100
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.20 #Fight
+
+        configure_start_single_combat_effect = {
+            SC_INITIATOR = blackstone_root
+            SC_ATTACKER = blackstone_root
+            SC_DEFENDER = rival.1
+            FATALITY = always
+            FIXED = no
+            LOCALE = terrain_scope 
+            OUTPUT_EVENT = bla.10
+            INVALIDATION_EVENT = blackstone.40
+        }
+    }
+
+    option = {
+        name = black.21 #Bribery
+
+        remove_short_term_gold = 350
+
+        xp = mini 
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.10 = {
+    type = character_event
+    title = bla.10_t # win Fight against Rival
+    desc = bla.10_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = schadenfreude
+    }
+
+    option = {
+        name = black.22
+
+        add_prestige = 500
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        } 
+    }
+}
+
+bla.11 = {
+    type = character_event
+    title = bla.11_t #major find
+    desc = bla.11_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = ecstasy
+    }
+
+    option = {
+        name = black.23
+
+        xp = major
+
+        add_short_term_gold = 100
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.12 = {
+    type = character_event
+    title = bla.12_t #major find
+    desc = bla.12_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = black.24 #valyrian_manuscripts
+        save_scope_as = owner
+        set_artifact_rarity_illustrious = yes
+        create_artifact = {
+            name = valyrian_manuscripts
+            visuals = book
+            description = valyrian_manuscripts_desc
+            type = miscellaneous
+            wealth = scope:wealth
+            quality = scope:quality
+            template = marco_polo_book
+            history = {
+                type = created_before_history
+                date = 7300.1.1
+            }
+            save_scope_as = newly_created_artifact
+            decaying = no
+        }
+        scope:newly_created_artifact ?= {
+            set_variable = {
+                name = historical_unique_artifact
+                value = yes
+            }
+        }
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.13 = {
+    type = character_event
+    title = bla.13_t #Echo of the past
+    desc = {
+        first_valid = {
+            triggered_desc = {
+                trigger = {
+                    has_religion = the_rhllor_religion #Look into Flames
+                }
+                desc = bla.13a
+            }
+
+            triggered_desc = {
+                trigger = {
+                    has_religion = the_flames_religion #Blood Visions or something
+                }
+                desc = bla.13b
+            }
+        }
+    }
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                has_trait = ruin
+            }
+        }
+
+        OR = {
+            has_religion = religion:the_rhllor_religion
+            has_religion = religion:the_flames_religion
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = black.25
+        piety = 500
+
+        xp = major
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.14 = {
+    type = character_event
+    title = bla.14_t #Permits Revoked
+    desc = bla.14_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = angry
+    }
+
+    option = {
+        name = black.26 #negotiate  new permit 
+        trigger = {
+            diplomacy >= 16
+        }
+
+        remove_short_term_gold = 100
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.26 #Buy new permit 
+        trigger = {
+            stewardship >= 16
+        }
+
+        remove_short_term_gold = 150
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.27 #Do applications and hope for best
+
+        xp - big
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.15 = {
+    type = character_event
+    title = bla.15_t # Peasants protest
+    desc = bla.15_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+
+    right_portrait = {
+        character = root
+        animation = scared
+    }
+
+    option = {
+        name = black.28 #Crush the Protest
+        trigger = {
+            martial >= 15
+        }
+
+        prestige = 500
+
+        hidden_effect = {
+            random_list = {
+                50 = {}
+
+                20 = {
+                    add_trait = wounded_1
+                }
+
+                10 = {
+                    add_trait = wounded_2
+                }
+
+                10 = {
+                    remove_trait = compassionate
+                    add_trait = sadistic
+                }
+                
+                10 = {
+                    death = {
+                        death_reason = death_ratiod
+                    }
+                }
+            }
+        }
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.29 #Bribe the peasants
+
+        remove_short_term_gold = 400
+
+        prestige = -250
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.30 #Talk them down
+
+        trigger = {
+            diplomacy >= 15
+        }
+
+        prestige = 850
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.16 = {
+    type = character_event
+    title = bla.16_t # sabatoge from rival
+    desc = bla.16_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    immediate = {
+        create_character = {
+            gender = male
+            random_traits_list = { count = 3 }
+            culture = culture:riverlander
+            faith = faith:fots_seven
+            add_trait = maester 
+            add_trait = education_martial_prowess_2
+
+            save_scope_as = rival.2
+        }
+    }
+
+
+    right_portrait = {
+        character = root
+        animation = scared
+    }
+
+    left_portrait ={
+        character = scope:rival.2
+        animation = scheme
+    }
+
+    option = {
+        name = black.31 #Try and salvage
+
+        remove_short_term_gold = 200
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.32
+        configure_start_single_combat_effect = {
+            SC_INITIATOR = blackstone_root
+            SC_ATTACKER = blackstone_root
+            SC_DEFENDER = rival.2
+            FATALITY = always
+            FIXED = no
+            LOCALE = terrain_scope 
+            OUTPUT_EVENT = bla.17
+            INVALIDATION_EVENT = blackstone.40
+        }
+    }
+}
+
+bla.17 = {
+    type = character_event
+    title = bla.17_t # killed rival and reclaimed loses
+    desc = bla.17_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = schadenfreude
+    }
+
+    option = {
+        name = black.33
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+
+        add_short_term_gold = 300
+    }
+}
+
+bla.18 = {
+    type = character_event
+    title = bla.18_t #Bodies found in the Excavation
+    desc = bla.18_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+        name = black.34 #Dump the Bodies into the Soup Kitchens
+        trigger = {
+            intrigue >= 18
+            has_trait = sadistic
+        }
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        
+            99 = {}
+            1 = {
+                add_trait = cannibal
+            }
+        }
+    }
+
+    option = {
+        name = black.35 #Dump the Bodies into the river
+        trigger = {
+            intrigue >= 15
+        }
+
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.36 #Call the Town Guards to investigate 
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 30 90 }
+            }
+        }
+    }
+
+    option = {
+        name = black.37 #Bribe the Guards to Dispose of them
+
+        remove_short_term_gold = 500
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.19 = {
+    type = character_event
+    title = bla.19_t #Sink Hole/ Mud Slide
+    desc = {
+        first_valid ={
+            triggered_desc = { #
+                trigger = { location = province:4415 } #Dragonstone
+                desc = bla.19a
+            }
+
+            desc = bla.19_desc
+        }
+    }
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    option = {
+        name = black.38 #Try buy some Supports and Braces to Prevent Further Damage 
+
+        remove_short_term_gold = 650
+
+        hidden_effect = {
+            trigger_event = { 
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.39 #Just get the Peasants to Keep Digging 
+
+        trigger = {
+            has_trait = sadistic
+        }
+
+        add_piety = -500
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.40 #I know a Guy
+
+        trigger = {
+            stewardship >= 16
+        }
+
+        remove_short_term_gold = 200
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.20 = {
+    type = character_event
+    title = bla.20_t #Thief Stealing artefacts
+    desc = bla.20_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    immediate = {
+        create_character = {
+            gender = male
+            random_traits_list = { count = 3 }
+            culture = culture:westerosi_valyrian
+            faith = faith:fots_seven
+
+            save_scope_as = thief_1
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = aggressive_dagger
+    }
+
+    left_portrait = {
+        character = scope:thief_1
+        animation = shock
+    }
+
+    option = {
+        name = black.41 #Give it me back
+        
+        random_list = {
+            65 = {
+                custom_tooltip = {
+                    text = black.41A #Yeah okay im sorry
+                    trigger_event = {
+                        id = blackstone.40
+                        days = { 14 65 }
+                    }
+                }
+            }
+
+            35 = {
+                custom_tooltip = {
+                    text = black.41B #ONGUARD YOU SWINE
+
+                    configure_start_single_combat_effect = {
+                        SC_INITIATOR = blackstone_root
+                        SC_ATTACKER = blackstone_root
+                        SC_DEFENDER = thief_1
+                        FATALITY = always
+                        FIXED = no
+                        LOCALE = terrain_scope 
+                        OUTPUT_EVENT = bla.21
+                        INVALIDATION_EVENT = blackstone.40
+                    }
+                }
+            }
+        }   
+    }
+}
+
+bla.21 = {
+    type = character_event
+    title = bla.21_t #Thief died
+    desc = bla.21_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = celebrate_dagger
+    }
+
+    option = {
+        name = black.42 #Killed em , Chump
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 60 }
+            }
+        }
+    }
+}
+
+bla.22 = {
+    type = character_event
+    title = bla.22_t #Magically Unstable Object
+    desc = bla.22_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = survey
+    }
+
+    option = {
+
+    }
+}
+
+#### Good Civil #####
+
+bla.23 = {
+    type = character_event
+    title = bla.23_t # Political and Monitary Support
+    desc = bla.23_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = black.45 #negotiate a bigger investment
+
+        trigger = {
+            has_trait = diplomat
+        }
+
+        add_short_term_gold = 1000
+    }
+
+    option = {
+        name = black.46 # Thank you
+
+        add_short_term_gold = 600
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 15 65 }
+            }
+        }
+    }
+}
+
+bla.24 = {
+    type = character_event
+    title = bla.24_t #Renaissance
+    desc = bla.24_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = admiration
+    }
+
+    option = {
+        name = black.47 #Speaking about artefacts and History of the Site
+
+        add_prestige = 1200
+        add_short_term_gold = 100
+
+        hidden_effect ={
+            id = blackstone.40
+            days = { 15 100 }
+        }
+    }
+
+    option = {
+        name = black.48 #Time to Sell some Merchandise
+
+        add_short_term_gold = 400
+        add_prestige = 100
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 15 100 }
+            }
+        }
+    }
+}
+
+bla.25 = {
+    type = character_event
+    title = bla.25_t #Artefact Discovery
+    desc = bla.25_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = admiration
+    }
+
+    option = {
+        name = black.49 #Donate it to Mueseum 
+
+        add_prestige = 2500
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = blackstone.50 #Sell it
+
+        add_short_term_gold = 750
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.26 = {
+    type = character_event
+    title = bla.26_t #Local Family Reveal old Family maps helping The Discovery
+    desc = bla.26_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = admiration
+    }
+
+    option = {
+        name black.51 #Thank them
+
+        remove_short_term_gold = 100
+        add_prestige = 750
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+
+    option = {
+        name = black.52 #Use your knowlegde to examine the maps
+
+        trigger = {
+            learning >= 16
+        }
+        
+        add_prestige = 400
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.27 = {
+    type = character_event
+    title = bla.27_t #Funding Increased
+    desc = bla.27_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    immediate = {
+        create_character = {
+            gender = male
+            random_traits_list = { count = 3 }
+            culture = culture:westerosi_valyrian
+            faith = faith:fots_seven
+            add_trait = maester 
+
+            save_scope_as = maester_1
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = admiration
+    }
+
+    left_portrait = {
+        character = scope:maester_1
+        animation = acknowledging
+    }
+
+    option = {
+        name = black.53 #gifted with Funding
+
+        add_short_term_gold = 500
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 75 }
+            }
+        }
+    }
+
+    option = {
+        name = black.54 #Ask for Support instead
+
+        #Bigger XP 
+
+        add_prestige = 750
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
+bla.28 = {
+    type = character_event
+    title = bla.28_t #translation of Ancient Tablets
+    desc = bla.28_Desc
+
+    theme = learning
+
+    trigger = {
+        location = {
+            province_owner = {
+                NOT = { has_trait = ruin }
+            }
+        }
+    }
+
+    right_portrait = {
+        character = root
+        animation = page_flipping
+    }
+
+    option = {
+        name = black.55 #Wow these help use understand more
+
+        hidden_effect = {
+            trigger_event = {
+                id = blackstone.40
+                days = { 14 65 }
+            }
+        }
+    }
+}
+
