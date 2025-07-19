@@ -18,6 +18,9 @@ window = {
 		on_start = "[GetVariableSystem.Set( 'county_view_open', 'true' )]"
 		on_start = "[GetVariableSystem.Set( 'hide_bottom_left_HUD', 'true' )]"
 
+		# LEGACY OF VALYRIA ADDED
+		on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_show').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+
 		using = Animation_FadeIn_Standard
 		using = Sound_WindowShow_Standard
 		using = Animation_FadeIn_BottomLeft
@@ -30,9 +33,19 @@ window = {
 		#AGOT Added
 		on_start = "[GetVariableSystem.Clear( 'window_ruins_confirm' )]"
 
+		# LEGACY OF VALYRIA ADDED
+		on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_hide').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+
 		using = Animation_FadeOut_Standard
 		using = Sound_WindowHide_Standard
 		using = Animation_FadeOut_BottomLeft
+	}
+
+	# LEGACY OF VALYRIA ADDED
+	# Failsafe for when you switch counties without closing the window
+	state = {
+		name = _mouse_hierarchy_enter
+		on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_show').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
 	}
 
 	alwaystransparent = yes
@@ -1050,8 +1063,39 @@ window = {
 					}
 				}
 
+				# LEGACY OF VALYRIA ADDED
+				hbox = {
+					visible = "[GetScriptedGui('lv_ruin_valyria_restoration_blocked').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope).End)]"
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					margin = { 30 0 }
+
+					text_multi = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						text = "lv_valyria_province_expedition_required"
+						align = center
+						default_format = "#high;glow_color:{0,0,0,1}"
+						
+						using = Font_Type_Flavor
+						using = Font_Size_Big
+
+						background = {
+							using = Background_Area_Dark
+							margin = { 40 6 }
+							alpha = 0.8
+
+							modify_texture = {
+								texture = "gfx/interface/component_masks/mask_fade_circle.dds"
+								#blend_mode = alphaMultiply
+							}
+						}
+					}
+				}
+
 				### TOP LEFT
 				hbox = {
+					visible = "[Not(GetScriptedGui('lv_ruin_valyria_restoration_blocked').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope).End))]"
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 
@@ -1608,7 +1652,9 @@ window = {
 					}
 				}
 
+				# LEGACY OF VALYRIA MODIFIED
 				hbox = {
+					visible = "[Not(And(HoldingView.HasHolding, GetScriptedGui('lv_ruin_valyria_restoration_blocked').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope).End)))]"
 					layoutpolicy_horizontal = expanding
 					allow_outside = yes
 
@@ -1843,10 +1889,10 @@ window = {
 								margin_bottom = 12
 								ignoreinvisible = yes
 								agot_county_view_restore_ruins_button = {}
-								widget = {
-									visible = "[And(Or(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ), GreaterThan_int32(GetDataModelSize(HoldingView.GetBuildings), '(int32)4'))]"
-									size = { 0 59 }
-								}
+								#widget = {
+								#	visible = "[And(Or(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ), GreaterThan_int32(GetDataModelSize(HoldingView.GetBuildings), '(int32)4'))]"
+								#	size = { 0 59 }
+								#}
 							}
 						}
 					}
@@ -2100,7 +2146,7 @@ window = {
 								# Upgrade buildings
 								scrollarea = {
 									#ignoreinvisible = yes
-									maximumsize = { 464 58 }
+									maximumsize = { 424 58 }
 									autoresizescrollarea = yes
 
 									scrollbarpolicy_vertical = always_off
@@ -2183,7 +2229,7 @@ window = {
 											datamodel = "[HoldingView.GetBuildings]"
 											ignoreinvisible = yes
 											spacing = 3
-											margin_right = 3
+											#margin_right = 3
 											righttoleft = yes
 
 											item = { widget_building_item = {} }
@@ -3167,11 +3213,12 @@ window = {
 												clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_close"
 											}
 
+											# LEGACY OF VALYRIA MODIFIED
 											button_round = {
 												name = "replace_button"
 												onclick = "[GUITrackItem.Replace]"
 												tooltip = "[GUITrackItem.GetReplaceTooltip]"
-												visible = "[And(GUITrackItem.IsCurrentBuildingSelected, GUITrackItem.CanReplace)]"
+												visible = "[And(GUITrackItem.IsCurrentBuildingSelected, And(GUITrackItem.CanReplace, Not(GetScriptedGui('lv_ruin_has_blockers').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).End))))]"
 
 												button_change = {
 													alwaystransparent = yes

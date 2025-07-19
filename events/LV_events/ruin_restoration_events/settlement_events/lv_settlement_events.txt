@@ -1,0 +1,406 @@
+﻿namespace = lv_settlement_event
+
+# Directory
+
+# lv_settlement_event.0001 - Decide who you want to send to claim the land
+# lv_settlement_event.0002 - Choose someone to settle the land in your name
+# lv_settlement_event.0003 - Vassal decides to go or refuse
+# lv_settlement_event.0010 - Notification: Departure
+# lv_settlement_event.0011 - Notification: Arrival
+# lv_settlement_event.0100 - Upgrade settlement
+
+# Scripted Effects
+# Rationale for current structure: Scopes don't propagate to on_actions defined by start_travel_plan unlike in event chains, so we store them as variables
+# "Why not just scope the liege by the time the expedition leader arrives, instead of storing them as a variable?"
+# - Currently, the event is set up so you only choose direct vassals and your courtiers, which have you as their liege by default
+# - However, there might be a potential use case for non-vassal/courtier options, which might be interesting to look into eventually
+scripted_effect lv_settlement_confirm_effect = {
+	save_scope_as = settler
+	set_variable = {
+		name = lv_settlement_expedition_liege
+		value = scope:liege
+	}
+	set_variable = {
+		name = lv_settlement_expedition_destination
+		value = scope:ruin
+	}
+	scope:liege = {
+		set_variable = {
+			name = lv_settlement_cost
+			value = scope:lv_settlement_cost
+		}
+		remove_variable = lv_settlement_state
+		if = {
+			limit = { owns_story_of_type = lv_settlement_story_cycle }
+			random_owned_story = {
+				limit = { story_type = lv_settlement_story_cycle }
+				add_to_variable_list = {
+					name = lv_settlement_expeditions
+					target = scope:ruin
+				}
+			}
+		}
+		else = { create_story = lv_settlement_story_cycle }
+	}
+	start_travel_plan = {
+		destination = scope:ruin
+		players_use_planner = yes
+		return_trip = no
+		can_cancel_planning = yes
+		on_start_on_action = lv_settlement_on_start
+		on_arrival_on_action = lv_settlement_on_arrival
+	}
+}
+
+# Decide who you want to send to claim the land
+lv_settlement_event.0001 = {
+	type = character_event
+	title = lv_settlement_event.0001.t
+	desc = lv_settlement_event.0001.desc
+	theme = crown
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = scope:councillor
+		animation = steward
+	}
+
+	immediate = {
+		save_scope_as = liege
+		set_variable = {
+			name = lv_settlement_state
+			value = flag:planning
+		}
+		if = {
+			limit = { has_councillor_for_skill = stewardship }
+			random_stewardship_councillor = { save_scope_as = councillor }
+		}
+		else_if = {
+			limit = { has_councillor_for_skill = general }
+			random_general_councillor = { save_scope_as = councillor }
+		}
+	}
+
+	# Lead the expedition yourself
+	option = {
+		name = lv_settlement_event.0001.a
+		trigger = { is_available_adult = yes }
+		lv_settlement_confirm_effect = yes
+	}
+
+	# Send a courtier
+	option = {
+		name = lv_settlement_event.0001.b
+		trigger = { is_landless_adventurer = no }
+		set_variable = {
+			name = lv_settlement_filter
+			value = flag:courtiers
+		}
+		trigger_event = lv_settlement_event.0002
+	}
+
+	# Send a vassal
+	option = {
+		name = lv_settlement_event.0001.c
+		trigger = { is_landless_adventurer = no }
+		set_variable = {
+			name = lv_settlement_filter
+			value = flag:vassals
+		}
+		trigger_event = lv_settlement_event.0002
+	}
+
+	# No
+	option = {
+		name = lv_settlement_event.0001.d
+		remove_variable = lv_settlement_state
+	}
+}
+
+# Choose someone to settle the land in your name
+lv_settlement_event.0002 = {
+	type = character_event
+	title = lv_settlement_event.0002.t
+	desc = lv_settlement_event.0002.desc
+	theme = crown
+
+	widget = {
+		is_shown = { is_ai = no }
+		gui = "agot_character_selection_three_options"
+		container = "custom_widgets_container"
+	}
+
+	immediate = {
+		switch = {
+			trigger = var:lv_settlement_filter
+			flag:courtiers = {
+				every_courtier = {
+					limit = {
+						is_available_adult = yes
+						is_human = yes
+					}
+					root = {
+						add_to_variable_list = {
+							name = possible_characters
+							target = prev
+						}
+					}
+				}
+			}
+			flag:vassals = {
+				every_vassal = {
+					limit = {
+						is_available_adult = yes
+						is_human = yes
+					}
+					root = {
+						add_to_variable_list = {
+							name = possible_characters
+							target = prev
+						}
+					}
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			order_by = age
+			root = { set_variable = { name = si_selected_character value = prev } }
+			save_scope_as = selected_character
+		}
+	}
+
+	left_portrait = {
+		character = root
+		animation = interested
+	}
+
+	# Select person
+	option = {
+		name = lv_settlement_event.0002.a
+		trigger = { exists = scope:selected_character }
+		if = {
+			limit = { var:lv_settlement_filter = flag:vassals }
+			var:si_selected_character ?= { trigger_event = lv_settlement_event.0003 }
+		}
+		else = { var:si_selected_character ?= { lv_settlement_confirm_effect = yes } }
+
+		clear_variable_list = possible_characters
+	}
+
+	# Nevermind
+	option = {
+		name = lv_settlement_event.0002.b
+		trigger_event = lv_settlement_event.0001
+
+		remove_variable = si_selected_character
+		clear_variable_list = possible_characters
+	}
+
+	after = { remove_variable = lv_settlement_filter }
+}
+
+# Vassal decides to go or refuse
+lv_settlement_event.0003 = {
+	type = character_event
+	title = lv_settlement_event.0003.t
+	desc = lv_settlement_event.0003.desc
+	theme = crown
+
+	left_portrait = {
+		character = root
+		animation = reading
+	}
+
+	right_portrait = {
+		character = scope:liege
+		animation = writing
+	}
+
+	# Yes
+	option = {
+		name = lv_settlement_event.0003.a
+		custom_tooltip = {
+			text = lv_settlement_event.0003.a.tt
+			lv_settlement_confirm_effect = yes
+		}
+	}
+
+	# No
+	option = {
+		name = lv_settlement_event.0003.b
+		custom_tooltip = {
+			text = lv_settlement_event.0003.b.tt
+			scope:liege = { trigger_event = lv_settlement_event.0004 }
+		}
+	}
+}
+
+# Vassal Refused
+lv_settlement_event.0004 = {
+	type = character_event
+	title = lv_settlement_event.0004.t
+	desc = lv_settlement_event.0004.desc
+	theme = travel
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = var:si_selected_character
+		animation = disapproval
+	}
+
+	# Ok, choose another
+	option = {
+		name = lv_settlement_event.0004.a
+		custom_tooltip = {
+			text = lv_settlement_event.0004.a.tt
+			trigger_event = lv_settlement_event.0001
+		}
+	}
+
+	# Nah
+	option = {
+		name = lv_settlement_event.0004.b
+		custom_tooltip = {
+			text = lv_settlement_event.0004.b.tt
+			remove_variable = lv_settlement_state
+		}
+	}
+
+	after = { remove_variable = si_selected_character }
+}
+
+# Notification: Departure
+lv_settlement_event.0010 = {
+	type = character_event
+	title = lv_settlement_event.0010.t
+	desc = {
+		triggered_desc = {
+			trigger = { this = scope:settler }
+			desc = lv_settlement_event.0010.desc.self
+		}
+		triggered_desc = {
+			trigger = { NOT = { this = scope:settler } }
+			desc = lv_settlement_event.0010.desc.other
+		}
+	}
+	theme = travel
+
+	left_portrait = {
+		character = scope:settler
+		animation = personality_honorable
+	}
+
+	option = { name = lv_settlement_event.0010.a }
+}
+
+# Notification: Arrival
+# - Also a notification event for other rulers
+lv_settlement_event.0011 = {
+	type = character_event
+	title = {
+		first_valid = {
+			triggered_desc = { # You are the liege and you led the expedition
+				trigger = {
+					this = scope:settler
+					scope:liege = scope:settler
+				}
+				desc = lv_settlement_event.0011.t.self_liege
+			}
+			triggered_desc = { # You are not the liege but led the expedition
+				trigger = {
+					this = scope:settler
+					NOT = { scope:liege = scope:settler }
+				}
+				desc = lv_settlement_event.0011.t.self_non_liege
+			}
+			triggered_desc = { # You are the liege but not the leader of the expedition
+				trigger = {
+					NOT = { this = scope:settler }
+					this = scope:liege
+				}
+				desc = lv_settlement_event.0011.t.other_liege
+			}
+			# Default: You are neither the liege nor the leader of the expedition
+			desc = lv_settlement_event.0011.t.other_non_liege
+		}
+	}
+	desc = {
+		first_valid = {
+			triggered_desc = { # You are the liege and you led the expedition
+				trigger = {
+					this = scope:settler
+					scope:liege = scope:settler
+				}
+				desc = lv_settlement_event.0011.desc.self_liege
+			}
+			triggered_desc = { # You are not the liege but led the expedition
+				trigger = {
+					this = scope:settler
+					NOT = { scope:liege = scope:settler }
+				}
+				desc = lv_settlement_event.0011.desc.self_non_liege
+			}
+			triggered_desc = { # You are the liege but not the leader of the expedition
+				trigger = {
+					NOT = { this = scope:settler }
+					this = scope:liege
+				}
+				desc = lv_settlement_event.0011.desc.other_liege
+			}
+			# Default: You are neither the liege nor the leader of the expedition
+			desc = lv_settlement_event.0011.desc.other_non_liege
+		}
+	}
+	theme = travel
+
+	left_portrait = {
+		character = scope:settler
+		animation = personality_honorable
+	}
+
+	option = {
+		name = {
+			trigger = { this = scope:settler scope:liege = scope:settler }
+			text = lv_settlement_event.0011.a.self_liege
+		}
+		name = {
+			trigger = { this = scope:settler NOT = { scope:liege = scope:settler } }
+			text = lv_settlement_event.0011.a.self_non_liege
+		}
+		name = {
+			trigger = { NOT = { this = scope:settler } this = scope:liege }
+			text = lv_settlement_event.0011.a.other_liege
+		}
+		name = {
+			trigger = { NOT = { this = scope:settler } NOT = { this = scope:liege } }
+			text = lv_settlement_event.0011.a.other_non_liege
+		}
+	}
+}
+
+# Upgrade settlement
+# Commented out for now, the AGOT ruins event will do until a bespoke LoV event is justified
+#lv_settlement_event.0100 = {
+#	type = character_event
+#	title = lv_settlement_event.0100.t
+#	desc = lv_settlement_event.0100.desc
+#	theme = stewardship_domain_focus
+#	
+#	override_background = { reference = army_camp }
+#
+#	left_portrait = {
+#		character = root
+#		animation = chancellor
+#	}
+#
+#	option = { name = lv_settlement_event.0100.a }
+#}

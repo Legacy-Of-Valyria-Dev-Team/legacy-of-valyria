@@ -1,411 +1,10 @@
 ﻿# Legacy of Valyria general on actions
 on_game_start = {
     on_actions = {
-		lv_world_setup
 		lv_titles_setup
 		lv_vassals_setup
 		lv_on_game_start
     }
-}
-
-# World-setup
-lv_world_setup = {
-	on_actions = {
-		lv_ruins_setup
-		lv_valyria_setup
-	}
-}
-
-lv_valyria_setup = {
-	effect = {
-		if = {
-			limit = { has_game_rule = lv_valyria_default }
-			every_county_in_region = {
-				region = world_valyria_mainland
-				add_county_modifier = wasteland_valyria
-			}
-		}
-	}
-}
-
-lv_ruins_setup = {
-	trigger = { NOT = { has_game_rule = lv_colonisation_agot } }
-	effect = {
-		# Set up blockers
-		every_county_in_region = {
-			limit = { title_province = { has_holding_type = ruin_holding } }
-			region = world_valyria_mainland
-			title_province = {
-				# PREDEFINED: Significant Ruined Holdings
-				if = { # Large
-					limit = {
-						OR = {
-							county = title:c_valyria
-							county = title:c_ilvonys
-							county = title:c_kastaryia
-							county = title:c_oreos
-						}
-					}
-					lv_add_blocker_effect = {
-						FORCE = yes
-						BLOCKER_BUILDING = large_ruined_holding_01
-					}
-				}
-				else_if = { # Medium
-					limit = {
-						OR = {
-							lv_is_fourteen_flames = yes
-							has_special_building = yes
-							has_special_building_slot = yes
-							county = {
-								any_neighboring_county = {
-									any_county_province = {
-										OR = {
-											county = title:c_valyria
-											county = title:c_ilvonys
-											county = title:c_kastaryia
-											county = title:c_oreos
-										}
-									}
-								}
-							}
-						}
-					}
-					lv_add_blocker_effect = {
-						FORCE = yes
-						BLOCKER_BUILDING = medium_ruined_holding_01
-					}
-				}
-				else_if = {
-					limit = {
-						OR = {
-							empire ?= title:e_valyria
-							county = title:c_dravathor
-							county = title:c_volandrys
-							county = {
-								any_neighboring_county = {
-									OR = {
-										any_county_province = {
-											lv_is_fourteen_flames = yes
-											has_special_building = yes
-											has_special_building_slot = yes
-										}
-										any_neighboring_county = {
-											any_county_province = {
-												OR = {
-													county = title:c_valyria
-													county = title:c_ilvonys
-													county = title:c_kastaryia
-													county = title:c_oreos
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					lv_add_blocker_effect = {
-						FORCE = yes
-						BLOCKER_BUILDING = small_ruined_holding_01
-					}
-				}
-
-				# PREDEFINED: Wyrm-Infested Valyrian Mines
-				if = {
-					limit = { lv_valyrian_mine = yes }
-					lv_add_blocker_effect = {
-						FORCE = yes
-						BLOCKER_BUILDING = valyria_mines_01
-					}
-				}
-				else_if = {
-					limit = { lv_dormant_mine = yes }
-					lv_add_blocker_effect = {
-						FORCE = yes
-						BLOCKER_BUILDING = valyria_mines_dormant_01
-					}
-				}
-				# PREDEFINED: Toxic gases for provinces of the Fourteen Flames
-				if = {
-					limit = { lv_is_fourteen_flames = yes }
-					lv_add_blocker_effect = {
-						FORCE = yes
-						BLOCKER_BUILDING = noxious_gases_02_01
-					}
-				}
-
-				# RANDOMLY-GENERATED BLOCKERS
-				if = {
-					limit = {
-						NOT = {
-							has_game_rule = lv_colonisation_lite
-							has_building_or_higher = noxious_gases_02_01
-						}
-					}
-
-					# Volcanic fumes (noxious_gases_02_)
-					random = {
-						chance = {
-							value = 15
-							county = {
-								if = {
-									limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
-									multiply = 6
-								}
-								else_if = {
-									limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
-									multiply = 2
-								}
-							}
-						}
-						lv_add_blocker_effect = {
-							FORCE = no
-							BLOCKER_BUILDING = noxious_gases_02_01
-						}
-					}
-					# Lingering fumes (noxious_gases_01_)
-					if = {
-						limit = { NOT = { has_building_or_higher = noxious_gases_02_01 } }
-						random = {
-							chance = {
-								value = 15
-								county = {
-									if = {
-										limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
-										value = 100 # Guarantee if neighbor of one of the Fourteen Flames doesn't have the volcanic fumes
-									}
-									else_if = {
-										limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
-										multiply = 6
-									}
-									else = { multiply = 2 }
-								}
-							}
-							lv_add_blocker_effect = {
-								FORCE = no
-								BLOCKER_BUILDING = noxious_gases_01_01
-							}
-						}
-					}
-
-					# Unexplored Caves
-					random = {
-						chance = {
-							value = 25
-							if = {
-								limit = { agot_is_mountains_terrain = yes }
-								multiply = 2
-							}
-							if = {
-								limit = { agot_is_cloudforest_terrain = yes }
-								multiply = 1.9
-							}
-							if = {
-								limit = {
-									OR = {
-										agot_is_jungle_terrain = yes
-										agot_is_highlands_terrain = yes
-										agot_is_hills_terrain = yes
-									}
-								}
-								multiply = 1.75
-							}
-							if = {
-								limit = { agot_is_forest_terrain = yes }
-								multiply = 1.5
-							}
-							if = {
-								limit = {
-									OR = {
-										agot_is_the_bog_terrain = yes
-										agot_is_farmlands_terrain = yes
-										agot_is_floodplains_terrain = yes
-									}
-								}
-								multiply = 0.5
-							}
-							if = {
-								limit = { agot_is_urban_terrain = yes }
-								multiply = 0
-							}
-						}
-						lv_add_blocker_effect = {
-							FORCE = no
-							BLOCKER_BUILDING = unexplored_caves_01
-						}
-					}
-
-					# Swamp
-					random = {
-						chance = {
-							value = 25
-							if = {
-								limit = { agot_is_the_bog_terrain = yes }
-								multiply = 3
-							}
-							if = {
-								limit = { agot_is_floodplains_terrain = yes }
-								multiply = 2
-							}
-							if = {
-								limit = { agot_is_cloudforest_terrain = yes }
-								multiply = 1.5
-							}
-							if = {
-								limit = { agot_is_jungle_terrain = yes }
-								multiply = 1.2
-							}
-							if = {
-								limit = { agot_is_farmlands_terrain = yes }
-								multiply = 0.75
-							}
-							if = {
-								limit = { agot_is_plains_terrain = yes }
-								multiply = 0.5
-							}
-							if = {
-								limit = {
-									OR = {
-										agot_is_mountains_terrain = yes
-										agot_is_hills_terrain = yes
-										agot_is_highlands_terrain = yes
-									}
-								}
-								multiply = 0.25
-							}
-							if = {
-								limit = { agot_is_urban_terrain = yes }
-								multiply = 0
-							}
-						}
-						lv_add_blocker_effect = {
-							FORCE = no
-							BLOCKER_BUILDING = swamp_02_01
-						}
-					}
-					if = {
-						limit = { NOT = { has_building_or_higher = swamp_02_01 } }
-						random = {
-							chance = {
-								value = 25
-								if = {
-									limit = { agot_is_the_bog_terrain = yes }
-									multiply = 4 # Pretty much guarantee if a bog has no swamp blocker yet
-								}
-								if = {
-									limit = { agot_is_floodplains_terrain = yes }
-									multiply = 3
-								}
-								if = {
-									limit = { agot_is_cloudforest_terrain = yes }
-									multiply = 2
-								}
-								if = {
-									limit = { agot_is_jungle_terrain = yes }
-									multiply = 1.5
-								}
-								if = {
-									limit = { agot_is_farmlands_terrain = yes }
-									multiply = 0.75
-								}
-								if = {
-									limit = { agot_is_plains_terrain = yes }
-									multiply = 0.5
-								}
-								if = {
-									limit = {
-										OR = {
-											agot_is_mountains_terrain = yes
-											agot_is_hills_terrain = yes
-											agot_is_highlands_terrain = yes
-										}
-									}
-									multiply = 0.25
-								}
-								if = {
-									limit = { agot_is_urban_terrain = yes }
-									multiply = 0
-								}
-							}
-							lv_add_blocker_effect = {
-								FORCE = no
-								BLOCKER_BUILDING = swamp_01_01
-							}
-						}
-					}
-
-					# Stonemen Encampment
-					random = {
-						chance = {
-							value = 25
-							if = {
-								limit = { empire ?= title:e_valyria }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									OR = {
-										has_building_or_higher = noxious_gases_01_01
-										has_building_or_higher = noxious_gases_02_01
-									}
-								}
-								divide = 2
-							}
-							if = {
-								limit = {
-									OR = {
-										has_building_or_higher = swamp_01_01
-										has_building_or_higher = swamp_02_01
-										has_building_or_higher = lv_floods_01
-									}
-								}
-								multiply = 3
-							}
-						}
-						lv_add_blocker_effect = {
-							FORCE = no
-							BLOCKER_BUILDING = stonemen_encampment_01
-						}
-					}
-
-					# Bandit Camps
-					random = {
-						chance = {
-							value = 25
-							if = {
-								limit = {
-									OR = {
-										has_building_or_higher = noxious_gases_01_01
-										has_building_or_higher = noxious_gases_02_01
-									}
-								}
-								multiply = 0
-							}
-							if = {
-								limit = { has_building_or_higher = unexplored_caves_01 }
-								multiply = 2
-							}
-							if = {
-								limit = {
-									OR = {
-										has_building_or_higher = swamp_01_01
-										has_building_or_higher = swamp_02_01
-										has_building_or_higher = lv_floods_01
-									}
-								}
-								divide = 2
-							}
-						}
-						lv_add_blocker_effect = {
-							FORCE = no
-							BLOCKER_BUILDING = bandit_camps_01
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 # Set up title-related stuff here
@@ -928,9 +527,7 @@ lv_on_game_start = {
 							limit = { has_dlc_feature = admin_gov }
 							change_government = administrative_government
 						}
-						else = {
-							change_government = republic_government
-						}
+						else = { change_government = republic_government }
 					}
 				}
 				set_variable = {
@@ -949,9 +546,7 @@ lv_on_game_start = {
 							limit = { has_dlc_feature = admin_gov }
 							change_government = administrative_government
 						}
-						else = {
-							change_government = republic_government
-						}
+						else = { change_government = republic_government }
 					}
 				}
 				set_variable = {
@@ -970,9 +565,7 @@ lv_on_game_start = {
 							limit = { has_dlc_feature = admin_gov }
 							change_government = administrative_government
 						}
-						else = {
-							change_government = republic_government
-						}
+						else = { change_government = republic_government }
 					}
 				}
 				set_variable = {
@@ -985,10 +578,55 @@ lv_on_game_start = {
 }
 
 on_game_start_after_lobby = {
-	on_actions = { lv_ruins_setup_after_lobby }
+	on_actions = {
+		lv_ruins_setup
+		lv_ruins_setup_non_default
+		lv_ruins_setup_coa
+	}
 }
 
-lv_ruins_setup_after_lobby = {
+lv_ruins_setup = {
+	trigger = { NOT = { has_game_rule = lv_colonisation_agot } }
+	effect = {
+		# Set up blockers
+		every_county_in_region = {
+			limit = { title_province = { has_holding_type = ruin_holding } }
+			region = world_valyria_mainland
+			title_province = {
+				# PREDEFINED BLOCKERS
+				lv_blocker_generation_predefined_ruined_holdings_effect = yes
+				lv_blocker_generation_predefined_mines_effect = yes
+				lv_blocker_generation_predefined_noxious_gases_effect = yes
+
+				# RANDOMLY-GENERATED BLOCKERS
+				if = {
+					limit = { NOT = { has_game_rule = lv_colonisation_lite } }
+					lv_blocker_generation_random_noxious_gases_effect = yes
+					lv_blocker_generation_random_unexplored_caves_effect = yes
+					lv_blocker_generation_random_swamp_effect = yes
+					lv_blocker_generation_random_stonemen_encampment_effect = yes
+					lv_blocker_generation_random_bandit_camps_effect = yes
+				}
+			}
+		}
+	}
+}
+
+# Assign 1 blocker count with the idea of the holding itself being a blocker
+# Basically: One upgraded settlement = reduce blocker count by 1
+# Handy for game rules like Lite or AGOT, where there aren't any other blockers
+lv_ruins_setup_non_default = {
+	trigger = { NOT = { has_game_rule = lv_colonisation_default } }
+	effect = {
+		every_county_in_region = {
+			limit = { title_province = { has_holding_type = ruin_holding } }
+			region = world_valyria_mainland
+			title_province = { lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = yes } }
+		}
+	}
+}
+
+lv_ruins_setup_coa = {
     effect = {
         # Volantene Ruins
 		if = {

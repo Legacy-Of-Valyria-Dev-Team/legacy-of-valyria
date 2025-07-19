@@ -1,0 +1,109 @@
+﻿# Legacy of Valyria
+lv_use_ruin_restoration = {
+	scope = title
+	is_shown = {
+		NOT = { has_game_rule = lv_colonisation_agot }
+		has_holding_type = ruin_holding
+		county ?= { holder ?= { has_government = ruins_government } }
+	}
+}
+
+# Used for restoration cost calculation
+lv_restore_ruins_tooltip_show = {
+	scope = province
+	effect = {
+		save_scope_as = ruin
+		scope:actor = {
+			set_variable = {
+				name = lv_restore_ruins_tooltip
+				value = scope:ruin
+			}
+		}
+	}
+}
+lv_restore_ruins_tooltip_hide = {
+	scope = province
+	effect = { scope:actor = { remove_variable = lv_restore_ruins_tooltip } }
+}
+lv_restore_ruins_tooltip_culture_valyrian_architecture = {
+	is_shown = {
+		scope:ruin ?= { county.culture = culture:high_valyrian }
+		culture = { has_building_gfx = high_valyrian_building_gfx }
+	}
+}
+lv_restore_ruins_tooltip_culture_hard_working = { is_shown = { culture = { has_cultural_tradition = tradition_hard_working } } }
+lv_restore_ruins_tooltip_culture_isolationist = { is_shown = { culture = { has_cultural_tradition = tradition_isolationist } } }
+lv_restore_ruins_tooltip_culture_republican_legacy = {
+	saved_scopes = { ruin }
+	is_shown = {
+		culture = { has_cultural_tradition = tradition_republican_legacy }
+		scope:ruin ?= { geographical_region = world_valyria_mainland }
+	}
+}
+lv_restore_ruins_tooltip_culture_valyrian = {
+	saved_scopes = { ruin }
+	is_shown = {
+		culture = { has_cultural_tradition = agot_tradition_valyrian }
+		scope:ruin ?= { geographical_region = world_valyria_mainland }
+	}
+}
+lv_restore_ruins_tooltip_culture_north_valyrian_1 = {
+	saved_scopes = { ruin }
+	is_shown = {
+		culture = { has_cultural_tradition = agot_tradition_north_valyrian_1 }
+		scope:ruin ?= { geographical_region = world_valyria_mainland }
+	}
+}
+lv_restore_ruins_tooltip_culture_north_valyrian_2 = {
+	saved_scopes = { ruin }
+	is_shown = {
+		culture = { has_cultural_tradition = agot_tradition_north_valyrian_2 }
+		scope:ruin ?= { geographical_region = world_valyria_mainland }
+	}
+}
+lv_restore_ruins_tooltip_culture_doom = {
+	saved_scopes = { ruin }
+	is_shown = {
+		culture = { has_cultural_tradition = agot_tradition_doom }
+		scope:ruin ?= { geographical_region = world_valyria_mainland }
+	}
+}
+
+lv_ruin_can_afford = { is_shown = { gold >= lv_settlement_cost } }
+
+lv_ruin_is_unique = {
+	scope = province
+	is_valid = {
+		has_holding_type = ruin_holding
+		OR = {
+			empire ?= title:e_valyria
+			empire ?= title:e_lands_of_long_summer
+		}
+	}
+}
+
+lv_ruin_has_blockers = {
+	scope = province
+	is_valid = { has_building_with_flag = wilderness_blocker }
+}
+
+lv_ruin_valyria_restoration_blocked = {
+	scope = province
+	is_valid = {
+		trigger_if = {
+			limit = {
+				# has_game_rule = lv_colonisation_expedition_required
+				geographical_region = world_valyria_mainland
+				has_holding_type = ruin_holding
+			}
+			always = no # DO NOT IMPLEMENT YET
+			#NOT = {
+			#	is_target_in_global_variable_list = {
+			#		name = discovered_valyria
+			#		target = scope:actor
+			#	}
+			#}
+		}
+		trigger_else = { always = no }
+	}
+}
