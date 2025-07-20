@@ -1,0 +1,30 @@
+﻿# Legacy of Valyria Ruin Restoration Modifiers
+# - Modifiers for the "you own the ruin but still need to clear the blockers" stage of the whole system
+
+lv_restoration_steward_modifier = {
+	icon = stewardship_positive
+	build_speed = -0.05
+
+	# Current scaling suggested by the team: "For every 3 stewardship, increase build speed by 2.5%"
+	# The resulting scaling factor below should approximately reflect that
+	scale = {
+		value = {
+			value = 1
+			add = {
+				value = 0
+				if = {
+					limit = { exists = scope:steward }
+					add = {
+						value = 0.1666
+						multiply = {
+							value = scope:steward.stewardship
+							subtract = 10
+						}
+					}
+				}
+			}
+			max = 10
+			desc = lv_restoration_steward_modifier_scale_desc
+		}
+	}
+}
