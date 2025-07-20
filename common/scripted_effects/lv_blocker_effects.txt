@@ -1,0 +1,495 @@
+﻿# Legacy of Valyria blocker scripted effects
+# - All general blocker operations and functions go here
+# - Avoid filling with specific/unique blocker-related effects
+
+## General blocker effects
+## All assume province scope
+lv_add_blocker_effect = {
+	if = {
+		limit = { NOT = { has_free_building_slot = yes } }
+		if = {
+			limit = { always = $FORCE$ }
+			add_province_modifier = extra_building_slot
+			add_building = $BLOCKER_BUILDING$
+			lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = yes }
+		}
+	}
+	else = {
+		add_building = $BLOCKER_BUILDING$
+		lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = yes }
+	}
+}
+
+lv_blocker_cleared_effect = {
+	lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = no }
+	if = { # If AI, try to upgrade settlement once all blockers are cleared
+		limit = { NOT = { has_building_with_flag = wilderness_blocker } }
+		save_scope_as = ruin
+		province_owner = {
+			if = {
+				limit = { is_ai = yes }
+				# Trigger 
+			}
+		}
+	}
+}
+
+lv_valyria_update_subregion_progress_effect = {
+	switch = {
+		trigger = geographical_region
+		# Valyria
+		world_valyria_subregion_valyria = { lv_valyria_update_subregion_progress_variables = { SUBREGION = valyria ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_aquos_dhaen = { lv_valyria_update_subregion_progress_variables = { SUBREGION = aquos_dhaen ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_tyria = { lv_valyria_update_subregion_progress_variables = { SUBREGION = tyria ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_dragonfields = { lv_valyria_update_subregion_progress_variables = { SUBREGION = dragonfields ADD_BLOCKER = $ADD_BLOCKER$ } }
+
+		# Lyria
+		world_valyria_subregion_kastaryia = { lv_valyria_update_subregion_progress_variables = { SUBREGION = kastaryia ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_mhysa_faer = { lv_valyria_update_subregion_progress_variables = { SUBREGION = mhysa_faer ADD_BLOCKER = $ADD_BLOCKER$ } }
+
+		# Lokiria
+		world_valyria_subregion_gelios = { lv_valyria_update_subregion_progress_variables = { SUBREGION = gelios ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_pyrys = { lv_valyria_update_subregion_progress_variables = { SUBREGION = pyrys ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_egrys = { lv_valyria_update_subregion_progress_variables = { SUBREGION = egrys ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_nuqiria = { lv_valyria_update_subregion_progress_variables = { SUBREGION = nuqiria ADD_BLOCKER = $ADD_BLOCKER$ } }
+
+		# Lands of the Long Summer
+		world_valyria_subregion_jarqanor = { lv_valyria_update_subregion_progress_variables = { SUBREGION = jarqanor ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_rhyos = { lv_valyria_update_subregion_progress_variables = { SUBREGION = rhyos ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_orbar = { lv_valyria_update_subregion_progress_variables = { SUBREGION = orbar ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_jelmazmar = { lv_valyria_update_subregion_progress_variables = { SUBREGION = jelmazmar ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_daervos = { lv_valyria_update_subregion_progress_variables = { SUBREGION = daervos ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_sombazbion = { lv_valyria_update_subregion_progress_variables = { SUBREGION = sombazbion ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_oros = { lv_valyria_update_subregion_progress_variables = { SUBREGION = oros ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_vharomar = { lv_valyria_update_subregion_progress_variables = { SUBREGION = vharomar ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_martivia = { lv_valyria_update_subregion_progress_variables = { SUBREGION = martivia ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_argava = { lv_valyria_update_subregion_progress_variables = { SUBREGION = argava ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_port_of_sighs = { lv_valyria_update_subregion_progress_variables = { SUBREGION = port_of_sighs ADD_BLOCKER = $ADD_BLOCKER$ } }
+		world_valyria_subregion_zoglos = { lv_valyria_update_subregion_progress_variables = { SUBREGION = zoglos ADD_BLOCKER = $ADD_BLOCKER$ } }
+	}
+}
+
+lv_valyria_update_subregion_progress_variables = {
+	county = { save_scope_as = county }
+	situation:valyria_situation = {
+		if = {
+			limit = { exists = var:subregion_$SUBREGION$_total }
+			if = {
+				limit = { always = $ADD_BLOCKER$ }
+				change_variable = {
+					name = subregion_$SUBREGION$_total
+					add = 1
+				}
+				change_variable = {
+					name = subregion_$SUBREGION$_count
+					add = 1
+				}
+			}
+			else = {
+				change_variable = {
+					name = subregion_$SUBREGION$_count
+					subtract = 1
+				}
+			}
+		}
+		else_if = {
+			# Make sure we don't re-add variables to already-rehabilitated regions
+			limit = { situation_sub_region:$SUBREGION$ = { NOT = { sub_region_current_phase = valyria_rehabilitated } } }
+			set_variable = {
+				name = subregion_$SUBREGION$_total
+				value = 1
+			}
+			set_variable = {
+				name = subregion_$SUBREGION$_count
+				value = 1
+			}
+		}
+		var:subregion_$SUBREGION$_total = { save_scope_as = subregion_total }
+		var:subregion_$SUBREGION$_count = { save_scope_as = subregion_count }
+		situation_sub_region:$SUBREGION$ = {
+			if = {
+				limit = { lv_valyria_subregion_progress < 25 }
+				change_phase = { phase = valyria_ruined }
+			}
+			else_if = {
+				limit = { lv_valyria_subregion_progress < 50 }
+				change_phase = { phase = valyria_restored_01 }
+			}
+			else_if = {
+				limit = { lv_valyria_subregion_progress < 75 }
+				change_phase = { phase = valyria_restored_02 }
+			}
+			else = { change_phase = { phase = valyria_rehabilitated } }
+		}
+	}
+}
+
+## Blocker generation effects
+## All assume province scope
+# Predefined blockers
+lv_blocker_generation_predefined_ruined_holdings_effect = {
+	if = { # Large
+		limit = {
+			OR = {
+				county = title:c_valyria
+				county = title:c_ilvonys
+				county = title:c_kastaryia
+				county = title:c_oreos
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = yes
+			BLOCKER_BUILDING = large_ruined_holding_01
+		}
+	}
+	else_if = { # Medium
+		limit = {
+			OR = {
+				lv_is_fourteen_flames = yes
+				has_special_building = yes
+				has_special_building_slot = yes
+				county = {
+					any_neighboring_county = {
+						any_county_province = {
+							OR = {
+								county = title:c_valyria
+								county = title:c_ilvonys
+								county = title:c_kastaryia
+								county = title:c_oreos
+							}
+						}
+					}
+				}
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = yes
+			BLOCKER_BUILDING = medium_ruined_holding_01
+		}
+	}
+	else_if = {
+		limit = {
+			OR = {
+				empire ?= title:e_valyria
+				county = title:c_dravathor
+				county = title:c_volandrys
+				county = {
+					any_neighboring_county = {
+						OR = {
+							any_county_province = {
+								lv_is_fourteen_flames = yes
+								has_special_building = yes
+								has_special_building_slot = yes
+							}
+							any_neighboring_county = {
+								any_county_province = {
+									OR = {
+										county = title:c_valyria
+										county = title:c_ilvonys
+										county = title:c_kastaryia
+										county = title:c_oreos
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = yes
+			BLOCKER_BUILDING = small_ruined_holding_01
+		}
+	}
+}
+lv_blocker_generation_predefined_mines_effect = {
+	if = {
+		limit = { lv_valyrian_mine = yes }
+		lv_add_blocker_effect = {
+			FORCE = yes
+			BLOCKER_BUILDING = valyria_mines_01
+		}
+	}
+	else_if = {
+		limit = { lv_dormant_mine = yes }
+		lv_add_blocker_effect = {
+			FORCE = yes
+			BLOCKER_BUILDING = valyria_mines_dormant_01
+		}
+	}
+}
+lv_blocker_generation_predefined_noxious_gases_effect = {
+	if = {
+		limit = { lv_is_fourteen_flames = yes }
+		lv_add_blocker_effect = {
+			FORCE = yes
+			BLOCKER_BUILDING = noxious_gases_02_01
+		}
+	}
+}
+
+# Random blockers
+lv_blocker_generation_random_noxious_gases_effect = {
+	if = {
+		limit = { NOT = { has_building_or_higher = noxious_gases_02_01 } }
+
+		# Volcanic fumes (noxious_gases_02_)
+		random = {
+			chance = {
+				value = 15
+				county = {
+					if = { # If province borders a volcano, 90% chance of having level 2 noxious gases
+						limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
+						multiply = 6
+					}
+					else_if = { # If province borders a province that borders a volcano, 30% chance of having level 2 noxious gases
+						limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
+						multiply = 2
+					}
+				}
+			}
+			lv_add_blocker_effect = {
+				FORCE = no
+				BLOCKER_BUILDING = noxious_gases_02_01
+			}
+		}
+		# Lingering fumes (noxious_gases_01_)
+		if = {
+			limit = { NOT = { has_building_or_higher = noxious_gases_02_01 } }
+			random = {
+				chance = {
+					value = 15
+					county = {
+						if = { # Guarantee if neighbor of one of the Fourteen Flames doesn't have the volcanic fumes
+							limit = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } }
+							value = 100
+						}
+						else_if = { # If province borders a province that borders a volcano, 90% chance of having level 1 noxious gases
+							limit = { any_neighboring_county = { any_neighboring_county = { any_county_province = { lv_is_fourteen_flames = yes } } } }
+							multiply = 6
+						}
+						else = { multiply = 2 } # Everywhere else has a 30% chance of having level 1 noxious gases
+					}
+				}
+				lv_add_blocker_effect = {
+					FORCE = no
+					BLOCKER_BUILDING = noxious_gases_01_01
+				}
+			}
+		}
+	}
+}
+lv_blocker_generation_random_unexplored_caves_effect = {
+	random = {
+		chance = {
+			value = 25
+			if = {
+				limit = { agot_is_mountains_terrain = yes }
+				multiply = 2
+			}
+			if = {
+				limit = { agot_is_cloudforest_terrain = yes }
+				multiply = 1.9
+			}
+			if = {
+				limit = {
+					OR = {
+						agot_is_jungle_terrain = yes
+						agot_is_highlands_terrain = yes
+						agot_is_hills_terrain = yes
+					}
+				}
+				multiply = 1.75
+			}
+			if = {
+				limit = { agot_is_forest_terrain = yes }
+				multiply = 1.5
+			}
+			if = {
+				limit = {
+					OR = {
+						agot_is_the_bog_terrain = yes
+						agot_is_farmlands_terrain = yes
+						agot_is_floodplains_terrain = yes
+					}
+				}
+				multiply = 0.5
+			}
+			if = {
+				limit = { agot_is_urban_terrain = yes }
+				multiply = 0
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = no
+			BLOCKER_BUILDING = unexplored_caves_01
+		}
+	}
+}
+lv_blocker_generation_random_swamp_effect = {
+	random = {
+		chance = {
+			value = 25
+			if = {
+				limit = { agot_is_the_bog_terrain = yes }
+				multiply = 3
+			}
+			if = {
+				limit = { agot_is_floodplains_terrain = yes }
+				multiply = 2
+			}
+			if = {
+				limit = { agot_is_cloudforest_terrain = yes }
+				multiply = 1.5
+			}
+			if = {
+				limit = { agot_is_jungle_terrain = yes }
+				multiply = 1.2
+			}
+			if = {
+				limit = { agot_is_farmlands_terrain = yes }
+				multiply = 0.75
+			}
+			if = {
+				limit = { agot_is_plains_terrain = yes }
+				multiply = 0.5
+			}
+			if = {
+				limit = {
+					OR = {
+						agot_is_mountains_terrain = yes
+						agot_is_hills_terrain = yes
+						agot_is_highlands_terrain = yes
+					}
+				}
+				multiply = 0.25
+			}
+			if = {
+				limit = { agot_is_urban_terrain = yes }
+				multiply = 0
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = no
+			BLOCKER_BUILDING = swamp_02_01
+		}
+	}
+	if = {
+		limit = { NOT = { has_building_or_higher = swamp_02_01 } }
+		random = {
+			chance = {
+				value = 25
+				if = { # Pretty much guarantee if a bog has no swamp blocker yet
+					limit = { agot_is_the_bog_terrain = yes }
+					multiply = 4
+				}
+				if = {
+					limit = { agot_is_floodplains_terrain = yes }
+					multiply = 3
+				}
+				if = {
+					limit = { agot_is_cloudforest_terrain = yes }
+					multiply = 2
+				}
+				if = {
+					limit = { agot_is_jungle_terrain = yes }
+					multiply = 1.5
+				}
+				if = {
+					limit = { agot_is_farmlands_terrain = yes }
+					multiply = 0.75
+				}
+				if = {
+					limit = { agot_is_plains_terrain = yes }
+					multiply = 0.5
+				}
+				if = {
+					limit = {
+						OR = {
+							agot_is_mountains_terrain = yes
+							agot_is_hills_terrain = yes
+							agot_is_highlands_terrain = yes
+						}
+					}
+					multiply = 0.25
+				}
+				if = {
+					limit = { agot_is_urban_terrain = yes }
+					multiply = 0
+				}
+			}
+			lv_add_blocker_effect = {
+				FORCE = no
+				BLOCKER_BUILDING = swamp_01_01
+			}
+		}
+	}
+}
+lv_blocker_generation_random_stonemen_encampment_effect = {
+	random = {
+		chance = {
+			value = 25
+			if = {
+				limit = { empire ?= title:e_valyria }
+				multiply = 0
+			}
+			if = {
+				limit = {
+					OR = {
+						has_building_or_higher = noxious_gases_01_01
+						has_building_or_higher = noxious_gases_02_01
+					}
+				}
+				divide = 2
+			}
+			if = {
+				limit = {
+					OR = {
+						has_building_or_higher = swamp_01_01
+						has_building_or_higher = swamp_02_01
+						has_building_or_higher = lv_floods_01
+					}
+				}
+				multiply = 3
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = no
+			BLOCKER_BUILDING = stonemen_encampment_01
+		}
+	}
+}
+lv_blocker_generation_random_bandit_camps_effect = {
+	random = {
+		chance = {
+			value = 25
+			if = {
+				limit = {
+					OR = {
+						has_building_or_higher = noxious_gases_01_01
+						has_building_or_higher = noxious_gases_02_01
+					}
+				}
+				multiply = 0
+			}
+			if = {
+				limit = { has_building_or_higher = unexplored_caves_01 }
+				multiply = 2
+			}
+			if = {
+				limit = {
+					OR = {
+						has_building_or_higher = swamp_01_01
+						has_building_or_higher = swamp_02_01
+						has_building_or_higher = lv_floods_01
+					}
+				}
+				divide = 2
+			}
+		}
+		lv_add_blocker_effect = {
+			FORCE = no
+			BLOCKER_BUILDING = bandit_camps_01
+		}
+	}
+}

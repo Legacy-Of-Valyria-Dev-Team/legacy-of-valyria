@@ -1,0 +1,314 @@
+﻿valyria_situation = {
+	is_unique = yes # It can only exist once in the world
+
+	# gui_window_name = "window_situation_debug"
+	gui_window_name = "window_situation"
+	gui_participation_window_name = "window_situation_participation"
+
+	map_mode = sub_regions
+
+	##################################################
+	# Regions
+	##################################################
+	sub_regions = {
+		## Valyria Proper
+		# Valyria
+		valyria = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_valyria }
+		}
+		aquos_dhaen = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_aquos_dhaen }
+		}
+		tyria = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_tyria }
+		}
+		dragonfields = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_dragonfields }
+		}
+		
+		# Lyria
+		kastaryia = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_kastaryia }
+		}
+		mhysa_faer = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_mhysa_faer }
+		}
+
+		# Lokiria
+		gelios = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_gelios }
+		}
+		pyrys = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_pyrys }
+		}
+		egrys = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_egrys }
+		}
+		nuqiria = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_nuqiria }
+		}
+
+		# Lands of the Long Summer
+		jarqanor = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_jarqanor }
+		}
+		rhyos = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_rhyos }
+		}
+		orbar = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_orbar }
+		}
+		jelmazmar = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_jelmazmar }
+		}
+		daervos = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_daervos }
+		}
+		sombazbion = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_sombazbion }
+		}
+		oros = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_oros }
+		}
+		vharomar = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_vharomar }
+		}
+		martivia = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_martivia }
+		}
+		argava = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_argava }
+		}
+		port_of_sighs = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_port_of_sighs }
+		}
+		zoglos = {
+			icon = "gfx/interface/icons/situations/debug_situation/steppe_west.dds"
+			geographical_regions = { world_valyria_subregion_zoglos }
+		}
+	}
+	
+	##################################################
+	# On Actions
+	##################################################
+	on_monthly = {
+		every_situation_sub_region = { # Do monthly events
+			every_situation_sub_region_county = {
+				limit = { holder = { NOT = { has_trait = ruin } } }
+				save_scope_as = county
+
+				# Set stewardship buff
+				if = {
+					limit = {
+						title_province = { has_holding_type = colony_holding }
+						is_target_of_council_task = task_develop_county
+					}
+					holder = {
+						random_stewardship_councillor = {
+							limit = { is_performing_council_task = task_develop_county }
+							save_scope_as = steward
+						}
+					}
+					if = {
+						limit = { scope:steward.stewardship >= 11 }
+						if = {
+							limit = { NOT = { has_county_modifier = lv_restoration_steward_modifier } }
+							holder = {
+								send_interface_toast = {
+									title = lv_restoration_steward_title
+									custom_tooltip = lv_restoration_steward_desc
+									left_icon = scope:steward
+									prev = { add_county_modifier = lv_restoration_steward_modifier }
+								}
+							}
+						}
+						else = {
+							remove_county_modifier = lv_restoration_steward_modifier
+							add_county_modifier = lv_restoration_steward_modifier
+						}
+					}
+				}
+				else_if = {
+					limit = { has_county_modifier = lv_restoration_steward_modifier }
+					remove_county_modifier = lv_restoration_steward_modifier
+				}
+				#title_province = {
+				#	if = { # Firewyrm events for infested mines every 6 months
+				#		limit = {
+				#			NOT = { has_variable = lv_mines_cooldown }
+				#			has_building_or_higher = valyria_mines_01
+				#		}
+				#		save_scope_as = mines_province
+				#		set_variable = {
+				#			name = lv_mines_cooldown
+				#			value = yes
+				#			months = 6
+				#		}
+				#		province_owner = {
+				#			trigger_event = {
+				#				id = lv_mines_pulse.0001 # Call mine pulse event
+				#				days = { 1 180 }
+				#			}
+				#		}
+				#	}
+				#}
+			}
+		}
+	}
+
+	# Uncomment and finalize once all relevant pulse effects are done
+	#on_yearly = {
+	#	every_situation_sub_region = { # Do yearly events
+	#		every_situation_sub_region_county = {
+	#			limit = { holder = { NOT = { has_trait = ruin } } }
+	#			title_province = {
+	#				if = { # Toxic fumes events every year
+	#					limit = {
+	#						OR = {
+	#							has_building_or_higher = noxious_gases_01_01
+	#							has_building_or_higher = noxious_gases_02_01
+	#						}
+	#					}
+	#					save_scope_as = noxious_gases_province
+	#					province_owner = {
+	#						trigger_event = {
+	#							id = lv_noxious_gases_pulse.0001 # Call noxious gases pulse event
+	#							days = { 1 360 }
+	#						}
+	#					}
+	#				}
+	#			}
+	#		}
+	#	}
+	#}
+
+	on_start = {
+		# FOR DEBUGGING PURPOSES!!!
+		#every_situation_sub_region = {
+		#	every_situation_sub_region_county = {
+		#		change_development_level = 100
+		#	}
+		#}
+	}
+
+	##################################################
+	# Groups
+	##################################################
+	# Note to self: Implement a variable maybe that will trigger when the rest of the world can start interacting with Valyria
+	# Maybe enable/set it the very first time an expedition is successful
+	participant_groups = {
+		# Blood of Old Valyria
+		# - Of Valyrian descent, with claims to the region
+		# - Opposes non-Valyrian settlers
+		blood_of_valyria = {
+			icon = "gfx/interface/icons/situations/debug_situation/group_nomad.dds"
+			require_realm_in_sub_region = no
+			auto_add_rulers = no
+			is_character_valid = {
+				# DON'T IMPLEMENT YET
+				always = no
+
+				# Valyrian
+				NOT = { has_trait = ruin }
+				OR = {
+					house ?= { has_house_modifier = dragonrider_house_modifier }
+					dynasty ?= { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+				}
+				#OR = {
+				#	var:lv_valyria_situation_stance ?= flag:interested
+				#}
+			}
+		}
+
+		# Valyrian Restorationists
+		# - Not necessarily Valyrian, main concern is restoration and settlement
+		# - Opposes opportunists
+		restorationists = {
+			icon = "gfx/interface/icons/situations/debug_situation/group_nomad.dds"
+			is_character_valid = {
+				# DON'T IMPLEMENT YET
+				always = no
+
+				# Non-Valyrian
+				NOT = { has_trait = ruin }
+			}
+		}
+
+		# Remnants of the Doom
+		# - Survivors (mainly just Oros)
+		remnants = {
+			icon = "gfx/interface/icons/situations/debug_situation/group_nomad.dds"
+			is_character_valid = {
+				# DON'T IMPLEMENT YET
+				always = no
+
+				# Non-Valyrian
+				NOT = { has_trait = ruin }
+			}
+		}
+
+		# Scavengers of the Doom
+		# - Opportunists, main concern is exploitation, looting, and treasure hunting
+		opportunists = {
+			icon = "gfx/interface/icons/situations/debug_situation/group_nomad.dds"
+			is_character_valid = {
+				# DON'T IMPLEMENT YET
+				always = no
+
+				# Non-Valyrian
+				NOT = { has_trait = ruin }
+			}
+		}
+	}
+	
+	##################################################
+	# Phases
+	##################################################
+	start_phase = valyria_ruined
+
+	phases = {
+		valyria_ruined = { # Doomified
+			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
+			map_province_effect = valyria_ruined
+
+			future_phases = { valyria_restored_01 = {} }
+		}
+		valyria_restored_01 = { # 1/3 of the blockers cleared
+			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
+			map_province_effect = valyria_restored_01
+
+			future_phases = { valyria_restored_02 = {} }
+		}
+		valyria_restored_02 = { # 2/3 of the blockers cleared
+			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
+			map_province_effect = valyria_restored_02
+
+			future_phases = { valyria_rehabilitated = {} }
+		}
+		valyria_rehabilitated = { # Fully restored
+			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
+			map_province_effect = valyria_rehabilitated
+		}
+	}
+}

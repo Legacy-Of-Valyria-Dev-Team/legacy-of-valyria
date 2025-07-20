@@ -1,0 +1,218 @@
+﻿@main_cost_base = 400
+@main_cost_base_large_ruin_01 = 600
+@main_cost_base_large_ruin_02 = @[main_cost_base_large_ruin_01 * 2]
+@main_cost_base_large_ruin_03 = @[main_cost_base_large_ruin_01 * 3]
+@main_cost_base_medium_ruin_01 = 400
+@main_cost_base_medium_ruin_02 = @[main_cost_base_medium_ruin_01 * 2]
+@main_cost_base_medium_ruin_03 = @[main_cost_base_medium_ruin_01 * 3]
+@main_cost_base_small_ruin_01 = 400
+@main_cost_base_small_ruin_02 = @[main_cost_base_small_ruin_01 * 2]
+@main_cost_base_small_ruin_03 = @[main_cost_base_small_ruin_01 * 3]
+
+lv_valyria_subregion_progress = {
+	value = 100
+	subtract = {
+		value = 0
+		add = scope:subregion_count
+		divide = scope:subregion_total
+		multiply = 100
+	}
+}
+
+lv_settlement_cost = {
+	value = lv_settlement_cost_settlement
+	add = lv_settlement_cost_expedition
+}
+lv_settlement_cost_difference = {
+	value = lv_settlement_cost
+	subtract = gold
+}
+
+# This represents the cost to set up the colony
+# Thus, it should more or less have a base cost similar to the cost of building a new holding
+lv_settlement_cost_settlement = {
+	value = lv_settlement_cost_settlement_base
+	if = {
+		limit = {
+			var:lv_restore_ruins_tooltip ?= { county.culture = culture:high_valyrian }
+			culture = { has_building_gfx = high_valyrian_building_gfx }
+		}
+		subtract = lv_settlement_cost_settlement_valyrian_architecture
+	}
+	if = {
+		limit = { culture = { has_cultural_tradition = tradition_hard_working } }
+		subtract = lv_settlement_cost_settlement_hard_working
+	}
+}
+lv_settlement_cost_settlement_base = {
+	value = {
+		if = {
+			limit = { has_variable = lv_restore_ruins_tooltip }
+			var:lv_restore_ruins_tooltip ?= {
+				if = {
+					limit = { has_building_or_higher = large_ruin_01 }
+					if = {
+						limit = { has_building = large_ruin_03 }
+						value = @[main_cost_base_large_ruin_03]
+					}
+					else_if = {
+						limit = { has_building = large_ruin_02 }
+						value = @[main_cost_base_large_ruin_02]
+					}
+					else = { value = @[main_cost_base_large_ruin_01] }
+				}
+				else_if = {
+					limit = { has_building_or_higher = medium_ruin_01 }
+					if = {
+						limit = { has_building = medium_ruin_03 }
+						value = @[main_cost_base_medium_ruin_03]
+					}
+					else_if = {
+						limit = { has_building = medium_ruin_02 }
+						value = @[main_cost_base_medium_ruin_02]
+					}
+					else = { value = @[main_cost_base_medium_ruin_01] }
+				}
+				else = {
+					limit = { has_building_or_higher = small_ruin_01 }
+					if = {
+						limit = { has_building = small_ruin_03 }
+						value = @[main_cost_base_small_ruin_03]
+					}
+					else_if = {
+						limit = { has_building = small_ruin_02 }
+						value = @[main_cost_base_small_ruin_02]
+					}
+					else = { value = @[main_cost_base_small_ruin_01] }
+				}
+			}
+		}
+	}
+}
+# Deductibles
+lv_settlement_cost_settlement_valyrian_architecture = {
+	value = {
+		value = lv_settlement_cost_settlement_base
+		multiply = 0.25
+	}
+}
+lv_settlement_cost_settlement_hard_working = {
+	value = {
+		value = lv_settlement_cost_settlement_base
+		multiply = 0.1
+	}
+}
+
+# This represents the cost of hiring transport and stuff
+lv_settlement_cost_expedition = {
+	# Decide other factors soon
+	value = lv_settlement_cost_expedition_base
+	if = {
+		limit = { culture = { has_cultural_tradition = tradition_isolationist } }
+		add = lv_settlement_cost_expedition_isolationist
+	}
+	if = {
+		limit = {
+			culture = { has_cultural_tradition = tradition_republican_legacy }
+			var:lv_restore_ruins_tooltip ?= { geographical_region = world_valyria_mainland }
+		}
+		subtract = lv_settlement_cost_expedition_republican_legacy
+	}
+	if = {
+		limit = {
+			culture = { has_cultural_tradition = agot_tradition_valyrian }
+			var:lv_restore_ruins_tooltip ?= { geographical_region = world_valyria_mainland }
+		}
+		subtract = lv_settlement_cost_expedition_valyrian
+	}
+	if = {
+		limit = {
+			culture = { has_cultural_tradition = agot_tradition_north_valyrian_1 }
+			var:lv_restore_ruins_tooltip ?= { geographical_region = world_valyria_mainland }
+		}
+		subtract = lv_settlement_cost_expedition_north_valyrian_1
+	}
+	if = {
+		limit = {
+			culture = { has_cultural_tradition = agot_tradition_north_valyrian_2 }
+			var:lv_restore_ruins_tooltip ?= { geographical_region = world_valyria_mainland }
+		}
+		subtract = lv_settlement_cost_expedition_north_valyrian_2
+	}
+	if = {
+		limit = {
+			culture = { has_cultural_tradition = agot_tradition_doom }
+			var:lv_restore_ruins_tooltip ?= { geographical_region = world_valyria_mainland }
+		}
+		subtract = lv_settlement_cost_expedition_doom
+	}
+	min = 30
+}
+lv_settlement_cost_expedition_base = {
+	value = 30
+	multiply = {
+		value = primary_title.tier
+		subtract = 1
+		min = 1
+	}
+	if = {
+		limit = { government_has_flag = government_is_tribal }
+		multiply = 0.5
+	}
+	if = {
+		limit = { primary_title.tier > tier_duchy }
+		add = 50
+	}
+	if = {
+		limit = {
+			is_ai = yes
+			has_game_rule = hard_difficulty
+		}
+		multiply = 0.5
+	}
+	else_if = {
+		limit = {
+			is_ai = yes
+			has_game_rule = very_hard_difficulty
+		}
+		multiply = 0.25
+	}
+}
+# Addi... bles? Edibles?
+lv_settlement_cost_expedition_isolationist = {
+	value = {
+		value = lv_settlement_cost_expedition_base
+		multiply = 1.5
+	}
+}
+# Deductibles
+lv_settlement_cost_expedition_republican_legacy = {
+	value = {
+		value = lv_settlement_cost_expedition_base
+		multiply = 0.1
+	}
+}
+lv_settlement_cost_expedition_valyrian = {
+	value = {
+		value = lv_settlement_cost_expedition_base
+		multiply = 0.5
+	}
+}
+lv_settlement_cost_expedition_north_valyrian_1 = {
+	value = {
+		value = lv_settlement_cost_expedition_base
+		multiply = 0.25
+	}
+}
+lv_settlement_cost_expedition_north_valyrian_2 = {
+	value = {
+		value = lv_settlement_cost_expedition_base
+		multiply = 0.5
+	}
+}
+lv_settlement_cost_expedition_doom = {
+	value = {
+		value = lv_settlement_cost_expedition_base
+		multiply = 0.25
+	}
+}

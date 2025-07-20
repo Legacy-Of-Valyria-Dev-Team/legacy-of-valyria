@@ -1,0 +1,111 @@
+﻿# Legacy of Valyria Settlement on actions
+on_title_gain = { on_actions = { lv_settlement_failsafe } }
+on_travel_plan_arrival = { on_actions = { lv_settlement_on_arrival } }
+
+# If somehow someone gains a ruin title, execute the change to a colony holding
+lv_settlement_failsafe = {
+	trigger = {
+		NOT = { has_game_rule = lv_colonisation_agot }
+		scope:title = { tier = tier_county }
+	}
+	effect = {
+		scope:title = {
+			if = {
+				limit = {
+					title_province = {
+						has_holding_type = ruin_holding
+						save_temporary_scope_as = ruin
+					}
+				}
+				lv_settlement_establish_effect = {
+					ACTOR = root
+					PROVINCE = scope:ruin
+				}
+			}
+		}
+	}
+}
+
+# On actions associated with the travel plan
+lv_settlement_on_start = {
+	trigger = {
+		has_variable = lv_settlement_expedition_liege
+		has_variable = lv_settlement_expedition_destination
+	}
+	effect = {
+		var:lv_settlement_expedition_liege = { save_scope_as = liege }
+		var:lv_settlement_expedition_destination = { save_scope_as = ruin }
+		if = { 
+			limit = {
+				exists = scope:liege
+				exists = scope:ruin
+			}
+			scope:liege = { remove_short_term_gold = var:lv_settlement_cost }
+			if = {
+				limit = { NOT = { scope:liege ?= scope:settler } }
+				scope:liege = { trigger_event = lv_settlement_event.0010 }
+			}
+			trigger_event = lv_settlement_event.0010
+		}
+		else = { current_travel_plan = { abort_travel_plan = yes } }
+	}
+}
+
+lv_settlement_on_arrival = {
+	trigger = {
+		has_variable = lv_settlement_expedition_liege
+		has_variable = lv_settlement_expedition_destination
+	}
+	effect = {
+		var:lv_settlement_expedition_liege = { save_scope_as = liege }
+		var:lv_settlement_expedition_destination = { save_scope_as = ruin }
+		if = {
+			limit = {
+				exists = scope:ruin
+				scope:liege ?= {
+					any_owned_story = {
+						story_type = lv_settlement_story_cycle
+						is_target_in_variable_list = {
+							name = lv_settlement_expeditions
+							target = scope:ruin
+						}
+					}
+				}
+			}
+			if = {
+				limit = { location = scope:ruin }
+				if = {
+					limit = {
+						scope:ruin = {
+							province_owner = { has_trait = ruin }
+							has_holding_type = ruin_holding
+						}
+					}
+					save_scope_as = settler
+					lv_settlement_establish_effect = {
+						ACTOR = root
+						PROVINCE = scope:ruin
+					}
+					scope:liege = { trigger_event = lv_settlement_event.0011 }
+				}
+				else = { # Supposed ruin is somehow occupied already
+
+				}
+			}
+			else = {} # Lol got lost or something, make failsafe event for fun
+		}
+		else = { current_travel_plan = { cancel_travel_plan = yes } }
+
+		remove_variable = lv_settlement_expedition_liege
+		remove_variable = lv_settlement_expedition_destination
+		scope:liege = {
+			random_owned_story = {
+				limit = { story_type = lv_settlement_story_cycle }
+				remove_list_variable = {
+					name = lv_settlement_expeditions
+					target = scope:ruin
+				}
+			}
+		}
+	}
+}

@@ -1,9 +1,4 @@
-﻿on_title_gain = {
-	on_actions = {
-		lv_on_title_gain_free_city_attached_titles
-		lv_colonisation_failsafe
-	}
-}
+﻿on_title_gain = { on_actions = { lv_on_title_gain_free_city_attached_titles } }
 
 lv_on_title_gain_free_city_attached_titles = {
 	trigger = {
@@ -248,62 +243,6 @@ lv_on_title_gain_free_city_attached_titles = {
 				title:c_gogossos = {
 					add_title_law = magisterial_attached_titles_law
 				}
-			}
-		}
-	}
-}
-
-# If somehow someone gains a ruin title, execute the change to a colony holding
-lv_colonisation_failsafe = {
-	trigger = {
-		scope:title = {
-			tier = tier_county
-			title_province = { has_holding_type = ruin_holding }
-		}
-	}
-	effect = {
-		if = {
-			limit = { scope:title = { title_province = { has_building_or_higher = large_ruin_01 } } }
-			prev = { set_variable = { name = ruin_size value = flag:ruin_size_large } }
-		}
-		else_if = {
-			limit = { scope:title = { title_province = { has_building_or_higher = medium_ruin_01 } } }
-			prev = { set_variable = { name = ruin_size value = flag:ruin_size_medium } }
-		}
-		# Determine ruin level for converting to appropriate colony building
-		scope:title = {
-			title_province = {
-				if = {
-					limit = {
-						OR = {
-							has_building = large_ruin_03
-							has_building = medium_ruin_03
-							has_building = small_ruin_03
-						}
-					}
-					set_variable = { name = ruin_progress value = flag:ruin_progress_significant }
-				}
-				else_if = {
-					limit = {
-						OR = {
-							has_building = large_ruin_02
-							has_building = medium_ruin_02
-							has_building = small_ruin_02
-						}
-					}
-					set_variable = { name = ruin_progress value = flag:ruin_progress_minimal }
-				}
-				set_holding_type = colony_holding
-				# Convert to appropriate colony level if prior progress made
-				if = { # Colony level 3 building
-					limit = { var:ruin_progress ?= flag:ruin_progress_significant }
-					add_building = colony_03
-				}
-				else_if = { # Colony level 2 building
-					limit = { var:ruin_progress ?= flag:ruin_progress_minimal }
-					add_building = colony_02
-				}
-				remove_variable = ruin_progress
 			}
 		}
 	}

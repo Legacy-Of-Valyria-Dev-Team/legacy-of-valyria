@@ -808,6 +808,7 @@
 		if = {
 			limit = {
 				OR = {
+					has_building_or_higher = generic_harrenhal_01
 					has_building_or_higher = harrenhal_01
 					has_building_or_higher = ruins_harrenhal_01
 				}
@@ -1069,6 +1070,10 @@
 			limit = {
 				#AGOT Added, Harrenhal
 				has_building_or_higher = ruins_harrenhal_01
+				#AGOT Added, Harrenhal
+				has_building_or_higher = harrenhal_01
+				#AGOT Added, Harrenhal
+				has_building_or_higher = generic_harrenhal_01
 				#AGOT Added, Ashford
 				has_building_or_higher = agot_ashford_tourney_grounds_01
 				#CV Added
@@ -1263,6 +1268,40 @@
 				#AGOT Added, Harrenhal
 				if = {
 					limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } }
+					add = {
+						value = 0
+						add = {
+							value = tournament_base_cost
+							add = {
+								value = tournament_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_base_cost
+							}
+						}
+						multiply = tournament_activity_cost_max_discount_value
+						desc = tournament_cost_discount_harrenhal
+					}
+				}
+				#AGOT Added, Harrenhal
+				if = {
+					limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
+					add = {
+						value = 0
+						add = {
+							value = tournament_base_cost
+							add = {
+								value = tournament_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_base_cost
+							}
+						}
+						multiply = tournament_activity_cost_max_discount_value
+						desc = tournament_cost_discount_harrenhal
+					}
+				}
+				#AGOT Added, Harrenhal
+				if = {
+					limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
 					add = {
 						value = 0
 						add = {
@@ -2536,6 +2575,40 @@
 								}
 								multiply = tournament_contest_cost_low_discount_value
 								desc = tournament_melee_contest_cost_low_discount_desc
+							}
+						}
+						#AGOT Added, Harrenhal
+						if = {
+							limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
+							add = {
+								value = 0
+								add = {
+									value = tournament_contest_base_cost
+									add = {
+										value = tournament_contest_base_cost
+										multiply = activity_cost_scale_by_era
+										subtract = tournament_contest_base_cost
+									}
+								}
+								multiply = tournament_activity_cost_max_discount_value
+								desc = tournament_cost_discount_harrenhal
+							}
+						}
+						#AGOT Added, Harrenhal
+						if = {
+							limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
+							add = {
+								value = 0
+								add = {
+									value = tournament_contest_base_cost
+									add = {
+										value = tournament_contest_base_cost
+										multiply = activity_cost_scale_by_era
+										subtract = tournament_contest_base_cost
+									}
+								}
+								multiply = tournament_activity_cost_max_discount_value
+								desc = tournament_cost_discount_harrenhal
 							}
 						}
 						#AGOT Added, Harrenhal
@@ -4624,9 +4697,38 @@
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_westeros_seven_kingdoms }
 			trigger_if = {
-				limit = { exists = capital_province }
+				limit = {
+					exists = capital_province
+				}
 				NOT = {
 					capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= {
 						OR = {
 							geographical_region = world_westeros_seven_kingdoms
 							geographical_region = world_stepstones
@@ -4644,8 +4746,33 @@
 		modifier = {
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
-			NOT = {
-				capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
+			trigger_if = {
+				limit = {
+					exists = capital_province
+				}
+				NOT = {
+					capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= { geographical_region = world_westeros_beyond_the_wall }
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= { geographical_region = world_westeros_beyond_the_wall }
+				}
+			}
+			trigger_else = {
+				always = no
 			}
 
 			add = -5000
@@ -4655,9 +4782,40 @@
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_stepstones }
 			trigger_if = {
-				limit = { exists = capital_province }
+				limit = {
+					exists = capital_province
+				}
 				NOT = {
 					capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= {
+						OR = {
+							geographical_region = world_westeros_seven_kingdoms
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= {
 						OR = {
 							geographical_region = world_westeros_seven_kingdoms
 							geographical_region = world_stepstones
@@ -4677,9 +4835,38 @@
 			is_ai = yes
 			scope:host.capital_province ?= { geographical_region = world_essos }
 			trigger_if = {
-				limit = { exists = capital_province }
+				limit = {
+					exists = capital_province
+				}
 				NOT = {
 					capital_province ?= {
+						OR = {
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = court_owner
+					exists = court_owner.capital_province
+				}
+				NOT = {
+					court_owner.capital_province ?= {
+						OR = {
+							geographical_region = world_stepstones
+							geographical_region = world_essos
+						}
+					}
+				}
+			}
+			trigger_else_if = {
+				limit = {
+					exists = location
+				}
+				NOT = {
+					location ?= {
 						OR = {
 							geographical_region = world_stepstones
 							geographical_region = world_essos
