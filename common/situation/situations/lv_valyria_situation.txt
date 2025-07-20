@@ -112,34 +112,70 @@
 	##################################################
 	# On Actions
 	##################################################
-	# Uncomment and finalize once all relevant pulse effects are done
-	#on_monthly = {
-	#	every_situation_sub_region = { # Do monthly events
-	#		every_situation_sub_region_county = {
-	#			limit = { holder = { NOT = { has_trait = ruin } } }
-	#			title_province = {
-	#				if = { # Firewyrm events for infested mines every 6 months
-	#					limit = {
-	#						NOT = { has_variable = lv_mines_cooldown }
-	#						has_building_or_higher = valyria_mines_01
-	#					}
-	#					save_scope_as = mines_province
-	#					set_variable = {
-	#						name = lv_mines_cooldown
-	#						value = yes
-	#						months = 6
-	#					}
-	#					province_owner = {
-	#						trigger_event = {
-	#							id = lv_mines_pulse.0001 # Call mine pulse event
-	#							days = { 1 180 }
-	#						}
-	#					}
-	#				}
-	#			}
-	#		}
-	#	}
-	#}
+	on_monthly = {
+		every_situation_sub_region = { # Do monthly events
+			every_situation_sub_region_county = {
+				limit = { holder = { NOT = { has_trait = ruin } } }
+				save_scope_as = county
+
+				# Set stewardship buff
+				if = {
+					limit = {
+						title_province = { has_holding_type = colony_holding }
+						is_target_of_council_task = task_develop_county
+					}
+					holder = {
+						random_stewardship_councillor = {
+							limit = { is_performing_council_task = task_develop_county }
+							save_scope_as = steward
+						}
+					}
+					if = {
+						limit = { scope:steward.stewardship >= 11 }
+						if = {
+							limit = { NOT = { has_county_modifier = lv_restoration_steward_modifier } }
+							holder = {
+								send_interface_toast = {
+									title = lv_restoration_steward_title
+									custom_tooltip = lv_restoration_steward_desc
+									left_icon = scope:steward
+									prev = { add_county_modifier = lv_restoration_steward_modifier }
+								}
+							}
+						}
+						else = {
+							remove_county_modifier = lv_restoration_steward_modifier
+							add_county_modifier = lv_restoration_steward_modifier
+						}
+					}
+				}
+				else_if = {
+					limit = { has_county_modifier = lv_restoration_steward_modifier }
+					remove_county_modifier = lv_restoration_steward_modifier
+				}
+				#title_province = {
+				#	if = { # Firewyrm events for infested mines every 6 months
+				#		limit = {
+				#			NOT = { has_variable = lv_mines_cooldown }
+				#			has_building_or_higher = valyria_mines_01
+				#		}
+				#		save_scope_as = mines_province
+				#		set_variable = {
+				#			name = lv_mines_cooldown
+				#			value = yes
+				#			months = 6
+				#		}
+				#		province_owner = {
+				#			trigger_event = {
+				#				id = lv_mines_pulse.0001 # Call mine pulse event
+				#				days = { 1 180 }
+				#			}
+				#		}
+				#	}
+				#}
+			}
+		}
+	}
 
 	# Uncomment and finalize once all relevant pulse effects are done
 	#on_yearly = {
