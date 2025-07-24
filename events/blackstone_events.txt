@@ -106,7 +106,7 @@ blackstone.2 = {
 
 blackstone.3 = {
     type = character_event
-    title = blackstone.3_t
+    title = blackstone.3_t #Phase 1 
     desc = {
         first_valid = {
 
@@ -1663,7 +1663,7 @@ blackstone.33 = {
 
 blackstone.13 = {
     type = character_event
-    title = blackstone.13_t #We got Samples and info now to Experiment
+    title = blackstone.13_t #now i can do what needs to be done
     desc = blackstone.13_desc
 
     theme = learning
@@ -1674,79 +1674,16 @@ blackstone.13 = {
     }
 
     option = {
-        name = Experiment.01 #Study myself
-        hidden_effect = {
-            random_list = {
-                20 = {
-                    trigger_event = blackstone.34
-                    xp huge amount
-                }
-                20 = {
-                    trigger_event = blackstone.34
-                    add_trait = wounded_1
-                    xp big 
-                }
-                20 = {
-                    wounded_1
-                    add lil xp here
-                }
-                20 = {
-                    wounded_2
-                    add lil xp here
-                }
-                20 = {
-                    death = {
-                        death_reason = death_explosion
-                    }
-                }
-            }
+        name = Experiment.01 #variable
+        set_variable = {
+            name = blackstone_research_potential
+            value = 1
+            years = 30
         }
-    }
-
-    option = {
-        name = Experiment.02 #Full Metal Alchemist
-        remove_short_term_gold = 500
-        hidden_effect = {
-            random_list = { #Better Results
-                random_list = {
-                40 = {
-                    trigger_event = blackstone.34
-                    xp huge amount
-                }
-                20 = {
-                    trigger_event = blackstone.34
-                    add_trait = wounded_1
-                    xp big 
-                }
-                20 = {
-                    wounded_1
-                    add lil xp here
-                }
-                10 = {
-                    wounded_2
-                    add lil xp here
-                }
-                10 = {
-                    death = {
-                        death_reason = death_explosion
-                    }
-                }
-            }
-            }
-        }
-    }
-
-    option = {
-        name = Experiment.03 #Eat Rock
-        trigger = {
-            has_trait = lunatic_1
-        }
-        xp humungus 
-        trigger_event = blackstone.34
     }
 }
 
-blackstone.34 = {
+blackstone.34 = { #Start for Activity
     type = character_event
     title = blackstone.34_t #Rocks for study
     desc = blackstone.34_desc
@@ -1856,45 +1793,14 @@ blackstone.35 = {
 
     theme = learning
 
-    immediate = {
-        location = {
-            province_owner = {
-                if = {    
-                    limit = {
-                        NOT = { has_trait = ruin }
-                    }
-                    save_scope_as = owner.1 
-                }
-            }
-        }
-    }
-
     right_portrait = {
         character = root
         animation = survey
     }
 
-    left_portrait = {
-        character = scope:owner.1
-        animation = thinking
-    }
-
     option = {
-        name = province.1
-        scope:owner.1 = {
-            trigger_event = blackstone.37 #Asking for Permission
-        }
-    }
+        name = province.1 #Arrival 
 
-    option = {
-        name = province.2
-        trigger = {
-            province_owner = {
-                has_trait = ruin
-            }
-        }
-
-        trigger_event = blackstone.36 #Camp set up
     }
 
 }
@@ -2410,7 +2316,6 @@ bla.01 = { #Peasants dont like us meddling
 
     option = {
         name = black.1
-        #Add EXP for Enchanting Table with my Diamond pickaxe
         random_list = {
             50 = {
                 trigger_event = bla.02 #fail
@@ -2431,13 +2336,7 @@ bla.01 = { #Peasants dont like us meddling
                 30 = {
                     add_trait = brave
                     prestige = 1000
-
-                    hidden_effect = {
-                        trigger_event = {
-                            id = blackstone.40
-                            days = { 14 65 }
-                        }
-                    }
+                    involved_activity = { activity_special_type_progression_major = yes }
                 }
             }
         }
@@ -2463,11 +2362,7 @@ bla.02 = { #Peasants dont like us meddling fail
         }
 
         prestige = 500
-
-        hidden_effect = {
-            id = blackstone.40
-            days = { 14 60 }
-        }
+        involved_activity = { activity_special_type_progression_medium = yes }
     }
 
     option = {
@@ -2501,12 +2396,8 @@ bla.03 = { #Peasants dont like us meddling success
     option = {
         name = black.6 # move dem rocks
 
-        #More xp for you Enchanting Table bro 
+        involved_activity = { activity_special_type_progression_medium = yes } 
 
-        hidden_effect = {
-            id = blackstone.40
-            days = { 14 60 }
-        }
     }
 }
 
@@ -2535,11 +2426,7 @@ bla.04 = {
     option = {
         name = black.08 #Pay the Guards for Protection
         remove_short_term_gold = -100
-        #Minor Xp
-        hidden_effect = {
-            id = blackstone.40
-            days = { 14 60 }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 }
 
@@ -2568,25 +2455,14 @@ bla.05 = {
                     add_trait = incapable #Yeah rats are bad man
                 }
             }
-
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
         }
-
     }
 
     option = {
         name = black.10
         remove_short_term_gold = 250  #Rat Poison and Full Restock
+        involved_activity = { activity_special_type_progression_major = yes }
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 
     option = {
@@ -2594,10 +2470,6 @@ bla.05 = {
         hidden_effect = {
             add_trait = bubonic_plague
 
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
         }
     }
 }
@@ -2617,11 +2489,7 @@ bla.06 = {
     option = {
         name = black.12
         add_short_term_gold = 500
-
-        hidden_effect = {
-            id = blackstone.40
-            days = { 14 65 }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 
     option = {
@@ -2630,11 +2498,7 @@ bla.06 = {
         }
 
         add_short_term_gold = 750 #I am smurt i see gold
-
-        hidden_effect = {
-            id = blackstone.40
-            days = { 14 65 }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -2665,14 +2529,8 @@ bla.07 = {
             stewardship >= 18
         }
 
-        xp = good
+        involved_activity = { activity_special_type_progression_medium = yes }
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 
     option = {
@@ -2680,14 +2538,7 @@ bla.07 = {
 
         add_character_modifier = grouchy_ruler_modifier
         
-        xp = mid
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
 
     }
 
@@ -2697,14 +2548,7 @@ bla.07 = {
 
         remove_short_term_gold = 500
 
-        xp = good
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_medium = yes }
     }
 }
 
@@ -2735,16 +2579,11 @@ bla.08 = {
             learning >= 20
         }
 
-        xp = Great
+        involved_activity = { activity_special_type_progression_major = yes }
 
         add_prestige = 500
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+
     }
 
     option = {
@@ -2759,6 +2598,7 @@ bla.08 = {
                 20 = {
                     add_prestige = 800
                     give_nickname = nick_the_bear #Bro Killed Bear and then became him lol
+                    involved_activity = { activity_special_type_progression_massive = yes }
                 }
 
                 20 = {
@@ -2780,12 +2620,6 @@ bla.08 = {
                 }
             }
 
-            hidden_effect = {
-                trigger_event = {
-                    id = blackstone.40
-                    days = { 14 65 }
-                }
-            }
         }
     }
 
@@ -2819,12 +2653,6 @@ bla.08 = {
                 
                 1 = {
                     add_trait = silly_bear #You've been Beared
-                }
-            }
-            hidden_effect = {
-                trigger_event = {
-                    id = blackstone.40
-                    days = { 14 65 }
                 }
             }
         }
@@ -2878,13 +2706,7 @@ bla.09 = {
 
         prestige = 500
         add_short_term_gold = 100
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 
     option = {
@@ -2898,7 +2720,6 @@ bla.09 = {
             FIXED = no
             LOCALE = terrain_scope 
             OUTPUT_EVENT = bla.10
-            INVALIDATION_EVENT = blackstone.40
         }
     }
 
@@ -2907,14 +2728,8 @@ bla.09 = {
 
         remove_short_term_gold = 350
 
-        xp = mini 
+        involved_activity = { activity_special_type_progression_tiny = yes }
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 }
 
@@ -2939,16 +2754,10 @@ bla.10 = {
     }
 
     option = {
-        name = black.22
+        name = black.22 #Take all his work too
 
         add_prestige = 500
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        } 
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -2975,16 +2784,10 @@ bla.11 = {
     option = {
         name = black.23
 
-        xp = major
+        involved_activity = { activity_special_type_progression_massive = yes }
 
         add_short_term_gold = 100
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 }
 
@@ -3033,13 +2836,7 @@ bla.12 = {
                 value = yes
             }
         }
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -3088,14 +2885,8 @@ bla.13 = {
         name = black.25
         piety = 500
 
-        xp = major
+        involved_activity = { activity_special_type_progression_major = yes }
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 }
 
@@ -3126,12 +2917,7 @@ bla.14 = {
         }
 
         remove_short_term_gold = 100
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 
     option = {
@@ -3141,25 +2927,14 @@ bla.14 = {
         }
 
         remove_short_term_gold = 150
+        involved_activity = { activity_special_type_progression_major = yes }
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 
     option = {
         name = black.27 #Do applications and hope for best
 
-        xp - big
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_medium = yes }
     }
 }
 
@@ -3216,12 +2991,6 @@ bla.15 = {
                 }
             }
         }
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
     }
 
     option = {
@@ -3231,12 +3000,8 @@ bla.15 = {
 
         prestige = -250
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
+
     }
 
     option = {
@@ -3247,13 +3012,7 @@ bla.15 = {
         }
 
         prestige = 850
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 }
 
@@ -3301,12 +3060,8 @@ bla.16 = {
 
         remove_short_term_gold = 200
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
+
     }
 
     option = {
@@ -3347,14 +3102,9 @@ bla.17 = {
     option = {
         name = black.33
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
-
         add_short_term_gold = 300
+
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -3385,10 +3135,6 @@ bla.18 = {
             has_trait = sadistic
         }
         hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
         
             99 = {}
             1 = {
@@ -3402,24 +3148,12 @@ bla.18 = {
         trigger = {
             intrigue >= 15
         }
-
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 
     option = {
         name = black.36 #Call the Town Guards to investigate 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 30 90 }
-            }
-        }
+        
     }
 
     option = {
@@ -3427,12 +3161,8 @@ bla.18 = {
 
         remove_short_term_gold = 500
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
+
     }
 }
 
@@ -3465,12 +3195,8 @@ bla.19 = {
 
         remove_short_term_gold = 650
 
-        hidden_effect = {
-            trigger_event = { 
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_medium = yes }
+
     }
 
     option = {
@@ -3481,12 +3207,7 @@ bla.19 = {
         }
 
         add_piety = -500
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+
     }
 
     option = {
@@ -3498,12 +3219,7 @@ bla.19 = {
 
         remove_short_term_gold = 200
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -3550,10 +3266,6 @@ bla.20 = {
             65 = {
                 custom_tooltip = {
                     text = black.41A #Yeah okay im sorry
-                    trigger_event = {
-                        id = blackstone.40
-                        days = { 14 65 }
-                    }
                 }
             }
 
@@ -3569,7 +3281,6 @@ bla.20 = {
                         FIXED = no
                         LOCALE = terrain_scope 
                         OUTPUT_EVENT = bla.21
-                        INVALIDATION_EVENT = blackstone.40
                     }
                 }
             }
@@ -3599,13 +3310,7 @@ bla.21 = {
 
     option = {
         name = black.42 #Killed em , Chump
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 60 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 }
 
@@ -3630,7 +3335,9 @@ bla.22 = {
     }
 
     option = {
+        name = black.100
 
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -3664,19 +3371,15 @@ bla.23 = {
         }
 
         add_short_term_gold = 1000
+
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 
     option = {
         name = black.46 # Thank you
 
         add_short_term_gold = 600
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 15 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_medium = yes }
     }
 }
 
@@ -3705,11 +3408,7 @@ bla.24 = {
 
         add_prestige = 1200
         add_short_term_gold = 100
-
-        hidden_effect ={
-            id = blackstone.40
-            days = { 15 100 }
-        }
+        involved_activity = { activity_special_type_progression_medium = yes }
     }
 
     option = {
@@ -3718,12 +3417,6 @@ bla.24 = {
         add_short_term_gold = 400
         add_prestige = 100
 
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 15 100 }
-            }
-        }
     }
 }
 
@@ -3751,26 +3444,14 @@ bla.25 = {
         name = black.49 #Donate it to Mueseum 
 
         add_prestige = 2500
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_massive = yes }
     }
 
     option = {
         name = blackstone.50 #Sell it
 
         add_short_term_gold = 750
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 }
 
@@ -3799,13 +3480,7 @@ bla.26 = {
 
         remove_short_term_gold = 100
         add_prestige = 750
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 
     option = {
@@ -3816,13 +3491,7 @@ bla.26 = {
         }
         
         add_prestige = 400
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -3867,13 +3536,7 @@ bla.27 = {
         name = black.53 #gifted with Funding
 
         add_short_term_gold = 500
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 75 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_tiny = yes }
     }
 
     option = {
@@ -3882,13 +3545,7 @@ bla.27 = {
         #Bigger XP 
 
         add_prestige = 750
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_major = yes }
     }
 }
 
@@ -3914,13 +3571,7 @@ bla.28 = {
 
     option = {
         name = black.55 #Wow these help use understand more
-
-        hidden_effect = {
-            trigger_event = {
-                id = blackstone.40
-                days = { 14 65 }
-            }
-        }
+        involved_activity = { activity_special_type_progression_massive = yes }
     }
 }
 
