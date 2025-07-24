@@ -1,0 +1,171 @@
+﻿# This store cycle serves to facilitate tracking and purging settlement expedition variables
+lv_settlement_story_cycle = {
+	on_setup = {
+		if = {
+			limit = { story_owner = { has_variable = lv_settlement_expedition_destination } }
+			add_to_variable_list = {
+				name = lv_settlement_expeditions
+				target = story_owner.var:lv_settlement_expedition_destination
+			}
+		}
+	}
+
+	on_owner_death = {
+		if = {
+			limit = {
+				exists = story_owner.primary_heir
+				story_owner.primary_heir = {
+					is_alive = yes
+					save_temporary_scope_as = heir
+				}
+			}
+			make_story_owner = scope:heir
+			story_owner = {
+				every_vassal = {
+					limit = { has_variable = lv_settlement_expedition_liege }
+					set_variable = {
+						name = lv_settlement_expedition_liege
+						value = scope:heir
+					}
+				}
+				every_courtier = {
+					limit = { has_variable = lv_settlement_expedition_liege }
+					set_variable = {
+						name = lv_settlement_expedition_liege
+						value = scope:heir
+					}
+				}
+			}
+		}
+		else = { end_story = yes }
+	}
+
+	on_end = {
+		story_owner = {
+			remove_variable = lv_settlement_expedition_destination
+			remove_variable = lv_settlement_expedition_liege
+			remove_variable = lv_settlement_cost
+		}
+	}
+
+	# Purge orphaned variables and auto-end story ASAP if no pending expeditions
+	effect_group = {
+		days = 1
+		triggered_effect = {
+			trigger = { has_variable_list = lv_settlement_expeditions }
+			effect = {
+				# DEBUG GOLD GENERATOR
+				#story_owner = { add_gold = 1 }
+
+				every_in_list = {
+					variable = lv_settlement_expeditions
+					save_scope_as = destination
+					scope:story.story_owner = {
+						save_scope_as = liege
+						if = {
+							limit = {
+								var:lv_settlement_expedition_destination ?= scope:destination
+								OR = {
+									NOT = { has_variable = lv_settlement_expedition_liege }
+									is_travelling = no
+								}
+							}
+							scope:story = {
+								add_to_variable_list = {
+									name = lv_settlement_purge_list
+									target = prev
+								}
+							}
+						}
+						every_vassal = {
+							limit = {
+								var:lv_settlement_expedition_destination ?= scope:destination
+								OR = {
+									NOT = { has_variable = lv_settlement_expedition_liege }
+									is_travelling = no
+								}
+							}
+							scope:story = {
+								add_to_variable_list = {
+									name = lv_settlement_purge_list
+									target = prev
+								}
+							}
+						}
+						every_courtier = {
+							limit = {
+								var:lv_settlement_expedition_destination ?= scope:destination
+								OR = {
+									NOT = { has_variable = lv_settlement_expedition_liege }
+									is_travelling = no
+								}
+							}
+							scope:story = {
+								add_to_variable_list = {
+									name = lv_settlement_purge_list
+									target = prev
+								}
+							}
+						}
+						scope:story = {
+							if = {
+								limit = { has_variable_list = lv_settlement_purge_list }
+								scope:story = {
+									every_in_list = {
+										variable = lv_settlement_purge_list
+										remove_variable = lv_settlement_expedition_liege
+										remove_variable = lv_settlement_expedition_destination
+										if = {
+											limit = { is_travelling = yes }
+											cancel_travel_plan = yes
+										}
+									}
+									clear_variable_list = lv_settlement_purge_list
+								}
+							}
+						}
+						if = {
+							limit = {
+								NOT = {
+									var:lv_settlement_expedition_destination ?= scope:destination
+									var:lv_settlement_expedition_liege ?= scope:liege
+									is_travelling = yes
+								}
+								NOT = {
+									any_vassal = {
+										var:lv_settlement_expedition_destination ?= scope:destination
+										var:lv_settlement_expedition_liege ?= scope:liege
+										is_travelling = yes
+									}
+								}
+								NOT = {
+									any_courtier = {
+										var:lv_settlement_expedition_destination ?= scope:destination
+										var:lv_settlement_expedition_liege ?= scope:liege
+										is_travelling = yes
+									}
+								}
+							}
+							
+							scope:story = {
+								remove_list_variable = {
+									name = lv_settlement_expeditions
+									target = scope:destination
+								}
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						variable_list_size = {
+							name = lv_settlement_expeditions
+							value = 0
+						}
+					}
+					end_story = yes
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,1054 @@
+﻿# VALYRIAN BLOCKERS
+
+#Unexplored Caves
+unexplored_caves_01 = {
+	cost_gold = 0
+	construction_time = 20
+	type_icon = "icon_building_blocker_cave.dds"
+	next_building = unexplored_caves_02
+
+	can_construct_potential = { always = no }
+
+	province_modifier = { travel_danger = 10 }
+	county_modifier = {
+		county_opinion_add = -10
+		monthly_county_control_growth_factor = -0.2
+	}
+	character_modifier = {
+		stress_gain_mult = 0.1
+		stress_loss_mult = -0.1
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+unexplored_caves_02 = {
+	cost_gold = 100
+	construction_time = 720
+	type_icon = "icon_building_blocker_cave.dds"
+	next_building = unexplored_caves_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+	
+	province_modifier = { travel_danger = 5 }
+	county_modifier = {
+		county_opinion_add = -5
+		monthly_county_control_growth_factor = -0.1
+	}
+	character_modifier = {
+		stress_gain_mult = 0.05
+		stress_loss_mult = -0.05
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+unexplored_caves_03 = {
+	cost_gold = 200
+	construction_time = 720
+	type_icon = "icon_building_blocker_cave.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				10 = {}
+			}
+			county.holder = { trigger_event = lv_blocker_clearance.0001 }
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+# #Firewyrms
+
+#Swamp_01_
+swamp_01_01 = {
+	cost_gold = 0
+	construction_time = 20
+	type_icon = "icon_building_blocker_swamp_1.dds"
+	next_building = swamp_01_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		build_speed = 0.6
+		holding_build_gold_cost = 0.2
+		travel_danger = 10
+		development_growth_factor = -0.3
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+swamp_01_02 = {
+	cost_gold = 0
+	construction_time = 720
+	type_icon = "icon_building_blocker_swamp_1.dds"
+	next_building = swamp_01_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		build_speed = 0.4
+		holding_build_gold_cost = 0.1
+		travel_danger = 5
+		development_growth_factor = -0.15
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+swamp_01_03 = {
+	cost_gold = 0
+	construction_time = 720
+	type_icon = "icon_building_blocker_swamp_1.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+	
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				10 = { # Challenge event - Stewardship
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = { # Challenge event
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
+					trigger_event = lv_blocker_clearance.0011
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 }
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+#Swamp_02_
+swamp_02_01 = {
+	cost_gold = 0
+	construction_time = 20
+	type_icon = "icon_building_blocker_swamp_2.dds"
+	next_building = swamp_02_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		build_speed = 0.6
+		holding_build_gold_cost = 0.2
+		travel_danger = 10
+		development_growth_factor = -0.3
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+swamp_02_02 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_swamp_2.dds"
+	next_building = swamp_02_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		build_speed = 0.4
+		holding_build_gold_cost = 0.1
+		travel_danger = 5
+		development_growth_factor = -0.15
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+swamp_02_03 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_swamp_2.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				10 = { # Challenge event - Stewardship
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = {
+					limit = { scope:blocker_province = { has_variable = blocker_outcome } }
+					trigger_event = lv_blocker_clearance.0011
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 } # No reward, replace with the challenge event
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+#Floods
+lv_floods_01 = {
+	cost_gold = 0
+	construction_time = 20
+	type_icon = "icon_building_blocker_flood.dds"
+	next_building = lv_floods_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		build_speed = 0.6
+		holding_build_gold_cost = 0.2
+		travel_danger = 10
+		development_growth_factor = -0.3
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+lv_floods_02 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_flood.dds"
+	next_building = lv_floods_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		build_speed = 0.4
+		holding_build_gold_cost = 0.1
+		travel_danger = 5
+		development_growth_factor = -0.15
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+lv_floods_03 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_flood.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				1 = { # Foundations collapse, blocker gets re-added
+					#root = {
+					#	remove_building = lv_floods_03
+					#	add_building = lv_floods_01
+					#}
+				}
+				6 = { # Challenge event - Stewardship
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = { # Challenge event
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
+					trigger_event = lv_blocker_clearance.0021
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 }
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+#Noxious Gases_01_
+noxious_gases_01_01 = {
+	cost_gold = 0
+	construction_time = 720
+	type_icon = "icon_building_blocker_volcano.dds"
+	next_building = noxious_gases_01_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		build_speed = 0.2
+		holding_build_gold_cost = 0.2
+		travel_danger = 20
+		county_opinion_add = -30
+		development_growth_factor = -0.4
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+noxious_gases_01_02 = {
+	cost_gold = 0
+	construction_time = 720
+	type_icon = "icon_building_blocker_volcano.dds"
+	next_building = noxious_gases_01_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+	
+	province_modifier = {}
+
+	county_modifier = {
+		build_speed = 0.1
+		holding_build_gold_cost = 0.1
+		travel_danger = 10
+		county_opinion_add = -15
+		development_growth_factor = -0.2
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+noxious_gases_01_03 = {
+	cost_gold = 0
+	construction_time = 720
+	type_icon = "icon_building_blocker_volcano.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				1 = { # Starts a random plague blocker then hard resets
+					#root = {
+					#	remove_building = noxious_gases_01_03
+					#	add_building = noxious_gases_01_01
+					#}
+				}
+				1 = { # The blocker is cleared if you have a high enough intrigue you can get an artifact that boosts murder schemes
+					# Yep
+				}
+				2 = { # The blocker is cleared but during an inspection you become ill
+					# Yep
+				}
+				6 = { # Challenge event - Stewardship
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = { # Challenge event
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
+					trigger_event = lv_blocker_clearance.0031
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 }
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+
+#Noxious Gases_02_
+noxious_gases_02_01 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_volcanos.dds"
+	next_building = noxious_gases_02_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		build_speed = 0.2
+		holding_build_gold_cost = 0.2
+		travel_danger = 20
+		county_opinion_add = -30
+		development_growth_factor = -0.4
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+noxious_gases_02_02 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_volcanos.dds"
+	next_building = noxious_gases_02_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		build_speed = 0.1
+		holding_build_gold_cost = 0.1
+		travel_danger = 10
+		county_opinion_add = -15
+		development_growth_factor = -0.2
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+noxious_gases_02_03 = {
+	cost_gold = 0
+	construction_time = 1440
+	type_icon = "icon_building_blocker_volcanos.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				1 = { # Starts a random plague blocker then hard resets
+					#root = {
+					#	remove_building = noxious_gases_02_03
+					#	add_building = noxious_gases_02_01
+					#}
+				}
+				1 = { # The blocker is cleared if you have a high enough intrigue you can get an artifact that boosts murder schemes
+					# Yep
+				}
+				2 = { # The blocker is cleared but during an inspection you become ill
+					# Yep
+				}
+				6 = { # Challenge event - Stewardship
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = { # Challenge event
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
+					trigger_event = lv_blocker_clearance.0031
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 }
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+
+#Stonemen Encampment
+stonemen_encampment_01 = {
+	cost_gold = 0
+	construction_time = 20
+	type_icon = "icon_building_blocker_stonemen.dds"
+	next_building = stonemen_encampment_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		travel_danger = 20
+		county_opinion_add = -30
+		monthly_county_control_growth_factor = -0.3
+		development_growth_factor = -0.2
+	}
+	character_modifier = {
+		stress_gain_mult = 0.2
+		stress_loss_mult = -0.2
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+stonemen_encampment_02 = {
+	cost_gold = 240
+	construction_time = 1080
+	type_icon = "icon_building_blocker_stonemen.dds"
+	next_building = stonemen_encampment_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		travel_danger = 10
+		county_opinion_add = -15
+		monthly_county_control_growth_factor = -0.15
+		development_growth_factor = -0.1
+	}
+	character_modifier = {
+		stress_gain_mult = 0.1
+		stress_loss_mult = -0.1
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_plague
+}
+stonemen_encampment_03 = {
+	cost_gold = 120
+	construction_time = 540
+	type_icon = "icon_building_blocker_stonemen.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				1 = { # Find a cache of gold after draining the area
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				#1 = { # The stonemen fight back and start a plague, the building reverts to 01
+				#	#root = {
+				#	#	remove_building = stonemen_encampment_03
+				#	#	add_building = stonemen_encampment_03
+				#	#}
+				#}
+				#1 = { # The blocker is cleared if you have a high enough intrigue you can get an artifact that boosts murder schemes
+				#	# Yep
+				#}
+				#2 = { # The stonemen blocker is cleared but you get a plague in your realm
+				#	# Yep
+				#}
+				6 = { # Challenge event - Martial
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = { # Challenge event
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
+					trigger_event = lv_blocker_clearance.0041
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 }
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+#Bandit Camp
+bandit_camps_01 = {
+	cost_gold = 0
+	construction_time = 20
+	type_icon = "icon_building_blocker_bandits.dds"
+	next_building = bandit_camps_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		travel_danger = 20
+		county_opinion_add = -30
+		monthly_county_control_growth_factor = -0.3
+		development_growth_factor = -0.4
+	}
+	character_modifier = {
+		stress_gain_mult = 0.2
+		stress_loss_mult = -0.2
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_raid
+}
+bandit_camps_02 = {
+	cost_gold = 240
+	construction_time = 1080
+	type_icon = "icon_building_blocker_bandits.dds"
+	next_building = bandit_camps_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		travel_danger = 10
+		county_opinion_add = -15
+		monthly_county_control_growth_factor = -0.15
+		development_growth_factor = -0.2
+	}
+	character_modifier = {
+		stress_gain_mult = 0.1
+		stress_loss_mult = -0.1
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect_raid
+}
+bandit_camps_03 = {
+	cost_gold = 120
+	construction_time = 540
+	type_icon = "icon_building_blocker_bandits.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # The bandits re-organize, building is added back
+					#remove_building = bandit_camps_03
+					#add_building = bandit_camps_03
+				}
+				3 = { # The blocker is cleared but the bandits do one last raid
+					random_list = {
+						1 = { # Find a cache of gold after clearing out the camps
+							set_variable = {
+								name = blocker_outcome
+								value = flag:gold_high
+							}
+						}
+						1 = { # Find a cache of gold after clearing out the camps
+							set_variable = {
+								name = blocker_outcome
+								value = flag:gold_low
+							}
+						}
+					}
+					# Yep
+				}
+				3 = { # The bandits are eliminated as normal
+					# Yep
+				}
+				6 = { # Challenge event - Martial or Diplomacy
+					set_variable = {
+						name = blocker_outcome
+						value = flag:challenge
+					}
+				}
+			}
+			county.holder = {
+				if = { # Challenge event
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
+					trigger_event = lv_blocker_clearance.0051
+				}
+				else = { trigger_event = lv_blocker_clearance.0001 }
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+#Ruined/Abandoned holding this is for major counties as they have a long clear time
+small_ruined_holding_01 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = standard_construction_time
+	type_icon = "icon_structure_hosios_loukas.dds"
+	next_building = small_ruined_holding_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		holding_build_gold_cost = 0.3
+		build_speed = 0.3
+		development_growth_factor = 0.3
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+small_ruined_holding_02 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = standard_construction_time
+	type_icon = "icon_structure_hosios_loukas.dds"
+	next_building = small_ruined_holding_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		holding_build_gold_cost = 0.2
+		build_speed = 0.2
+		development_growth_factor = 0.2
+	}
+
+	on_complete = {
+		hidden_effect = {
+			county.holder = {
+				random_list = {
+					1 = { # find a dragon egg
+						trigger_event = special_blockers.0005
+					}
+					4 = {	# cave explored, deposit of a random gem/metal
+						send_interface_toast = {
+							title = find_gold_cache
+							left_icon = this
+							add_gold = 200
+						}
+					}
+					10 = {
+
+					}
+				}
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+small_ruined_holding_03 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = standard_construction_time
+	type_icon = "icon_structure_hosios_loukas.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				10 = {}
+			}
+			county.holder = { trigger_event = lv_blocker_clearance.0001 }
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+medium_ruined_holding_01 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = very_slow_construction_time
+	type_icon = "icon_structure_great_mosque_of_cordoba.dds"
+	next_building = medium_ruined_holding_02
+
+	can_construct_potential = { always = no }
+
+	province_modifier = {}
+
+	county_modifier = {
+		holding_build_gold_cost = 0.4
+		build_speed = 0.4
+		development_growth_factor = 0.4
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+medium_ruined_holding_02 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = very_slow_construction_time
+	type_icon = "icon_structure_great_mosque_of_cordoba.dds"
+	next_building = medium_ruined_holding_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		holding_build_gold_cost = 0.3
+		build_speed = 0.3
+		development_growth_factor = 0.3
+	}
+
+	on_complete = {
+		hidden_effect = {
+			county.holder = {
+				random_list = {
+					1 = { # find a dragon egg
+						trigger_event = special_blockers.0005
+					}	
+					4 = {	# cave explored, deposit of a random gem/metal
+						send_interface_toast = {
+							title = find_gold_cache
+							left_icon = this
+							add_gold = 200
+						}
+					}
+					10 = {
+
+					}
+				}
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+medium_ruined_holding_03 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = very_slow_construction_time
+	type_icon = "icon_structure_great_mosque_of_cordoba.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				10 = {}
+			}
+			county.holder = { trigger_event = lv_blocker_clearance.0001 }
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+large_ruined_holding_01 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = 2555
+	type_icon = "icon_structure_alhambra.dds"
+	next_building = large_ruined_holding_02
+
+	can_construct_potential = { always = no }
+
+	county_modifier = {
+		holding_build_gold_cost = 0.5
+		build_speed = 0.5
+		development_growth_factor = 0.5
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+large_ruined_holding_02 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = 2555
+	type_icon = "icon_structure_alhambra.dds"
+	next_building = large_ruined_holding_03
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	county_modifier = {
+		holding_build_gold_cost = 0.4
+		build_speed = 0.4
+		development_growth_factor = 0.4
+	}
+
+	on_complete = {
+		hidden_effect = {
+			county.holder = {
+				random_list = {
+					1 = { # find a dragon egg
+						trigger_event = special_blockers.0005
+					}	
+					4 = {	# cave explored, deposit of a random gem/metal
+						send_interface_toast = {
+							title = find_gold_cache
+							left_icon = this
+							add_gold = 200
+						}
+					}
+					10 = {
+
+					}
+				}
+			}
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+large_ruined_holding_03 = {
+	cost_gold = expensive_building_tier_6_cost
+	construction_time = 2555
+	type_icon = "icon_structure_alhambra.dds"
+
+	can_construct_potential = { scope:holder = { is_human = yes } }
+
+	on_complete = {
+		save_scope_as = blocker_province
+		hidden_effect = {
+			random_list = {
+				1 = { # Find a dragon egg
+					set_variable = {
+						name = blocker_outcome
+						value = flag:dragon_egg
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_high
+					}
+				}
+				4 = { # Find a deposit of a random gem/metal
+					set_variable = {
+						name = blocker_outcome
+						value = flag:gold_low
+					}
+				}
+				10 = {}
+			}
+			county.holder = { trigger_event = lv_blocker_clearance.0001 }
+		}
+	}
+
+	flag = wilderness_blocker
+	effect_desc = lv_wilderness_blocker_effect
+}
+
+#Barren/dead land, reduces development growth, popular opinion and county taxes

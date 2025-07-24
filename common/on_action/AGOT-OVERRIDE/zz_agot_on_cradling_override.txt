@@ -109,33 +109,43 @@
 				}
 				save_scope_as = egg
 				artifact_owner = { save_scope_as = head_dragonkeeper }
-				random_list = {
-					97 = { }
-
-					2 = {
-						modifier = {
-							add = 1
-							var:pitted_egg = title:c_dragonstone
-						}
-						modifier = {
-							add = 25
-							var:pitted_egg = {
-								zz_has_valyria_natural_dragon_pit_county = yes
-							}
-						}
-						var:pitted_egg.holder = {
-							trigger_event = {
-								id = agot_dragon_pits.2005
-								days = { 0 364 }
-							}
+				if = {
+					limit = {
+						agot_canon_dragons_enabled = yes
+						agot_is_valid_unpaired_canon_dragon_birth = { EGG = scope:egg }
+					}
+					var:pitted_egg.holder = {
+						trigger_event = {
+							id = agot_dragon_pits.2005
+							days = { 0 364 }
 						}
 					}
+					agot_set_reserved_canon_egg_scope = { EGG = scope:egg }
+				}
+				else = {
+					random_list = {
+						97 = { }
 
-					1 = {
-						var:pitted_egg.holder = {
-							trigger_event = {
-								id = agot_dragon_pits.2004
-								days = { 0 364 }
+						2 = {
+							modifier = {
+								add = 1
+								var:pitted_egg = title:c_dragonstone
+							}
+
+							var:pitted_egg.holder = {
+								trigger_event = {
+									id = agot_dragon_pits.2005
+									days = { 0 364 }
+								}
+							}
+						}
+
+						1 = {
+							var:pitted_egg.holder = {
+								trigger_event = {
+									id = agot_dragon_pits.2004
+									days = { 0 364 }
+								}
 							}
 						}
 					}
@@ -148,7 +158,8 @@
 
 on_dragon_lay_master_on_action = {
 	effect = {
-		every_living_dragon = {
+		every_in_global_list = {
+			variable = living_dragons
 			limit = { # Only owned/tamed dragons, wild dragons are handled by event or assumed to be not found
 				has_character_flag = owned_dragon
 				is_female = yes
@@ -197,13 +208,22 @@ on_dragon_lay_master_on_action = {
 					add = 1
 				}
 				modifier = {
-					has_trait = dragon_fertile
+					OR = {
+						has_trait = dragon_fertile
+						AND = {
+							has_inactive_trait = dragon_fertile
+							has_variable = dragon_is_fertile
+						}
+					}
 					add = 4
 				}
 				modifier = {
 					any_relation = {
 						type = soulmate
-						has_trait = dragon_fertile
+						OR = {
+							has_trait = dragon_fertile
+							has_inactive_trait = dragon_fertile # Males won't be visibly fertile necessarily
+						}
 					}
 					add = 2
 				}
@@ -217,15 +237,24 @@ on_dragon_lay_master_on_action = {
 				modifier = {
 					exists = var:clutches
 					var:clutches > 1
-					NOT = { has_trait = dragon_fertile }
+					NOR = {
+						has_trait = dragon_fertile
+						AND = {
+							has_inactive_trait = dragon_fertile
+							has_variable = dragon_is_fertile
+						}
+					}
 					add = clutches_subtract_script_val
 				}
 				modifier = {
 					exists = var:clutches
 					var:clutches > 2
-					has_trait = dragon_fertile
-					NOR = {
-						has_trait = immortal
+					OR = {
+						has_trait = dragon_fertile
+						AND = {
+							has_inactive_trait = dragon_fertile
+							has_variable = dragon_is_fertile
+						}
 					}
 					add = clutches_subtract_script_val
 				}
@@ -288,7 +317,15 @@ on_dragon_lay_master_on_action = {
 					random_list = {
 						1 = {
 							trigger = {
-								NOT = { scope:dragon_parent = { has_trait = dragon_fertile } }
+								scope:dragon_parent = {
+									NOR = {
+										has_trait = dragon_fertile
+										AND = {
+											has_inactive_trait = dragon_fertile
+											has_variable = dragon_is_fertile
+										}
+									}
+								}
 								agot_dragon_population_low = no
 							}
 							trigger_event = {
