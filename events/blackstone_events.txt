@@ -96,22 +96,14 @@ blackstone.2 = {
 
     option = {
         name = blackstone.2a
-        set_variable = {
-            name = blackstone_studies
-            value = 1
-            years = 20
-        }
+        trigger_event = blackstone.3
     }
 }
 
 blackstone.3 = {
     type = character_event
     title = blackstone.3_t #Phase 1 
-    desc = {
-        first_valid = {
-
-        }
-    } 
+    desc = blackstone.3_desc
 
     theme = learning
 
@@ -121,127 +113,27 @@ blackstone.3 = {
     }
 
     option = {
-        name = active.01
-        involved_activity = {
-            if = {
-                limit = {
-                    has_activity_option = { # Do this if you selected the scholar option
-                        category = special
-                        option = study_type_scholarly
-                    }
-                }
-                province:3499 = { # Province 3499 is the Citadel
-                    save_scope_as = study_destination
-                }
-            }
-            else_if = {
-                limit = {
-                    has_activity_option = { # Do this if you selected the religion option
-                        category = special
-                        option = study_type_faith
-                    }
-                    faith = { any_holy_site = {} } # Gotta make sure the faith has any holy sites first
-                }
-                faith = {
-                    random_holy_site = { # Pick any holy random site of our faith to go to
-                        title_province = { save_scope_as = study_destination }
-                    }
-                }
-            }
-            else_if = {
-                limit = {
-                    has_activity_option = { # Do this if you selected the rock licker option
-                        category = special
-                        option = study_type_excavation
-                    }
-                }
-                random_county = {
-                    limit = { # Must be any of the blackstone counties
-                        OR = {
-                            this = province:9763
-                            this = province:9470
-                            this = province:9434
-                            this = province:9618
-                            this = province:9150
-                            this = province:8223
-                            this = province:9520
-                            this = province:7351
-                            this = province:4415
-                        }
-                    }
-                    title_province = { save_scope_as = study_destination }
-                }
-            }
-            else_if = { # For the occult one we can polish this more later, but for now let's make it the same as the faith
-                limit = {
-                    has_activity_option = { # Do this if you selected the occult option
-                        category = special
-                        option = study_type_occult
-                    }
-                    faith = { any_holy_site = {} } # Gotta make sure the faith has any holy sites first
-                }
-                faith = {
-                    random_holy_site = { # Pick any holy random site of our faith to go to
-                        title_province = { save_scope_as = study_destination }
-                    }
-                }
-            }
-        }
-        start_travel_plan = {
-			destination = scope:study_destination
-			return_trip = yes
-			on_arrival_event = blackstone.4
-		}
+        name = active.01 #Citadel
+        trigger_event = blackstone.5
+    }
+
+    option = {
+        name = active.2 #The Occult
+        trigger_event = blackstone.14
+    }
+
+    option = {
+        name = active.3 #Faith
+        trigger_event = blackstone.21
+    }
+
+    option = {
+        name = active.4 #Rock?
+        trigger_event = blackstone.24
     }
 }
 
-blackstone.4 = {
-    type = character_event
-    hidden = yes
 
-    immediate = {
-        involved_activity = {
-            if = {
-                limit = {
-                    has_activity_option = {
-                        category = special
-                        option = study_type_scholarly
-                    }
-                }
-                trigger_event = blackstone.5
-            }
-            else_if = {
-                limit = {
-                    has_activity_option = {
-                        category = special
-                        option = study_type_faith
-                    }
-                }
-                trigger_event = blackstone.21
-            }
-            else_if = {
-                limit = {
-                    has_activity_option = {
-                        category = special
-                        option = study_type_excavation
-                    }
-                }
-                trigger_event = blackstone.24
-            }
-            else_if = {
-                limit = {
-                    has_activity_option = {
-                        category = special
-                        option = study_type_occult
-                    }
-                }
-                trigger_event = blackstone.14
-            }
-        }
-
-        save_scope_as = blackstone_root
-    }
-}
 
 blackstone.5 = {
     type = character_event
@@ -438,7 +330,7 @@ blackstone.8 = {
 
     option = {
         name = citadel.5
-        #XP for later dont forget to add it 
+        add_prestige = 2000
         trigger_event = blackstone.13
     }
 }
@@ -732,6 +624,7 @@ blackstone.17 = {
     desc = blackstone.17_desc
 
     theme = witchcraft
+    override_background = the_dark_one
 
     right_portrait = {
         character = root
@@ -764,6 +657,7 @@ blackstone.18 = {
     desc = blackstone.18_desc
 
     theme = witchcraft
+    override_background = the_dark_one
 
     right_portrait = {
         character = root
@@ -784,6 +678,7 @@ blackstone.19 = {
     desc = blackstone.19_desc
 
     theme = witchcraft
+    override_background = the_dark_one
 
     right_portrait = {
         character = root
@@ -1784,7 +1679,7 @@ blackstone.42 = {
             add_trait = brave
         }
 
-        trigger_event = blackstone.44
+        trigger_event = blackstone.45
     }
 
     option = {
@@ -1804,27 +1699,6 @@ blackstone.42 = {
     }
 }
 
-blackstone.44 = {
-    type = character_event
-    title = blackstone.44_t #I did it 
-    desc = blackstone.44_desc
-
-    theme = learning
-
-    right_portrait = {
-        character = root
-        animation = thinking
-    }
-
-    option = {
-        name = blackstone.499
-
-        add_prestige = 5000
-
-        culture = { add_innovation = innovation_blackstone_knowledge }
-    }
-}
-
 blackstone.45 = {
     type = character_event
     title = blackstone.45_t #I did it I AM A GOD
@@ -1839,6 +1713,8 @@ blackstone.45 = {
 
     option = {
         name = Experiment.10
+
+        add_prestige = 5000
 
         culture = { add_innovation = innovation_blackstone_knowledge }
     }
@@ -1911,7 +1787,7 @@ blackstone.47 = {
     }
 
     option = {
-        name = occult.14 #sacrifice 2
+        name = occult.15 #sacrifice 2
         scope:sacrifice_2 = {
             death = {
                 death_reason = death_eaten_in_a_feast
@@ -1922,7 +1798,7 @@ blackstone.47 = {
     }
 
     option = {
-        name = occult.14 #sacrifice 3
+        name = occult.16 #sacrifice 3
         scope:sacrifice_3 = {
             death = {
                 death_reason = death_eaten_in_a_feast
@@ -1933,7 +1809,7 @@ blackstone.47 = {
     }
 
     option = {
-        name = occult.15
+        name = occult.17
         scope:sacrifice_1 = {
             death = {
                 death_reason = death_eaten_in_a_feast
@@ -1968,7 +1844,7 @@ blackstone.48 = {
     }
 
     option = {
-        name = occult.16 #I have eaten my People
+        name = occult.18 #I have eaten my People
         trigger_event = blackstone.13
 
         hidden_effect = {
@@ -1990,13 +1866,13 @@ blackstone.49 = {
     }
 
     option = {
-        name = occult.17
+        name = occult.19
         trigger_event = blackstone.13
 
         hidden_effect = {
             add_trait = cannibal
             remove_trait = compassionate
-            add_trait = saddistic
+            add_trait = sadistic
         }
     }
 }
