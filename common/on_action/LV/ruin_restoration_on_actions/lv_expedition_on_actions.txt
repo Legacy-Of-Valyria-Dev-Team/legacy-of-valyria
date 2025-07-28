@@ -1,4 +1,33 @@
 ﻿# Legacy of Valyria Expedition on actions
+travel_danger_events_on_action = {
+	on_actions = { lv_travel_danger_events_on_action }
+}
+
+lv_travel_danger_events_on_action = {
+	trigger = { is_migrating = no }
+	random_events = {
+		chance_of_no_event = {
+			value = {
+				add = 100
+				if = {
+					limit = {
+						exists = root.current_travel_plan
+						exists = root.location
+					}
+					subtract = root.current_travel_plan.current_danger_value
+					add = root.current_travel_plan.travel_safety
+				}
+			}
+			max = {
+				value = 100
+				subtract = define:NTravel|TRAVEL_DANGER_MINIMUM
+			}
+		}
+		10 = 0
+		350 = lv_travel_danger_event.0001 # Smoking Sea: The Fog Lives
+	}
+}
+
 on_travel_plan_movement = { on_actions = { lv_special_location_on_action } }
 
 # Flavour text for when you travel for the first time to historically ruined regions
