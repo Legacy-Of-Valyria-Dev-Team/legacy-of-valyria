@@ -3,6 +3,7 @@
 # Directory
 
 # lv_travel_danger.0001 - Smoking Sea: The Fog Lives
+# lv_travel_danger.0002 - Smoking Sea: Blood on the Deck
 
 # Scripted Effects and Triggers
 scripted_effect lv_valyria_danger_fog_effect = {
@@ -365,6 +366,120 @@ lv_travel_danger_event.0001 = {
 				}
 			}
 			50 = { death = { death_reason = death_vanished } }
+		}
+	}
+}
+
+# Smoking Sea: Blood on the Deck
+lv_travel_danger_event.0002 = {
+	type = character_event
+	trigger = {
+		lv_valyria_smoking_sea_trigger = yes
+		current_travel_plan = { any_entourage_character = { count >= 2 } }
+	}
+	title = lv_travel_danger.0002.t
+	desc = lv_travel_danger.0002.desc
+
+	theme = travel_danger
+
+	override_background = { reference = lv_valyria_smoking_sea }
+
+	left_portrait = {
+		character = root
+		scripted_animation = {
+			triggered_animation = {
+				trigger = { has_trait = lunatic_1 }
+				animation = { dancing }
+			}
+			animation = fear
+		}
+	}
+
+	right_portrait = {
+		character = scope:killer
+		animation = paranoia
+	}
+
+	lower_right_portrait =  scope:victim
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	immediate = {
+		current_travel_plan = {
+			random_entourage_character = {
+				add_trait = possessed_1
+				save_scope_as = killer
+			}
+			random_entourage_character = {
+				limit = { NOT = { this = scope:killer } }
+				save_scope_as = victim
+				death = {
+					death_reason = death_murder
+					killer = scope:killer
+				}
+			}
+			root = { add_stress = major_stress_gain }
+			every_entourage_character = {
+				limit = {
+					NOR = {
+						this = scope:killer
+						this = scope:victim
+					}
+				}
+				add_stress = major_stress_gain
+			}
+		}
+	}
+
+	option = {
+		name = lv_travel_danger.0002.a
+		add_stress = medium_stress_loss
+		scope:killer = {
+			death = {
+				death_reason = death_execution
+				killer = root
+			}
+		}
+		# Murderer dies will show up at a later date to haunt you
+	}
+
+	option = {
+		name = lv_travel_danger.0002.b
+		add_stress = medium_stress_loss
+		scope:killer = {
+			death = {
+				death_reason = death_disappearance
+				killer = root
+			}
+		}
+		# Murderer "dies" will show up at a later date to haunt you
+	}
+
+	option = {
+		name = lv_travel_danger.0002.c
+		imprison = {
+			target = scope:killer
+			type = dungeon
+		}
+		current_travel_plan = {
+			every_entourage_character = {
+				limit = { NOT = { this = scope:killer } }
+				add_stress = minor_stress_gain
+			}
+		}
+	}
+
+	option = {
+		name = lv_travel_danger.0002.d
+		trigger = { stress_level >= 2 }
+		random_list = {
+			50 = { add_trait = lunatic_1 }
+			50 = { add_trait = possessed_1 }
 		}
 	}
 }
