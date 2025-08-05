@@ -1,0 +1,63 @@
+﻿# This store cycle serves to facilitate variable storage
+lv_firewyrm_story_cycle = {
+	on_setup = {
+		story_owner = {
+			location = {
+				if = {
+					limit = { has_free_building_slot = yes }
+					scope:story = {
+						set_variable = {
+							name = lv_firewyrm_location
+							value = prev
+						}
+					}
+					#lv_add_blocker_effect = {
+					#	FORCE = no
+					#	BLOCKER_BUILDING = firewyrm_lair
+					#}
+					add_building = firewyrm_lair
+				}
+				else_if = {
+					limit = {
+						county = {
+							any_neighboring_county = {
+								title_province = {
+									NAND = {
+										has_variable = lv_firewyrm
+										has_building = firewyrm_lair
+									}
+									has_free_building_slot = yes
+									save_temporary_scope_as = new_lair
+								}
+							}
+						}
+					}
+					scope:new_lair = {
+						scope:story = {
+							set_variable = {
+								name = lv_firewyrm_location
+								value = prev
+							}
+						}
+						#lv_add_blocker_effect = {
+						#	FORCE = no
+						#	BLOCKER_BUILDING = firewyrm_lair
+						#}
+						add_building = firewyrm_lair
+					}
+				}
+				else = { scope:story = { end_story = yes } }
+			}
+		}
+	}
+
+	on_owner_death = { end_story = yes }
+
+	on_end = {
+		var:lv_firewyrm_location = {
+			remove_building = firewyrm_lair
+			#lv_blocker_cleared_effect = yes
+		}
+		remove_variable = lv_firewyrm_location
+	}
+}
