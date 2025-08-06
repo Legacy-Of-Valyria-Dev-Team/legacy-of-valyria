@@ -10,7 +10,7 @@ lv_firewyrm_event.0001 = {
 	title = lv_firewyrm_event.0001.t
 	desc = lv_firewyrm_event.0001.desc
 
-	window = lv_firewyrm_character_event
+	window = agot_dragon_character_event
 	theme = dragon
 
 	override_background = {
@@ -118,6 +118,7 @@ lv_firewyrm_event.0001 = {
 
 		triggered_outfit = {
 			outfit_tags = {
+				dynamic_camera_zoom_0.8
 				no_clothes
 				bald
 			}
@@ -465,18 +466,55 @@ lv_firewyrm_duel.0001 = {
 	}
 
 	right_portrait = {
-        character = scope:firewyrm
+		character = scope:fd_firewyrm
 		animation = dragon_main
 		camera = lv_camera_firewyrm_duel_right
 
 		triggered_outfit = {
-			outfit_tags = {
-				no_clothes
-				bald
-				linear_camera_zoom
-			}
+			trigger = { level_ten_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
 		}
-    }
+		triggered_outfit = {
+			trigger = { level_nine_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { level_eight_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { level_seven_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { level_six_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { level_five_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { level_four_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { level_three_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { level_two_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { level_one_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { level_zero_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_1.0 }
+		}
+	}
 
 	widgets = {
 		widget = {
@@ -492,6 +530,10 @@ lv_firewyrm_duel.0001 = {
 			FLAG = dragon_idle
 			RIDING_DRAGON = yes
 		}
+		#scope:fd_firewyrm = {
+			#agot_clear_dragon_animation_flags = yes
+			#add_character_flag = dragon_roar
+		#}
 		lv_select_firewyrm_combat_options_from_pool_effect = yes
 
 		if = { # Show Firewyrm's last move
@@ -736,6 +778,22 @@ lv_firewyrm_duel.0001 = {
 
 	# SPECIAL OPTIONS
 	option = {
+		name = lv_firewyrm_duel.0001.chomp
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:dragon_chomp
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.chomp
+		show_as_tooltip = { lv_firewyrm_vs_dragon_move_dragon_chomp_effect = yes }
+		if = {
+			limit = { scope:fd_firewyrm = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_vs_dragon_move_dragon_chomp_effect = yes }
+		}
+	}
+
+	option = {
 		name = lv_firewyrm_duel.0001.commanding_cry
 		trigger = {
 			any_in_list = {
@@ -883,7 +941,7 @@ lv_firewyrm_duel.0002 = {
 		else_if = {
 			limit = { var:fd_combat_current_round >= round_cap_limit }
 			if = {
-				limit = { scope:fd_dragon.dragon_combat_effectiveness > level_ten_dragon_combat } # We assume the firewyrm's combat level = level 10
+				limit = { scope:fd_dragon.dragon_combat_effectiveness > scope:fd_firewyrm.dragon_combat_effectiveness }
 				save_scope_value_as = {
 					name = fd_finished
 					value = yes
@@ -892,7 +950,7 @@ lv_firewyrm_duel.0002 = {
 				scope:fd_firewyrm = { save_scope_as = fd_loser }
 			}
 			else_if = {
-				limit = { level_ten_dragon_combat > scope:fd_dragon.dragon_combat_effectiveness } # We assume the firewyrm's combat level = level 10
+				limit = { scope:fd_firewyrm.dragon_combat_effectiveness > scope:fd_dragon.dragon_combat_effectiveness }
 				save_scope_value_as = {
 					name = fd_finished
 					value = yes
@@ -1120,18 +1178,56 @@ lv_firewyrm_duel.0003 = {
 	}
 
 	right_portrait = {
-        character = scope:firewyrm
+		character = scope:fd_firewyrm
 		animation = dragon_main
 		camera = lv_camera_firewyrm_duel_right
 
 		triggered_outfit = {
-			outfit_tags = {
-				no_clothes
-				bald
-				linear_camera_zoom
-			}
+			trigger = { level_ten_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
 		}
-    }
+		triggered_outfit = {
+			trigger = { level_nine_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { level_eight_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { level_seven_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { level_six_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { level_five_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { level_four_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { level_three_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { level_two_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { level_one_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { level_zero_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_1.0 }
+		}
+	}
+
 
 	widgets = {
 		widget = {
@@ -1357,18 +1453,55 @@ lv_firewyrm_duel.0004 = {
 	}
 
 	right_portrait = {
-        character = scope:firewyrm
+		character = scope:fd_firewyrm
 		animation = dragon_main
 		camera = lv_camera_firewyrm_duel_right
 
 		triggered_outfit = {
-			outfit_tags = {
-				no_clothes
-				bald
-				linear_camera_zoom
-			}
+			trigger = { level_ten_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
 		}
-    }
+		triggered_outfit = {
+			trigger = { level_nine_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { level_eight_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { level_seven_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { level_six_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { level_five_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { level_four_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { level_three_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { level_two_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { level_one_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { level_zero_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_1.0 }
+		}
+	}
 
 	widgets = {
 		widget = {

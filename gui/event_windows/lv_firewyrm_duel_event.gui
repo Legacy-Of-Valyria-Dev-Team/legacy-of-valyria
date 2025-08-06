@@ -243,20 +243,20 @@ window = {
 
 					allow_outside = no
 
-					portrait_event_duel = {
+					firewyrm_portrait_event_duel = {
 						name = "portrait_right"
 						datacontext = "[EventWindowData.GetPortraitCharacter('right_portrait')]"
 						visible = "[EventWindowData.HasPortraitCharacter('right_portrait')]"
 						parentanchor = bottom|right
-						position = { 240 -18 }
+						position = { 240 24 }
 						size = { 930 500 }
 
 						blockoverride "portrait_button"
 						{
 							portrait_texture = "[EventWindowData.GetAnimatedEventPortraitTexture('right_portrait', 'camera_event_duel_right', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
-							alwaystransparent = yes
+							alwaystransparent = "[Not(EventWindowData.ShouldShowPortraitInfo('right_portrait'))]"
 
-							tooltip_visible = no
+							tooltip_visible = "[EventWindowData.ShouldShowPortraitInfo('right_portrait')]"
 							tooltip_offset = { -40 0 }
 							using = tooltip_es
 						}
@@ -332,8 +332,6 @@ window = {
 										parentanchor = bottom|hcenter
 										position = { 20 -5 }
 										alwaystransparent = yes
-										#AGOT Modified
-										# text = "[Character.GetShortUINameNoTooltip]"
 										raw_text = "#high [Character.Custom('AGOTCustomGetTitledFirstName')]#!"
 										max_width = 115
 										align = center
@@ -493,6 +491,65 @@ window = {
 				raw_text = "?"
 				fontsize = 24
 			}
+		}
+	}
+}
+
+
+types FirewyrmPortraitTypes
+{
+	type firewyrm_portrait_event_duel = widget {
+
+		widget = {
+			size = { 930 490 }
+			parentanchor = bottom
+
+			icon = {
+				name = "hovered"
+				parentanchor = bottom|hcenter
+				size = { 40% 95% }
+				color = { 0.9 0.8 0.6 0.6 }
+
+				using = Background_Portrait_Glow
+
+				block "highlight_visible" {
+					visible = no
+				}
+
+				state = {
+					name = _show
+					duration = 0.1
+					using = Animation_Curve_Default
+					alpha = 1
+				}
+
+				state = {
+					name = _hide
+					duration = 0.3
+					using = Animation_Curve_Default
+					alpha = 0
+					delay = 0.05
+				}
+			}
+
+			portrait_button = {
+				#AGOT Added
+				visible = yes
+				size = { 930 490 }
+				using = portrait_base
+				parentanchor = hcenter|bottom
+
+				portrait_texture = "[Character.GetAnimatedPortrait('environment_event_standard', 'environment_event_standard', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				background_texture = "gfx/portraits/portrait_transparent.dds"
+				texture = "gfx/portraits/portrait_transparent.dds"
+				mask = "gfx/portraits/portrait_mask_event.dds"
+				effectname = "NoHighlight"
+
+				block "portrait_button" {}
+			}
+			#AGOT Added
+			agot_dragons_portrait_event_duel_flight_button = {}
+			agot_dragons_portrait_event_duel_land_button = {}
 		}
 	}
 }
