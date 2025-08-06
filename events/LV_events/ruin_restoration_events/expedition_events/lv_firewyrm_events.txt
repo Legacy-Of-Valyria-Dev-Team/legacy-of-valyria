@@ -304,11 +304,29 @@ lv_firewyrm_duel.0001 = {
 					}
 					triggered_desc = {
 						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_cone_of_flame }
-						desc = lv_firewyrm_duel.0001.desc.cone_of_flame
+						desc = {
+							triggered_desc = {
+								trigger = { scope:fd_dragonrider = { NOT = { var:lv_dragon_state ?= flag:flying } } }
+								desc = lv_firewyrm_duel.0001.desc.cone_of_flame
+							}
+							triggered_desc = {
+								trigger = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
+								desc = lv_firewyrm_duel.0001.desc.cone_of_flame.miss
+							}
+						}
 					}
 					triggered_desc = {
 						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_frenzied_lunge }
-						desc = lv_firewyrm_duel.0001.desc.frenzied_lunge
+						desc = {
+							triggered_desc = {
+								trigger = { scope:fd_dragonrider = { NOT = { var:lv_dragon_state ?= flag:flying } } }
+								desc = lv_firewyrm_duel.0001.desc.frenzied_lunge
+							}
+							triggered_desc = {
+								trigger = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
+								desc = lv_firewyrm_duel.0001.desc.frenzied_lunge.miss
+							}
+						}
 					}
 					triggered_desc = {
 						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_rockfall_roar }
@@ -320,7 +338,16 @@ lv_firewyrm_duel.0001 = {
 					}
 					triggered_desc = {
 						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_berserk_charge }
-						desc = lv_firewyrm_duel.0001.desc.berserk_charge
+						desc = {
+							triggered_desc = {
+								trigger = { scope:fd_dragonrider = { NOT = { var:lv_dragon_state ?= flag:flying } } }
+								desc = lv_firewyrm_duel.0001.desc.berserk_charge
+							}
+							triggered_desc = {
+								trigger = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
+								desc = lv_firewyrm_duel.0001.desc.berserk_charge.miss
+							}
+						}
 					}
 				}
 				desc = lv_firewyrm_duel.0001.desc.succeeding.final
@@ -807,22 +834,6 @@ lv_firewyrm_duel.0001 = {
 	}
 
 	option = {
-		name = lv_firewyrm_duel.0001.vipers_feint
-		trigger = {
-			any_in_list = {
-				variable = fd_combat_moves
-				this = flag:dragon_vipers_feint
-			}
-		}
-		custom_tooltip = lv_firewyrm_duel.0001.tt.vipers_feint
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_vipers_feint_effect = yes }
-		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_vipers_feint_effect = yes }
-		}
-	}
-
-	option = {
 		name = lv_firewyrm_duel.0001.dragonflame_barrage
 		trigger = {
 			any_in_list = {
@@ -863,11 +874,29 @@ lv_firewyrm_duel.0001 = {
 				this = flag:dragon_commanding_cry
 			}
 		}
+		skill = diplomacy
 		custom_tooltip = lv_firewyrm_duel.0001.tt.commanding_cry
 		show_as_tooltip = { lv_firewyrm_vs_dragon_move_commanding_cry_effect = yes }
 		if = {
 			limit = { scope:fd_firewyrm = { is_alive = yes } }
 			hidden_effect = { lv_firewyrm_vs_dragon_move_commanding_cry_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.vipers_feint
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:dragon_vipers_feint
+			}
+		}
+		skill = intrigue
+		custom_tooltip = lv_firewyrm_duel.0001.tt.vipers_feint
+		show_as_tooltip = { lv_firewyrm_vs_dragon_move_vipers_feint_effect = yes }
+		if = {
+			limit = { scope:fd_firewyrm = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_vs_dragon_move_vipers_feint_effect = yes }
 		}
 	}
 
@@ -879,6 +908,7 @@ lv_firewyrm_duel.0001 = {
 				this = flag:dragon_hidden_knowledge
 			}
 		}
+		skill = learning
 		custom_tooltip = lv_firewyrm_duel.0001.tt.hidden_knowledge
 		show_as_tooltip = { lv_firewyrm_vs_dragon_move_hidden_knowledge_effect = yes }
 		if = {

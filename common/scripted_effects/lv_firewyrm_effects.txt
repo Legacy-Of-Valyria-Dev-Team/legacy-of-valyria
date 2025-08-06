@@ -1108,6 +1108,31 @@ lv_firewyrm_vs_dragon_post_move_effect = {
 	}
 }
 
+# Helper Effects
+lv_dragon_heal_wounds_effect = {
+	if = {
+		limit = { has_trait = dragon_wounded_5 }
+		remove_trait = dragon_wounded_5
+		add_trait = dragon_wounded_4
+	}
+	else_if = {
+		limit = { has_trait = dragon_wounded_4 }
+		remove_trait = dragon_wounded_4
+		add_trait = dragon_wounded_3
+	}
+	else_if = {
+		limit = { has_trait = dragon_wounded_3 }
+		remove_trait = dragon_wounded_3
+		add_trait = dragon_wounded_2
+	}
+	else_if = {
+		limit = { has_trait = dragon_wounded_2 }
+		remove_trait = dragon_wounded_2
+		add_trait = dragon_wounded_1
+	}
+	else = { remove_trait = dragon_wounded_1 }
+}
+
 # Special Moves
 lv_firewyrm_vs_dragon_move_stunned_effect = {
 	#Skips your round
@@ -1160,7 +1185,12 @@ lv_firewyrm_vs_dragon_move_circle_beast_effect = {
 lv_firewyrm_vs_dragon_move_flame_test_effect = {
 	#Low success chance, reveals fire resistance of firewyrm
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_flame_test }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low }
+	if = {
+		limit = { scope:fd_firewyrm = { var:lv_firewyrm_state ?= flag:molten } }
+		custom_tooltip = lv_firewyrm_duel.0001.warning.nullified
+		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	}
+	else = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low } }
 	lv_firewyrm_vs_dragon_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
@@ -1173,7 +1203,7 @@ lv_firewyrm_vs_dragon_move_claws_out_effect = {
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_claws_out }
 	random = {
 		chance = 50
-		wound_dragon = yes
+		scope:fd_dragon = { wound_dragon = yes }
 	}
 	random = {
 		chance = 50
@@ -1192,7 +1222,7 @@ lv_firewyrm_vs_dragon_move_reckless_dive_effect = {
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_reckless_dive }
 	random = {
 		chance = 20
-		wound_dragon = yes
+		scope:fd_dragon = { wound_dragon = yes }
 	}
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
 	lv_firewyrm_vs_dragon_post_move_effect = {
@@ -1294,7 +1324,12 @@ lv_firewyrm_vs_dragon_move_vipers_feint_effect = {
 lv_firewyrm_vs_dragon_move_dragonflame_barrage_effect = {
 	#High success chance, guaranteed minor burn
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_dragonflame_barrage }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	if = {
+		limit = { scope:fd_firewyrm = { var:lv_firewyrm_state ?= flag:molten } }
+		custom_tooltip = lv_firewyrm_duel.0001.warning.nullified
+		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	}
+	else = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
 	lv_firewyrm_vs_dragon_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
@@ -1317,7 +1352,8 @@ lv_firewyrm_vs_dragon_move_dragon_chomp_effect = {
 lv_firewyrm_vs_dragon_move_commanding_cry_effect = {
 	#Heals dragon's wounds, requires high diplomacy
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_commanding_cry }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	scope:fd_dragon = { lv_dragon_heal_wounds_effect = yes }
+	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
 	lv_firewyrm_vs_dragon_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
@@ -1434,29 +1470,7 @@ lv_firewyrm_vs_dragon_move_molten_slough_effect = {
 			name = lv_firewyrm_state
 			value = flag:molten
 		}
-		if = {
-			limit = { has_trait = dragon_wounded_5 }
-			remove_trait = dragon_wounded_5
-			add_trait = dragon_wounded_4
-		}
-		else_if = {
-			limit = { has_trait = dragon_wounded_4 }
-			remove_trait = dragon_wounded_4
-			add_trait = dragon_wounded_3
-		}
-		else_if = {
-			limit = { has_trait = dragon_wounded_3 }
-			remove_trait = dragon_wounded_3
-			add_trait = dragon_wounded_2
-		}
-		else_if = {
-			limit = { has_trait = dragon_wounded_2 }
-			remove_trait = dragon_wounded_2
-			add_trait = dragon_wounded_1
-		}
-		else = {
-			remove_trait = dragon_wounded_1
-		}
+		lv_dragon_heal_wounds_effect = yes
 	}
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_molten_slough }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
