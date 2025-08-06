@@ -223,6 +223,14 @@ lv_firewyrm_duel.0001 = {
 						trigger = { scope:fd_dragon_last_move = flag:none_stunned }
 						desc = lv_firewyrm_duel.0001.desc.stunned
 					}
+					triggered_desc = {
+						trigger = { scope:fd_dragon_last_move = flag:none_takeoff }
+						desc = lv_firewyrm_duel.0001.desc.takeoff
+					}
+					triggered_desc = {
+						trigger = { scope:fd_dragon_last_move = flag:none_land }
+						desc = lv_firewyrm_duel.0001.desc.land
+					}
 					# Dragon Moves
 					triggered_desc = {
 						trigger = { scope:fd_dragon_last_move = flag:dragon_circle_beast }
@@ -532,9 +540,21 @@ lv_firewyrm_duel.0001 = {
 	immediate = {
 		play_music_cue = "mx_cue_combat_stinger"
 		agot_clear_dragon_animation_flags = yes
-		agot_set_dragon_animation_flag_effect = {
-			FLAG = dragon_idle
-			RIDING_DRAGON = yes
+		if = {
+			limit = {
+				exists = var:lv_dragon_state
+				var:lv_dragon_state = flag:flying
+			}
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_hover
+				RIDING_DRAGON = yes
+			}
+		}
+		else = {
+			agot_set_dragon_animation_flag_effect = {
+				FLAG = dragon_idle
+				RIDING_DRAGON = yes
+			}
 		}
 		#scope:fd_firewyrm = {
 		#	agot_clear_dragon_animation_flags = yes
@@ -590,6 +610,26 @@ lv_firewyrm_duel.0001 = {
 		if = {
 			limit = { scope:fd_firewyrm = { is_alive = yes } }
 			hidden_effect = { lv_firewyrm_vs_dragon_move_stunned_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.takeoff
+		trigger = { NOT = { var:lv_dragon_state ?= flag:flying } }
+		show_as_tooltip = { lv_firewyrm_vs_dragon_move_takeoff_effect = yes }
+		if = {
+			limit = { scope:fd_firewyrm = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_vs_dragon_move_takeoff_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.land
+		trigger = { var:lv_dragon_state ?= flag:flying }
+		show_as_tooltip = { lv_firewyrm_vs_dragon_move_land_effect = yes }
+		if = {
+			limit = { scope:fd_firewyrm = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_vs_dragon_move_land_effect = yes }
 		}
 	}
 
@@ -914,7 +954,10 @@ lv_firewyrm_duel.0001 = {
 			#Otherwise we're scope:fd_dragonrider, so end the round.
 			#else = { trigger_event = agot_dragon_combat.1002 }
 			if = {
-				limit = { exists = var:lv_dragon_state }
+				limit = {
+					exists = var:lv_dragon_state
+					NOT = { var:lv_dragon_state = flag:flying }
+				}
 				remove_variable = lv_dragon_state
 			}
 			hidden_effect = {
