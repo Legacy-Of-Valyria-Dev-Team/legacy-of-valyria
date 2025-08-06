@@ -217,7 +217,13 @@ lv_firewyrm_duel.0001 = {
 			}
 			desc = {
 				desc = lv_firewyrm_duel.0001.desc.succeeding
-				first_valid = { # Dragon Move
+				first_valid = {
+					# Special States
+					triggered_desc = {
+						trigger = { scope:fd_dragon_last_move = flag:none_stunned }
+						desc = lv_firewyrm_duel.0001.desc.stunned
+					}
+					# Dragon Moves
 					triggered_desc = {
 						trigger = { scope:fd_dragon_last_move = flag:dragon_circle_beast }
 						desc = lv_firewyrm_duel.0001.desc.circle_beast
@@ -531,8 +537,8 @@ lv_firewyrm_duel.0001 = {
 			RIDING_DRAGON = yes
 		}
 		#scope:fd_firewyrm = {
-			#agot_clear_dragon_animation_flags = yes
-			#add_character_flag = dragon_roar
+		#	agot_clear_dragon_animation_flags = yes
+		#	add_character_flag = dragon_roar
 		#}
 		lv_select_firewyrm_combat_options_from_pool_effect = yes
 
@@ -540,6 +546,10 @@ lv_firewyrm_duel.0001 = {
 			limit = { exists = scope:fd_firewyrm_last_move }
 			scope:fd_firewyrm = {
 				if = {
+					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_chomp }
+					show_as_tooltip = { lv_firewyrm_vs_dragon_move_firewyrm_chomp_effect = yes }
+				}
+				else_if = {
 					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_fume_burst }
 					show_as_tooltip = { lv_firewyrm_vs_dragon_move_fume_burst_effect = yes }
 				}
@@ -568,6 +578,18 @@ lv_firewyrm_duel.0001 = {
 					show_as_tooltip = { lv_firewyrm_vs_dragon_move_berserk_charge_effect = yes }
 				}
 			}
+		}
+	}
+
+	# SPECIAL OPTIONS
+	option = {
+		name = lv_firewyrm_duel.0001.stunned
+		trigger = { var:lv_dragon_state ?= flag:stunned }
+		exclusive = yes
+		show_as_tooltip = { lv_firewyrm_vs_dragon_move_stunned_effect = yes }
+		if = {
+			limit = { scope:fd_firewyrm = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_vs_dragon_move_stunned_effect = yes }
 		}
 	}
 
@@ -891,9 +913,20 @@ lv_firewyrm_duel.0001 = {
 			#}
 			#Otherwise we're scope:fd_dragonrider, so end the round.
 			#else = { trigger_event = agot_dragon_combat.1002 }
-			hidden_effect = {
-				scope:fd_firewyrm = { lv_select_firewyrm_vs_dragon_move_for_firewyrm_effect = yes }
+			if = {
+				limit = { exists = var:lv_dragon_state }
+				remove_variable = lv_dragon_state
 			}
+			hidden_effect = {
+				scope:fd_firewyrm = {
+					if = {
+						limit = { exists = var:lv_firewyrm_state }
+						remove_variable = lv_firewyrm_state
+					}
+					lv_select_firewyrm_vs_dragon_move_for_firewyrm_effect = yes
+				}
+			}
+
 			trigger_event = lv_firewyrm_duel.0002
 		}
 	}
@@ -939,7 +972,7 @@ lv_firewyrm_duel.0002 = {
 		}
 		# If we don't, and this round is at or over the round_cap_limit, enter into sudden death.
 		else_if = {
-			limit = { var:fd_combat_current_round >= round_cap_limit }
+			limit = { var:fd_combat_current_round >= 10 }
 			if = {
 				limit = { scope:fd_dragon.dragon_combat_effectiveness > scope:fd_firewyrm.dragon_combat_effectiveness }
 				save_scope_value_as = {
@@ -1592,6 +1625,13 @@ lv_firewyrm_duel.0004 = {
 					95 = { scope:fd_dragon = { add_character_flag = dragon_has_eaten_dragon_before } }
 				}
 			}
+		}
+	}
+
+	after = {
+		if = {
+			limit = { exists = var:lv_dragon_state }
+			remove_variable = lv_dragon_state
 		}
 	}
 }

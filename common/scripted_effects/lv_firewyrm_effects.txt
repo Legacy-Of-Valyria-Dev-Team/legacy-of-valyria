@@ -6,7 +6,7 @@ lv_spawn_firewyrm_effect = {
 		template = lv_firewyrm_template
 		save_scope_as = firewyrm
 		location = $LOCATION$
-		after_creation = { add_character_flag = dragon_roar }
+		after_creation = { add_character_flag = dragon_idle }
 	}
 	if = {
 		limit = { always = $GENERATE_BLOCKER$ }
@@ -71,6 +71,60 @@ lv_apply_firewyrm_aging_effect = {
 		}
 	}
 	remove_variable = dragon_age_counter
+}
+
+lv_gen_firewyrm_color_effect = {
+	random_list = {
+		#Black
+		1 = {
+			set_variable = {
+				name = primary_color
+				value = flag:black
+			}
+		}
+	}
+	agot_assign_primary_color_effect = yes
+	random_list = {
+		#Black
+		1 = {
+			set_variable = {
+				name = secondary_color
+				value = flag:black
+			}
+		}
+		#Red
+		1 = {
+			set_variable = {
+				name = secondary_color
+				value = flag:red
+			}
+		}
+		# Orange you glad it's a nice day?
+		1 = {
+			set_variable = {
+				name = secondary_color
+				value = flag:orange
+			}
+		}
+	}
+	agot_assign_secondary_color_effect = yes
+	random_list = {
+		#Black
+		1 = {
+			set_variable = {
+				name = tertiary_color
+				value = flag:black
+			}
+		}
+		#Red
+		1 = {
+			set_variable = {
+				name = tertiary_color
+				value = flag:red
+			}
+		}
+	}
+	agot_assign_tertiary_color_effect = yes
 }
 
 lv_firewyrm_death_tooltip_effect = {
@@ -970,17 +1024,51 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 	}
 }
 
+# New Round Effects
+lv_firewyrm_vs_dragon_post_move_effect = {
+	if = {
+		limit = {
+			always = $INVOLVES_CONTACT$
+			scope:fd_firewyrm = {
+				exists = var:lv_firewyrm_state
+				var:lv_firewyrm_state = flag:molten
+			}
+		}
+		custom_tooltip = {
+			text = lv_firewyrm_duel.0001.warning.burn
+			scope:fd_dragon = {
+				if = {
+					limit = { has_trait = dragon_burned }
+					wound_dragon = yes
+				}
+				else = { add_trait = dragon_burned }
+			}
+		}
+	}
+}
+
+# Special Moves
+lv_firewyrm_vs_dragon_move_stunned_effect = {
+	#Skips your round
+	custom_tooltip = lv_firewyrm_duel.0001.tt.stunned
+	save_scope_value_as = { name = fd_dragon_last_move value = flag:none_stunned }
+	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
+}
+
 # Dragon Moves: Tier 1
 lv_firewyrm_vs_dragon_move_circle_beast_effect = {
 	#No attack but opens up surprise attacks next round
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_circle_beast }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 lv_firewyrm_vs_dragon_move_flame_test_effect = {
 	#Low success chance, reveals fire resistance of firewyrm
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_flame_test }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 lv_firewyrm_vs_dragon_move_claws_out_effect = {
@@ -995,6 +1083,7 @@ lv_firewyrm_vs_dragon_move_claws_out_effect = {
 		scope:fd_firewyrm = { wound_dragon = yes }
 	}
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_reckless_dive_effect = {
@@ -1005,6 +1094,7 @@ lv_firewyrm_vs_dragon_move_reckless_dive_effect = {
 		wound_dragon = yes
 	}
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 # Dragon Moves: Tier 2
@@ -1012,6 +1102,7 @@ lv_firewyrm_vs_dragon_move_guard_skies_effect = {
 	#No success chance, but medium defense against firewyrm attacks (high if fire attack)
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_guard_skies }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 lv_firewyrm_vs_dragon_move_rip_joints_effect = {
@@ -1022,12 +1113,14 @@ lv_firewyrm_vs_dragon_move_rip_joints_effect = {
 		scope:fd_firewyrm = { wound_dragon = yes }
 	}
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_roar_challenge_effect = {
 	#No success chance, taunts wyrm into more aggressive attacks
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_roar_challenge }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 lv_firewyrm_vs_dragon_move_dive_strike_effect = {
@@ -1038,6 +1131,7 @@ lv_firewyrm_vs_dragon_move_dive_strike_effect = {
 		wound_dragon = yes
 	}
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 # Dragon Moves: Tier 3
@@ -1045,24 +1139,28 @@ lv_firewyrm_vs_dragon_move_tailspin_slam_effect = {
 	#High success chance if firewyrm is tired or stunned
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_tailspin_slam }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_wound_exploit_effect = {
 	#High success chance if firewyrm is already injured
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_wound_exploit }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_vipers_feint_effect = {
 	#Very high success chance, available if high intrigue or dragon has agile trait
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_vipers_feint }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_dragonflame_barrage_effect = {
 	#High success chance, guaranteed minor burn
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_dragonflame_barrage }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 # Dragon Moves: Special
@@ -1070,33 +1168,47 @@ lv_firewyrm_vs_dragon_move_dragon_chomp_effect = {
 	#CHOMP!
 	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_chomp }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_guaranteed }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_commanding_cry_effect = {
 	#Heals dragon's wounds, requires high diplomacy
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_commanding_cry }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 lv_firewyrm_vs_dragon_move_hidden_knowledge_effect = {
 	#Very high success chance, use a Valyrian battle tactic against grounded dragons, requires high learning
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_hidden_knowledge }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 lv_firewyrm_vs_dragon_move_risk_it_all_effect = {
 	#Instant kill for both, unlock if wounded or desperate
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_risk_it_all }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = yes }
 }
 
 lv_firewyrm_vs_dragon_move_collapse_ground_effect = {
 	#Stuns both parties for one round, only available in caves or ruins (will add a caves blocker once performed)
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_collapse_ground }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_vs_dragon_post_move_effect = { INVOLVES_CONTACT = no }
 }
 
 # Firewyrm Moves
+# Chomp: Instakill
+# Fume Burst
+# Boneshattering Screech: Chance to stun
+# Cone of Flame
+# Frenzied Lunge
+# Rockfall Roar
+# Molten Slough
+# Berserk Charge
+
 lv_firewyrm_vs_dragon_move_firewyrm_chomp_effect = {
 	#CHOMP
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_chomp }
@@ -1112,6 +1224,15 @@ lv_firewyrm_vs_dragon_move_fume_burst_effect = {
 lv_firewyrm_vs_dragon_move_boneshattering_screech_effect = {
 	#Low success chance, guaranteed stun for one round
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_boneshattering_screech }
+	custom_tooltip = {
+		text = lv_firewyrm_duel.0001.tt.boneshattering_screech
+		scope:fd_dragonrider = {
+			set_variable = {
+				name = lv_dragon_state
+				value = flag:stunned
+			}
+		}
+	}
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low }
 }
 
@@ -1135,6 +1256,13 @@ lv_firewyrm_vs_dragon_move_rockfall_roar_effect = {
 
 lv_firewyrm_vs_dragon_move_molten_slough_effect = {
 	#Medium to high success chance, high chance to wound
+	custom_tooltip = {
+		text = lv_firewyrm_duel.0001.tt.molten_slough
+		set_variable = {
+			name = lv_firewyrm_state
+			value = flag:molten
+		}
+	}
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_molten_slough }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
 }
