@@ -568,10 +568,7 @@ lv_firewyrm_duel.0001 = {
 		play_music_cue = "mx_cue_combat_stinger"
 		agot_clear_dragon_animation_flags = yes
 		if = {
-			limit = {
-				exists = var:lv_dragon_state
-				var:lv_dragon_state = flag:flying
-			}
+			limit = { var:lv_dragon_state ?= flag:flying }
 			agot_set_dragon_animation_flag_effect = {
 				FLAG = dragon_hover
 				RIDING_DRAGON = yes
@@ -984,10 +981,7 @@ lv_firewyrm_duel.0001 = {
 			#Otherwise we're scope:fd_dragonrider, so end the round.
 			#else = { trigger_event = agot_dragon_combat.1002 }
 			if = {
-				limit = {
-					exists = var:lv_dragon_state
-					NOT = { var:lv_dragon_state = flag:flying }
-				}
+				limit = { NOT = { var:lv_dragon_state ?= flag:flying } }
 				remove_variable = lv_dragon_state
 			}
 			hidden_effect = {
