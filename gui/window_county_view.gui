@@ -1729,44 +1729,89 @@ window = {
 						hbox = {
 							allow_outside = yes
 
-							widget = {
-								datacontext = "[HoldingView.GetTitle.GetLesseeOrHolder]"
-								visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
-								allow_outside = yes
-								size = { 85 90 }
+							# LEGACY OF VALYRIA ADDED
+							vbox = {
+								widget = {
+									visible = "[HoldingView.GetProvince.MakeScope.Var('lv_firewyrm').IsSet]"
+									datacontext = "[HoldingView.GetProvince.MakeScope.Var('lv_firewyrm').Char]"
+									size = { 85 90 }
 
-								text_single = {
-									datacontext = "[HoldingView.GetTitle]"
-									#AGOT Modified
-									#visible = "[Not(Title.IsLeasedOut)]"
-									visible = "[And(Not(Title.IsLeasedOut), And(ProvinceIsNotRuin, ProvinceIsNotUnknown))]"
-									layoutpolicy_horizontal = expanding
-									parentanchor = top|left
-									position = { 0 -22 }
-									allow_outside = yes
+									text_single = {
+										layoutpolicy_horizontal = expanding
+										parentanchor = top|left
+										position = { 0 -22 }
+										allow_outside = yes
 
-									text = "HOLDING_VIEW_HOLDER"
-									default_format = "#low"
+										text = "HOLDING_VIEW_FIREWYRM"
+										default_format = "#low"
 
-									margin_left = 5
+										margin_left = 5
+									}
+
+									text_single = {
+										datacontext = "[HoldingView.GetTitle]"
+										visible = "[Title.IsLeasedOut]"
+										layoutpolicy_horizontal = expanding
+										parentanchor = top|left
+										position = { 0 -22 }
+										allow_outside = yes
+
+										text = "HOLDING_VIEW_LESSEE"
+										default_format = "#low"
+
+										margin_left = 5
+									}
+
+									portrait_head_small = {
+										blockoverride "opinion_box" {}
+									}
 								}
 
-								text_single = {
-									datacontext = "[HoldingView.GetTitle]"
-									visible = "[Title.IsLeasedOut]"
-									layoutpolicy_horizontal = expanding
-									parentanchor = top|left
-									position = { 0 -22 }
-									allow_outside = yes
+								# LEGACY OF VALYRIA MODIFIED
+								vbox = {
+									visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
+									margin_top = 20
 
-									text = "HOLDING_VIEW_LESSEE"
-									default_format = "#low"
+									widget = {
+										datacontext = "[HoldingView.GetTitle.GetLesseeOrHolder]"
+										visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
+										allow_outside = yes
+										size = { 85 90 }
 
-									margin_left = 5
-								}
+										text_single = {
+											datacontext = "[HoldingView.GetTitle]"
+											#AGOT Modified
+											#visible = "[Not(Title.IsLeasedOut)]"
+											visible = "[And(Not(Title.IsLeasedOut), And(ProvinceIsNotRuin, ProvinceIsNotUnknown))]"
+											layoutpolicy_horizontal = expanding
+											parentanchor = top|left
+											position = { 0 -22 }
+											allow_outside = yes
 
-								portrait_head_small = {
-									blockoverride "opinion_box" {}
+											text = "HOLDING_VIEW_HOLDER"
+											default_format = "#low"
+
+											margin_left = 5
+										}
+
+										text_single = {
+											datacontext = "[HoldingView.GetTitle]"
+											visible = "[Title.IsLeasedOut]"
+											layoutpolicy_horizontal = expanding
+											parentanchor = top|left
+											position = { 0 -22 }
+											allow_outside = yes
+
+											text = "HOLDING_VIEW_LESSEE"
+											default_format = "#low"
+
+											margin_left = 5
+										}
+
+										portrait_head_small = {
+											blockoverride "opinion_box" {}
+										}
+									}
 								}
 							}
 
