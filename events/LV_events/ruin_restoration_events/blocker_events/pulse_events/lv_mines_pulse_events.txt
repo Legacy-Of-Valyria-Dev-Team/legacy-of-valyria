@@ -1,10 +1,10 @@
 ﻿namespace = lv_mines_pulse
 
 # Directory
-# lv_mines_pulse.0001 - Biannual firewyrm pulse event
+# lv_mines_pulse.0001 - Annual firewyrm pulse event
 # lv_mines_pulse.0002 - Firewyrm event proceeds, choose who to send
 
-# Biannual firewyrm pulse event
+# Annual firewyrm pulse event
 # - This event will provide a random chance of either flavour text or actually spawning a firewyrm
 lv_mines_pulse.0001 = {
 	type = character_event
@@ -19,38 +19,38 @@ lv_mines_pulse.0001 = {
 		scope:mines_province = {
 			random_list = {
 				# Uncomment and finalize chances only once all firewyrm-related stuff are done
-				#50 = {
-				#	set_variable = {
-				#		name = lv_mines_outcome
-				#		value = flag:firewyrm
-				#	}
-				#}
-				50 = {}
+				25 = {
+					set_variable = {
+						name = lv_mines_outcome
+						value = flag:firewyrm
+					}
+				}
+				75 = {}
 			}
 		}
 	}
 
-	option = {
+	option = { # Firewyrm pops out and makes lair, you're toast
 		name = lv_mines_pulse.0001.a
 		if = {
 			limit = { scope:mines_province = { var:lv_mines_outcome ?= flag:firewyrm } }
 			custom_tooltip = {
 				text = lv_mines_pulse.0001.a.tt.firewyrm
-				scope:mines_province = { # Give at least a year before another one can happen
-					set_variable = {
-						name = lv_mines_cooldown
-						value = yes
-						months = 12
-					}
-				}
 				trigger_event = {
 					id = lv_firewyrm_event.0001
-					months = { 7 28 }
+					days = { 7 28 }
 				}
 			}
 		}
 		else = { custom_tooltip = lv_mines_pulse.0001.a.tt }
 	}
 
-	after = { scope:mines_province = { remove_variable = lv_mines_outcome } }
+	after = {
+		scope:mines_province = {
+			if = {
+				limit = { has_variable = lv_mines_outcome }
+				remove_variable = lv_mines_outcome
+			}
+		}
+	}
 }

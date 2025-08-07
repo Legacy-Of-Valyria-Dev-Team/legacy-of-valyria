@@ -153,55 +153,52 @@
 					limit = { has_county_modifier = lv_restoration_steward_modifier }
 					remove_county_modifier = lv_restoration_steward_modifier
 				}
-				#title_province = {
-				#	if = { # Firewyrm events for infested mines every 6 months
-				#		limit = {
-				#			NOT = { has_variable = lv_mines_cooldown }
-				#			has_building_or_higher = valyria_mines_01
-				#		}
-				#		save_scope_as = mines_province
-				#		set_variable = {
-				#			name = lv_mines_cooldown
-				#			value = yes
-				#			months = 6
-				#		}
-				#		province_owner = {
-				#			trigger_event = {
-				#				id = lv_mines_pulse.0001 # Call mine pulse event
-				#				days = { 1 180 }
-				#			}
-				#		}
-				#	}
-				#}
 			}
 		}
 	}
 
 	# Uncomment and finalize once all relevant pulse effects are done
-	#on_yearly = {
-	#	every_situation_sub_region = { # Do yearly events
-	#		every_situation_sub_region_county = {
-	#			limit = { holder = { NOT = { has_trait = ruin } } }
-	#			title_province = {
-	#				if = { # Toxic fumes events every year
-	#					limit = {
-	#						OR = {
-	#							has_building_or_higher = noxious_gases_01_01
-	#							has_building_or_higher = noxious_gases_02_01
-	#						}
-	#					}
-	#					save_scope_as = noxious_gases_province
-	#					province_owner = {
-	#						trigger_event = {
-	#							id = lv_noxious_gases_pulse.0001 # Call noxious gases pulse event
-	#							days = { 1 360 }
-	#						}
-	#					}
-	#				}
-	#			}
-	#		}
-	#	}
-	#}
+	on_yearly = {
+		every_situation_sub_region = { # Do yearly events
+			every_situation_sub_region_county = {
+				limit = { holder = { NOT = { has_trait = ruin } } }
+				title_province = {
+					# UNCOMMENT ONCE ALL OUTCOMES ARE DONE
+					#if = { # Toxic fumes events every year
+					#	limit = {
+					#		OR = {
+					#			has_building_or_higher = noxious_gases_01_01
+					#			has_building_or_higher = noxious_gases_02_01
+					#		}
+					#	}
+					#	save_scope_as = noxious_gases_province
+					#	province_owner = {
+					#		trigger_event = {
+					#			id = lv_noxious_gases_pulse.0001 # Call noxious gases pulse event
+					#			days = { 1 360 }
+					#		}
+					#	}
+					#}
+					if = { # Firewyrm events for infested mines
+						limit = {
+							NAND = {
+								has_variable = lv_firewyrm
+								has_building = firewyrm_lair
+							}
+							has_building_or_higher = valyria_mines_01
+						}
+						save_scope_as = mines_province
+						province_owner = {
+							trigger_event = {
+								id = lv_mines_pulse.0001 # Call mine pulse event
+								days = { 1 180 }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	on_start = {
 		# FOR DEBUGGING PURPOSES!!!

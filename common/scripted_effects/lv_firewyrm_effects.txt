@@ -208,9 +208,9 @@ lv_remove_firewyrm_vs_dragon_combat_info_effect = {
 remove_firewyrm_vs_dragon_combat_variables_effect = {
 	clear_variable_list = fd_combat_moves
 
-	remove_variable = fd_tier_1_counter
-	remove_variable = fd_tier_2_counter
-	remove_variable = fd_tier_3_counter
+	#remove_variable = fd_tier_1_counter
+	#remove_variable = fd_tier_2_counter
+	#remove_variable = fd_tier_3_counter
 	remove_variable = fd_chance_of_winning
 	remove_variable = fd_combat_current_round
 	# Note, we don't remove var:engaged_in_single_combat or engaged_in_dragon_combat here, as we run this effect at the start of combat for clean-up also.
@@ -1406,8 +1406,15 @@ lv_firewyrm_vs_dragon_move_boneshattering_screech_effect = {
 }
 
 lv_firewyrm_vs_dragon_move_cone_of_flame_effect = {
-	#Burns terrain, burns/injures the dragon if dragon does not fly in the next round
+	#Low terrain with an impending burn state, burns/injures the dragon if dragon does not fly in the next round
 	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_cone_of_flame }
+	custom_tooltip = {
+		text = lv_firewyrm_duel.0001.tt.cone_of_flame
+		set_variable = {
+			name = lv_firewyrm_state
+			value = flag:cone_of_flame
+		}
+	}
 	if = {
 		limit = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
 		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
@@ -1438,6 +1445,7 @@ lv_firewyrm_vs_dragon_move_rockfall_roar_effect = {
 
 lv_firewyrm_vs_dragon_move_molten_slough_effect = {
 	#Medium to high success chance, high chance to wound
+	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_molten_slough }
 	custom_tooltip = {
 		text = lv_firewyrm_duel.0001.tt.molten_slough
 		set_variable = {
@@ -1446,7 +1454,6 @@ lv_firewyrm_vs_dragon_move_molten_slough_effect = {
 		}
 		lv_dragon_heal_wounds_effect = yes
 	}
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_molten_slough }
 	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
 }
 
