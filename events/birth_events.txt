@@ -2255,7 +2255,9 @@ birth.2001 = {
 						scope:child = { is_male = yes }
 					}
 				}
-				age > 45
+				#AGOT MODIFIED, LMF
+				#age > 45
+				is_old_age_or_not_have_children = yes
 				factor = 50
 			}
 			modifier = {
@@ -2643,6 +2645,12 @@ birth.3001 = {
 				dummy_male = { save_scope_as = dummy_gender }
 			}
 		}
+		#AGOT Added; LMF
+		set_variable = {
+			name = had_miscarriage
+			value = scope:dummy_gender
+			days = 90
+		}
 		if = {
 			limit = {
 				exists = scope:father
@@ -2662,6 +2670,35 @@ birth.3001 = {
 
 	option = {
 		name = birth.3001.a
+		#AGOT Added
+		save_scope_value_as = {
+			name = skip_depression_check
+			value = flag:yes
+		}
+		if = {
+			limit = { ai_compassion >= high_positive_compassion }
+			add_trait_force_tooltip = depressed_1
+			hidden_effect = {
+				trigger_event = {
+					id = lmf_birth.1102
+					days = { 180 365 }
+				}
+			}
+		}
+		else_if = {
+			limit = { ai_compassion > high_negative_compassion }
+			add_trait_force_tooltip = depressed_1
+			hidden_effect = {
+				trigger_event = {
+					id = lmf_birth.1102
+					days = { 30 180 }
+				}
+			}
+		}
+		trigger_event = {
+			id = lmf_birth.1100
+			days = { 3 7 }
+		}
 	}
 }
 

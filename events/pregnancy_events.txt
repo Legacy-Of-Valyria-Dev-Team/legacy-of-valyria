@@ -11,6 +11,19 @@ namespace = pregnancy
 pregnancy.0001 = {
 	hidden = yes
 	immediate = {
+		#AGOT Added - Check first if pregnancy should be invalid
+		if = {
+			limit = { should_disallow_pregnancy_trigger = yes }
+			# End the pregnancy, block notification events
+			end_pregnancy = yes
+			pregnancy_cleanup_effect = yes
+			add_character_flag = {
+				flag = blocked_pregnancy
+				days = 2
+			}
+		}
+		# Failing that, proceed
+		else = {
 		#PREGNANCY COMPLICATION CALCULATIONS & FLAG-SETTING
 		random_list = {
 			200 = { #All goes smoothly!
@@ -21,12 +34,38 @@ pregnancy.0001 = {
 				#Less likely if health is bad
 				modifier = {
 					health <= fine_health
+					#AGOT Added
+					has_game_rule = lmf_no_birth_fertility_modifiers
 					add = -10
 				}
 				modifier = {
 					health <= poor_health
+					#AGOT Added
+					has_game_rule = lmf_no_birth_fertility_modifiers
 					add = -15
 				}
+				#AGOT Added modifiers
+				modifier = {
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					health >= excellent_health
+					add = 10
+				}
+				modifier = {
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					health >= good_health
+					add = 5
+				}
+				modifier = {
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					health <= fine_health
+					add = -15
+				}
+				modifier = {
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					health <= poor_health
+					add = -20
+				}
+				#AGOT Added End
 
 				#More kids means less risk of complications!
 				modifier = {
@@ -61,6 +100,50 @@ pregnancy.0001 = {
 				}
 
 				#AGOT Added
+				#First pregnancy is the riskiest
+				modifier = {
+					add = -20
+					NOR = {
+						has_game_rule = lmf_no_birth_fertility_modifiers
+						any_child = {
+							even_if_dead = yes
+						}
+					}
+				}
+				#Less likely the older the mother is
+				modifier = {
+					add = -5
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					age >= 30
+				}
+				modifier = {
+					add = -5
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					age >= 35
+				}
+				modifier = {
+					add = -10
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					age >= 40
+				}
+				#Less likely when underweight
+				modifier = {
+					add = -10
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					current_weight < -50
+				}
+				modifier = {
+					add = 10
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					current_weight > 50
+				}
+				#More likely if fecund
+				modifier = {
+					add = 25
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+					has_trait = fecund
+				}
+
 				modifier = {
 					factor = 0
 					OR = {
@@ -69,19 +152,208 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
+					}
+				}
+				#AGOT Added End
+
+				add_character_flag = {
+					flag = birth_will_go_smoothly 
+					days = 270
+				}
+			}
+
+			#AGOT Modified; LMF
+			#3 = { #Child dies during delivery (this triggers when the birth "should" have gone down, since we don't want to create the baby)
+			15 = {
+				#AGOT ADDED, LMF
+				modifier = {
+					add = -12
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+
+				#AGOT Added
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = birth_child_will_become_sickly
+						has_character_flag = birth_mother_will_become_ill
 					}
 				}
 
-				add_character_flag = {
-					flag = birth_will_go_smoothly
+				trigger_event = {
+					id = birth.3001
+					days = { 180 200 }
+				}
+			}
+
+			#AGOT Modified
+			#10 = { #Pregnancy ends prematurely
+			25 = { #Pregnancy ends prematurely
+
+				#AGOT Added
+				modifier = {
+					add = -15
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_child_will_be_stillborn
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = birth_child_will_become_sickly
+						has_character_flag = birth_mother_will_become_ill
+					}
+				}
+
+				trigger_event = {
+					id = pregnancy.2101
+					days = { 80 120 }
+				}
+			}
+			#AGOT Modified, childbirth rebalance
+			# 2 = { #Mother dies
+			3 = { #Mother dies
+				modifier = { #to keep players from dying excessively
+					add = -2
+					is_ai = no
+				}
+
+				#AGOT ADDED, LMF
+				modifier = {
+					add = -1
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+
+				#AGOT Added, guarantee if pre-configured
+				modifier = {
+					add = 100
+					has_character_flag = agot_birth_mother_will_die
+				}
+
+				#AGOT Added
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_child_will_be_stillborn
+						has_character_flag = birth_child_will_become_sickly
+						has_character_flag = birth_mother_will_become_ill
+					}
+				}
+
+				add_character_flag = { #Flags blocks other birth events
+					flag = birth_mother_will_die
+					days = 270
+				}
+			}
+			#AGOT Modified
+			# 2 = { #Mother and child dies (this triggers when the birth "should" have gone down, since we don't want to create the baby) 
+			3 = {
+				modifier = { #to keep players from dying excessively
+					add = -2
+					is_ai = no
+				}
+
+				#AGOT ADDED, LMF
+				modifier = {
+					add = -1
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+
+				#AGOT Added
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_child_will_be_stillborn
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = birth_child_will_become_sickly
+						has_character_flag = birth_mother_will_become_ill
+					}
+				}
+
+				trigger_event = {
+					id = birth.3021
+					days = { 180 200 }
+				}
+			}
+			#AGOT Modified, childbirth rebalance
+			#10 = { #Sickly child (all other events happen as usual)
+			20 = {
+				#AGOT ADDED, LMF
+				modifier = {
+					add = -10
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+
+				modifier = {
+					factor = 0.5 # Religious doctrine focusing on providing a sanitary birthing chamber and supplies should have a substantial impact on birth complications.
+					faith = {
+						has_doctrine_parameter = healthier_children_active
+					}
+				}
+
+				#AGOT Added
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_child_will_be_stillborn
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = birth_mother_will_become_ill
+					}
+				}
+
+				add_character_flag = { #Flags blocks other birth events
+					flag = birth_child_will_become_sickly
+					days = 270
+				}
+			}
+			#AGOT Modified
+			#5 = { #Ill mother (all other events happen as usual)
+			15 = {
+				modifier = { #to keep players from dying excessively
+					add = -4
+					is_ai = no
+					#AGOT ADDED
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+
+				#AGOT ADDED, LMF
+				modifier = { #to keep players from dying excessively
+					add = -5
+					is_ai = no
+					NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+				}
+
+				#AGOT ADDED
+				modifier = {
+					add = -10
+					has_game_rule = lmf_no_birth_fertility_modifiers
+				}
+
+				#AGOT Added
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_child_will_be_stillborn
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = birth_child_will_become_sickly
+					}
+				}
+
+				add_character_flag = { #Flags blocks other birth events
+					flag = birth_mother_will_become_ill
 					days = 270
 				}
 			}
@@ -105,6 +377,7 @@ pregnancy.0001 = {
 						}
 					}
 				}
+
 				modifier = { #Close family ups the chance to balance free inbreeding
 					add = 5 #2%
 					scope:mother = {
@@ -113,6 +386,7 @@ pregnancy.0001 = {
 						}
 					}
 				}
+
 				modifier = { #And extra for even closer family members
 					add = 10 #5%
 					scope:mother = {
@@ -122,7 +396,6 @@ pregnancy.0001 = {
 					}
 				}
 
-				#AGOT Added
 				modifier = {
 					factor = 0
 					OR = {
@@ -132,14 +405,6 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
 					}
 				}
 
@@ -148,240 +413,11 @@ pregnancy.0001 = {
 					days = 270
 				}
 			}
-			10 = { #Pregnancy ends prematurely
-				#AGOT Added
-				modifier = {
-					factor = 0
-					OR = {
-						#preconfigured
-						has_character_flag = birth_will_go_smoothly
-						has_character_flag = agot_birth_child_will_be_stillborn
-						has_character_flag = agot_birth_mother_will_die
-						has_character_flag = birth_child_will_become_sickly
-						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
-					}
-				}
-
-				trigger_event = {
-					id = pregnancy.2101
-					days = { 80 120 }
-				}
-			}
-			3 = { #Child dies during delivery (this triggers when the birth "should" have gone down, since we don't want to create the baby)
-				#AGOT Added, guarantee if pre-configured
-				modifier = {
-					add = 10000
-					has_character_flag = agot_birth_child_will_be_stillborn
-				}
-
-				#AGOT Added
-				modifier = {
-					factor = 0
-					OR = {
-						#preconfigured
-						has_character_flag = birth_will_go_smoothly
-						has_character_flag = agot_birth_mother_will_die
-						has_character_flag = birth_child_will_become_sickly
-						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
-					}
-				}
-
-				trigger_event = {
-					id = birth.3001
-					days = { 180 200 }
-				}
-			}
-			#AGOT Modified, childbirth rebalance
-			2 = { #Mother dies
-				modifier = { #to keep players from dying excessively
-					add = -2
-					is_ai = no
-				}
-				#AGOT Added, guarantee if pre-configured
-				modifier = {
-					add = 10000
-					has_character_flag = agot_birth_mother_will_die
-				}
-
-				#AGOT Added
-				modifier = {
-					factor = 0
-					OR = {
-						#preconfigured
-						has_character_flag = birth_will_go_smoothly
-						has_character_flag = agot_birth_child_will_be_stillborn
-						has_character_flag = birth_child_will_become_sickly
-						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
-					}
-				}
-
-				add_character_flag = { #Flags blocks other birth events
-					flag = birth_mother_will_die
-					days = 270
-				}
-			}
-			2 = { #Mother and child dies (this triggers when the birth "should" have gone down, since we don't want to create the baby)
-				modifier = { #to keep players from dying excessively
-					add = -2
-					is_ai = no
-				}
-
-				#AGOT Added
-				modifier = {
-					factor = 0
-					OR = {
-						#preconfigured
-						has_character_flag = birth_will_go_smoothly
-						has_character_flag = agot_birth_child_will_be_stillborn
-						has_character_flag = agot_birth_mother_will_die
-						has_character_flag = birth_child_will_become_sickly
-						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
-					}
-				}
-
-				trigger_event = {
-					id = birth.3021
-					days = { 180 200 }
-				}
-			}
-			#AGOT Modified, childbirth rebalance
-			20 = { #Sickly child (all other events happen as usual)
-				modifier = {
-					factor = 0.5 # Religious doctrine focusing on providing a sanitary birthing chamber and supplies should have a substantial impact on birth complications.
-					faith = {
-						has_doctrine_parameter = healthier_children_active
-					}
-				}
-				#AGOT Added, guarantee if pre-configured
-				modifier = {
-					add = 10000
-					has_character_flag = birth_child_will_become_sickly
-				}
-
-				#AGOT Added
-				modifier = {
-					factor = 0
-					OR = {
-						#preconfigured
-						has_character_flag = birth_will_go_smoothly
-						has_character_flag = agot_birth_child_will_be_stillborn
-						has_character_flag = agot_birth_mother_will_die
-						has_character_flag = birth_mother_will_become_ill
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
-					}
-				}
-
-				add_character_flag = { #Flags blocks other birth events
-					flag = birth_child_will_become_sickly
-					days = 270
-				}
-			}
-			5 = { #Ill mother (all other events happen as usual)
-				modifier = { #to keep players from dying excessively
-					add = -4
-					is_ai = no
-				}
-				#AGOT Added, guarantee if pre-configured
-				modifier = {
-					add = 1000
-					has_character_flag = birth_mother_will_become_ill
-				}
-
-				#AGOT Added
-				modifier = {
-					factor = 0
-					OR = {
-						#preconfigured
-						has_character_flag = birth_will_go_smoothly
-						has_character_flag = agot_birth_child_will_be_stillborn
-						has_character_flag = agot_birth_mother_will_die
-						has_character_flag = birth_child_will_become_sickly
-						#unfruitful marriages
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-						#canon children
-						agot_canon_children_should_block_pregnancy_trigger = yes
-					}
-				}
-				
-				add_character_flag = { #Flags blocks other birth events
-					flag = birth_mother_will_become_ill
-					days = 270
-				}
-			}
-			#AGOT Added
-			0 = {
-				modifier = {
-					add = 10000
-					OR = {
-						AND = {
-							has_game_rule = agot_story_historical_events_historical_outcomes
-							has_relation_historical_unfruitful_marriage = scope:real_father
-						}
-						has_relation_unfruitful_marriage = scope:real_father
-					}
-				}
-				modifier = {
-					add = 400
-					has_game_rule = agot_story_historical_events_weighted_outcomes
-					has_relation_historical_unfruitful_marriage = scope:real_father
-				}
-				modifier = {
-					add = 10000
-					agot_canon_children_should_block_pregnancy_trigger = yes
-				}
-				end_pregnancy = yes
-				pregnancy_cleanup_effect = yes
-				add_character_flag = {
-					flag = blocked_pregnancy
-					days = 2
-				}
-			}
+		}
 		}
 	}
 }
+
 
 
 #####################################
@@ -417,6 +453,7 @@ pregnancy.1001 = {
 		NOT = {
 			has_character_flag = blocked_pregnancy
 		}
+		should_disallow_pregnancy_trigger = no
 	}
 
 	immediate = {
@@ -431,7 +468,7 @@ pregnancy.1001 = {
 			pregnancy_spouse_suspicion_chance_effect = yes
 		}
 	}
-
+	
 	option = {
 		name = pregnancy.1001.a
 	}
@@ -477,7 +514,7 @@ pregnancy.1002 = {
 		#		scope:mother = { has_variable = borte_first_child_var }
 		#	}
 		#	animation = worry
-		#}
+		#}	
 		animation = love
 	}
 	right_portrait = {
@@ -546,7 +583,7 @@ pregnancy.1002 = {
 }
 
 scripted_trigger former_consort_was_father = {
-	OR = {
+	OR = {	
 		any_former_spouse = {
 			even_if_dead = yes
 			this = scope:father
@@ -611,7 +648,7 @@ pregnancy.1101 = {
 				desc = pregnancy.1101.desc.dead
 			}
 			desc = pregnancy.1101.desc.divorced
-
+			
 		}
 		desc = pregnancy.1101.desc.end
 	}
@@ -629,6 +666,7 @@ pregnancy.1101 = {
 		NOT = {
 			has_character_flag = blocked_pregnancy
 		}
+		should_disallow_pregnancy_trigger = no
 	}
 
 	immediate = {
@@ -670,6 +708,7 @@ pregnancy.1101 = {
 				trigger_event = pregnancy.1103
 			}
 		}
+		
 	}
 	#AGOT Added
 	option = {
@@ -711,7 +750,7 @@ pregnancy.1102 = {
 		}
 		animation = happiness
 	}
-
+	
 
 	option = {
 		name = pregnancy.1102.a
@@ -816,15 +855,38 @@ pregnancy.2001 = {
 			}
 			# Same for if a former spouse/concubine got us pregant.
 			former_consort_was_father = yes
+			#AGOT Added; LMF
+			AND = {
+				is_ruler = no
+				NOR = {
+					has_trait = fornicator
+					has_character_flag = liege_refused_seclusion
+				}
+				exists = liege
+				trait_is_shunned_or_criminal_in_my_or_lieges_faith_trigger = { TRAIT = fornicator GENDER_CHARACTER = scope:mother }
+				scope:mother.liege = {
+					is_landed = yes
+					is_close_family_of = scope:mother
+					NOT = { scope:real_father = this }
+					exists = cp:councillor_spymaster
+					cp:councillor_spymaster.intrigue > scope:mother.intrigue
+				}
+			}
 		}
+
 		#AGOT Added
 		NOT = {
 			has_character_flag = blocked_pregnancy
 		}
+		should_disallow_pregnancy_trigger = no
 	}
 
 	immediate = {
 		play_music_cue = "mx_cue_succession"
+		#AGOT Added; LMF
+		remove_character_flag = liege_refused_seclusion
+		lmf_check_pregnant_devoted_status = yes
+		#END AGOT Added
 		hidden_effect = {
 			set_num_pregnancy_children = 1
 			add_character_flag = {
@@ -832,7 +894,8 @@ pregnancy.2001 = {
 				months = 9
 			}
 		}
-		unmarried_mother_pregnancy_effect = yes
+		#AGOT Disabled - added into options, to allow chance of marrying father & preventing fornicator trait
+		#unmarried_mother_pregnancy_effect = yes
 	}
 
 	#AGOT Added, father is paramour
@@ -853,6 +916,9 @@ pregnancy.2001 = {
 		trigger = {
 			NOT = { has_relation_paramour = scope:real_father }
 		}
+		#AGOT Added
+		unmarried_mother_pregnancy_effect = yes
+
 		bastardy_pregnancy_announcement_effect = yes
 		hidden_effect = {
 			expose_lover_secret_or_run_consequence_effect = {
@@ -887,10 +953,37 @@ pregnancy.2001 = {
 			#AGOT Added, shouldn't trigger for paramours
 			NOT = { has_relation_paramour = scope:real_father }
 		}
+
+		#AGOT Added
+		add_trait_force_tooltip = pregnant
+
 		hidden_effect = {
+			#AGOT Added; LMF
+			set_known_bastard_on_pregnancy = yes #The bastard status is already known since the mother is unmarried.
+
 			add_character_flag = { #Add flag to determine what should happen in adultery.1101
 				flag = planning_to_confess_to_real_father
 				days = 22
+			}
+
+			#AGOT Added; LMF
+			if = {
+				limit = {
+					NOT = {
+						any_owned_story = {
+							story_type = story_peasant_affair
+							var:peasant_character = scope:mother.pregnancy_real_father
+						}
+					}
+				}
+				trigger_event = { #This parses whether the mother is planning to confess to a real_father, and checks if there are characters out there who should suspect that they might be the real father
+					id = adultery.1101
+					days = 20
+				}
+				trigger_event = { #In case the real father is dead by the time the event fires
+					id = agot_pregnancy.3005
+					days = 21
+				}
 			}
 		}
 		if = {
@@ -902,6 +995,10 @@ pregnancy.2001 = {
 					}
 				}
 			}
+
+			#AGOT Added; LMF
+			add_fornicator_trait_or_nothing_effect = yes
+
 			add_character_flag = is_looking_for_peasant #To take the story_peasant_affair to the next step
 			add_character_flag = peasant_affair_already_looking
 			custom_tooltip = search_for_real_father_tt
@@ -916,6 +1013,28 @@ pregnancy.2001 = {
 				ai_compassion = 1
 				ai_rationality = 0.5
 			}
+			#AGOT Added modifiers; LMF
+			modifier = {
+				add = 200
+				is_ai = yes
+				can_marry_character_trigger = { CHARACTER = scope:real_father }
+				NOT = { would_need_elopement_to_marry_target = { TARGET = scope:real_father } }
+				scope:real_father = {
+					is_ai = yes
+					might_agree_to_marriage = yes
+				}
+			}
+			modifier = {
+				add = 500
+				is_ai = yes
+				OR = {
+					has_trait = refusing_marriage
+					scope:real_father = { has_trait = refusing_marriage }
+				}
+				can_be_introduced_character_trigger = { CHARACTER = scope:real_father }
+				NOT = { would_need_elopement_to_marry_target = { TARGET = scope:real_father } }
+			}
+			#AGOT Added End
 			modifier = { # Never hide the truth in faiths with the Polyamory tenet.
 				factor = 0
 				faith = { has_doctrine_parameter = no_unfaithfulness_penalty_active }
@@ -931,10 +1050,15 @@ pregnancy.2001 = {
 	option = { #Keep it secret!
 		name = pregnancy.2001.c
 		flavor = pregnancy.2001.c.tt
+
 		#AGOT Added, shouldn't trigger for paramours
 		trigger = {
 			NOT = { has_relation_paramour = scope:real_father }
 		}
+
+		#AGOT Added; LMF
+		unmarried_mother_pregnancy_effect = yes
+
 		ai_chance = {
 			base = 100
 			ai_value_modifier = {
@@ -963,6 +1087,10 @@ pregnancy.2001 = {
 				has_character_flag = agot_is_pregnant
 			}
 		}
+
+		#AGOT Added; LMF
+		unmarried_mother_pregnancy_effect = yes
+
 		pregnancy_termination_attempt_effect = yes
 		ai_chance = {
 			base = 100
@@ -1002,20 +1130,24 @@ pregnancy.2002 = {
 	}
 	right_portrait = scope:father
 	lower_center_portrait = scope:real_father
-
+	
 	trigger = {
 		# If we are married and/or have concubines, but the real father is not one of them, it's a bastard!
 		any_consort = {
 			is_male = yes
 		}
 		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }
+			NOT = {	is_consort_of = root }	
 		}
 
 		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {
+		NOT = {	
 			former_consort_was_father = yes
 		}
+
+		#AGOT ADDED
+		is_pregnant = yes
+		should_disallow_pregnancy_trigger = no
 	}
 
 	immediate = {
@@ -1035,7 +1167,7 @@ pregnancy.2002 = {
 		}
 
 		save_scope_as = mother
-		hidden_effect = {
+		hidden_effect = {	
 			set_num_pregnancy_children = 1
 			if = {
 				limit = {
@@ -1055,6 +1187,9 @@ pregnancy.2002 = {
 				months = 9
 			}
 		}
+
+		# AGOT Added LMF
+		lmf_check_pregnant_devoted_status = yes
 	}
 
 	#AGOT Added
@@ -1178,7 +1313,7 @@ pregnancy.2002 = {
 				add = 10000
 				scope:mother.pregnancy_assumed_father = {
 					has_character_flag = agot_father_will_not_suspect_pregnancy
-				}
+				}	
 			}
 		}
 	}
@@ -1261,7 +1396,7 @@ pregnancy.2005 = {
 		animation = sadness
 	}
 
-	immediate = {
+	immediate = {	
 		if = {
 			limit = {
 				is_married = no
@@ -1330,11 +1465,11 @@ pregnancy.2050 = {
 			NOT = { is_male = yes }
 		}
 		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }
+			NOT = {	is_consort_of = root }	
 		}
 
 		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {
+		NOT = {	
 			former_consort_was_father = yes
 		}
 
@@ -1342,13 +1477,14 @@ pregnancy.2050 = {
 		NOT = {
 			has_character_flag = blocked_pregnancy
 		}
+		should_disallow_pregnancy_trigger = no
 	}
 
 	immediate = {
 		play_music_cue = "mx_cue_succession"
 
 		save_scope_as = mother
-		hidden_effect = {
+		hidden_effect = {	
 			set_num_pregnancy_children = 1
 			if = {
 				limit = {
@@ -1371,6 +1507,9 @@ pregnancy.2050 = {
 
 		# People will know you've been unfaithful, obviously
 		add_fornicator_trait_or_nothing_effect = yes
+		
+		# AGOT Added LMF
+		lmf_check_pregnant_devoted_status = yes
 	}
 
 	#AGOT Added, father is paramour
@@ -1446,7 +1585,7 @@ pregnancy.2101 = {
 		character = root
 		animation = personality_cynical
 	}
-
+	
 	trigger = {
 		is_pregnant = yes
 	}
@@ -1491,6 +1630,18 @@ pregnancy.2101 = {
 				}
 			}
 			scope:real_father = { trigger_event = pregnancy.2102 }
+		}
+	}
+
+	#AGOT Added; LMF
+	after = {
+		save_scope_value_as = {
+			name = pregnancy_ended
+			value = yes
+		}
+		trigger_event = {
+			id = lmf_birth.1100
+			days = { 3 7 }
 		}
 	}
 }
@@ -1552,7 +1703,7 @@ pregnancy.3001 = {
 	}
 	theme = pregnancy
 	left_portrait = scope:mother
-
+	
 	trigger = {
 		scope:mother = {
 			is_pregnant = yes
@@ -1742,21 +1893,154 @@ pregnancy.3003 = {
 	option = { #This must be kept secret!
 		name = pregnancy.3003.a
 		custom_tooltip = pregnancy.3003.a.tt
+
+		#AGOT Added; LMF
+		scope:mother = { add_fornicator_trait_or_nothing_effect = yes }
+
 		ai_chance = {
 			base = 100
 			ai_value_modifier = {
 				ai_rationality = 0.5
 			}
+
+			#AGOT Added; LMF
+			modifier = {
+				factor = 0.5
+				is_ai = yes
+				might_agree_to_marriage = yes
+				can_marry_character_trigger = { CHARACTER = scope:mother }
+				NOT = { would_need_elopement_to_marry_target = { TARGET = scope:mother } }
+				scope:mother = { is_ai = yes }
+			}
+			min = 1
 		}
 	}
 
 	option = { #The whole world must know!
 		name = pregnancy.3003.b
+
+		#AGOT Added; LMF
+		scope:mother = { add_fornicator_trait_or_nothing_effect = yes }
+
 		bastardy_pregnancy_announcement_effect = yes
 		ai_chance = {
 			base = 25
+
+			#AGOT Added modifiers; LMF
+			modifier = {
+				add = -15
+				NOT = { has_trait = fornicator }
+				OR = {
+					AND = {
+						faith = { save_temporary_scope_as = check_faith }
+						trait_is_shunned_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+					}
+					AND = { #Liege's faith doesn't approve
+						exists = liege
+						liege = { faith = { save_temporary_scope_as = check_faith } }
+						trait_is_shunned_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				NOT = { has_trait = fornicator }
+				OR = {
+					AND = {
+						faith = { save_temporary_scope_as = check_faith }
+						trait_is_criminal_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+					}
+					AND = { #Liege's faith doesn't approve
+						exists = liege
+						liege = { faith = { save_temporary_scope_as = check_faith } }
+						trait_is_criminal_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+					}
+				}
+			}
 		}
 	}
+
+	#AGOT Added; LMF
+	option = { #Then we must marry!
+		trigger = {
+			is_ai = yes
+			scope:mother = { is_ai = yes }
+			might_agree_to_marriage = yes
+			NOT = { would_need_elopement_to_marry_target = { TARGET = scope:mother } }
+			can_be_introduced_character_trigger = { CHARACTER = scope:mother }
+		}
+		name = pregnancy.3003.c
+		
+		if = {
+			limit = {
+				NOT = { has_relation_lover = scope:mother }
+			}
+			save_scope_value_as = {
+				name = is_non_lover_proposal
+				value = flag:yes
+			}
+		}
+		save_scope_value_as = {
+			name = is_pregnancy_proposal
+			value = flag:yes
+		}
+		root = { save_scope_as = owner }
+		scope:mother = { save_scope_as = target }
+
+		if = {
+			limit = {
+				needs_permission_to_marry_trigger = { CHARACTER1 = scope:owner CHARACTER2 = scope:target }
+			}
+			find_proposer_and_lieges_effect = yes
+			if = {
+				limit = { exists = scope:proposer_liege }
+				scope:proposer_liege = { trigger_event = lmf_scheme.1031 }
+			}
+			else = {
+				scope:proposer_target_liege = { trigger_event = lmf_scheme.1032 }
+			}
+		}
+		else = {
+			find_proposer_and_lieges_effect = yes
+			scope:proposer = {
+				if = {
+					limit = { should_marry_matrilineally_trigger = { PROPOSER = scope:proposer TARGET = scope:proposer_target } }
+					marry_matrilineal = scope:proposer_target
+				}
+				else = {
+					marry = scope:proposer_target
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 200
+			modifier = {
+				add = 300
+				OR = {
+					has_trait = refusing_marriage
+					scope:mother = { has_trait = refusing_marriage }
+				}
+			}
+			modifier = {
+				has_relation_soulmate = scope:mother
+				factor = 3
+			}
+			ai_value_modifier = {
+				ai_honor = 1
+			}
+			opinion_modifier = {
+				who = root
+				opinion_target = scope:mother
+				multiplier = 1
+			}
+			modifier = {
+				NOT = { has_relation_lover = scope:mother }
+				factor = 0.5
+			}
+		}
+	}
+	#AGOT Added; LMF - End
 }
 
 
@@ -1779,6 +2063,10 @@ pregnancy.3004 = {
 		play_music_cue = "mx_cue_succession"
 		#The real father knows now
 		scope:mother = {
+
+			#AGOT Added; LMF
+			add_fornicator_trait_or_nothing_effect = yes
+
 			add_character_flag = {
 				flag = pregnancy_real_father_knows
 				months = 9
@@ -1795,7 +2083,7 @@ pregnancy.3004 = {
 
 	option = { #This must be kept secret!
 		name = pregnancy.3004.a
-	}
+	}	
 }
 
 #5000: Follow-ups
@@ -1938,10 +2226,10 @@ pregnancy.5003 = {
 		character = scope:mother
 		animation = personality_callous
 	}
-
+	
 	option = { #Are they really telling the truth?
 		name = pregnancy.5003.a
-	}
+	}	
 }
 
 
