@@ -1,0 +1,442 @@
+﻿namespace = cos_yeen_ruins
+
+cos_yeen_ruins.9999 = { # Alone in Yeen
+	type = character_event
+	title = cos_yeen_ruins.9999.t
+	desc = cos_yeen_ruins.9999.desc
+
+	theme = battle 
+	override_background = { reference = sothoryos_yeen_1 }
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+
+	option = {
+		name = cos_yeen_ruins.9999.a #
+		death = {
+			death_reason = death_dragon_ate
+		}
+		every_province = {
+			limit = { has_building = yeen_ruins_5 }
+			save_scope_as = yeen_fallback
+		}
+		scope:yeen_fallback = {		
+			remove_building = yeen_ruins_5
+			add_building = yeen_ruins_4
+		}
+	}
+}
+cos_yeen_ruins.1000 = { # 
+	type = character_event
+	title = cos_yeen_ruins.1000.t
+	desc = cos_yeen_ruins.1000.desc
+
+	theme = battle 
+	override_background = { reference = sothoryos_yeen_1 }
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+
+	option = {
+		name = cos_yeen_ruins.1000.a #Hack Through
+		duel = {
+			skill = prowess
+			value = high_skill_rating
+			34 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_yeen_ruins.1000.a.success.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.1001
+					days = { 1 3 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1000.a.success.desc
+					add_prestige = 750
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_yeen_ruins.1000.a.failure.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.1001
+					days = { 3 12 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1000.a.failure.desc
+					add_prestige = minor_prestige_loss
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_yeen_ruins.1000.a.critical.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.1001
+					days = { 12 36 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1000.a.critical.desc
+					add_prestige = major_prestige_loss
+				}
+			}
+		}
+	}
+	option = {
+		name = cos_yeen_ruins.1000.b #Burn it down
+		add_piety = -500
+		custom_tooltip = yeen_burn_it_down
+		
+		#effect = {	
+		#	every_province = {
+		#		limit = { 
+		#			has_building = yeen_ruins_6
+		#		}
+		#		save_scope_as = burning_yeen
+		#	}
+		#	scope:burning_yeen = {		
+		#		add_modifier = cos_empowered_maw_1
+		#}	
+	    #}
+	}
+}
+
+cos_yeen_ruins.1001 = { # 
+	type = character_event
+	title = cos_yeen_ruins.1001.t
+	desc = cos_yeen_ruins.1001.desc
+
+	theme = battle 
+	override_background = { reference = sothoryos_yeen_1 }
+
+	left_portrait = {
+		character = root
+		animation = marshal 
+	}
+
+	artifact = {
+		position = lower_right_portrait
+		target = scope:newly_created_artifact
+	}
+
+	option = {
+		name = cos_yeen_ruins.1001.a #
+
+		duel = {
+			skill = martial
+			value = high_skill_rating
+			34 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_yeen_ruins.1001.a.success.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.1003
+					days = { 1 3 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1001.a.success.desc
+					add_prestige = major_prestige_gain
+					custom_tooltip = yeen_advance
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -1.5 min = -49 }
+				desc = cos_yeen_ruins.1001.a.failure.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.1002
+					days = { 1 2 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1001.a.failure.desc
+					add_prestige = minor_prestige_loss
+					custom_tooltip = yeen_no_retreat
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_yeen_ruins.1001.a.critical.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.9999
+					days = { 1 2 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1001.a.critical.desc
+					custom_tooltip = yeen_death
+				}
+			}
+		}
+	}
+	option = {
+		name = cos_yeen_ruins.1001.b #
+		add_piety = -500
+		custom_tooltip = yeen_burn_it_down
+	}
+	option = {
+		name = cos_yeen_ruins.1001.c #
+		custom_tooltip = yeen_partial_refund
+		add_gold = 750
+		every_province = {
+			limit = { has_building = yeen_ruins_5 }
+			save_scope_as = yeen_fallback
+		}
+		scope:yeen_fallback = {		
+			remove_building = yeen_ruins_5
+			add_building = yeen_ruins_4
+		}
+	}
+}
+
+cos_yeen_ruins.1002 = { # No Retreat
+	type = character_event
+	title = cos_yeen_ruins.1002.t
+	desc = cos_yeen_ruins.1002.desc
+
+	theme = battle 
+	override_background = { reference = sothoryos_yeen_1 }
+
+	left_portrait = {
+		character = root
+		animation = marshal 
+	}
+
+	option = {
+		name = cos_yeen_ruins.1002.a #
+
+		duel = {
+			skill = martial
+			value = high_skill_rating
+			50 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_yeen_ruins.1002.a.success.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.1003
+					days = { 1 3 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1002.a.success.desc
+					add_prestige = minor_prestige_gain
+				}
+			}
+			50 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_yeen_ruins.1002.a.critical.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.9999
+					days = { 1 2 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1002.a.critical.desc
+					custom_tooltip = yeen_death
+					every_province = {
+						limit = { has_building = yeen_ruins_5 }
+						save_scope_as = yeen_fallback
+					}
+					scope:yeen_fallback = {		
+						remove_building = yeen_ruins_5
+						add_building = yeen_ruins_4
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = cos_yeen_ruins.1002.b # Retreat
+		duel = {
+			skill = martial
+			value = medium_skill_rating
+			34 = { compare_modifier = { value = scope:duel_value multiplier = 1.5 min = -49 }
+				desc = cos_yeen_ruins.1002.b.success.desc
+
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1002.b.success.desc
+					add_prestige = minor_prestige_loss
+					every_province = {
+						limit = { has_building = yeen_ruins_5 }
+						save_scope_as = yeen_fallback
+					}
+					scope:yeen_fallback = {		
+						remove_building = yeen_ruins_5
+						add_building = yeen_ruins_4
+					}
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_yeen_ruins.1002.b.failure.desc
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1002.b.failure.desc
+					add_prestige = major_prestige_loss
+					every_province = {
+						limit = { has_building = yeen_ruins_5 }
+						save_scope_as = yeen_fallback
+					}
+					scope:yeen_fallback = {		
+						remove_building = yeen_ruins_5
+						add_building = yeen_ruins_4
+					}
+				}
+			}
+			33 = { compare_modifier = { value = scope:duel_value multiplier = -3.5 min = -49 }
+				desc = cos_yeen_ruins.1002.b.critical.desc
+				
+				trigger_event = {
+					id = cos_yeen_ruins.9999
+					days = { 1 2 }
+				}
+				
+				send_interface_toast = {
+					left_icon = ROOT
+					title = cos_yeen_ruins.1002.b.critical.desc
+					custom_tooltip = yeen_death
+					every_province = {
+						limit = { has_building = yeen_ruins_5 }
+						save_scope_as = yeen_fallback
+					}
+					scope:yeen_fallback = {		
+						remove_building = yeen_ruins_5
+						add_building = yeen_ruins_4
+					}
+				}
+			}
+		}
+	}
+}
+
+cos_yeen_ruins.1003 = { # 
+	type = character_event
+	title = cos_yeen_ruins.1003.t
+	desc = cos_yeen_ruins.1003.desc
+
+	theme = stewardship_domain_focus
+	override_background = { reference = army_camp }
+
+	left_portrait = {
+		character = root
+		animation = fear
+	}
+
+	artifact = {
+		position = lower_right_portrait
+		target = scope:newly_created_artifact
+	}
+
+	immediate = {
+		character:dragon_terrax = { save_scope_as = dragon_parent }
+		create_artifact_dragon_egg_greengrey_effect = { OWNER = root }
+		#set_global_variable = summerhall_egg_found
+	}
+
+	option = {
+		name = cos_yeen_ruins.1003.a #Take Terrax's Egg
+		agot_create_artifact_glass_candle_effect = { OWNER = scope:host  COLOR = purple }	
+		agot_create_artifact_vs_valyrian_longsword_silver_historical_effect = { OWNER = scope:host } 	
+		add_gold = 750
+	}
+}
+
+cos_yeen_ruins.1100 = {
+	title = cos_ambush_events.1000.title
+	type = character_event
+	
+	theme = war
+	override_background = {
+		reference = wilderness_wetlands
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	desc = cos_ambush_events.1000.desc
+	option = {
+		name = cos_ambush_events.1000.attack
+		add_stress = 5
+		trigger_event = {
+			id = cos_yeen_ruins.1101
+			#days = { 1 2 }
+		}
+	
+	}
+}
+
+cos_yeen_ruins.1101 = {
+	title = cos_ambush_events.1001.title
+	type = character_event
+	#trigger = {
+	#	#scope:army = {
+	#	#	location = { geographical_region = world_westeros_the_neck }
+	#	#	is_army_in_combat = no
+	#	#	#army_is_moving = yes
+	#	#}
+	#	#scope:army.location.county.holder = { save_temporary_scope_as = shrek }
+	#	#
+	#	#OR = {
+	#	#	scope:shrek = {
+	#	#		is_at_war_with = root
+	#	#	}
+	#	#	scope:shrek = {
+	#	#		any_liege_or_above = {
+	#	#			is_at_war_with = root
+	#	#		}
+	#	#	}
+	#	#}
+	#	#NOR = {
+	#	#	#don't share a top liege
+	#	#	root = scope:shrek.top_liege
+	#	#	top_liege = scope:shrek.top_liege
+	#	#	root.culture = { has_cultural_tradition = agot_tradition_crannogman }
+	#	#	has_culture = culture:crannogman
+	#	#	any_character_war = {
+	#	#		using_cb = crannogman_ambush_cb
+	#	#	}
+	#	#}
+	#}
+	immediate = {
+		hidden_effect = {
+			root = {
+				#scope:army = { location = { save_scope_as = target_location } }
+				#province:10313.county.holder = { save_temporary_scope_as = shrek }
+				province:10326 = { save_scope_as = target_location }
+				agot_create_spider_ambush = {
+					TARGET = root
+				}
+			}
+		}
+	}
+	theme = war
+	override_background = {
+		reference = sothoryos_yeen_spider_1
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	desc = cos_ambush_events.1001.desc
+	option = {
+		name = cos_ambush_events.1001.attack
+		stress_impact = {
+			craven = major_stress_impact_gain
+		}
+		agot_spawn_spider_army = {TARGET = root}
+	}
+}
