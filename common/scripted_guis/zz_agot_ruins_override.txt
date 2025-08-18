@@ -2,81 +2,103 @@
 	scope = province
 	is_valid = {
 		save_temporary_scope_as = ruin
-		OR = {
-			scope:actor = {
-				OR = {
-					any_character_to_title_neighboring_and_across_water_county = {
-						this = scope:ruin.county
-					}
-					# Ghozai
-					trigger_if = {
-						limit = {
-							title:d_velos = { is_de_jure_liege_or_above_target = scope:ruin.county }
+		trigger_if = { # Default AGOT ruin restoration
+			limit = { has_game_rule = lv_colonisation_agot }
+			OR = {
+				scope:actor = {
+					OR = {
+						any_character_to_title_neighboring_and_across_water_county = {
+							this = scope:ruin.county
 						}
-						any_sub_realm_county = {
-							is_coastal_county = yes
-							title_province = {
-								OR = {
-									geographical_region = world_essos_painted_mountains
-									geographical_region = world_essos_elyria
-									geographical_region = world_essos_slavers_bay
+						# Ghozai
+						trigger_if = {
+							limit = {
+								title:d_velos = { is_de_jure_liege_or_above_target = scope:ruin.county }
+							}
+							any_sub_realm_county = {
+								is_coastal_county = yes
+								title_province = {
+									OR = {
+										geographical_region = world_essos_painted_mountains
+										geographical_region = world_essos_elyria
+										geographical_region = world_essos_slavers_bay
+									}
 								}
 							}
 						}
-					}
-					# Manticore Isles
-					trigger_if = {
-						limit = {
-							title:d_manticore_isles = { is_de_jure_liege_or_above_target = scope:ruin.county }
-						}
-						any_sub_realm_county = {
-							is_coastal_county = yes
-							title_province = {
-								OR = {
-									geographical_region = world_asshai
-									geographical_region = world_marahai # Formerly world_far_essos_volcanos
+						# Manticore Isles
+						trigger_if = {
+							limit = {
+								title:d_manticore_isles = { is_de_jure_liege_or_above_target = scope:ruin.county }
+							}
+							any_sub_realm_county = {
+								is_coastal_county = yes
+								title_province = {
+									OR = {
+										geographical_region = world_asshai
+										geographical_region = world_marahai # Formerly world_far_essos_volcanos
+									}
 								}
 							}
 						}
 					}
 				}
-			}
-			scope:actor = {
-				any_held_title = {
-					is_de_jure_liege_or_above_target = scope:ruin.county
+				scope:actor = {
+					any_held_title = {
+						is_de_jure_liege_or_above_target = scope:ruin.county
+					}
+				}
+				scope:actor = {
+					trigger_if = {
+						limit = {
+							is_ai = no
+							prestige_level >= 3
+							any_directly_owned_province = {
+								has_building_or_higher = common_tradeport_06
+							}
+						}
+						scope:ruin.county = {
+							is_coastal_county = yes
+						}
+					}
+					trigger_else = { always = no }
 				}
 			}
-			scope:actor = {
+			trigger_if = {
+				limit = { has_building_or_higher = large_ruin_01 }
 				trigger_if = {
-					limit = {
-						is_ai = no
-						prestige_level >= 3
-						any_directly_owned_province = {
-							has_building_or_higher = common_tradeport_06
-						}
-					}
-					scope:ruin.county = {
-						is_coastal_county = yes
-					}
+					limit = { has_building = large_ruin_03 }
+					scope:actor = { gold >= 1800 }
 				}
-				trigger_else = { always = no }
+				trigger_else_if = {
+					limit = { has_building = large_ruin_02 }
+					scope:actor = { gold >= 1200 }
+				}
+				trigger_else = { scope:actor = { gold >= 600 } }
 			}
-		}
-		trigger_if = {
-			limit = {
-				has_building = large_ruin_01
+			trigger_else_if = {
+				limit = { has_building_or_higher = medium_ruin_01 }
+				trigger_if = {
+					limit = { has_building = medium_ruin_03 }
+					scope:actor = { gold >= 1200 }
+				}
+				trigger_else_if = {
+					limit = { has_building = medium_ruin_02 }
+					scope:actor = { gold >= 800 }
+				}
+				trigger_else = { scope:actor = { gold >= 400 } }
 			}
-			scope:actor = { gold >= 600 }
-		}
-		trigger_else_if = {
-			limit = {
-				has_building = medium_ruin_01
-			}
-			scope:actor = { gold >= 400 }
-		}
-		trigger_else_if = {
-			limit = {
-				has_building = small_ruin_01
+			trigger_else_if = {
+				limit = { has_building_or_higher = small_ruin_01 }
+				trigger_if = {
+					limit = { has_building = small_ruin_03 }
+					scope:actor = { gold >= 600 }
+				}
+				trigger_else_if = {
+					limit = { has_building = small_ruin_02 }
+					scope:actor = { gold >= 400 }
+				}
+				trigger_else = { scope:actor = { gold >= 200 } }
 			}
 			trigger_else = { always = no }
 		}
@@ -103,11 +125,19 @@ reconstruct_ruin = {
 		if = { # Default AGOT ruin restoration
 			limit = { has_game_rule = lv_colonisation_agot }
 			if = {
-				limit = { this = { has_building = large_ruin_01 } }
+				limit = { has_building = large_ruin_01 }
 				scope:actor = { remove_short_term_gold = 600 }
 			}
 			else_if = {
-				limit = { this = { has_building = medium_ruin_01 } }
+				limit = { has_building = medium_ruin_01 }
+				scope:actor = { remove_short_term_gold = 400 }
+			}
+			else_if = {
+				limit = { has_building = jungle_ruin_01 }
+				scope:actor = { remove_short_term_gold = 200 }
+			}
+			else_if = {
+				limit = { has_building = jungle_ruin_deep_01 }
 				scope:actor = { remove_short_term_gold = 400 }
 			}
 			else = { scope:actor = { remove_short_term_gold = 200 } }
@@ -118,33 +148,6 @@ reconstruct_ruin = {
 				limit = { NOT = { has_game_rule = lv_colonisation_default } }
 				lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = no }
 			}
-		}
-		else_if = {
-			limit = {
-				this = { has_building = jungle_ruin_01 }
-			}
-			scope:actor = { remove_short_term_gold = 200 }
-		}
-		else_if = {
-			limit = {
-				this = { has_building = jungle_ruin_deep_01 }
-			}
-			scope:actor = { remove_short_term_gold = 400 }
-		}
-		else_if = {
-			limit = {
-				this = { has_building = jungle_ruin_01 }
-			}
-			scope:actor = { remove_short_term_gold = 200 }
-		}
-		else_if = {
-			limit = {
-				this = { has_building = jungle_ruin_deep_01 }
-			}
-			scope:actor = { remove_short_term_gold = 200 }
-		}
-		else = {
-			scope:actor = { remove_short_term_gold = 200 }
 		}
 		else = {
 			# Trigger the event prompt
