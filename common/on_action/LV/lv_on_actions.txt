@@ -12,6 +12,7 @@ lv_titles_setup = {
 	effect = {
 		# Changes the Ruins title's color to be transparent
 		title:d_ruins = { set_color_from_title = title:d_lv_map_transparent_color }
+		title:c_wilderness = { set_color_from_title = title:d_lv_map_transparent_color }
 	}
 }
 
@@ -590,7 +591,14 @@ lv_ruins_setup = {
 	effect = {
 		# Set up blockers
 		every_county_in_region = {
-			limit = { title_province = { has_holding_type = ruin_holding } }
+			limit = {
+				title_province = {
+					OR = {
+						has_holding_type = ruin_holding
+						has_holding_type = wilderness_holding
+					}
+				}
+			}
 			region = world_valyria_mainland
 			title_province = {
 				# PREDEFINED BLOCKERS

@@ -40,16 +40,16 @@ lv_settlement_establish_effect = {
 				value = flag:ruin_progress_minimal
 			}
 		}
-		set_holding_type = colony_holding
+		set_holding_type = settlement_holding
 
 		# Convert to appropriate colony level if prior progress made
 		if = { # Colony level 3 building
 			limit = { var:ruin_progress ?= flag:ruin_progress_significant }
-			add_building = colony_03
+			add_building = settlement_03
 		}
 		else_if = { # Colony level 2 building
 			limit = { var:ruin_progress ?= flag:ruin_progress_minimal }
-			add_building = colony_02
+			add_building = settlement_02
 		}
 		remove_variable = ruin_progress
 		# In non-default game rules, claiming the province is immediately recognized as a blocker cleared
@@ -95,6 +95,27 @@ lv_settlement_establish_effect = {
 					change = scope:change
 					take_baronies = yes
 				}
+				set_county_faith = $ACTOR$.faith
+				if = {
+					limit = { culture = culture:unknown_culture }
+					if = {
+						limit = {
+							$ACTOR$.culture = culture:high_valyrian
+							has_game_rule = agot_hv_conversion_offshoots
+							title_province = { geographical_region = world_westeros }
+						}
+						set_county_culture = culture:westerosi_valyrian
+					}
+					else_if = {
+						limit = {
+							$ACTOR$.culture = culture:high_valyrian
+							has_game_rule = agot_hv_conversion_offshoots
+							NOT = { title_province = { geographical_region = world_westeros } }
+						}
+						set_county_culture = culture:essosi_valyrian
+					}
+					else = { set_county_culture = $ACTOR$.culture }
+				}
 			}
 			resolve_title_and_vassal_change = scope:change
 		}
@@ -107,14 +128,14 @@ lv_abandon_settlement_effect = {
 		# Level 3 colony building = Significant | Level 2 colony building = Minimal
 		title_province = {
 			if = {
-				limit = { has_building = colony_03 }
+				limit = { has_building = settlement_01 }
 				set_variable = {
 					name = ruin_progress
 					value = flag:ruin_progress_significant
 				}
 			}
 			else_if = {
-				limit = { has_building = colony_02 }
+				limit = { has_building = settlement_01 }
 				set_variable = {
 					name = ruin_progress
 					value = flag:ruin_progress_minimal
@@ -164,11 +185,11 @@ lv_abandon_settlement_effect = {
 				if = { # Large ruins
 					limit = { var:ruin_size = flag:ruin_size_large }
 					if = { # Ruin level 3 building
-						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = colony_03 } }
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = settlement_03 } }
 						add_building = large_ruin_03
 					}
 					else_if = { # Ruin level 2 building
-						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = colony_02 } }
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = settlement_02 } }
 						add_building = large_ruin_02
 					}
 					else = { # Ruin level 1 building (no progress)
@@ -178,11 +199,11 @@ lv_abandon_settlement_effect = {
 				else_if = { # Medium ruins
 					limit = { var:ruin_size = flag:ruin_size_medium }
 					if = { # Ruin level 3 building
-						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = colony_03 } }
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = settlement_03 } }
 						add_building = medium_ruin_03
 					}
 					else_if = { # Ruin level 2 building
-						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = colony_02 } }
+						limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = settlement_02 } }
 						add_building = medium_ruin_02
 					}
 					else = { # Ruin level 1 building (no progress)
@@ -192,11 +213,11 @@ lv_abandon_settlement_effect = {
 			}
 			else = { # Small ruins
 				if = { # Ruin level 3 building
-					limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = colony_03 } }
+					limit = { OR = { var:ruin_progress ?= flag:ruin_progress_significant has_building = settlement_03 } }
 					add_building = small_ruin_03
 				}
 				else_if = { # Ruin level 2 building
-					limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = colony_02 } }
+					limit = { OR = { var:ruin_progress ?= flag:ruin_progress_minimal has_building = settlement_02 } }
 					add_building = small_ruin_02
 				}
 				else = { # Ruin level 1 building (no progress)

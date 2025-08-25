@@ -1498,6 +1498,27 @@
 			}
 			#AGOT Added, more likely to bring good knights
 			add = prowess
+			#AGOT Added, bring spouses along so there's more chances to become pregnant
+			if = {
+				limit = {
+					has_game_rule = agot_realistic_pregnancy_chance
+					is_spouse_of = scope:owner
+					fertility > 0.1
+					scope:owner.fertility > 0.1
+					NOT = { has_trait = pregnant }
+					scope:owner = {
+						NOR = {
+							has_inheritable_children = { TOTAL = 2 PREFER = yes }
+							has_government = mercenary_government
+							has_government = republic_government
+							has_government = theocracy_government
+							has_government = holy_order_government
+							has_trait = pregnant
+						}
+					}
+				}
+				add = 1000
+			}
 		}
 
 		#AGOT Modified
@@ -4654,7 +4675,6 @@
 			}
 		}
 		trigger_else = { }
-		#AGOT Added
 		is_human = yes
 	}
 
@@ -5847,6 +5867,14 @@
 		# 		value = 0
 		# 	}
 		# }
+
+		#AGOT Added, Guest Cleanup
+		if = {
+			limit = {
+				this = scope:host
+			}
+			trigger_event = agot_tournament_events.9000
+		}
 	}
 
 	###################
