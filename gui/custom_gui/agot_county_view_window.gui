@@ -26,7 +26,7 @@ types CountyViewTypes
 	#{
 	#	name = "restore_ruins"
 	#	datacontext = "[HoldingView.GetTitle]"
-	#	visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_ruin_restoration').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)) )]"
+	#	visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)) )]"
 
 	#	position = { 5 -5 }
 	#	size = { 235 55 }
@@ -54,7 +54,7 @@ types CountyViewTypes
 		button_standard_big = {
 			name = "restore_ruins"
 			datacontext = "[HoldingView.GetTitle]"
-			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_ruin_restoration').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)) )]"
+			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)) )]"
 
 			#position = { 5 -5 }
 			size = { 235 55 }
@@ -66,7 +66,7 @@ types CountyViewTypes
 		button_standard_big = {
 			name = "lv_restore_ruins"
 			datacontext = "[HoldingView.GetTitle]"
-			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), GetScriptedGui('lv_use_ruin_restoration').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End) )]"
+			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End) )]"
 
 			#position = { 5 -5 }
 			size = { 235 55 }
@@ -75,163 +75,7 @@ types CountyViewTypes
 			enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
 			onclick = "[GetScriptedGui('reconstruct_ruin').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
 
-			tooltipwidget = {
-				container = {
-					using = GeneralTooltipSetup
-					alwaystransparent = no
-
-					object_tooltip_pop_out = {
-						blockoverride "title_text" {
-							raw_text = "[Title.GetNameWithUnderlyingNoTooltip|U]"
-						}
-
-						blockoverride "subheading" {
-							text_single = {
-								layoutpolicy_horizontal = expanding
-								raw_text = "[HoldingView.GetProvince.Custom('LV_RuinsReconstructTooltip_RuinType')]"
-							}
-						}
-
-						blockoverride "concept_link" {}
-
-						blockoverride "main_description" {
-							vbox = {
-								layoutpolicy_horizontal = expanding
-
-								cooltip_paragraph = { text = "[GetPlayer.Custom('LV_RuinsReconstructTooltip')]" }
-								hbox = {
-									layoutpolicy_horizontal = expanding
-									text_single = { text = "lv_ruins_reconstruct_tooltip_cost" }
-									text_single = {
-										margin_left = 6
-										text = "lv_ruins_reconstruct_tooltip_cost_value"
-										default_format = "#game_link"
-
-										tooltipwidget = {
-											container = {
-												using = GeneralTooltipSetup
-												alwaystransparent = no
-
-												object_tooltip_pop_out = {
-													blockoverride "title_text" { text = "lv_ruins_reconstruct_tooltip_breakdown_title" }
-													blockoverride "subheading" {
-														text_single = {
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_subheading"
-														}
-													}
-													blockoverride "main_description" {
-														# Settlement Cost Breakdown
-														text_single = {
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement"
-														}
-														text_single = {
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_base"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_valyrian_architecture').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_valyrian_architecture"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_hard_working').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_hard_working"
-														}
-														
-														spacer = { size = { 0 6 } }
-
-														# Expedition Cost Breakdown
-														text_single = {
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition"
-														}
-														text_single = {
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_base"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_isolationist').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_isolationist"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_republican_legacy').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_republican_legacy"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_valyrian').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_valyrian"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_north_valyrian_1').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_north_valyrian_1"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_north_valyrian_2').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_north_valyrian_2"
-														}
-														text_single = {
-															visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_doom').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
-															layoutpolicy_horizontal = expanding
-															text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_doom"
-														}
-													}
-												}
-											}
-										}
-									}
-									expand = {}
-								}
-								text_single = {
-									visible = "[Not(GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End))]"
-									layoutpolicy_horizontal = expanding
-									text = "lv_ruins_reconstruct_tooltip_cost_insufficient"
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	type agot_county_view_dragonpit_button = widget
-	{
-		size = { 30 30 } # LEGACY OF VALYRIA MODIFIED
-		button_icon = { # LEGACY OF VALYRIA MODIFIED
-			name = "VIEW_DRAGONPIT_DRAGONS"
-			datacontext = "[GetScriptedGui( 'agot_view_dragons_in_dragonpit' )]"
-			visible = "[GetScriptedGui('agot_view_dragons_in_dragonpit').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)]"
-			tooltip = "VIEW_DRAGONPIT_DRAGONS_TT"
-			onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'dp_county', Province.MakeScope ).End)]"
-			position = { 0 0 }
-			parentanchor = center
-			size = { 28 28 } # LEGACY OF VALYRIA MODIFIED
-			texture = "gfx/interface/icons/flat_icons/view_dragonpit.dds"
-		}
-	}
-
-	type agot_county_view_ruins_blocker = window
-	{
-		parentanchor = center
-		size = { 4000 4000 }
-		layer = confirmation
-		filter_mouse = all
-		movable = no
-		alwaystransparent = no
-		alpha = 0
-		using = Window_Background
-		visible = "[GetVariableSystem.Exists('window_ruins_confirm')]"
-		button_primary_big = {
-			size = { 100% 100% }
-			onclick = "[GetVariableSystem.Toggle('window_ruins_confirm')]"
+			tooltipwidget = { lv_colonization_button_tooltip = {} }
 		}
 	}
 
@@ -299,6 +143,305 @@ types CountyViewTypes
 
 					onclick = "[GetScriptedGui('reconstruct_ruin').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
 					onclick = "[GetVariableSystem.Toggle('window_ruins_confirm')]"
+				}
+			}
+		}
+	}
+
+	######################
+	# SETTLEMENT BUTTONS #
+	######################
+	type agot_county_view_settlement_buttons = widget
+	{
+		allow_outside = yes
+		parentanchor = right|top
+
+		vbox = {
+			ignoreinvisible = yes
+
+			position = { -265 110 }
+
+			button_round  = { ## RETURN SETTLEMENT BACK TO WILDERNESS ###
+				datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+				datacontext = "[HoldingView.GetTitle]"
+				datacontext = "[HoldingView.GetHolder]"
+				visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('return_settlement_county_to_wilderness', Title.Self) )]"
+				enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('return_settlement_county_to_wilderness', Title.Self)]"
+				tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('return_settlement_county_to_wilderness', Title.Self)]"
+				oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+				clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+				onclick = "[Character.OpenPlayerInteractionWithTargetTitle('return_settlement_county_to_wilderness', Title.Self)]"
+
+				button_abandon_holding = {
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+
+			button_round  = { ## FEUDALIZE INTO CASTLE HOLDING ###
+				datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+				datacontext = "[HoldingView.GetTitle]"
+				datacontext = "[HoldingView.GetHolder]"
+				visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('feudalize_into_castle_holding_interaction', Title.Self) )]"
+				enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('feudalize_into_castle_holding_interaction', Title.Self)]"
+				tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('feudalize_into_castle_holding_interaction', Title.Self)]"
+				oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+				clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+				onclick = "[Character.OpenPlayerInteractionWithTargetTitle('feudalize_into_castle_holding_interaction', Title.Self)]"
+
+				button_feudalize_holding = {
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+
+			button_round  = { ## FEUDALIZE INTO CITY HOLDING ###
+				datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+				datacontext = "[HoldingView.GetTitle]"
+				datacontext = "[HoldingView.GetHolder]"
+				visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('feudalize_into_city_holding_interaction', Title.Self) )]"
+				enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('feudalize_into_city_holding_interaction', Title.Self)]"
+				tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('feudalize_into_city_holding_interaction', Title.Self)]"
+				oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+				clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+				onclick = "[Character.OpenPlayerInteractionWithTargetTitle('feudalize_into_city_holding_interaction', Title.Self)]"
+
+				button_feudalize_holding_city = {
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+
+			button_round  = { ## FEUDALIZE INTO TEMPLE HOLDING ###
+				datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+				datacontext = "[HoldingView.GetTitle]"
+				datacontext = "[HoldingView.GetHolder]"
+				visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('feudalize_into_temple_holding_interaction', Title.Self) )]"
+				enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('feudalize_into_temple_holding_interaction', Title.Self)]"
+				tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('feudalize_into_temple_holding_interaction', Title.Self)]"
+				oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+				clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+				onclick = "[Character.OpenPlayerInteractionWithTargetTitle('feudalize_into_temple_holding_interaction', Title.Self)]"
+
+				button_feudalize_holding_temple = {
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+
+			button_round  = { ## TRIBALIZE AN ELVEN HOLDING ###
+				datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+				datacontext = "[HoldingView.GetTitle]"
+				datacontext = "[HoldingView.GetHolder]"
+				visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('tribalize_settlement_holding_interaction', Title.Self) )]"
+				enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('tribalize_settlement_holding_interaction', Title.Self)]"
+				tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('tribalize_settlement_holding_interaction', Title.Self)]"
+				oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
+				clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
+				onclick = "[Character.OpenPlayerInteractionWithTargetTitle('tribalize_settlement_holding_interaction', Title.Self)]"
+
+				button_feudalize_holding = {
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+		}
+	}
+
+	# Transformed this into a container holding both the AGOT button and LoV's
+	# That way, even IF someone still has a mod that conflicts with the county UI, at least the button will work provided it's patched for AGOT
+	type agot_county_view_colonize_button = vbox
+	{
+		# ORIGINAL
+		vbox = {
+			visible = "[And(GetScriptedGui('agot_county_holder_is_wilderness').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), And(Not(GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)), HoldingView.GetProvince.GetTitle.IsCountyCapital) )]"
+			hbox = {
+				margin_bottom = 15
+				visible = "[Not(IsObserver)]"
+				button_standard_big = {
+					name = "construct_holding_wilderness"
+					datacontext = "[HoldingView.GetTitle]"
+
+					size = { 300 50 }
+					text = "[Localize('COLONIZE')] [HoldingView.GetProvince.GetCounty.GetTitle.GetNameNoTierNoTooltip]"
+					onclick = "[GetScriptedGui('agot_can_colonize').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+					tooltip = "[GetScriptedGui('agot_can_colonize').BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End )]"
+					enabled = "[GetScriptedGui('agot_can_colonize').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+				}
+			}
+		}
+		
+		# LEGACY OF VALYRIA ADDED
+		vbox = {
+			visible = "[And(GetScriptedGui('agot_county_holder_is_wilderness').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), And(GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End), HoldingView.GetProvince.GetTitle.IsCountyCapital))]"
+			hbox = {
+				margin_bottom = 15
+				visible = "[Not(IsObserver)]"
+				button_standard_big = {
+					name = "construct_holding_wilderness"
+					datacontext = "[HoldingView.GetTitle]"
+
+					size = { 300 50 }
+					text = "[Localize('COLONIZE')] [HoldingView.GetProvince.GetCounty.GetTitle.GetNameNoTierNoTooltip]"
+					onclick = "[GetScriptedGui('agot_can_colonize').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+					#tooltip = "[GetScriptedGui('agot_can_colonize').BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End )]"
+					enabled = "[GetScriptedGui('agot_can_colonize').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+
+					tooltipwidget = { lv_colonization_button_tooltip = {} }
+				}
+			}
+		}
+	}
+
+	####################
+	# DRAGONPIT BUTTON #
+	####################
+	type agot_county_view_dragonpit_button = widget
+	{
+		size = { 30 30 } # LEGACY OF VALYRIA MODIFIED
+		button_icon = { # LEGACY OF VALYRIA MODIFIED
+			name = "VIEW_DRAGONPIT_DRAGONS"
+			datacontext = "[GetScriptedGui( 'agot_view_dragons_in_dragonpit' )]"
+			visible = "[GetScriptedGui('agot_view_dragons_in_dragonpit').IsShown( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).End)]"
+			tooltip = "VIEW_DRAGONPIT_DRAGONS_TT"
+			onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'dp_county', Province.MakeScope ).End)]"
+			position = { 0 0 }
+			parentanchor = center
+			size = { 28 28 } # LEGACY OF VALYRIA MODIFIED
+			texture = "gfx/interface/icons/flat_icons/view_dragonpit.dds"
+		}
+	}
+
+	# LEGACY OF VALYRIA CUSTOM TYPES
+	type lv_colonization_button_tooltip = container
+	{
+		using = GeneralTooltipSetup
+		alwaystransparent = no
+
+		object_tooltip_pop_out = {
+			blockoverride "title_text" {
+				raw_text = "[Title.GetNameWithUnderlyingNoTooltip|U]"
+			}
+
+			blockoverride "subheading" {
+				text_single = {
+					layoutpolicy_horizontal = expanding
+					raw_text = "[HoldingView.GetProvince.Custom('LV_RuinsReconstructTooltip_RuinType')]"
+				}
+			}
+
+			blockoverride "concept_link" {}
+
+			blockoverride "main_description" {
+				vbox = {
+					layoutpolicy_horizontal = expanding
+
+					cooltip_paragraph = { text = "[GetPlayer.Custom('LV_RuinsReconstructTooltip')]" }
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						text_single = { text = "lv_ruins_reconstruct_tooltip_cost" }
+						text_single = {
+							margin_left = 6
+							text = "lv_ruins_reconstruct_tooltip_cost_value"
+							default_format = "#game_link"
+
+							tooltipwidget = {
+								container = {
+									using = GeneralTooltipSetup
+									alwaystransparent = no
+
+									object_tooltip_pop_out = {
+										blockoverride "title_text" { text = "lv_ruins_reconstruct_tooltip_breakdown_title" }
+										blockoverride "subheading" {
+											text_single = {
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_subheading"
+											}
+										}
+										blockoverride "main_description" {
+											# Settlement Cost Breakdown
+											text_single = {
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_settlement"
+											}
+											text_single = {
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_base"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_valyrian_architecture').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_valyrian_architecture"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_hard_working').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_settlement_hard_working"
+											}
+											
+											spacer = { size = { 0 6 } }
+
+											# Expedition Cost Breakdown
+											text_single = {
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition"
+											}
+											text_single = {
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_base"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_isolationist').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_isolationist"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_republican_legacy').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_republican_legacy"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_valyrian').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_valyrian"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_north_valyrian_1').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_north_valyrian_1"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_north_valyrian_2').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_north_valyrian_2"
+											}
+											text_single = {
+												visible = "[GetScriptedGui('lv_restore_ruins_tooltip_culture_doom').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('ruin', HoldingView.GetProvince.MakeScope ).End)]"
+												layoutpolicy_horizontal = expanding
+												text = "lv_ruins_reconstruct_tooltip_breakdown_expedition_doom"
+											}
+										}
+									}
+								}
+							}
+						}
+						expand = {}
+					}
+					text_single = {
+						visible = "[Not(GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End))]"
+						layoutpolicy_horizontal = expanding
+						text = "colonize_land_holding_desc"
+					}
+					text_single = {
+						visible = "[Not(GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End))]"
+						layoutpolicy_horizontal = expanding
+						text = "lv_ruins_reconstruct_tooltip_cost_insufficient"
+					}
 				}
 			}
 		}

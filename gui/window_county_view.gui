@@ -102,7 +102,7 @@ window = {
 
 				coa_title_small = {
 					#AGOT Added
-					visible = "[And(ProvinceIsNotRuin, ProvinceIsNotUnknown)]"
+					visible = "[ProvinceIsNotHidden]"
 					datacontext = "[HoldingView.GetCountyTitle]"
 				}
 
@@ -516,7 +516,7 @@ window = {
 				datacontext = "[HoldingView.GetProvince.GetCountyCapitalProvince]"
 				layoutpolicy_horizontal = expanding
 				#AGOT Added
-				visible = "[And(ProvinceIsNotRuin, ProvinceIsNotUnknown)]"
+				visible = "[ProvinceIsNotHidden]"
 
 				background = {
 					using = Background_Area
@@ -1019,6 +1019,9 @@ window = {
 				minimumsize = { 0 320 }
 				margin = { 5 5 }
 
+				#AGOT Added
+				agot_county_view_settlement_buttons = {}
+
 				state = {
 					name = "holding_view_refresh"
 					next = a
@@ -1046,7 +1049,7 @@ window = {
 
 				# LEGACY OF VALYRIA MODIFIED
 				background = {
-					visible = "[And(HoldingView.HasHolding, Not(GetScriptedGui('lv_ruin_is_unique').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).End)))]"
+					visible = "[And(And(HoldingView.HasHolding, ProvinceIsNotWilderness), Not(GetScriptedGui('lv_ruin_is_unique').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).End)))]"
 					texture = "[HoldingView.GetHolding.GetIllustration]"
 					alpha = 0.8
 
@@ -1059,9 +1062,10 @@ window = {
 					}
 				}
 
-				# LEGACY OF VALYRIA MODIFIED
 				background = {
-					visible = "[Not(HoldingView.HasHolding)]"
+					#AGOT Modified
+					#visible = "[Not(HoldingView.HasHolding)]"
+					visible = "[Or(Not(HoldingView.HasHolding), Not(ProvinceIsNotWilderness))]"
 					texture = "[HoldingView.GetProvince.GetTerrain.GetIllustration]"
 					alpha = 0.7
 
@@ -1292,7 +1296,7 @@ window = {
 										datacontext = "[HoldingView.GetProvince]"
 										#AGOT Modified
 										# visible = "[HoldingStatus.IsTerrainType]"
-										visible = "[And(HoldingStatus.IsTerrainType, And(ProvinceIsNotRuin, ProvinceIsNotUnknown))]"
+										visible = "[And(HoldingStatus.IsTerrainType, ProvinceIsNotHidden)]"
 
 										texture = "[Terrain.GetIcon]"
 										size = { 35 35 }
@@ -1424,7 +1428,7 @@ window = {
 										datacontext = "[HoldingStatus.GetTimedModifier]"
 										#AGOT Modified
 										# visible = "[HoldingStatus.IsTimedModifier]"
-										visible = "[And(HoldingStatus.IsTimedModifier, And(ProvinceIsNotRuin, ProvinceIsNotUnknown))]"
+										visible = "[And(HoldingStatus.IsTimedModifier, ProvinceIsNotHidden)]"
 										ignoreinvisible = yes
 
 										modifier_item_icon = {
@@ -1447,7 +1451,7 @@ window = {
 					vbox = {
 						layoutpolicy_vertical = expanding
 						#AGOT Added
-						visible = "[And(ProvinceIsNotRuin, ProvinceIsNotUnknown)]"
+						visible = "[ProvinceIsNotHidden]"
 
 						margin = { 15 0 }
 						margin_bottom = 10
@@ -1614,6 +1618,8 @@ window = {
 							name = "construct_holding"
 							size = { 300 50 }
 							text = "CREATE_NEW_HOLDING_BUTTON"
+							#AGOT Added
+							visible = "[And(ProvinceIsNotWilderness, CapitalTypeIsNotWilderment)]"
 
 							enabled = "[And(HoldingView.CanNewHoldingBeConstructed, Not(HoldingView.IsSelectingHoldingType))]"
 							onclick = "[HoldingView.OnConstructHoldingClick]"
@@ -1663,6 +1669,9 @@ window = {
 					}
 				}
 
+				#AGOT Added
+				agot_county_view_colonize_button = {}
+
 				# LEGACY OF VALYRIA MODIFIED
 				hbox = {
 					visible = "[Not(And(HoldingView.HasHolding, GetScriptedGui('lv_ruin_valyria_restoration_blocked').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope).End)))]"
@@ -1671,7 +1680,9 @@ window = {
 
 					### BOTTOM LEFT
 					background = {
-						visible = "[And(NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder)]"
+						#AGOT Modified
+						# visible = "[And(NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder)]"
+						visible = "[And(ProvinceIsNotHidden, And(NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder))]"
 
 						texture = "gfx/interface/component_masks/patterns/mask_pattern_02.dds"
 						spriteType = Corneredtiled
@@ -1782,15 +1793,15 @@ window = {
 
 									widget = {
 										datacontext = "[HoldingView.GetTitle.GetLesseeOrHolder]"
-										visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
+										#AGOT Modified
+								# visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
+								visible = "[And(ProvinceIsNotHidden, And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder ))]"
 										allow_outside = yes
 										size = { 85 90 }
 
 										text_single = {
 											datacontext = "[HoldingView.GetTitle]"
-											#AGOT Modified
-											#visible = "[Not(Title.IsLeasedOut)]"
-											visible = "[And(Not(Title.IsLeasedOut), And(ProvinceIsNotRuin, ProvinceIsNotUnknown))]"
+											visible = "[Not(Title.IsLeasedOut)]"
 											layoutpolicy_horizontal = expanding
 											parentanchor = top|left
 											position = { 0 -22 }
@@ -1869,46 +1880,6 @@ window = {
 									}
 
 									vbox = {
-										# LEGACY OF VALYRIA ADDED
-										### UPGRADE SETTLEMENT TO HOLDING OF CHOICE ###
-										button_round  = {
-											datacontext = "[HoldingView.GetGUIHoldingBuilding]"
-											datacontext = "[HoldingView.GetTitle]"
-											datacontext = "[HoldingView.GetHolder]"
-											visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('lv_upgrade_settlement', Title.Self) )]"
-											enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('lv_upgrade_settlement', Title.Self)]"
-											tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('lv_upgrade_settlement', Title.Self)]"
-											oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
-											clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
-											onclick = "[Character.OpenPlayerInteractionWithTargetTitle('lv_upgrade_settlement', Title.Self)]"
-											button_grant_title_to_vassal = {
-												size = { 24 24 }
-												parentanchor = center
-												alwaystransparent = yes
-												texture = "gfx/interface/icons/flat_icons/upgrade_colony_holding.dds"
-											}
-										}
-
-										# LEGACY OF VALYRIA ADDED
-										### RETURN SETTLEMENT BACK TO WILDERNESS ###
-										button_round  = {
-											datacontext = "[HoldingView.GetGUIHoldingBuilding]"
-											datacontext = "[HoldingView.GetTitle]"
-											datacontext = "[HoldingView.GetHolder]"
-											visible = "[And( Character.IsLocalPlayer, Character.IsPlayerInteractionShownAndCanPickTitle('lv_abandon_settlement', Title.Self) )]"
-											enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('lv_abandon_settlement', Title.Self)]"
-											tooltip = "[Character.GetPlayerInteractionWithTargetTitleTooltip('lv_abandon_settlement', Title.Self)]"
-											oversound = "event:/SFX/UI/Generic/sfx_ui_generic_pointer_over"
-											clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_select"
-											onclick = "[Character.OpenPlayerInteractionWithTargetTitle('lv_abandon_settlement', Title.Self)]"
-											button_grant_title_to_vassal = {
-												size = { 40 40 }
-												parentanchor = center
-												alwaystransparent = yes
-												texture = "gfx/interface/icons/flat_icons/cancel_small.dds"
-											}
-										}
-
 										button_round = {
 											name = "toggle_find_vassal"
 											datacontext = "[HoldingView.GetTitle]"
@@ -1965,6 +1936,7 @@ window = {
 						widget_building_item = {
 							name = "special_building_no_others"
 							datacontext = "[HoldingView.GetGUISpecialBuilding]"
+							#AGOT Modified
 							# visible = "[And(HoldingView.HasSpecialBuildingSlot, HoldingView.GetHolding.GetType.HasParameter('no_buildings'))]"
 							visible = "[And(And(HoldingView.HasSpecialBuildingSlot, HoldingView.GetHolding.GetType.HasParameter('no_buildings')), ProvinceIsNotUnknown)]"
 
@@ -2000,7 +1972,7 @@ window = {
 								#AGOT Disabled; This removes the ability to swap out disabled buildings
 								# enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
 								#AGOT Added
-								visible = "[ProvinceIsNotUnknown]"
+								visible = "[And(ProvinceIsNotUnknown, ProvinceIsNotWilderness)]"
 
 								tooltip = "[GUIBuildingItem.GetTooltip]"
 
@@ -2022,7 +1994,7 @@ window = {
 										widget = {
 											size = { 50 40 }
 											#AGOT Added
-											visible = "[And(ProvinceIsNotRuin, ProvinceIsNotUnknown)]"
+											visible = "[ProvinceIsNotRuin]"
 
 											tooltip = "[HoldingView.GetGarrisonTooltip]"
 
@@ -2073,7 +2045,7 @@ window = {
 												spacing = 3
 												tooltip = "[Province.GetFortLevelTooltip]"
 												#AGOT Added
-												visible = "[And(ProvinceIsNotRuin, ProvinceIsNotUnknown)]"
+												visible = "[ProvinceIsNotRuin]"
 
 												icon = {
 													name = "icon_fort"
@@ -2301,7 +2273,9 @@ window = {
 									widget_building_item = {
 										name = "duchy_capital_building"
 										datacontext = "[HoldingView.GetGUIDuchyCapitalBuilding]"
-										visible = "[HoldingView.HasDuchyCapitalBuildingSlot]"
+										#AGOT Modified
+										# visible = "[HoldingView.HasDuchyCapitalBuildingSlot]"
+										visible = "[And(HoldingView.HasDuchyCapitalBuildingSlot, ProvinceIsNotWilderness)]"
 
 										button_standard = {
 											size = { 100% 100% }
@@ -2319,7 +2293,9 @@ window = {
 									widget_building_item = {
 										name = "special_building"
 										datacontext = "[HoldingView.GetGUISpecialBuilding]"
-										visible = "[HoldingView.HasSpecialBuildingSlot]"
+										#AGOT Modified
+										# visible = "[HoldingView.HasSpecialBuildingSlot]"
+										visible = "[And(HoldingView.HasSpecialBuildingSlot, ProvinceIsNotWilderness)]"
 
 										button_standard = {
 											size = { 100% 100% }

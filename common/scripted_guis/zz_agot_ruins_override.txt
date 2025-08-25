@@ -105,11 +105,14 @@
 		trigger_else = {
 			scope:actor = {
 				gold >= lv_settlement_cost
-				NOT = {
+				NOR = {
 					var:lv_settlement_state ?= flag:planning
-					is_target_in_variable_list = {
-						name = lv_settlement_expeditions
-						target = scope:ruin
+					any_owned_story = {
+						story_type = lv_settlement_story_cycle
+						is_target_in_variable_list = {
+							name = lv_settlement_expeditions
+							target = scope:ruin
+						}
 					}
 				}
 			}
@@ -152,6 +155,103 @@ reconstruct_ruin = {
 		else = {
 			# Trigger the event prompt
 			scope:actor = {
+				if = {
+					limit = { # You ain't slick
+						var:lv_restore_ruins_tooltip ?= scope:ruin
+						gold >= lv_settlement_cost
+					}
+					save_scope_value_as = {
+						name = lv_settlement_cost
+						value = lv_settlement_cost
+					}
+					trigger_event = lv_settlement_event.0001
+				}
+			}
+		}
+	}
+}
+
+# WILDERNESS
+agot_can_colonize = {
+	scope = character
+
+	# Triggered at yearly_on_action.txt -> and then agot_colonization_events.0006 at agot_colonization_events.txt
+	ai_is_valid = { always = no }
+
+	is_valid = {
+		exists = root
+
+		NOT = { government_has_flag = government_is_nw }
+		NOT = { government_has_flag = government_is_uninteractable }
+
+		trigger_if = {
+			limit = { has_game_rule = lv_colonisation_agot }
+			gold >= colonize_cost_val
+			trigger_if = {
+				limit = {
+					scope:wilderness ?= { geographical_region = world_westeros_beyond_the_wall }
+					culture = { agot_is_wildling_culture = no }
+					NOT = {
+						any_sub_realm_county = {
+							any_neighboring_county = {
+								this = scope:wilderness.county
+							}
+						}
+					}
+				}
+				custom_tooltip = {
+					text = colonize_btw
+					always = no
+				}
+			}
+			trigger_else = {
+				custom_tooltip = {
+					text = colonize_border_county_trigger_tooltip
+					# Only surrounding lands
+					any_sub_realm_county = {
+						any_title_to_title_neighboring_and_across_water_county = {
+							this = scope:wilderness.county
+						}
+					}
+				}
+			}
+			any_sub_realm_county = {
+				any_title_to_title_neighboring_and_across_water_county = {
+					NOT = { has_county_modifier = block_settlement_ability }
+				}
+			}
+			custom_tooltip = {
+				text = colonization_cooldown
+				NOT = { has_variable = colonization_cooldown }
+			}
+		}
+		trigger_else = {
+			scope:wilderness = { save_temporary_scope_as = ruin }
+			gold >= lv_settlement_cost
+			NOR = {
+				var:lv_settlement_state ?= flag:planning
+				any_owned_story = {
+					story_type = lv_settlement_story_cycle
+					is_target_in_variable_list = {
+						name = lv_settlement_expeditions
+						target = scope:ruin
+					}
+				}
+			}
+		}
+	}
+
+	## Check agot_colonization_effects.txt
+	effect = {
+		custom_tooltip = colonize_land_cost_desc
+		custom_tooltip = colonize_land_holding_desc
+		hidden_effect = {
+			if = {
+				limit = { has_game_rule = lv_colonisation_agot }
+				ai_colonization_effect = { WILDERNESS = scope:wilderness ROOT_SCOPE = root }
+			}
+			else = {
+				scope:wilderness = { save_scope_as = ruin }
 				if = {
 					limit = { # You ain't slick
 						var:lv_restore_ruins_tooltip ?= scope:ruin
