@@ -1750,42 +1750,6 @@ window = {
 
 							# LEGACY OF VALYRIA ADDED
 							vbox = {
-								widget = {
-									visible = "[HoldingView.GetProvince.MakeScope.Var('lv_firewyrm').IsSet]"
-									datacontext = "[HoldingView.GetProvince.MakeScope.Var('lv_firewyrm').Char]"
-									size = { 85 90 }
-
-									text_single = {
-										layoutpolicy_horizontal = expanding
-										parentanchor = top|left
-										position = { 0 -22 }
-										allow_outside = yes
-
-										text = "HOLDING_VIEW_FIREWYRM"
-										default_format = "#low"
-
-										margin_left = 5
-									}
-
-									text_single = {
-										datacontext = "[HoldingView.GetTitle]"
-										visible = "[Title.IsLeasedOut]"
-										layoutpolicy_horizontal = expanding
-										parentanchor = top|left
-										position = { 0 -22 }
-										allow_outside = yes
-
-										text = "HOLDING_VIEW_LESSEE"
-										default_format = "#low"
-
-										margin_left = 5
-									}
-
-									portrait_head_small = {
-										blockoverride "opinion_box" {}
-									}
-								}
-
 								# LEGACY OF VALYRIA MODIFIED
 								vbox = {
 									visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
@@ -1794,8 +1758,8 @@ window = {
 									widget = {
 										datacontext = "[HoldingView.GetTitle.GetLesseeOrHolder]"
 										#AGOT Modified
-								# visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
-								visible = "[And(ProvinceIsNotHidden, And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder ))]"
+										# visible = "[And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder )]"
+										visible = "[And(ProvinceIsNotHidden, And( NotEqualTo_uint32( HoldingView.GetCountyTitle.GetHolder.GetID, HoldingView.GetProvince.GetTitle.GetLesseeOrHolder.GetID ), HoldingView.GetTitle.HasHolder ))]"
 										allow_outside = yes
 										size = { 85 90 }
 
@@ -1961,204 +1925,239 @@ window = {
 							ignoreinvisible = yes
 							spacing = 3
 
-							button_standard = {
-								datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+							flowcontainer = {
+								layoutpolicy_vertical = expanding
 								parentanchor = right
-								size = { 171 85 }
-								allow_outside = yes
+								spacing = 3
 
-								onclick = "[GUIBuildingItem.OnClick]"
-								down = "[GUIBuildingItem.IsHighlighted]"
-								#AGOT Disabled; This removes the ability to swap out disabled buildings
-								# enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
-								#AGOT Added
-								visible = "[And(ProvinceIsNotUnknown, ProvinceIsNotWilderness)]"
-
-								tooltip = "[GUIBuildingItem.GetTooltip]"
-
-								vbox = {
-									layoutpolicy_vertical = expanding
-									margin = { 5 0 }
-
-									### Fort Info
-									hbox = {
-										visible = "[HoldingView.GetProvince.HasFort]"
+								button_standard = {
+									visible = "[HoldingView.GetProvince.MakeScope.Var('lv_firewyrm').IsSet]"
+									datacontext = "[HoldingView.GetProvince.MakeScope.Var('lv_firewyrm').Char]"
+									size = { 85 85 }
+									vbox = {
+										layoutpolicy_vertical = expanding
 										layoutpolicy_horizontal = expanding
-										spacing = 10
-										margin_left = 2
-										margin_right = 2
-										margin_top = 5
 
-										expand = {}
-
-										widget = {
-											size = { 50 40 }
-											#AGOT Added
-											visible = "[ProvinceIsNotRuin]"
-
-											tooltip = "[HoldingView.GetGarrisonTooltip]"
-
-											flowcontainer = {
-												parentanchor = top|hcenter
-												spacing = 3
-
-												icon = {
-													name = "icon_garrison"
-													texture = "gfx/interface/icons/icon_garrison.dds"
-													size = { 30 30 }
-												}
-
-												text_single = {
-													text = "[HoldingView.GetCurrentGarrisonSize]"
-													default_format = "#high"
-												}
-											}
-
-											flowcontainer = {
-												parentanchor = bottom|hcenter
-												position = { 0 -2 }
-
-												progressbar_standard_transparent = {
-													size = { 70 10 }
-													value = "[HoldingView.GetGarrisonRatio]"
-													direction = horizontal
-												}
-											}
+										portrait_head_small = {
+											position = { 0 -20 }
+											size = { 85 60 }
+											blockoverride "opinion_box" {}
 										}
 
-										vbox = {
+										text_single = {
 											layoutpolicy_vertical = expanding
-											margin = { 5 0 }
-
-											divider_light = {
-												layoutpolicy_vertical = expanding
-											}
+											layoutpolicy_horizontal = expanding
+											margin_bottom = 10
+											text = "HOLDING_VIEW_FIREWYRM"
+											align = center|nobaseline
+											#default_format = "#low"
 										}
 
-										vbox = {
-											layoutpolicy_vertical = expanding
-											margin_left = 5
+										#background = { using = Background_Area_ExtraDark }
+									}
+									
+									background = { using = Background_Area_ExtraDark }
+								}
+
+								button_standard = {
+									datacontext = "[HoldingView.GetGUIHoldingBuilding]"
+									parentanchor = right
+									size = { 171 85 }
+									allow_outside = yes
+
+									onclick = "[GUIBuildingItem.OnClick]"
+									down = "[GUIBuildingItem.IsHighlighted]"
+									#AGOT Disabled; This removes the ability to swap out disabled buildings
+									# enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
+									#AGOT Added
+									visible = "[And(ProvinceIsNotUnknown, ProvinceIsNotWilderness)]"
+
+									tooltip = "[GUIBuildingItem.GetTooltip]"
+
+									vbox = {
+										layoutpolicy_vertical = expanding
+										margin = { 5 0 }
+
+										### Fort Info
+										hbox = {
+											visible = "[HoldingView.GetProvince.HasFort]"
+											layoutpolicy_horizontal = expanding
+											spacing = 10
+											margin_left = 2
+											margin_right = 2
+											margin_top = 5
 
 											expand = {}
 
-											hbox = {
-												spacing = 3
-												tooltip = "[Province.GetFortLevelTooltip]"
+											widget = {
+												size = { 50 40 }
 												#AGOT Added
 												visible = "[ProvinceIsNotRuin]"
 
-												icon = {
-													name = "icon_fort"
-													texture = "gfx/interface/window_siege/fort_icon.dds"
-													size = { 30 25 }
-												}
+												tooltip = "[HoldingView.GetGarrisonTooltip]"
 
-												text_single = {
-													text = "[HoldingView.GetProvince.GetFortLevel]"
-													default_format = "#high"
-													align = nobaseline
-												}
-											}
+												flowcontainer = {
+													parentanchor = top|hcenter
+													spacing = 3
 
-											expand = {}
-										}
+													icon = {
+														name = "icon_garrison"
+														texture = "gfx/interface/icons/icon_garrison.dds"
+														size = { 30 30 }
+													}
 
-										expand = {}
-									}
-
-									### No Fort Info
-									hbox = {
-										visible = "[Not( HoldingView.GetProvince.HasFort )]"
-										layoutpolicy_horizontal = expanding
-										margin = { 5 5 }
-
-										widget = {
-											size = { 45 30 }
-
-											icon_building = {
-												name = "building_icon"
-												parentanchor = center
-												position = { 0 5 }
-												size = { 45 40 }
-												texture = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetTypeIcon]"
-											}
-										}
-									}
-
-									expand = {}
-
-									widget = {
-										size = { 161 40 }
-
-										background = {
-											using = Background_Area_Dark
-											margin = { 4 -2 }
-										}
-
-										vbox = {
-											layoutpolicy_vertical = expanding
-											layoutpolicy_horizontal = expanding
-
-											expand = {}
-
-											hbox = {
-												layoutpolicy_horizontal = expanding
-												margin = { 5 0 }
-												spacing = 5
-
-												expand = {}
-
-												text_single = {
-													text = "[HoldingView.GetHolding.GetPrimaryBuildingType.GetTypeName]"
-													max_width = 115
-												}
-
-												text_single = {
-													visible = "[GUIBuildingItem.HasLevel]"
-													text = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetLevel]"
-													size = { 15 20 }
-													margin = { 5 0 }
-													fontsize = 15
-													default_format = "#low;bold"
-													align = center
-
-													background = {
-														using = Background_Area_ExtraDark
+													text_single = {
+														text = "[HoldingView.GetCurrentGarrisonSize]"
+														default_format = "#high"
 													}
 												}
 
-												warning_icon = {
-													name = "wrong_type"
-													datacontext = "[HoldingView.GetHolder]"
-													visible = "[And( Not( Holding.IsEmpty ), Not( Holding.IsValidForLesseeOrHolder ) )]"
-													size = { 20 20 }
+												flowcontainer = {
+													parentanchor = bottom|hcenter
+													position = { 0 -2 }
 
-													tooltip = HOLDING_VIEW_WRONG_HOLDING_TYPE
+													progressbar_standard_transparent = {
+														size = { 70 10 }
+														value = "[HoldingView.GetGarrisonRatio]"
+														direction = horizontal
+													}
 												}
+											}
 
-												warning_icon = {
-													name = "reduced_by_fixable_situation"
-													visible = "[And( ObjectsEqual( GUIBuildingItem.Self, Holding.Self ), GUIBuildingItem.IsBuildingDisabled )]"
-													size = { 20 20 }
+											vbox = {
+												layoutpolicy_vertical = expanding
+												margin = { 5 0 }
+
+												divider_light = {
+													layoutpolicy_vertical = expanding
+												}
+											}
+
+											vbox = {
+												layoutpolicy_vertical = expanding
+												margin_left = 5
+
+												expand = {}
+
+												hbox = {
+													spacing = 3
+													tooltip = "[Province.GetFortLevelTooltip]"
+													#AGOT Added
+													visible = "[ProvinceIsNotRuin]"
+
+													icon = {
+														name = "icon_fort"
+														texture = "gfx/interface/window_siege/fort_icon.dds"
+														size = { 30 25 }
+													}
+
+													text_single = {
+														text = "[HoldingView.GetProvince.GetFortLevel]"
+														default_format = "#high"
+														align = nobaseline
+													}
 												}
 
 												expand = {}
 											}
 
-											widget = {
-												visible = "[GUIBuildingItem.IsConstructing]"
-												size = { 161 8 }
+											expand = {}
+										}
 
-												progressbar_standard = {
-													name = "holding_upgrade_progressbar"
+										### No Fort Info
+										hbox = {
+											visible = "[Not( HoldingView.GetProvince.HasFort )]"
+											layoutpolicy_horizontal = expanding
+											margin = { 5 5 }
+
+											widget = {
+												size = { 45 30 }
+
+												icon_building = {
+													name = "building_icon"
 													parentanchor = center
-													size = { 167 10 }
-													alwaystransparent = yes
-													value = "[GUIBuildingItem.GetConstructingProgress]"
+													position = { 0 5 }
+													size = { 45 40 }
+													texture = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetTypeIcon]"
 												}
 											}
+										}
 
-											expand = {}
+										expand = {}
+
+										widget = {
+											size = { 161 40 }
+
+											background = {
+												using = Background_Area_Dark
+												margin = { 4 -2 }
+											}
+
+											vbox = {
+												layoutpolicy_vertical = expanding
+												layoutpolicy_horizontal = expanding
+
+												expand = {}
+
+												hbox = {
+													layoutpolicy_horizontal = expanding
+													margin = { 5 0 }
+													spacing = 5
+
+													expand = {}
+
+													text_single = {
+														text = "[HoldingView.GetHolding.GetPrimaryBuildingType.GetTypeName]"
+														max_width = 115
+													}
+
+													text_single = {
+														visible = "[GUIBuildingItem.HasLevel]"
+														text = "[GUIBuildingItem.GetCurrentOrConstrucingBuilding.GetLevel]"
+														size = { 15 20 }
+														margin = { 5 0 }
+														fontsize = 15
+														default_format = "#low;bold"
+														align = center
+
+														background = {
+															using = Background_Area_ExtraDark
+														}
+													}
+
+													warning_icon = {
+														name = "wrong_type"
+														datacontext = "[HoldingView.GetHolder]"
+														visible = "[And( Not( Holding.IsEmpty ), Not( Holding.IsValidForLesseeOrHolder ) )]"
+														size = { 20 20 }
+
+														tooltip = HOLDING_VIEW_WRONG_HOLDING_TYPE
+													}
+
+													warning_icon = {
+														name = "reduced_by_fixable_situation"
+														visible = "[And( ObjectsEqual( GUIBuildingItem.Self, Holding.Self ), GUIBuildingItem.IsBuildingDisabled )]"
+														size = { 20 20 }
+													}
+
+													expand = {}
+												}
+
+												widget = {
+													visible = "[GUIBuildingItem.IsConstructing]"
+													size = { 161 8 }
+
+													progressbar_standard = {
+														name = "holding_upgrade_progressbar"
+														parentanchor = center
+														size = { 167 10 }
+														alwaystransparent = yes
+														value = "[GUIBuildingItem.GetConstructingProgress]"
+													}
+												}
+
+												expand = {}
+											}
 										}
 									}
 								}
