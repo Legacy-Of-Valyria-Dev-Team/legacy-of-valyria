@@ -87,7 +87,9 @@ agot_colonization_events.0006 = {
 		trigger_else = {
 			# Legacy of Valyria has its own cost calculation
 			# Requires a ruin scope, hence why this was moved here at the bottom
-			gold >= lv_settlement_cost
+			# gold >= lv_settlement_cost
+			# REVISE SOON
+			gold >= 1000
 			NOR = {
 				var:lv_settlement_state ?= flag:planning
 				any_owned_story = {
@@ -167,7 +169,7 @@ agot_colonization_events.0006 = {
 
 		### MAKE AI COLONISE COUNTY ###
 		# LEGACY OF VALYRIA MODIFIED
-		trigger_if = {
+		if = {
 			limit = { has_game_rule = lv_colonisation_agot }
 			scope:wilderness ?= { debug_log_scopes = yes } # Only needed for testing
 			if = {
@@ -177,7 +179,7 @@ agot_colonization_events.0006 = {
 				ai_colonization_effect = { WILDERNESS = scope:wilderness ROOT_SCOPE = root }
 			}
 		}
-		trigger_else = {
+		else = {
 			scope:wilderness ?= { save_scope_as = ruin }
 			save_scope_as = settler
 			set_variable = {
