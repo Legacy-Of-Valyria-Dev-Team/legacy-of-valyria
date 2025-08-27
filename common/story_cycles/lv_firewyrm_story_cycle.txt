@@ -58,11 +58,19 @@ lv_firewyrm_story_cycle = {
 	on_owner_death = { end_story = yes }
 
 	on_end = {
+		story_owner = { save_scope_as = firewyrm }
 		var:lv_firewyrm_location = {
 			remove_building = firewyrm_lair
 			if = {
 				limit = { has_variable = lv_firewyrm }
 				remove_variable = lv_firewyrm
+			}
+			save_scope_as = former_lair
+			county = {
+				holder = {
+					# Send notification to county owner
+					trigger_event = lv_firewyrm_event.0100
+				}
 			}
 		}
 		remove_variable = lv_firewyrm_location
@@ -76,4 +84,11 @@ lv_firewyrm_story_cycle = {
 	#
 	#	}
 	#}
+
+	# If firewyrm gets tamed, end the story and send a special event to province owner
+	effect_group = {
+		days = 1
+		trigger = { story_owner = { has_character_flag = owned_dragon } }
+		fallback = { end_story = yes }
+	}
 }
