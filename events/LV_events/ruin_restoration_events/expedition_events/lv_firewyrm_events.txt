@@ -3,6 +3,7 @@
 # Directory
 
 # lv_firewyrm_event.0001 - Firewyrm encounter
+# lv_firewyrm_event.0100 - Firewyrm gone
 
 # Firewyrm encounter
 lv_firewyrm_event.0001 = {
@@ -16,10 +17,7 @@ lv_firewyrm_event.0001 = {
 	override_background = {
 		trigger = {
 			scope:firewyrm_source = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_desert_terrain = yes
 					agot_is_desert_mountains_terrain = yes
@@ -31,10 +29,7 @@ lv_firewyrm_event.0001 = {
 	override_background = {
 		trigger = {
 			scope:firewyrm_source = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_drylands_terrain = yes
 					agot_is_oasis_terrain = yes
@@ -47,10 +42,7 @@ lv_firewyrm_event.0001 = {
 	override_background = {
 		trigger = {
 			scope:firewyrm_source = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_steppe_terrain = yes
 				}
@@ -61,10 +53,7 @@ lv_firewyrm_event.0001 = {
 	override_background = {
 		trigger = {
 			scope:firewyrm_source = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_taiga_terrain = yes
 					agot_is_taiga_bog_terrain = yes
@@ -76,32 +65,15 @@ lv_firewyrm_event.0001 = {
 		reference = bp3_steppe_winter
 	}
 	override_background = {
-		trigger = {
-			scope:firewyrm_source = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
-			}
-		}
+		trigger = { scope:firewyrm_source = { lv_valyria_subregion_restored = yes } }
 		reference = plains
 	}
 	override_background = {
-		trigger = {
-			scope:firewyrm_source = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { scope:firewyrm_source = { lv_valyria_subregion_ruined = yes } }
 		reference = lv_valyria_surface
 	}
 	override_effect_2d = {
-		trigger = {
-			scope:firewyrm_source = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { scope:firewyrm_source = { lv_valyria_subregion_ruined = yes } }
 		reference = smoke
 	}
 
@@ -178,6 +150,91 @@ lv_firewyrm_event.0001 = {
 		custom_tooltip = lv_firewyrm_event.0001.flee.tt
 		#scope:firewyrm = { death = { death_reason = death_monster_duel } }
 	}
+}
+
+# Firewyrm gone
+lv_firewyrm_event.0100 = {
+	type = character_event
+	title = lv_firewyrm_event.0100.t
+	desc = lv_firewyrm_event.0100.desc
+
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:former_lair = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:former_lair = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:former_lair = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:former_lair = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:former_lair = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:former_lair = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:former_lair = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		scripted_animation = happiness
+	}
+	lower_right_portrait = { character = scope:firewyrm }
+
+	immediate = {
+		scope:former_lair = { save_scope_as = lair_location }
+		custom_tooltip = lv_firewyrm_cleared_tooltip
+	}
+
+	option = { name = lv_firewyrm_event.0100.a }
 }
 
 namespace = lv_firewyrm_duel
@@ -361,10 +418,7 @@ lv_firewyrm_duel.0001 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_desert_terrain = yes
 					agot_is_desert_mountains_terrain = yes
@@ -376,10 +430,7 @@ lv_firewyrm_duel.0001 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_drylands_terrain = yes
 					agot_is_oasis_terrain = yes
@@ -392,10 +443,7 @@ lv_firewyrm_duel.0001 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_steppe_terrain = yes
 				}
@@ -406,10 +454,7 @@ lv_firewyrm_duel.0001 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_taiga_terrain = yes
 					agot_is_taiga_bog_terrain = yes
@@ -421,32 +466,15 @@ lv_firewyrm_duel.0001 = {
 		reference = bp3_steppe_winter
 	}
 	override_background = {
-		trigger = {
-			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_restored = yes } }
 		reference = plains
 	}
 	override_background = {
-		trigger = {
-			location = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_ruined = yes } }
 		reference = lv_valyria_surface
 	}
 	override_effect_2d = {
-		trigger = {
-			location = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_ruined = yes } }
 		reference = smoke
 	}
 
@@ -1132,10 +1160,7 @@ lv_firewyrm_duel.0003 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_desert_terrain = yes
 					agot_is_desert_mountains_terrain = yes
@@ -1147,10 +1172,7 @@ lv_firewyrm_duel.0003 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_drylands_terrain = yes
 					agot_is_oasis_terrain = yes
@@ -1163,10 +1185,7 @@ lv_firewyrm_duel.0003 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_steppe_terrain = yes
 				}
@@ -1177,10 +1196,7 @@ lv_firewyrm_duel.0003 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_taiga_terrain = yes
 					agot_is_taiga_bog_terrain = yes
@@ -1194,10 +1210,7 @@ lv_firewyrm_duel.0003 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 			}
 		}
 		reference = plains
@@ -1407,10 +1420,7 @@ lv_firewyrm_duel.0004 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_desert_terrain = yes
 					agot_is_desert_mountains_terrain = yes
@@ -1422,10 +1432,7 @@ lv_firewyrm_duel.0004 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_drylands_terrain = yes
 					agot_is_oasis_terrain = yes
@@ -1438,10 +1445,7 @@ lv_firewyrm_duel.0004 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_steppe_terrain = yes
 				}
@@ -1452,10 +1456,7 @@ lv_firewyrm_duel.0004 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 				OR = {
 					agot_is_taiga_terrain = yes
 					agot_is_taiga_bog_terrain = yes
@@ -1469,10 +1470,7 @@ lv_firewyrm_duel.0004 = {
 	override_background = {
 		trigger = {
 			location = {
-				OR = {
-					lv_valyria_subregion_restored = yes
-					NOT = { geographical_region = world_valyria_mainland }
-				}
+				lv_valyria_subregion_restored = yes
 			}
 		}
 		reference = plains
@@ -1613,7 +1611,7 @@ lv_firewyrm_duel.0004 = {
 	immediate = {
 		# Add Dragonrider Trait XP
 		agot_add_dragon_training_xp = { VALUE = 15 }
-		lv_firewyrm_death_tooltip_effect = yes
+		lv_firewyrm_cleared_tooltip_effect = yes
 	}
 
 	# I won!
