@@ -1,15 +1,54 @@
 ﻿# Legacy of Valyria Expedition on actions
 
+# Default travel danger events
 # Root: Character
 travel_danger_events_on_action = {
+	# LOV TRIGGER OVERRIDE
+	# - If Valyria is a wasteland, disable
+	trigger = {
+		is_migrating = no # No Danger events while migrating
+		#AGOT Added
+		NOR = {
+			current_travel_plan ?= { has_travel_option = dragon_flight_option }
+			has_trait = dragon
+		}
+		# If Valyria, MUST be green
+		trigger_if = {
+			limit = { geographical_region = world_valyria_mainland }
+			lv_valyria_subregion_restored = yes
+		}
+		trigger_else = { always = yes }
+	}
 	on_actions = {
 		lv_travel_danger_events_on_action
 		lv_travel_danger_firewyrm_on_action
 	}
 }
 
+# Forced Valyrian travel danger events
+on_travel_plan_movement = {
+	on_actions = {
+		lv_travel_danger_events_on_action
+		lv_travel_danger_firewyrm_on_action
+	}
+}
+
+# Valyrian 
 lv_travel_danger_events_on_action = {
-	trigger = { is_migrating = no }
+	trigger = {
+		is_migrating = no
+		#AGOT Added
+		NOR = {
+			current_travel_plan ?= { has_travel_option = dragon_flight_option }
+			has_trait = dragon
+		}
+		# If Valyria, must NOT be green
+		trigger_if = {
+			limit = { geographical_region = world_valyria_mainland }
+			lv_valyria_subregion_ruined = yes
+		}
+		trigger_else = { always = yes }
+	}
 	random_events = {
 		chance_of_no_event = {
 			value = {
@@ -31,6 +70,13 @@ lv_travel_danger_events_on_action = {
 		10 = 0
 		350 = lv_travel_danger.0001 # Smoking Sea: The Fog Lives
 		350 = lv_travel_danger.0002 # Smoking Sea: Blood on the Deck
+
+		175 = lv_valyria_random_event.0010 # Ghosts
+		175 = lv_valyria_random_event.0040 # Dragon Sighting
+		350 = lv_valyria_random_event.0050 # Ruins: The Vanishing City
+		175 = lv_valyria_random_event.0090 # Earthquake reveals lava river
+		175 = lv_valyria_random_event.0110 # Ash Serpents
+		350 = lv_valyria_random_event.0120 # Toxic Fumes: Sulfur
 	}
 }
 

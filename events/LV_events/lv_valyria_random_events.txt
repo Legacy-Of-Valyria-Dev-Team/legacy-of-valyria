@@ -1,8 +1,8 @@
 namespace = lv_valyria_random_event
 #ghosts - 1
-lv_valyria_random_event.01 = {
-    title = lv_valyria_random_event.01.t
-    desc = lv_valyria_random_event.01.desc
+lv_valyria_random_event.0010 = {
+    title = lv_valyria_random_event.0010.t
+    desc = lv_valyria_random_event.0010.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
     left_portrait = {
@@ -21,30 +21,32 @@ lv_valyria_random_event.01 = {
 	
 	immediate = { add_character_flag = saw_figures }
 
-
 	option = {
-        name = lv_valyria_random_event.01.a
+        name = lv_valyria_random_event.0010.a
         add_stress = 25
         add_trait = paranoid
-		trigger_event = lv_valyria_random_event.02 days = 200  # ~7 months later
     }
     option = {
-        name = lv_valyria_random_event.01.b
+        name = lv_valyria_random_event.0010.b
         add_prestige = 100
         add_stress = 40
-		trigger_event = lv_valyria_random_event.02 days = 200  # ~7 months later
     }
     option = {
-        name = lv_valyria_random_event.01.c
+        name = lv_valyria_random_event.0010.c
         add_stress = -20
         add_trait = lunatic_1
-		add_character_flag = lv_is_lunatic
-        trigger_event = lv_valyria_random_event.02 days = 200  # ~7 months later
+    }
+
+    after = {
+        trigger_event = {
+            id = lv_valyria_random_event.0020
+            days = 200
+        }
     }
 }
-lv_valyria_random_event.02 = {
-    title = lv_valyria_random_event.02.t
-    desc = lv_valyria_random_event.02.desc
+lv_valyria_random_event.0020 = {
+    title = lv_valyria_random_event.0020.t
+    desc = lv_valyria_random_event.0020.desc
     theme = dread
     override_background = { reference = lv_valyria_small }
     left_portrait = {
@@ -53,14 +55,14 @@ lv_valyria_random_event.02 = {
 	}
 
     option = {
-        name = lv_valyria_random_event.02.a
-        trigger_event = lv_valyria_random_event.03
+        name = lv_valyria_random_event.0020.a
+        trigger_event = lv_valyria_random_event.0030
         add_stress = 35
         add_trait = melancholic
     }
     option = {
-        name = lv_valyria_random_event.02.b
-        trigger_event = lv_valyria_random_event.03
+        name = lv_valyria_random_event.0020.b
+        trigger_event = lv_valyria_random_event.0030
         add_prestige = 150
         add_piety = 100
 		add_stress = 45
@@ -70,44 +72,49 @@ lv_valyria_random_event.02 = {
 		}
     }
     option = {
-        name = lv_valyria_random_event.02.c
-        trigger_event = lv_valyria_random_event.03
+        name = lv_valyria_random_event.0020.c
+        trigger_event = lv_valyria_random_event.0030
         add_stress = -20
-		if = { limit = { NOT = { has_character_flag = lv_is_lunatic } add_trait = lunatic_1 } }
+        if = {
+            limit = { has_trait = lunatic_1 }
+            add_trait = eccentric
+        }
+        else = { add_trait = lunatic_1 }
     }
 }
 
-lv_valyria_random_event.03 = {
-    title = lv_valyria_random_event.03.t
-    desc = lv_valyria_random_event.03.desc
+lv_valyria_random_event.0030 = {
+    title = lv_valyria_random_event.0030.t
+    desc = lv_valyria_random_event.0030.desc
     override_background = { reference = lv_valyria_medium }
     theme = dread
     left_portrait = {
 		character = root
 		animation = fear
 	}
-    trigger = {
-        has_character_flag = in_valyria
-    }
+
+    # In Valyria
 
 	option = {
-        name = lv_valyria_random_event.03.a
-		random_list = {
-			34 = {
-				trigger_event = lv_valyria_random_event.031
-			}
-			33 = {
-				trigger_event = lv_valyria_random_event.032
-			}
-			33 = {
-				trigger_event = lv_valyria_random_event.033
-			}
-		}
+        name = lv_valyria_random_event.0030.a
+        hidden_effect = {
+            random_list = {
+                34 = {
+                    trigger_event = lv_valyria_random_event.0031
+                }
+                33 = {
+                    trigger_event = lv_valyria_random_event.0032
+                }
+                33 = {
+                    trigger_event = lv_valyria_random_event.0033
+                }
+            }
+        }
     }
 }
-lv_valyria_random_event.031 = {
-    title = lv_valyria_random_event.031.t
-    desc = lv_valyria_random_event.031.desc
+lv_valyria_random_event.0031 = {
+    title = lv_valyria_random_event.0031.t
+    desc = lv_valyria_random_event.0031.desc
     theme = dread
     override_background = { reference = lv_valyria_medium }
     left_portrait = {
@@ -115,14 +122,14 @@ lv_valyria_random_event.031 = {
 		animation = fear
 	}
 	option = {
-        name = lv_valyria_random_event.031.a
-        death = { killer = ROOT } # vanish in the ruins
+        name = lv_valyria_random_event.0031.a
+        death = { reason = death_vanished } # vanish in the ruins
     }
 
 }
-lv_valyria_random_event.032 = {
-    title = lv_valyria_random_event.032.t
-    desc = lv_valyria_random_event.032.desc
+lv_valyria_random_event.0032 = {
+    title = lv_valyria_random_event.0032.t
+    desc = lv_valyria_random_event.0032.desc
     theme = dread
     override_background = { reference = lv_valyria_medium }
     left_portrait = {
@@ -130,16 +137,16 @@ lv_valyria_random_event.032 = {
 		animation = lunatic
 	}
 	option = {
-        name = lv_valyria_random_event.032.a
+        name = lv_valyria_random_event.0032.a
         add_trait = possessed_1
         add_stress = 50
         learn_language = language_valyrian
     }
 
 }
-lv_valyria_random_event.033 = {
-    title = lv_valyria_random_event.033.t
-    desc = lv_valyria_random_event.033.desc
+lv_valyria_random_event.0033 = {
+    title = lv_valyria_random_event.0033.t
+    desc = lv_valyria_random_event.0033.desc
     theme = dread
     override_background = { reference = lv_valyria_medium }
     left_portrait = {
@@ -147,24 +154,21 @@ lv_valyria_random_event.033 = {
 		animation = shock
 	}
     option = {
-        name = lv_valyria_random_event.033.a
+        name = lv_valyria_random_event.0033.a
         agot_create_random_glass_candle_effect = { OWNER = ROOT }
-        random_list = {
-			60 = { add_trait = possessed_1 }
-			40 = {}
-		}
+        if = {
+            limit = { NOT = { has_trait = possessed_1 } }
+            random_list = {
+                60 = { add_trait = possessed_1 }
+                40 = {}
+            }
+        }
     }
 }
 #dragon sighting or rather a hallucination? - 2
-lv_valyria_random_event.04 = {
-    title = lv_valyria_random_event.04.t
-    desc = lv_valyria_random_event.04.desc
-    theme = realm
-    override_background = { reference = lv_valyria_surface }
-    left_portrait = {
-		character = root
-		animation = disbelief
-	}
+lv_valyria_random_event.0040 = {
+    title = lv_valyria_random_event.0040.t
+    desc = lv_valyria_random_event.0040.desc
     trigger = {
         location = {
 			OR = {
@@ -173,31 +177,38 @@ lv_valyria_random_event.04 = {
 			}
 		}
         NOT = { has_character_flag = lv_saw_dragon }
+        # NOT = { has_character_flag = lv_valyria_danger_dragon_sighting_cooldown }
     }
-	immediate = { add_character_flag = lv_saw_dragon }
+    theme = realm
+    override_background = { reference = lv_valyria_surface }
+    left_portrait = {
+		character = root
+		animation = disbelief
+	}
+
+	immediate = {
+        add_character_flag = lv_saw_dragon
+        #add_character_flag = {
+        #    flag = lv_valyria_danger_dragon_sighting_cooldown
+        #    years = { 6 9 }
+        #}
+    }
 
     option = {
-        name = lv_valyria_random_event.04.a
+        name = lv_valyria_random_event.0040.a
         add_prestige = 200
         add_stress = -10
-        effect = {
-            add_character_modifier = {
-                modifier = lv_dragon_sighting
-                years = 3
-            }
+        add_character_modifier = {
+            modifier = lv_dragon_sighting_modifier
+            years = 3
         }
     }
 }
+
 #vanishing city - 3
-lv_valyria_random_event.05 = {
-    title = lv_valyria_random_event.05.t
-    desc = lv_valyria_random_event.05.desc
-    theme = dread
-    override_background = { reference = lv_valyria_small }
-    left_portrait = {
-		character = root
-		animation = worry
-	}
+lv_valyria_random_event.0050 = {
+    title = lv_valyria_random_event.0050.t
+    desc = lv_valyria_random_event.0050.desc
     trigger = {
         location = {
 			OR = {
@@ -206,34 +217,46 @@ lv_valyria_random_event.05 = {
 			}
 		}
         NOT = { has_character_flag = saw_vanishing_city }
+        # NOT = { has_character_flag = lv_valyria_danger_vanishing_city_cooldown }
     }
+    theme = dread
+    override_background = { reference = lv_valyria_small }
+    left_portrait = {
+		character = root
+		animation = worry
+	}
 
     immediate = {
-        set_character_flag = saw_vanishing_city
+        add_character_flag = saw_vanishing_city
+        #add_character_flag = {
+        #    flag = lv_valyria_danger_vanishing_city_cooldown
+        #    weeks = { 12 24 }
+        #}
     }
+
     option = {
-        name = lv_valyria_random_event.05.a
+        name = lv_valyria_random_event.0050.a
         add_stress = 20
-        trigger_event = lv_valyria_random_event.06
+        trigger_event = lv_valyria_random_event.0060
         add_trait = paranoid
     }
     option = {
-        name = lv_valyria_random_event.05.b
+        name = lv_valyria_random_event.0050.b
         add_prestige = 100
-        trigger_event = lv_valyria_random_event.06
+        trigger_event = lv_valyria_random_event.0060
         add_stress = 40
     }
     option = {
-        name = lv_valyria_random_event.05.c
+        name = lv_valyria_random_event.0050.c
         add_stress = -15
-        trigger_event = lv_valyria_random_event.06
+        trigger_event = lv_valyria_random_event.0060
         add_trait = lunatic_1
     }
 }
 
-lv_valyria_random_event.06 = {
-    title = lv_valyria_random_event.06.t
-    desc = lv_valyria_random_event.06.desc
+lv_valyria_random_event.0060 = {
+    title = lv_valyria_random_event.0060.t
+    desc = lv_valyria_random_event.0060.desc
     theme = dread
     override_background = { reference = lv_valyria_medium }
     left_portrait = {
@@ -251,27 +274,27 @@ lv_valyria_random_event.06 = {
     }
 
     option = {
-        name = lv_valyria_random_event.06.a
+        name = lv_valyria_random_event.0060.a
         add_stress = 40
-        add_trait = melancholic
+        add_trait = depressed_1
     }
     option = {
-        name = lv_valyria_random_event.06.b
+        name = lv_valyria_random_event.0060.b
         add_trait = possessed_1
         add_stress = 25
     }
     option = {
-        name = lv_valyria_random_event.06.c
+        name = lv_valyria_random_event.0060.c
         random_list = {
-            10 = { trigger_event = lv_valyria_random_event.07 } # stumbled into a hidden hoard
-            90 = { trigger_event = lv_valyria_random_event.08 } # vanish into the city
+            10 = { trigger_event = lv_valyria_random_event.0070 } # stumbled into a hidden hoard
+            90 = { trigger_event = lv_valyria_random_event.0080 } # vanish into the city
         }
     }
 }
-lv_valyria_random_event.07 = {
 
-    title = lv_valyria_random_event.07.t
-    desc = lv_valyria_random_event.07.desc
+lv_valyria_random_event.0070 = {
+    title = lv_valyria_random_event.0070.t
+    desc = lv_valyria_random_event.0070.desc
     theme = stewardship_wealth_focus
     override_background = { reference = lv_valyria_medium }
     left_portrait = {
@@ -280,7 +303,7 @@ lv_valyria_random_event.07 = {
 	}
 
     option = {
-        name = lv_valyria_random_event.07.a
+        name = lv_valyria_random_event.0070.a
         add_gold = 150
         random_list = {
             35 = { add_gold = 600 }
@@ -298,9 +321,9 @@ lv_valyria_random_event.07 = {
     }
 }
 
-lv_valyria_random_event.08 = {
-    title = lv_valyria_random_event.08.t
-    desc = lv_valyria_random_event.08.desc
+lv_valyria_random_event.0080 = {
+    title = lv_valyria_random_event.0080.t
+    desc = lv_valyria_random_event.0080.desc
     theme = death
     override_background = { reference = lv_valyria_medium }
     left_portrait = {
@@ -309,36 +332,43 @@ lv_valyria_random_event.08 = {
 	}
 
     option = {
-        name = lv_valyria_random_event.08.a
-        death = { killer = ROOT }
+        name = lv_valyria_random_event.0080.a
+        death = { reason = death_vanished }
     }
 }
+
 #earth - 4
-lv_valyria_random_event.09 = {
-    title = lv_valyria_random_event.09.t
-    desc = lv_valyria_random_event.09.desc
+lv_valyria_random_event.0090 = {
+    title = lv_valyria_random_event.0090.t
+    desc = lv_valyria_random_event.0090.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
+    widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
     left_portrait = {
         character = root
         animation = fear
     }
 
     option = {
-        name = lv_valyria_random_event.09.a
+        name = lv_valyria_random_event.0090.a
         add_stress = 30
         add_trait = craven
     }
     option = {
-        name = lv_valyria_random_event.09.b
+        name = lv_valyria_random_event.0090.b
         random_list = {
             10 = { add_gold = 75 }        # success, valuables in fissures
             50 = { add_trait = burned }     # badly burned / crushed
-            40 = { death = { killer = ROOT } } # swallowed by the earth
+            40 = { death = { reason = death_vanished } } # swallowed by the earth
         }
     }
     option = {
-        name = lv_valyria_random_event.09.c
+        name = lv_valyria_random_event.0090.c
         add_stress = 20
         random_list = {
             40 = { add_prestige = 100 }   # kept the party calm
@@ -346,10 +376,11 @@ lv_valyria_random_event.09 = {
         }
     }
 }
+
 # swarm - 5
-lv_valyria_random_event.10 = {
-    title = lv_valyria_random_event.10.t
-    desc = lv_valyria_random_event.10.desc
+lv_valyria_random_event.0100 = {
+    title = lv_valyria_random_event.0100.t
+    desc = lv_valyria_random_event.0100.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
     left_portrait = {
@@ -358,16 +389,30 @@ lv_valyria_random_event.10 = {
     }
 
     option = {
-        name = lv_valyria_random_event.10.a
+        name = lv_valyria_random_event.0100.a
         add_prestige = 300
         random_list = {
-            50 = { add_trait = burned }     # scorched by the swarm
-            30 = { add_injury = yes }       # clawed and bitten
-            20 = { death = { killer = ROOT } } # consumed by the swarm
+            50 = { add_trait = burned } # scorched by the swarm
+            30 = { # clawed and bitten
+                if = {
+                    limit = { has_trait = wounded_3 }
+                    death = { death_reason = death_wounds }
+                }
+                else_if = {
+                    limit = { has_trait = wounded_2 }
+                    add_trait = wounded_3
+                }
+                else_if = {
+                    limit = { has_trait = wounded_1 }
+                    add_trait = wounded_2
+                }
+                else = { add_trait = wounded_1 }
+            }
+            20 = { death = { death_reason = death_vanished } } # consumed by the swarm
         }
     }
     option = {
-        name = lv_valyria_random_event.10.b
+        name = lv_valyria_random_event.0100.b
         add_stress = 40
         random_list = {
             20 = { add_gold = 75 }         # captured a few alive for experimentation
@@ -375,15 +420,17 @@ lv_valyria_random_event.10 = {
         }
     }
     option = {
-        name = lv_valyria_random_event.10.c
+        name = lv_valyria_random_event.0100.c
         add_stress = 25
         add_prestige = 200  # survived the terrifying swarm
     }
 }
+
 # serpents - 6
-lv_valyria_random_event.11 = {
-    title = lv_valyria_random_event.11.t
-    desc = lv_valyria_random_event.11.desc
+lv_valyria_random_event.0110 = {
+    title = lv_valyria_random_event.0110.t
+    desc = lv_valyria_random_event.0110.desc
+    trigger = { NOT = { has_character_flag = lv_valyria_danger_ash_serpents_cooldown } }
     theme = dread
     override_background = { reference = lv_valyria_surface }
     left_portrait = {
@@ -391,116 +438,159 @@ lv_valyria_random_event.11 = {
         animation = fear
     }
 
+    immediate = {
+        add_character_flag = {
+            flag = lv_valyria_danger_ash_serpents_cooldown
+            weeks = { 12 24 }
+        }
+    }
+
     option = {
-        name = lv_valyria_random_event.11.a
+        name = lv_valyria_random_event.0110.a
         random_list = {
-            40 = { add_trait = burned }         # scorched by the serpents
-            40 = { add_injury = yes }           # bitten or clawed
-            20 = { death = { killer = ROOT } }  # overwhelmed by the serpents
+            40 = { add_trait = burned }                     # scorched by the serpents
+            40 = { add_injury = yes }                       # bitten or clawed
+            20 = { death = { reason = death_vanished } }    # overwhelmed by the serpents
         }
     }
     option = {
-        name = lv_valyria_random_event.12.b
+        name = lv_valyria_random_event.0120.b
         add_stress = 30
         add_trait = craven
     }
 }
+
 #sulfur
-lv_valyria_random_event.12 = {
-    title = lv_valyria_random_event.12.t
-    desc = lv_valyria_random_event.12.desc
+lv_valyria_random_event.0120 = {
+    title = lv_valyria_random_event.0120.t
+    desc = lv_valyria_random_event.0120.desc
+    trigger = {
+        location = {
+            OR = {
+                has_building_or_higher = noxious_gases_01_01
+                has_building_or_higher = noxious_gases_02_01
+            }
+            NAND = {
+                has_building = noxious_gases_01_03
+                has_building = noxious_gases_02_03
+            }
+        }
+        NOT = { has_character_flag = lv_valyria_danger_sulfur_cooldown }
+    }
     theme = dread
     override_background = { reference = lv_valyria_surface }
+    override_effect_2d = { reference = smoke }
     left_portrait = {
         character = root
         animation = sick_stomach
     }
 
+    immediate = {
+        add_character_flag = {
+            flag = lv_valyria_danger_sulfur_cooldown
+            weeks = { 12 24 }
+        }
+    }
+
     option = {
-        name = lv_valyria_random_event.12.a
+        name = lv_valyria_random_event.0120.a
         random_list = {
-            30 = { add_trait = ill trigger_event = lv_valyria_random_event.13 }
-            50 = { add_trait = burned trigger_event = lv_valyria_random_event.14 }
-            20 = { death = { killer = ROOT } }
+            30 = {
+                add_trait = ill
+                trigger_event = lv_valyria_random_event.0130
+            }
+            50 = {
+                add_trait = burned
+                trigger_event = lv_valyria_random_event.0140
+            }
+            20 = { death = { reason = death_vanished } }
         }
     }
     option = {
-        name = lv_valyria_random_event.12.b
+        name = lv_valyria_random_event.0120.b
         add_stress = 20
-        trigger_event = { id = lv_valyria_random_event.15 }
+        trigger_event = { id = lv_valyria_random_event.0150 }
     }
     option = {
-        name = lv_valyria_random_event.12.c
-        gold = -40
+        name = lv_valyria_random_event.0120.c
+        remove_short_term_gold = 40
         add_prestige = 10
-        trigger_event = lv_valyria_random_event.16 
+        trigger_event = lv_valyria_random_event.0160 
     }
 }
-lv_valyria_random_event.13 = {
-    title = lv_valyria_random_event.13.t
-    desc = lv_valyria_random_event.13.desc
+
+lv_valyria_random_event.0130 = {
+    title = lv_valyria_random_event.0130.t
+    desc = lv_valyria_random_event.0130.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
+    override_effect_2d = { reference = smoke }
     left_portrait = {
         character = root
         animation = pain
     }
 
     option = {
-        name = lv_valyria_random_event.13.a
+        name = lv_valyria_random_event.0130.a
         add_stress = 15
     }
     option = {
-        name = lv_valyria_random_event.13.b
+        name = lv_valyria_random_event.0130.b
         add_trait = weak
     }
 }
-lv_valyria_random_event.14 = {
-    title = lv_valyria_random_event.14.t
-    desc = lv_valyria_random_event.14.desc
+
+lv_valyria_random_event.0140 = {
+    title = lv_valyria_random_event.0140.t
+    desc = lv_valyria_random_event.0140.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
+    override_effect_2d = { reference = smoke }
     left_portrait = {
         character = root
         animation = injury
     }
 
     option = {
-        name = lv_valyria_random_event.14.a
+        name = lv_valyria_random_event.0140.a
         add_trait = scarred
     }
 }
-lv_valyria_random_event.15 = {
-    title = lv_valyria_random_event.15.t
-    desc = lv_valyria_random_event.15.desc
+
+lv_valyria_random_event.0150 = {
+    title = lv_valyria_random_event.0150.t
+    desc = lv_valyria_random_event.0150.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
+    override_effect_2d = { reference = smoke }
     left_portrait = {
         character = root
-        animation = stressed
+        animation = stress
     }
 
     option = {
-        name = lv_valyria_random_event.15.a
+        name = lv_valyria_random_event.0150.a
         add_stress = 30
     }
 }
-lv_valyria_random_event.16 = {
-    title = lv_valyria_random_event.16.t
-    desc = lv_valyria_random_event.16.desc
+
+lv_valyria_random_event.0160 = {
+    title = lv_valyria_random_event.0160.t
+    desc = lv_valyria_random_event.0160.desc
     theme = dread
     override_background = { reference = lv_valyria_surface }
+    override_effect_2d = { reference = smoke }
     left_portrait = {
         character = root
         animation = determined
     }
 
     option = {
-        name = lv_valyria_random_event.16.a
+        name = lv_valyria_random_event.0160.a
         add_prestige = 50
     }
     option = {
-        name = lv_valyria_random_event.16.b
+        name = lv_valyria_random_event.0160.b
         add_stress = 15
     }
 }
