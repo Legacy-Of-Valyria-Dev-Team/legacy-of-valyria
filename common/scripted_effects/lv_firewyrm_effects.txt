@@ -141,14 +141,81 @@ lv_firewyrm_cleared_tooltip_effect = {
 	}
 }
 
-lv_start_firewyrm_vs_dragon_combat_effect = {
-	$DRAGONRIDER$ = {
-		save_scope_as = fd_dragonrider
-		var:current_dragon ?= { save_scope_as = fd_dragon }
+lv_slay_firewyrm_effect = {
+	$SLAYER$ = { save_scope_as = human }
+	$FIREWYRM$ = { save_scope_as = dragon }
+
+	scope:dragon.location = { save_scope_as = background_wilderness_scope }
+
+	# To prevent multiple dragon slaying attempts at the same time from player
+	# and for dragon
+	scope:human = { add_character_flag = in_dragon_combat }
+	scope:dragon = { add_character_flag = in_dragon_combat }
+	# Will be removed during events as needed
+	if = {
+		limit = {
+			$SLAYER$ = {
+				any_memory = {
+					OR = {
+						has_memory_type = spouse_died
+						has_memory_type = soulmate_died
+						has_memory_type = lover_died
+						has_memory_type = best_friend_died
+						has_memory_type = friend_died
+						has_memory_type = relative_died
+					}
+					memory_participant:dead_relation ?= {
+						trigger_if = {
+							limit = { exists = killer }
+							killer = $FIREWYRM$
+						}
+						trigger_else = { always = no }
+						save_temporary_scope_as = dragon_kill
+					}
+				}
+			}
+		}
+		scope:dragon_kill = { save_scope_as = vengeance_candidate }
 	}
-	$FIREWYRM$ = { save_scope_as = fd_firewyrm }
-	hidden_effect = { lv_remove_firewyrm_vs_dragon_combat_info_effect = yes }
-	scope:fd_dragonrider = {
+	agot_configure_start_dragon_slay_effect = {
+		INITIATOR = scope:firewyrm
+		HUMAN = scope:human
+		DRAGON = scope:firewyrm
+		PROXIMITY = 2
+		LOCALE = wilderness_scope # Should be a field or whatever
+		INVALIDATION_EVENT = single_combat.1006
+	}
+}
+
+lv_start_firewyrm_duel_combat_effect = {
+	$ATTACKER$ = {
+		save_scope_as = fd_attacker
+		var:current_dragon ?= { save_scope_as = fd_attacker_dragon }
+	}
+	$DEFENDER$ = {
+		save_scope_as = fd_defender
+		if = {
+			limit = { has_trait = dragon }
+			save_scope_as = fd_defender_dragon
+		}
+		else = { var:current_dragon ?= { save_scope_as = fd_defender_dragon } }
+	}
+	hidden_effect = { lv_remove_firewyrm_duel_combat_info_effect = yes }
+	scope:fd_attacker = {
+		set_variable = { # No simultanious vanilla combat
+			name = engaged_in_single_combat
+			value = yes
+		}
+		set_variable = { # Or simultanious dragon combat
+			name = engaged_in_dragon_combat
+			value = yes
+		}
+		set_variable = {
+			name = fd_chance_of_winning
+			value = 50
+		}
+	}
+	scope:fd_defender = {
 		set_variable = { # No simultanious vanilla combat
 			name = engaged_in_single_combat
 			value = yes
@@ -166,46 +233,37 @@ lv_start_firewyrm_vs_dragon_combat_effect = {
 			value = 1
 		}
 	}
-	# We don't *really* need this since the Firewyrm gets purged anyway, but just for good measure
-	scope:fd_firewyrm = {
-		set_variable = { # No simultanious vanilla combat
-			name = engaged_in_single_combat
-			value = yes
-		}
-		set_variable = { # Or simultanious dragon combat
-			name = engaged_in_dragon_combat
-			value = yes
-		}
-		set_variable = {
-			name = fd_chance_of_winning
-			value = 50
-		}
-	}
 	trigger_event = lv_firewyrm_duel.0001
 }
 
-lv_remove_firewyrm_vs_dragon_combat_info_effect = {
-	scope:fd_dragonrider = {
+lv_remove_firewyrm_duel_combat_info_effect = {
+	scope:fd_attacker = {
 		if = {
 			limit = { is_alive = yes }
-			remove_firewyrm_vs_dragon_combat_variables_effect = yes
+			remove_firewyrm_duel_combat_variables_effect = yes
 		}
 	}
-	scope:fd_dragon = {
+	scope:fd_attacker_dragon = {
 		if = {
 			limit = { is_alive = yes }
-			remove_firewyrm_vs_dragon_combat_variables_effect = yes
+			remove_firewyrm_duel_combat_variables_effect = yes
 		}
 	}
-	scope:fd_firewyrm = {
+	scope:fd_defender = {
 		if = {
 			limit = { is_alive = yes }
-			remove_variable = fd_chance_of_winning
+			remove_firewyrm_duel_combat_variables_effect = yes
+		}
+	}
+	scope:fd_defender_dragon = {
+		if = {
+			limit = { is_alive = yes }
+			remove_firewyrm_duel_combat_variables_effect = yes
 		}
 	}
 }
 
-remove_firewyrm_vs_dragon_combat_variables_effect = {
+remove_firewyrm_duel_combat_variables_effect = {
 	clear_variable_list = fd_combat_moves
 
 	#remove_variable = fd_tier_1_counter
@@ -216,199 +274,217 @@ remove_firewyrm_vs_dragon_combat_variables_effect = {
 	# Note, we don't remove var:engaged_in_single_combat or engaged_in_dragon_combat here, as we run this effect at the start of combat for clean-up also.
 }
 
-lv_select_firewyrm_combat_options_from_pool_effect = {
-	#if = {
-	# 	limit = { var:current_dragon.dragon_combat_effectiveness <= level_two_dragon_combat }
-	# 	#low_drcp *always* draws x3 tier 1 moves.
-	# 	set_variable = { name = fd_tier_1_counter value = 3 }
-	# 	set_variable = { name = fd_tier_2_counter value = 0 }
-	# 	set_variable = { name = fd_tier_3_counter value = 0 }
-	#}
-	#else_if = {
-	# 	limit = { var:current_dragon.dragon_combat_effectiveness <= level_three_dragon_combat }
-	# 	random_list = {
-	# 		#Bad roll, -1 to tier set.
-	# 		50 = {
-	# 			set_variable = { name = fd_tier_1_counter value = 3 }
-	# 			set_variable = { name = fd_tier_2_counter value = 0 }
-	# 			set_variable = { name = fd_tier_3_counter value = 0 }
-	# 		}
-	# 		#Average roll, default tier set.
-	# 		50 = {
-	# 			set_variable = { name = fd_tier_1_counter value = 2 }
-	# 			set_variable = { name = fd_tier_2_counter value = 1 }
-	# 			set_variable = { name = fd_tier_3_counter value = 0 }
-	# 		}
-	# 	}
-	#}
-	#else_if = {
-	# 	limit = { var:current_dragon.dragon_combat_effectiveness <= level_four_dragon_combat }
-	# 	random_list = {
-	# 		#Bad roll, -1 to tier set.
-	# 		33 = {
-	# 			set_variable = { name = fd_tier_1_counter value = 3 }
-	# 			set_variable = { name = fd_tier_2_counter value = 0 }
-	# 			set_variable = { name = fd_tier_3_counter value = 0 }
-	# 		}
-	# 		#Average roll, default tier set.
-	# 		34 = {
-	# 			set_variable = { name = fd_tier_1_counter value = 2 }
-	# 			set_variable = { name = fd_tier_2_counter value = 1 }
-	# 			set_variable = { name = fd_tier_3_counter value = 0 }
-	# 		}
-	# 		#Good roll, +1 to tier set.
-	# 		33 = {
-	# 			set_variable = { name = fd_tier_1_counter value = 1 }
-	# 			set_variable = { name = fd_tier_2_counter value = 1 }
-	# 			set_variable = { name = fd_tier_3_counter value = 1 }
-	# 		}
-	# 	}
-	#}
-	## decent_drcp or below
-	#else_if = {
-	#	limit = { var:current_dragon.dragon_combat_effectiveness <= level_five_dragon_combat }
-	#	random_list = {
-	#		#Bad roll, -1 to tier set.
-	#		33 = {
-	#			set_variable = { name = fd_tier_1_counter value = 2 }
-	#			set_variable = { name = fd_tier_2_counter value = 1 }
-	#			set_variable = { name = fd_tier_3_counter value = 0 }
-	#		}
-	#		#Average roll, default tier set.
-	#		34 = {
-	#			set_variable = { name = fd_tier_1_counter value = 1 }
-	#			set_variable = { name = fd_tier_2_counter value = 1 }
-	#			set_variable = { name = fd_tier_3_counter value = 1 }
-	#		}
-	#		#Good roll, +1 to tier set.
-	#		33 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 2 }
-	#			set_variable = { name = fd_tier_3_counter value = 1 }
-	#		}
-	#	}
-	#}
-	#else_if = {
-	#	limit = { var:current_dragon.dragon_combat_effectiveness <= level_six_dragon_combat }
-	#	random_list = {
-	#		#Bad roll, -1 to tier set.
-	#		33 = {
-	#			set_variable = { name = fd_tier_1_counter value = 1 }
-	#			set_variable = { name = fd_tier_2_counter value = 1 }
-	#			set_variable = { name = fd_tier_3_counter value = 1 }
-	#		}
-	#		#Average roll, default tier set.
-	#		34 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 2 }
-	#			set_variable = { name = fd_tier_3_counter value = 1 }
-	#		}
-	#		#Good roll, +1 to tier set.
-	#		33 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 1 }
-	#			set_variable = { name = fd_tier_3_counter value = 2 }
-	#		}
-	#	}
-	#}
-	#else_if = {
-	#	limit = { var:current_dragon.dragon_combat_effectiveness <= level_seven_dragon_combat }
-	#	random_list = {
-	#		#Bad roll, -1 to tier set.
-	#		33 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 2 }
-	#			set_variable = { name = fd_tier_3_counter value = 1 }
-	#		}
-	#		#Average roll, default tier set.
-	#		34 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 1 }
-	#			set_variable = { name = fd_tier_3_counter value = 2 }
-	#		}
-	#		#Good roll, +1 to tier set.
-	#		33 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 0 }
-	#			set_variable = { name = fd_tier_3_counter value = 3 }
-	#		}
-	#	}
-	#}
-	#else_if = {
-	#	limit = { var:current_dragon.dragon_combat_effectiveness <= level_eight_dragon_combat }
-	#	random_list = {
-	#		#Bad roll, -1 to tier set.
-	#		50 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 1 }
-	#			set_variable = { name = fd_tier_3_counter value = 2 }
-	#		}
-	#		#Average roll, default tier set.
-	#		50 = {
-	#			set_variable = { name = fd_tier_1_counter value = 0 }
-	#			set_variable = { name = fd_tier_2_counter value = 0 }
-	#			set_variable = { name = fd_tier_3_counter value = 3 }
-	#		}
-	#	}
-	#}
-	#else = {
-	#	#Better than extremely_high_drcp always draws x3 tier 3 moves.
-	#	set_variable = { name = fd_tier_1_counter value = 0 }
-	#	set_variable = { name = fd_tier_2_counter value = 0 }
-	#	set_variable = { name = fd_tier_3_counter value = 3 }
-	#}
-
+lv_firewyrm_duel_select_options_from_pool_effect = {
 	clear_variable_list = fd_combat_moves
 
 	# Just populate the list until a better selector can be thought of
 	hidden_effect = {
 		while = {
 			count = 3
-			random_list = {
-				1 = { lv_select_firewyrm_vs_dragon_tier_1_move_effect = yes }
-				1 = { lv_select_firewyrm_vs_dragon_tier_2_move_effect = yes }
-				1 = { lv_select_firewyrm_vs_dragon_tier_3_move_effect = yes }
+			if = {
+				limit = { scope:fd_round_me_dragon = { lv_is_firewyrm = yes } }
+				lv_firewyrm_duel_firewyrm_select_move_effect = yes
+			}
+			else = {
+				random_list = {
+					1 = { lv_firewyrm_duel_dragon_select_tier_1_move_effect = yes }
+					1 = { lv_firewyrm_duel_dragon_select_tier_2_move_effect = yes }
+					1 = { lv_firewyrm_duel_dragon_select_tier_3_move_effect = yes }
+				}
 			}
 		}
 	}
-	
-	#while = {
-	#	limit = {
-	#		has_variable = fd_tier_1_counter
-	#		var:fd_tier_1_counter > 0
-	#	}
-	#	change_variable = {
-	#		name = fd_tier_1_counter
-	#		add = -1
-	#	}
-	#	lv_select_firewyrm_vs_dragon_tier_1_move_effect = yes
-	#}
-	#while = {
-	#	limit = {
-	#		has_variable = fd_tier_2_counter
-	#		var:fd_tier_2_counter > 0
-	#	}
-	#	change_variable = {
-	#		name = fd_tier_2_counter
-	#		add = -1
-	#	}
-	#	lv_select_firewyrm_vs_dragon_tier_2_move_effect = yes
-	#}
-	#while = {
-	#	limit = {
-	#		has_variable = fd_tier_3_counter
-	#		var:fd_tier_3_counter > 0
-	#	}
-	#	change_variable = {
-	#		name = fd_tier_3_counter
-	#		add = -1
-	#	}
-	#	lv_select_firewyrm_vs_dragon_tier_3_move_effect = yes
-	#}
 }
 
-lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
-	lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_special_slot_used_flag }
+lv_firewyrm_duel_firewyrm_select_move_effect = {
+	random_list = {
+		9999 = {
+			trigger = {
+				save_temporary_scope_value_as = {
+					name = firewyrm_size_difference
+					value = {
+						value = 0
+						add = scope:fd_round_me_dragon.dragon_combat_effectiveness
+						subtract = scope:fd_round_opponent_dragon.dragon_combat_effectiveness
+					}
+				}
+				scope:firewyrm_size_difference > scope:fd_round_opponent_dragon.dragon_combat_effectiveness
+			}
+			#lv_firewyrm_duel_move_firewyrm_chomp_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_chomp }
+		}
+		1 = {
+			#lv_firewyrm_duel_move_fume_burst_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_fume_burst }
+		}
+		1 = {
+			#lv_firewyrm_duel_move_boneshattering_screech_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_boneshattering_screech }
+		}
+		1 = {
+			#lv_firewyrm_duel_move_cone_of_flame_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_cone_of_flame }
+		}
+		1 = {
+			#lv_firewyrm_duel_move_frenzied_lunge_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_frenzied_lunge }
+		}
+		1 = {
+			trigger = {
+				location = {
+					OR = {
+						has_building_or_higher = unexplored_caves_01 # Replace with a dedicated "arena setup" soon
+						has_holding_type = ruin_holding
+					}
+				}
+			}
+			#lv_firewyrm_duel_move_rockfall_roar_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_rockfall_roar }
+		}
+		1 = {
+			#lv_firewyrm_duel_move_molten_slough_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_molten_slough }
+		}
+		1 = {
+			#lv_firewyrm_duel_move_berserk_charge_effect = yes
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = firewyrm_berserk_charge }
+		}
+	}
+}
+
+lv_firewyrm_duel_show_opponent_move_effect = {
+	if = { # Show defender's last move
+		limit = { scope:fd_round_opponent = { exists = var:fd_last_move } }
+		scope:fd_round_opponent = {
+			# Special States
+			if = {
+				limit = { var:fd_last_move = flag:none_stunned }
+				show_as_tooltip = { lv_firewyrm_duel_move_stunned_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:none_takeoff }
+				show_as_tooltip = { lv_firewyrm_duel_move_takeoff_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:none_land }
+				show_as_tooltip = { lv_firewyrm_duel_move_land_effect = yes }
+			}
+
+			# Dragon: Tier 1 Moves
+			if = {
+				limit = { var:fd_last_move = flag:dragon_circle_beast }
+				show_as_tooltip = { lv_firewyrm_duel_move_circle_beast_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_flame_test }
+				show_as_tooltip = { lv_firewyrm_duel_move_flame_test_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_claws_out }
+				show_as_tooltip = { lv_firewyrm_duel_move_claws_out_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_reckless_dive }
+				show_as_tooltip = { lv_firewyrm_duel_move_reckless_dive_effect = yes }
+			}
+
+			# Dragon: Tier 2 Moves
+			if = {
+				limit = { var:fd_last_move = flag:dragon_guard_skies }
+				show_as_tooltip = { lv_firewyrm_duel_move_guard_skies_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_rip_joints }
+				show_as_tooltip = { lv_firewyrm_duel_move_rip_joints_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_roar_challenge }
+				show_as_tooltip = { lv_firewyrm_duel_move_roar_challenge_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_dive_strike }
+				show_as_tooltip = { lv_firewyrm_duel_move_dive_strike_effect = yes }
+			}
+
+			# Dragon: Tier 3 Moves
+			if = {
+				limit = { var:fd_last_move = flag:dragon_tailspin_slam }
+				show_as_tooltip = { lv_firewyrm_duel_move_tailspin_slam_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_wound_exploit }
+				show_as_tooltip = { lv_firewyrm_duel_move_wound_exploit_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_vipers_feint }
+				show_as_tooltip = { lv_firewyrm_duel_move_vipers_feint_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_dragonflame_barrage }
+				show_as_tooltip = { lv_firewyrm_duel_move_dragonflame_barrage_effect = yes }
+			}
+
+			# Dragon: Special Moves
+			if = {
+				limit = { var:fd_last_move = flag:dragon_chomp }
+				show_as_tooltip = { lv_firewyrm_duel_move_dragon_chomp_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_commanding_cry }
+				show_as_tooltip = { lv_firewyrm_duel_move_commanding_cry_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_hidden_knowledge }
+				show_as_tooltip = { lv_firewyrm_duel_move_hidden_knowledge_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_risk_it_all }
+				show_as_tooltip = { lv_firewyrm_duel_move_risk_it_all_effect = yes }
+			}
+			if = {
+				limit = { var:fd_last_move = flag:dragon_collapse_ground }
+				show_as_tooltip = { lv_firewyrm_duel_move_collapse_ground_effect = yes }
+			}
+
+			# Firewyrm Moves
+			if = {
+				limit = { var:fd_last_move = flag:firewyrm_chomp }
+				show_as_tooltip = { lv_firewyrm_duel_move_firewyrm_chomp_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_fume_burst }
+				show_as_tooltip = { lv_firewyrm_duel_move_fume_burst_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_boneshattering_screech }
+				show_as_tooltip = { lv_firewyrm_duel_move_boneshattering_screech_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_cone_of_flame }
+				show_as_tooltip = { lv_firewyrm_duel_move_cone_of_flame_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_frenzied_lunge }
+				show_as_tooltip = { lv_firewyrm_duel_move_frenzied_lunge_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_rockfall_roar }
+				show_as_tooltip = { lv_firewyrm_duel_move_rockfall_roar_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_molten_slough }
+				show_as_tooltip = { lv_firewyrm_duel_move_molten_slough_effect = yes }
+			}
+			else_if = {
+				limit = { var:fd_last_move = flag:firewyrm_berserk_charge }
+				show_as_tooltip = { lv_firewyrm_duel_move_berserk_charge_effect = yes }
+			}
+		}
+	}
+}
+
+lv_firewyrm_duel_dragon_select_special_tier_move_effect = {
+	lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_special_slot_used_flag }
 	random_list = {
 		# CHOMP - insta kill
 		9999 = {
@@ -423,14 +499,14 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 					name = firewyrm_size_difference
 					value = {
 						value = 0
-						add = scope:fd_dragon.dragon_combat_effectiveness
-						subtract = scope:fd_firewyrm.dragon_combat_effectiveness
+						add = scope:fd_round_me_dragon.dragon_combat_effectiveness
+						subtract = scope:fd_round_opponent_dragon.dragon_combat_effectiveness
 					}
 				}
 				# Dragon must be at least twice the size of the firewyrm (scary!)
-				scope:firewyrm_size_difference > scope:fd_firewyrm.dragon_combat_effectiveness
+				scope:firewyrm_size_difference > scope:fd_round_opponent_dragon.dragon_combat_effectiveness
 			}
-			lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_chomp }
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_chomp }
 		}
 		# Commanding Cry
 		1000 = {
@@ -443,11 +519,11 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 				}
 				diplomacy >= very_high_skill_rating
 				NAND = {
-					this = scope:fd_dragonrider
-					scope:fd_dragon_last_move ?= flag:dragon_commanding_cry
+					this = scope:fd_round_me
+					var:fd_last_move ?= flag:dragon_commanding_cry
 				}
-				this = scope:fd_dragonrider
-				scope:fd_dragon = {
+				this = scope:fd_round_me
+				scope:fd_round_me_dragon = {
 					OR = {
 						has_trait = dragon_wounded_1
 						has_trait = dragon_wounded_2
@@ -457,12 +533,12 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 					}
 				}
 			}
-			lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_commanding_cry }
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_commanding_cry }
 		}
 		# Viper's Feint
 		1000 = {
 			trigger = {
-				var:lv_dragon_state ?= flag:flying
+				scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying }
 				NOT = {
 					any_in_list = {
 						variable = fd_combat_moves
@@ -471,11 +547,11 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 				}
 				intrigue >= very_high_skill_rating
 				NAND = {
-					this = scope:fd_dragonrider
-					scope:fd_dragon_last_move ?= flag:dragon_vipers_feint
+					this = scope:fd_round_me
+					var:fd_last_move ?= flag:dragon_vipers_feint 
 				}
 			}
-			lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_vipers_feint }
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_vipers_feint }
 		}
 		# Hidden Knowledge
 		1000 = {
@@ -488,11 +564,11 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 				}
 				learning >= very_high_skill_rating
 				NAND = {
-					this = scope:fd_dragonrider
-					scope:fd_dragon_last_move ?= flag:dragon_hidden_knowledge
+					this = scope:fd_round_me
+					var:fd_last_move ?= flag:dragon_hidden_knowledge
 				}
 			}
-			lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_hidden_knowledge }
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_hidden_knowledge }
 		}
 		# Risk it All
 		1000 = {
@@ -504,17 +580,17 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 					}
 				}
 				NAND = {
-					this = scope:fd_dragonrider
-					scope:fd_dragon_last_move ?= flag:dragon_risk_it_all
+					this = scope:fd_round_me
+					var:fd_last_move ?= flag:dragon_risk_it_all
 				}
-				scope:fd_dragon = {
+				scope:fd_round_me_dragon = {
 					OR = {
 						has_trait = dragon_wounded_4
 						has_trait = dragon_wounded_5
 					}
 				}
 			}
-			lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_risk_it_all }
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_risk_it_all }
 		}
 		# Collapse Ground
 		1000 = {
@@ -526,23 +602,23 @@ lv_select_special_firewyrm_vs_dragon_tier_move_effect = {
 					}
 				}
 				NAND = {
-					this = scope:fd_dragonrider
-					scope:fd_dragon_last_move ?= flag:dragon_collapse_ground
+					this = scope:fd_round_me
+					var:fd_last_move ?= flag:dragon_collapse_ground 
 				}
 			}
-			lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_collapse_ground }
+			lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_collapse_ground }
 		}
 	}
 }
 
-lv_add_firewyrm_vs_dragon_move_to_list_effect = {
+lv_add_firewyrm_duel_move_to_list_effect = {
 	add_to_variable_list = {
 		name = fd_combat_moves
 		target = flag:$FLAG$
 	}
 }
 
-lv_select_firewyrm_vs_dragon_tier_1_move_effect = {
+lv_firewyrm_duel_dragon_select_tier_1_move_effect = {
 	random_list = {
 		70 = {
 			random_list = {
@@ -550,19 +626,19 @@ lv_select_firewyrm_vs_dragon_tier_1_move_effect = {
 				1000 = {
 					trigger = {
 						NOT = {
-							var:lv_dragon_state ?= flag:flying
+							scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying }
 							any_in_list = {
 								variable = fd_combat_moves
 								this = flag:dragon_circle_beast
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_circle_beast }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_circle_beast }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_circle_beast
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_circle_beast
 						}
 					}
 				}
@@ -576,12 +652,12 @@ lv_select_firewyrm_vs_dragon_tier_1_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_flame_test }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_flame_test }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_flame_test
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_flame_test
 						}
 					}
 				}
@@ -595,19 +671,19 @@ lv_select_firewyrm_vs_dragon_tier_1_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_claws_out }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_claws_out }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_claws_out
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_claws_out
 						}
 					}
 				}
 				# Reckless Dive
 				1000 = {
 					trigger = {
-						var:lv_dragon_state ?= flag:flying
+						scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying }
 						NOT = {
 							any_in_list = {
 								variable = fd_combat_moves
@@ -615,12 +691,12 @@ lv_select_firewyrm_vs_dragon_tier_1_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_reckless_dive }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_reckless_dive }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_reckless_dive
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_reckless_dive
 						}
 					}
 				}
@@ -636,18 +712,18 @@ lv_select_firewyrm_vs_dragon_tier_1_move_effect = {
 					}
 				}
 			}
-			lv_select_special_firewyrm_vs_dragon_tier_move_effect = yes
+			lv_firewyrm_duel_dragon_select_special_tier_move_effect = yes
 		}
 	}
 }
-lv_select_firewyrm_vs_dragon_tier_2_move_effect = {
+lv_firewyrm_duel_dragon_select_tier_2_move_effect = {
 	random_list = {
 		70 = {
 			random_list = {
 				# Guard the Skies
 				1000 = {
 					trigger = {
-						var:lv_dragon_state ?= flag:flying
+						scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying }
 						NOT = {
 							any_in_list = {
 								variable = fd_combat_moves
@@ -655,12 +731,12 @@ lv_select_firewyrm_vs_dragon_tier_2_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_guard_skies }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_guard_skies }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_guard_skies
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_guard_skies
 						}
 					}
 				}
@@ -674,12 +750,12 @@ lv_select_firewyrm_vs_dragon_tier_2_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_rip_joints }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_rip_joints }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_rip_joints
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_rip_joints
 						}
 					}
 				}
@@ -693,19 +769,19 @@ lv_select_firewyrm_vs_dragon_tier_2_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_roar_challenge }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_roar_challenge }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_roar_challenge
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_roar_challenge
 						}
 					}
 				}
 				# Dive Strike
 				1000 = {
 					trigger = {
-						var:lv_dragon_state ?= flag:flying
+						scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying }
 						NOT = {
 							any_in_list = {
 								variable = fd_combat_moves
@@ -713,12 +789,12 @@ lv_select_firewyrm_vs_dragon_tier_2_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_dive_strike }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_dive_strike }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_dive_strike
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_dive_strike
 						}
 					}
 				}
@@ -734,11 +810,11 @@ lv_select_firewyrm_vs_dragon_tier_2_move_effect = {
 					}
 				}
 			}
-			lv_select_special_firewyrm_vs_dragon_tier_move_effect = yes
+			lv_firewyrm_duel_dragon_select_special_tier_move_effect = yes
 		}
 	}
 }
-lv_select_firewyrm_vs_dragon_tier_3_move_effect = {
+lv_firewyrm_duel_dragon_select_tier_3_move_effect = {
 	random_list = {
 		70 = {
 			random_list = {
@@ -746,26 +822,26 @@ lv_select_firewyrm_vs_dragon_tier_3_move_effect = {
 				1000 = {
 					trigger = {
 						NOT = {
-							var:lv_dragon_state ?= flag:flying
+							scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying }
 							any_in_list = {
 								variable = fd_combat_moves
 								this = flag:dragon_tailspin_slam
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_tailspin_slam }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_tailspin_slam }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_tailspin_slam
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_tailspin_slam
 						}
 					}
 				}
 				# Wound Exploit
 				1000 = {
 					trigger = {
-						scope:fd_firewyrm = { has_trait = dragon_wounded }
+						scope:fd_round_opponent_dragon = { has_trait = dragon_wounded }
 						NOT = {
 							any_in_list = {
 								variable = fd_combat_moves
@@ -773,12 +849,12 @@ lv_select_firewyrm_vs_dragon_tier_3_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_wound_exploit }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_wound_exploit }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_wound_exploit
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_wound_exploit
 						}
 					}
 				}
@@ -792,12 +868,12 @@ lv_select_firewyrm_vs_dragon_tier_3_move_effect = {
 							}
 						}
 					}
-					lv_add_firewyrm_vs_dragon_move_to_list_effect = { FLAG = dragon_dragonflame_barrage }
+					lv_add_firewyrm_duel_move_to_list_effect = { FLAG = dragon_dragonflame_barrage }
 					modifier = {
 						add = sce_regular_combat_repeat_down_weight
 						AND = {
-							this = scope:fd_dragonrider
-							scope:fd_dragon_last_move ?= flag:dragon_dragonflame_barrage
+							this = scope:fd_round_me
+							var:fd_last_move ?= flag:dragon_dragonflame_barrage
 						}
 					}
 				}
@@ -813,24 +889,24 @@ lv_select_firewyrm_vs_dragon_tier_3_move_effect = {
 					}
 				}
 			}
-			lv_select_special_firewyrm_vs_dragon_tier_move_effect = yes
+			lv_firewyrm_duel_dragon_select_special_tier_move_effect = yes
 		}
 	}
 }
 
-adjust_firewyrm_vs_dragon_risk_reward_effect = {
+adjust_firewyrm_duel_risk_reward_effect = {
 	if = {
 		limit = { $DUEL_SUCCESS$ = dragon_duel_success_none }
 		if = {
-			limit = { this = scope:fd_firewyrm }
+			limit = { this = scope:fd_defender }
 			custom_tooltip = lv_firewyrm_duel.duel_success.none.has_happened
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 0
 				}
 			}
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 0
@@ -839,13 +915,13 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 		}
 		else = {
 			custom_tooltip = lv_firewyrm_duel.duel_success.none
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 0
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 0
@@ -857,15 +933,15 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 	else_if = {
 		limit = { $DUEL_SUCCESS$ = dragon_duel_success_low }
 		if = {
-			limit = { this = scope:fd_firewyrm }
+			limit = { this = scope:fd_defender }
 			custom_tooltip = lv_firewyrm_duel.duel_success.low.has_happened
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 15
 				}
 			}
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -15
@@ -874,13 +950,13 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 		}
 		else = {
 			custom_tooltip = lv_firewyrm_duel.duel_success.low
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 15
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -15
@@ -891,15 +967,15 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 	else_if = {
 		limit = { $DUEL_SUCCESS$ = dragon_duel_success_medium }
 		if = {
-			limit = { this = scope:fd_firewyrm }
+			limit = { this = scope:fd_defender }
 			custom_tooltip = lv_firewyrm_duel.duel_success.medium.has_happened
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 30
 				}
 			}
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -30
@@ -908,13 +984,13 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 		}
 		else = {
 			custom_tooltip = lv_firewyrm_duel.duel_success.medium
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 30
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -30
@@ -925,15 +1001,15 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 	else_if = {
 		limit = { $DUEL_SUCCESS$ = dragon_duel_success_high }
 		if = {
-			limit = { this = scope:fd_firewyrm }
+			limit = { this = scope:fd_defender }
 			custom_tooltip = lv_firewyrm_duel.duel_success.high.has_happened
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 45
 				}
 			}
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -45
@@ -942,13 +1018,13 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 		}
 		else = {
 			custom_tooltip = lv_firewyrm_duel.duel_success.high
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 45
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -45
@@ -959,15 +1035,15 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 	else_if = {
 		limit = { $DUEL_SUCCESS$ = dragon_duel_success_very_high }
 		if = {
-			limit = { this = scope:fd_firewyrm }
+			limit = { this = scope:fd_defender }
 			custom_tooltip = lv_firewyrm_duel.duel_success.very_high.has_happened
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 60
 				}
 			}
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -60
@@ -976,13 +1052,13 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 		}
 		else = {
 			custom_tooltip = lv_firewyrm_duel.duel_success.very_high
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 60
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -60
@@ -993,15 +1069,15 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 	else_if = {
 		limit = { $DUEL_SUCCESS$ = dragon_duel_success_guaranteed }
 		if = {
-			limit = { this = scope:fd_firewyrm }
+			limit = { this = scope:fd_defender }
 			custom_tooltip = lv_firewyrm_duel.duel_success.guaranteed.has_happened
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 300
 				}
 			}
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -300
@@ -1010,13 +1086,13 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 		}
 		else = {
 			custom_tooltip = lv_firewyrm_duel.duel_success.guaranteed
-			scope:fd_dragonrider = {
+			scope:fd_attacker = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = 300
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				change_variable = {
 					name = fd_chance_of_winning
 					add = -300
@@ -1027,32 +1103,36 @@ adjust_firewyrm_vs_dragon_risk_reward_effect = {
 }
 
 # New Round Effects
-lv_firewyrm_vs_dragon_post_move_effect = {
+lv_firewyrm_duel_post_move_effect = {
 	if = {
 		limit = { always = $START_FLIGHT$ }
-		set_variable = {
-			name = lv_dragon_state
-			value = flag:flying
+		scope:fd_round_me_dragon = {
+			set_variable = {
+				name = lv_dragon_state
+				value = flag:flying
+			}
 		}
 	}
 	if = {
 		limit = { always = $FORCE_LAND$ }
-		if = {
-			limit = { var:lv_dragon_state ?= flag:flying }
-			custom_tooltip = {
-				text = lv_firewyrm_duel.0001.warning.force_land
-				remove_variable = lv_dragon_state
+		scope:fd_round_me_dragon = {
+			if = {
+				limit = { var:lv_dragon_state ?= flag:flying }
+				custom_tooltip = {
+					text = lv_firewyrm_duel.0001.warning.force_land
+					remove_variable = lv_dragon_state
+				}
 			}
 		}
 	}
 	if = {
 		limit = {
 			always = $INVOLVES_CONTACT$
-			scope:fd_firewyrm = { var:lv_firewyrm_state ?= flag:molten }
+			scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:molten }
 		}
 		custom_tooltip = {
 			text = lv_firewyrm_duel.0001.warning.burn_contact
-			scope:fd_dragon = {
+			scope:fd_round_me_dragon = {
 				if = {
 					limit = { has_trait = dragon_burned }
 					wound_dragon = yes
@@ -1065,13 +1145,18 @@ lv_firewyrm_vs_dragon_post_move_effect = {
 		limit = {
 			NOR = {
 				always = $START_FLIGHT$
-				AND = { var:lv_dragon_state ?= flag:flying }
+				scope:fd_round_me_dragon = {
+					OR = {
+						var:lv_dragon_state ?= flag:flying
+						var:lv_dragon_state ?= flag:molten
+					}
+				}
 			}
-			scope:fd_firewyrm = { var:lv_firewyrm_state ?= flag:cone_of_flame }
+			scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:cone_of_flame }
 		}
 		custom_tooltip = {
 			text = lv_firewyrm_duel.0001.warning.burn_incoming
-			scope:fd_dragon = {
+			scope:fd_round_me_dragon = {
 				if = {
 					limit = { has_trait = dragon_burned }
 					wound_dragon = yes
@@ -1108,36 +1193,49 @@ lv_dragon_heal_wounds_effect = {
 }
 
 # Special Moves
-lv_firewyrm_vs_dragon_move_stunned_effect = {
+lv_firewyrm_duel_move_stunned_effect = {
 	#Skips your round
-	custom_tooltip = lv_firewyrm_duel.0001.tt.stunned
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:none_stunned }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	if = {
+		limit = { scope:fd_round_me_dragon = { lv_is_firewyrm = yes } }
+		custom_tooltip = lv_firewyrm_duel.0001.tt.stunned.firewyrm
+	}
+	else = { custom_tooltip = lv_firewyrm_duel.0001.tt.stunned }
+	set_variable = {
+		name = fd_last_move
+		value = flag:none_stunned
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_takeoff_effect = {
+lv_firewyrm_duel_move_takeoff_effect = {
 	#Start flying, all melee/contact-based firewyrm attacks will miss
 	custom_tooltip = lv_firewyrm_duel.0001.tt.takeoff
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:none_takeoff }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:none_takeoff
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = yes
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_land_effect = {
-	#Start flying, all melee/contact-based firewyrm attacks will miss
+lv_firewyrm_duel_move_land_effect = {
+	#Land, enables all melee/grounded-exclusive attacks
 	custom_tooltip = lv_firewyrm_duel.0001.tt.land
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:none_land }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:none_land
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = yes
@@ -1145,61 +1243,73 @@ lv_firewyrm_vs_dragon_move_land_effect = {
 }
 
 # Dragon Moves: Tier 1
-lv_firewyrm_vs_dragon_move_circle_beast_effect = {
+lv_firewyrm_duel_move_circle_beast_effect = {
 	#No attack but opens up surprise attacks next round
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_circle_beast }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_circle_beast
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_flame_test_effect = {
+lv_firewyrm_duel_move_flame_test_effect = {
 	#Low success chance, reveals fire resistance of firewyrm
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_flame_test }
-	if = {
-		limit = { scope:fd_firewyrm = { var:lv_firewyrm_state ?= flag:molten } }
-		custom_tooltip = lv_firewyrm_duel.0001.warning.nullified
-		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_flame_test
 	}
-	else = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low } }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	if = {
+		limit = { scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:molten } }
+		custom_tooltip = lv_firewyrm_duel.0001.warning.nullified
+		adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	}
+	else = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low } }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_claws_out_effect = {
+lv_firewyrm_duel_move_claws_out_effect = {
 	#Medium success chance, may wound either party
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_claws_out }
-	random = {
-		chance = 50
-		scope:fd_dragon = { wound_dragon = yes }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_claws_out
 	}
 	random = {
 		chance = 50
-		scope:fd_firewyrm = { wound_dragon = yes }
+		scope:fd_round_me_dragon = { wound_dragon = yes }
 	}
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	random = {
+		chance = 50
+		scope:fd_round_opponent_dragon = { wound_dragon = yes }
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = yes
 	}
 }
 
-lv_firewyrm_vs_dragon_move_reckless_dive_effect = {
+lv_firewyrm_duel_move_reckless_dive_effect = {
 	#High success chance, high risk of injury to self
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_reckless_dive }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_reckless_dive
+	}
 	random = {
 		chance = 20
-		scope:fd_dragon = { wound_dragon = yes }
+		scope:fd_round_me_dragon = { wound_dragon = yes }
 	}
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = yes
@@ -1207,52 +1317,64 @@ lv_firewyrm_vs_dragon_move_reckless_dive_effect = {
 }
 
 # Dragon Moves: Tier 2
-lv_firewyrm_vs_dragon_move_guard_skies_effect = {
+lv_firewyrm_duel_move_guard_skies_effect = {
 	#No success chance, but medium defense against firewyrm attacks (high if fire attack)
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_guard_skies }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_guard_skies
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = yes
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_rip_joints_effect = {
+lv_firewyrm_duel_move_rip_joints_effect = {
 	#Medium success chance, chance to wound wyrm
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_rip_joints }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_rip_joints
+	}
 	random = {
 		chance = 50
-		scope:fd_firewyrm = { wound_dragon = yes }
+		scope:fd_round_opponent_dragon = { wound_dragon = yes }
 	}
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_roar_challenge_effect = {
+lv_firewyrm_duel_move_roar_challenge_effect = {
 	#No success chance, taunts wyrm into more aggressive attacks
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_roar_challenge }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_roar_challenge
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_dive_strike_effect = {
+lv_firewyrm_duel_move_dive_strike_effect = {
 	#High success chance, chance to wound dragon
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_dive_strike }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_dive_strike
+	}
 	random = {
 		chance = 20
-		scope:fd_dragon = { wound_dragon = yes }
+		scope:fd_round_me_dragon = { wound_dragon = yes }
 	}
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = yes
@@ -1260,51 +1382,63 @@ lv_firewyrm_vs_dragon_move_dive_strike_effect = {
 }
 
 # Dragon Moves: Tier 3
-lv_firewyrm_vs_dragon_move_tailspin_slam_effect = {
+lv_firewyrm_duel_move_tailspin_slam_effect = {
 	#High success chance if firewyrm is tired or stunned
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_tailspin_slam }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_tailspin_slam
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_wound_exploit_effect = {
+lv_firewyrm_duel_move_wound_exploit_effect = {
 	#High success chance if firewyrm is already injured
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_wound_exploit }
-	scope:fd_firewyrm = { wound_dragon = yes }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_wound_exploit
+	}
+	scope:fd_round_opponent_dragon = { wound_dragon = yes }
 	# Also enrage
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = yes
 	}
 }
 
-lv_firewyrm_vs_dragon_move_vipers_feint_effect = {
+lv_firewyrm_duel_move_vipers_feint_effect = {
 	#Very high success chance, available if high intrigue or dragon has agile trait
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_vipers_feint }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_vipers_feint
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_dragonflame_barrage_effect = {
+lv_firewyrm_duel_move_dragonflame_barrage_effect = {
 	#High success chance, guaranteed minor burn
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_dragonflame_barrage }
-	if = {
-		limit = { scope:fd_firewyrm = { var:lv_firewyrm_state ?= flag:molten } }
-		custom_tooltip = lv_firewyrm_duel.0001.warning.nullified
-		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_dragonflame_barrage
 	}
-	else = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	if = {
+		limit = { scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:molten } }
+		custom_tooltip = lv_firewyrm_duel.0001.warning.nullified
+		adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	}
+	else = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
@@ -1312,56 +1446,71 @@ lv_firewyrm_vs_dragon_move_dragonflame_barrage_effect = {
 }
 
 # Dragon Moves: Special
-lv_firewyrm_vs_dragon_move_dragon_chomp_effect = {
+lv_firewyrm_duel_move_dragon_chomp_effect = {
 	#CHOMP!
-	save_scope_value_as = { name = fd_dragon_last_move value = flag:dragon_chomp }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_guaranteed }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_chomp
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_guaranteed }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_commanding_cry_effect = {
+lv_firewyrm_duel_move_commanding_cry_effect = {
 	#Heals dragon's wounds, requires high diplomacy
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_commanding_cry }
-	scope:fd_dragon = { lv_dragon_heal_wounds_effect = yes }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_commanding_cry
+	}
+	scope:fd_round_me_dragon = { lv_dragon_heal_wounds_effect = yes }
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_hidden_knowledge_effect = {
+lv_firewyrm_duel_move_hidden_knowledge_effect = {
 	#Very high success chance, use a Valyrian battle tactic against grounded dragons, requires high learning
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_hidden_knowledge }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_hidden_knowledge
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_risk_it_all_effect = {
+lv_firewyrm_duel_move_risk_it_all_effect = {
 	#Instant kill for both, unlock if wounded or desperate
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_risk_it_all }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_risk_it_all
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = yes
 		START_FLIGHT = no
 		FORCE_LAND = yes
 	}
 }
 
-lv_firewyrm_vs_dragon_move_collapse_ground_effect = {
+lv_firewyrm_duel_move_collapse_ground_effect = {
 	#Stuns both parties for one round, only available in caves or ruins (will add a caves blocker once performed)
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:dragon_collapse_ground }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
-	lv_firewyrm_vs_dragon_post_move_effect = {
+	set_variable = {
+		name = fd_last_move
+		value = flag:dragon_collapse_ground
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_very_high }
+	lv_firewyrm_duel_post_move_effect = {
 		INVOLVES_CONTACT = no
 		START_FLIGHT = no
 		FORCE_LAND = yes
@@ -1378,102 +1527,177 @@ lv_firewyrm_vs_dragon_move_collapse_ground_effect = {
 # Molten Slough
 # Berserk Charge
 
-lv_firewyrm_vs_dragon_move_firewyrm_chomp_effect = {
+lv_firewyrm_duel_move_firewyrm_chomp_effect = {
 	#CHOMP
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_chomp }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_guaranteed }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_chomp
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_guaranteed }
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = no
+		START_FLIGHT = no
+		FORCE_LAND = no
+	}
 }
 
-lv_firewyrm_vs_dragon_move_fume_burst_effect = {
+lv_firewyrm_duel_move_fume_burst_effect = {
 	#Medium success chance, chance of stunning you for one round
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_fume_burst }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_fume_burst
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = no
+		START_FLIGHT = no
+		FORCE_LAND = no
+	}
 }
 
-lv_firewyrm_vs_dragon_move_boneshattering_screech_effect = {
+lv_firewyrm_duel_move_boneshattering_screech_effect = {
 	#Low success chance, guaranteed stun for one round
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_boneshattering_screech }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_boneshattering_screech
+	}
+	random_list = {
+		100 = {
+			custom_tooltip = {
+				text = lv_firewyrm_duel.0001.tt.boneshattering_screech.effect
+				scope:fd_round_opponent_dragon = {
+					set_variable = {
+						name = lv_dragon_state
+						value = flag:stunned
+					}
+				}
+			}
+		}
+		#50 = {
+		#	
+		#}
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low }
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = no
+		START_FLIGHT = no
+		FORCE_LAND = no
+	}
+}
+
+lv_firewyrm_duel_move_cone_of_flame_effect = {
+	#Low terrain with an impending burn state, burns/injures the dragon if dragon does not fly in the next round
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_cone_of_flame
+	}
 	custom_tooltip = {
-		text = lv_firewyrm_duel.0001.tt.boneshattering_screech
-		scope:fd_dragonrider = {
+		text = lv_firewyrm_duel.0001.tt.cone_of_flame.effect
+		scope:fd_round_me_dragon = {
 			set_variable = {
 				name = lv_dragon_state
-				value = flag:stunned
+				value = flag:cone_of_flame
 			}
 		}
 	}
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low }
-}
-
-lv_firewyrm_vs_dragon_move_cone_of_flame_effect = {
-	#Low terrain with an impending burn state, burns/injures the dragon if dragon does not fly in the next round
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_cone_of_flame }
-	custom_tooltip = {
-		text = lv_firewyrm_duel.0001.tt.cone_of_flame
-		set_variable = {
-			name = lv_firewyrm_state
-			value = flag:cone_of_flame
-		}
-	}
 	if = {
-		limit = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
-		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+		limit = { scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:flying } }
+		adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
 	}
-	else = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low } }
+	else = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_low } }
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = no
+		START_FLIGHT = no
+		FORCE_LAND = no
+	}
 }
 
-lv_firewyrm_vs_dragon_move_frenzied_lunge_effect = {
+lv_firewyrm_duel_move_frenzied_lunge_effect = {
 	#Medium to high success chance, high chance to wound
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_frenzied_lunge }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_frenzied_lunge
+	}
 	if = {
-		limit = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
-		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+		limit = { scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:flying } }
+		adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
 	}
 	else = {
 		random_list = {
-			1 = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium } }
-			1 = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
+			1 = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium } }
+			1 = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
 		}
+	}
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = yes
+		START_FLIGHT = no
+		FORCE_LAND = no
 	}
 }
 
-lv_firewyrm_vs_dragon_move_rockfall_roar_effect = {
+lv_firewyrm_duel_move_rockfall_roar_effect = {
 	#Medium to high success chance, high chance to wound
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_rockfall_roar }
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_rockfall_roar
+	}
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium }
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = no
+		START_FLIGHT = no
+		FORCE_LAND = no
+	}
 }
 
-lv_firewyrm_vs_dragon_move_molten_slough_effect = {
+lv_firewyrm_duel_move_molten_slough_effect = {
 	#Medium to high success chance, high chance to wound
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_molten_slough }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_molten_slough
+	}
 	custom_tooltip = {
-		text = lv_firewyrm_duel.0001.tt.molten_slough
-		set_variable = {
-			name = lv_firewyrm_state
-			value = flag:molten
+		text = lv_firewyrm_duel.0001.tt.molten_slough.effect
+		scope:fd_round_me_dragon = {
+			set_variable = {
+				name = lv_dragon_state
+				value = flag:molten
+			}
+			lv_dragon_heal_wounds_effect = yes
 		}
-		lv_dragon_heal_wounds_effect = yes
 	}
-	adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = no
+		START_FLIGHT = no
+		FORCE_LAND = no
+	}
 }
 
-lv_firewyrm_vs_dragon_move_berserk_charge_effect = {
+lv_firewyrm_duel_move_berserk_charge_effect = {
 	#Medium to high success chance, high chance to wound
-	save_scope_value_as = { name = fd_firewyrm_last_move value = flag:firewyrm_berserk_charge }
+	set_variable = {
+		name = fd_last_move
+		value = flag:firewyrm_berserk_charge
+	}
 	if = {
-		limit = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
-		adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
+		limit = { scope:fd_round_opponent_dragon = { var:lv_dragon_state ?= flag:flying } }
+		adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_none }
 	}
 	else = {
 		random_list = {
-			1 = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium } }
-			1 = { adjust_firewyrm_vs_dragon_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
+			1 = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_medium } }
+			1 = { adjust_firewyrm_duel_risk_reward_effect = { DUEL_SUCCESS = dragon_duel_success_high } }
 		}
+	}
+	lv_firewyrm_duel_post_move_effect = {
+		INVOLVES_CONTACT = yes
+		START_FLIGHT = no
+		FORCE_LAND = no
 	}
 }
 
 # FIREWYRM COUNTER
-lv_select_firewyrm_vs_dragon_move_for_firewyrm_effect = {
+lv_select_firewyrm_duel_move_for_firewyrm_effect = {
 	random_list = {
 		9999 = {
 			trigger = {
@@ -1481,25 +1705,25 @@ lv_select_firewyrm_vs_dragon_move_for_firewyrm_effect = {
 					name = firewyrm_size_difference
 					value = {
 						value = 0
-						add = scope:fd_firewyrm.dragon_combat_effectiveness
-						subtract = scope:fd_dragon.dragon_combat_effectiveness
+						add = scope:fd_defender_dragon.dragon_combat_effectiveness
+						subtract = scope:fd_attacker_dragon.dragon_combat_effectiveness
 					}
 				}
-				scope:firewyrm_size_difference > scope:fd_dragon.dragon_combat_effectiveness
+				scope:firewyrm_size_difference > scope:fd_attacker_dragon.dragon_combat_effectiveness
 			}
-			lv_firewyrm_vs_dragon_move_firewyrm_chomp_effect = yes
+			lv_firewyrm_duel_move_firewyrm_chomp_effect = yes
 		}
 		1 = {
-			lv_firewyrm_vs_dragon_move_fume_burst_effect = yes
+			lv_firewyrm_duel_move_fume_burst_effect = yes
 		}
 		1 = {
-			lv_firewyrm_vs_dragon_move_boneshattering_screech_effect = yes
+			lv_firewyrm_duel_move_boneshattering_screech_effect = yes
 		}
 		1 = {
-			lv_firewyrm_vs_dragon_move_cone_of_flame_effect = yes
+			lv_firewyrm_duel_move_cone_of_flame_effect = yes
 		}
 		1 = {
-			lv_firewyrm_vs_dragon_move_frenzied_lunge_effect = yes
+			lv_firewyrm_duel_move_frenzied_lunge_effect = yes
 		}
 		1 = {
 			trigger = {
@@ -1510,35 +1734,36 @@ lv_select_firewyrm_vs_dragon_move_for_firewyrm_effect = {
 					}
 				}
 			}
-			lv_firewyrm_vs_dragon_move_rockfall_roar_effect = yes
+			lv_firewyrm_duel_move_rockfall_roar_effect = yes
 		}
 		1 = {
-			lv_firewyrm_vs_dragon_move_molten_slough_effect = yes
+			lv_firewyrm_duel_move_molten_slough_effect = yes
 		}
 		1 = {
-			lv_firewyrm_vs_dragon_move_berserk_charge_effect = yes
+			lv_firewyrm_duel_move_berserk_charge_effect = yes
 		}
 	}
 }
 
 # Finalize results
-finalise_firewyrm_vs_dragon_combat_results_effect = {
+finalise_firewyrm_duel_combat_results_effect = {
 	# Determine what death rattle is appropriate
 	scope:fd_loser = {
 		if = {
-			limit = { this = scope:fd_dragonrider }
-			scope:fd_firewyrm_last_move = { save_scope_as = fd_victors_last_move }
+			limit = { this = scope:fd_attacker }
+			var:fd_last_move = { save_scope_as = fd_victors_last_move }
 		}
-		else = { scope:fd_dragon_last_move = { save_scope_as = fd_victors_last_move } }
+		else = { var:fd_last_move = { save_scope_as = fd_victors_last_move } }
 		scope:fd_victors_last_move = {
 			if = {
 				limit = {
 					OR = {
+						this = flag:dragon_claws_out
 						this = flag:dragon_vipers_feint
 						this = flag:dragon_rip_joints
 						this = flag:dragon_hidden_knowledge
-						this = flag:firewyrm_molten_slough
 						this = flag:dragon_commanding_cry
+						this = flag:firewyrm_boneshattering_screech
 					}
 				}
 				save_scope_value_as = {
@@ -1552,8 +1777,9 @@ finalise_firewyrm_vs_dragon_combat_results_effect = {
 						this = flag:dragon_flame_test
 						this = flag:dragon_dragonflame_barrage
 						this = flag:dragon_hidden_knowledge
-						this = flag:firewyrm_cone_of_flame
 						this = flag:firewyrm_fume_burst
+						this = flag:firewyrm_cone_of_flame
+						this = flag:firewyrm_molten_slough
 					}
 				}
 				save_scope_value_as = {
@@ -1632,19 +1858,21 @@ finalise_firewyrm_vs_dragon_combat_results_effect = {
 			# Unique to Firewyrm: Dragged into the Deep
 		}
 	}
-	if = {
-		limit = { this = scope:fd_loser }
+	scope:fd_loser = {
 		if = {
-			limit = { this = scope:fd_dragonrider }
-			trigger_event = lv_firewyrm_duel.0003
+			limit = { has_trait = dragon }
+			save_scope_as = fd_loser_dragon
 		}
-		else = {
-			trigger_event = lv_firewyrm_duel.0003
-		}
+		else = { var:current_dragon ?= { save_scope_as = fd_loser_dragon } }
+		trigger_event = lv_firewyrm_duel.0003
 	}
-	else_if = {
-		limit = { this = scope:fd_victor }
-		trigger_event = lv_firewyrm_duel.0004
+	scope:fd_victor = {
+		if = {
+			limit = { has_trait = dragon }
+			save_scope_as = fd_victor_dragon
+		}
+		else = { var:current_dragon ?= { save_scope_as = fd_victor_dragon } }
+		trigger_event = lv_firewyrm_duel.0003
 	}
 	scope:fd_victor = {
 		if = {
@@ -1712,16 +1940,16 @@ finalise_firewyrm_vs_dragon_combat_results_effect = {
 			}
 		}
 	}
-	lv_firewyrm_vs_dragon_combat_result_grab = yes
-	lv_remove_firewyrm_vs_dragon_combat_info_effect = yes
-	scope:fd_firewyrm = {
+	lv_firewyrm_duel_combat_result_grab = yes
+	lv_remove_firewyrm_duel_combat_info_effect = yes
+	scope:fd_defender = {
 		if = {
 			limit = { is_alive = yes }
 			remove_variable = engaged_in_single_combat
 			remove_variable = engaged_in_dragon_combat
 		}
 	}
-	scope:fd_dragonrider = {
+	scope:fd_attacker = {
 		if = {
 			limit = { is_alive = yes }
 			remove_variable = engaged_in_single_combat
@@ -1730,87 +1958,85 @@ finalise_firewyrm_vs_dragon_combat_results_effect = {
 	}
 }
 
-lv_firewyrm_vs_dragon_combat_result_grab = {
+lv_firewyrm_duel_combat_result_grab = {
 	scope:fd_loser = {
 		if = {
 			limit = { scope:dragon_death_rattle = flag:sudden_strike }
 			random_list = {
 				5 = {
-					if = {
-						limit = { this = scope:fd_dragonrider }
-						scope:fd_dragon = {
-							wound_dragon = yes
-							agot_remove_from_combat = yes
-						}
-					}
-					else_if = {
-						limit = { this = scope:fd_firewyrm }
+					scope:fd_loser_dragon = {
 						wound_dragon = yes
 						agot_remove_from_combat = yes
 					}
 				}
 				95 = {
 					if = {
-						limit = { this = scope:fd_dragonrider }
-						scope:fd_dragon = { death = { death_reason = death_firewyrm_ate } }
+						limit = { scope:fd_victor_dragon = { lv_is_firewyrm = yes } }
+						scope:fd_loser_dragon = {
+							death = {
+								killer = scope:fd_victor
+								death_reason = death_firewyrm_ate
+							}
+						}
 					}
-					else_if = {
-						limit = { this = scope:fd_firewyrm }
-						death = { death_reason = death_dragon_duel }
+					else = {
+						death = {
+							killer = scope:fd_victor
+							death_reason = death_dragon_duel
+						}
 					}
 				}
 			}
 			if = {
-				limit = { this = scope:fd_dragonrider }
-				death = { death_reason = death_firewyrm_ate }
+				limit = { scope:fd_victor_dragon = { lv_is_firewyrm = yes } }
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_firewyrm_ate
+				}
+			}
+			else = {
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_dragon_duel_ate
+				}
 			}
 		}
 		else_if = {
 			limit = { scope:dragon_death_rattle = flag:dragonfire }
 			random_list = {
 				5 = {
-					if = {
-						limit = { this = scope:fd_dragonrider }
-						scope:fd_dragon = {
-							agot_remove_from_combat = yes
-							add_trait = dragon_burned
-						}
-					}
-					else_if = {
-						limit = { this = scope:fd_firewyrm }
+					scope:fd_loser_dragon = {
 						agot_remove_from_combat = yes
 						add_trait = dragon_burned
 					}
 				}
 				95 = {
-					if = {
-						limit = { this = scope:fd_dragonrider }
-						scope:fd_dragon = { death = { death_reason = death_dragon_duel_fire } }
-					}
-					else_if = {
-						limit = { this = scope:fd_firewyrm }
-						death = { death_reason = death_dragon_duel_fire }
+					scope:fd_loser_dragon = {
+						death = {
+							killer = scope:fd_victor
+							death_reason = death_dragon_duel_fire
+						}
 					}
 				}
 			}
-			if = {
-				limit = { this = scope:fd_dragonrider }
-				random_list = {
-					5 = {
-						add_trait = burned
-						add_trait_xp = {
-							trait = burned
-							value = { 50 200 }
-						}
-						agot_remove_from_combat = yes
+			random_list = {
+				5 = {
+					add_trait = burned
+					add_trait_xp = {
+						trait = burned
+						value = { 50 200 }
 					}
-					95 = {
-						add_trait = burned
-						add_trait_xp = {
-							trait = burned
-							value = { 50 200 }
-						}
-						death = { death_reason = death_dragon_duel_fire }
+					agot_remove_from_combat = yes
+				}
+				95 = {
+					add_trait = burned
+					add_trait_xp = {
+						trait = burned
+						value = { 50 200 }
+					}
+					death = {
+						killer = scope:fd_victor
+						death_reason = death_dragon_duel_fire
 					}
 				}
 			}
@@ -1839,36 +2065,32 @@ lv_firewyrm_vs_dragon_combat_result_grab = {
 						}
 						always = yes
 					}
-					if = {
-						limit = { this = scope:fd_dragonrider }
-						death = { death_reason = death_dragon_duel }
+					death = {
+						killer = scope:fd_victor
+						death_reason = death_dragon_duel
 					}
 				}
 			}
-			if = {
-				limit = { this = scope:fd_dragonrider }
-				scope:fd_dragon = { death = { death_reason = death_dragon_duel } }
-			}
-			else_if = {
-				limit = { this = scope:fd_firewyrm }
-				death = { death_reason = death_dragon_duel }
+			scope:fd_loser_dragon = {
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_dragon_duel
+				}
 			}
 		}
 		else_if = {
 			limit = { scope:dragon_death_rattle = flag:disemboweled }
-			if = {
-				limit = { this = scope:fd_dragonrider }
-				scope:fd_dragon = { death = { death_reason = death_dragon_duel } }
-			}
-			else_if = {
-				limit = { this = scope:fd_firewyrm }
-				death = { death_reason = death_dragon_duel }
+			scope:fd_loser_dragon = {
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_dragon_duel
+				}
 			}
 			random_list = {
 				94 = {
-					if = {
-						limit = { this = scope:fd_dragonrider }
-						death = { death_reason = death_dragon_duel }
+					death = {
+						killer = scope:fd_victor
+						death_reason = death_dragon_duel
 					}
 				}
 				3 = {
@@ -1889,26 +2111,43 @@ lv_firewyrm_vs_dragon_combat_result_grab = {
 		}
 		else_if = {
 			limit = { scope:dragon_death_rattle = flag:eviscerated }
-			if = {
-				limit = { this = scope:fd_dragonrider }
-				death = { death_reason = death_dragon_duel }
-				scope:fd_dragon = { death = { death_reason = death_dragon_duel } }
+			scope:fd_loser_dragon = {
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_dragon_duel
+				}
 			}
-			else_if = {
-				limit = { this = scope:fd_firewyrm }
-				death = { death_reason = death_dragon_duel }
+			death = {
+				killer = scope:fd_victor
+				death_reason = death_dragon_duel
 			}
 		}
 		else_if = {
 			limit = { scope:dragon_death_rattle = flag:chomp }
 			if = {
-				limit = { this = scope:fd_dragonrider }
-				death = { death_reason = death_firewyrm_ate }
-				scope:fd_dragon = { death = { death_reason = death_firewyrm_ate } }
+				limit = { scope:fd_victor_dragon = { lv_is_firewyrm = yes } }
+				scope:fd_loser_dragon = {
+					death = {
+						killer = scope:fd_victor
+						death_reason = death_firewyrm_ate
+					}
+				}
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_firewyrm_ate
+				}
 			}
-			else_if = {
-				limit = { this = scope:fd_firewyrm }
-				death = { death_reason = death_dragon_duel_ate }
+			else = {
+				scope:fd_loser_dragon = {
+					death = {
+						killer = scope:fd_victor
+						death_reason = death_dragon_duel_ate
+					}
+				}
+				death = {
+					killer = scope:fd_victor
+					death_reason = death_dragon_duel_ate
+				}
 			}
 		}
 	}

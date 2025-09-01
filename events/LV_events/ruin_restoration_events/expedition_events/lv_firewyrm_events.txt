@@ -133,16 +133,19 @@ lv_firewyrm_event.0001 = {
 			exists = scope:dragon
 		}
 		custom_tooltip = lv_firewyrm_event.0001.duel.dragon.tt
-		lv_start_firewyrm_vs_dragon_combat_effect = {
-			DRAGONRIDER = root
-			FIREWYRM = scope:firewyrm
+		lv_start_firewyrm_duel_combat_effect = {
+			ATTACKER = root
+			DEFENDER = scope:firewyrm
 		}
 	}
 
 	option = { # Fuck it, we ball
 		name = lv_firewyrm_event.0001.duel
 		custom_tooltip = lv_firewyrm_event.0001.duel.tt
-		#scope:firewyrm = { death = { death_reason = death_monster_duel } }
+		lv_slay_firewyrm_effect = {
+			SLAYER = root
+			FIREWYRM = scope:firewyrm
+		}
 	}
 
 	option = {
@@ -240,16 +243,43 @@ lv_firewyrm_event.0100 = {
 namespace = lv_firewyrm_duel
 
 # DUEL START
-# REQUIRES A FIREWYRM SCOPE
+# INITIALIZED USING EFFECT
 lv_firewyrm_duel.0001 = {
 	type = character_event
-	title = lv_firewyrm_duel.0001.t
+	title = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes }
+					scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes }
+				}
+				desc = lv_firewyrm_duel.0001.t.firewyrm_vs_firewyrm
+			}
+			desc = lv_firewyrm_duel.0001.t
+		}
+	}
 	desc = {
 		first_valid = {
 			triggered_desc = {
-				trigger = { NOT = { var:fd_combat_current_round > 1 } }
+				trigger = { NOT = { scope:fd_defender = { var:fd_combat_current_round > 1 } } }
 				desc = {
-					desc = lv_firewyrm_duel.0001.desc
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes }
+								scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes }
+							}
+							desc = lv_firewyrm_duel.0001.desc.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes }
+								scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = no }
+							}
+							desc = lv_firewyrm_duel.0001.desc.firewyrm_duel
+						}
+						desc = lv_firewyrm_duel.0001.desc
+					}
 					first_valid = {
 						triggered_desc = {
 							trigger = { location = { geographical_region = world_valyria_main } }
@@ -274,135 +304,425 @@ lv_firewyrm_duel.0001 = {
 			}
 			desc = {
 				desc = lv_firewyrm_duel.0001.desc.succeeding
-				first_valid = {
+				first_valid = { # Attacker
 					# Special States
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:none_stunned }
-						desc = lv_firewyrm_duel.0001.desc.stunned
+						trigger = { var:fd_last_move ?= flag:none_stunned }
+						desc = {
+							first_valid = {
+								triggered_desc = {
+									trigger = {
+										scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes }
+										scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = no }
+									}
+									desc = lv_firewyrm_duel.0001.desc.stunned.firewyrm_vs_firewyrm
+								}
+								triggered_desc = {
+									trigger = {
+										scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes }
+										scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = no }
+									}
+									desc = lv_firewyrm_duel.0001.desc.stunned.firewyrm_duel
+								}
+								desc = lv_firewyrm_duel.0001.desc.stunned
+							}
+						}
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:none_takeoff }
+						trigger = { var:fd_last_move ?= flag:none_takeoff }
 						desc = lv_firewyrm_duel.0001.desc.takeoff
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:none_land }
+						trigger = { var:fd_last_move ?= flag:none_land }
 						desc = lv_firewyrm_duel.0001.desc.land
 					}
 					# Dragon Moves
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_circle_beast }
+						trigger = { var:fd_last_move ?= flag:dragon_circle_beast }
 						desc = lv_firewyrm_duel.0001.desc.circle_beast
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_flame_test }
+						trigger = { var:fd_last_move ?= flag:dragon_flame_test }
 						desc = lv_firewyrm_duel.0001.desc.flame_test
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_reckless_dive }
+						trigger = { var:fd_last_move ?= flag:dragon_reckless_dive }
 						desc = lv_firewyrm_duel.0001.desc.reckless_dive
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_guard_skies }
+						trigger = { var:fd_last_move ?= flag:dragon_guard_skies }
 						desc = lv_firewyrm_duel.0001.desc.guard_skies
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_rip_joints }
+						trigger = { var:fd_last_move ?= flag:dragon_rip_joints }
 						desc = lv_firewyrm_duel.0001.desc.rip_joints
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_roar_challenge }
+						trigger = { var:fd_last_move ?= flag:dragon_roar_challenge }
 						desc = lv_firewyrm_duel.0001.desc.roar_challenge
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_dive_strike }
+						trigger = { var:fd_last_move ?= flag:dragon_dive_strike }
 						desc = lv_firewyrm_duel.0001.desc.dive_strike
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_tailspin_slam }
+						trigger = { var:fd_last_move ?= flag:dragon_tailspin_slam }
 						desc = lv_firewyrm_duel.0001.desc.tailspin_slam
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_wound_exploit }
+						trigger = { var:fd_last_move ?= flag:dragon_wound_exploit }
 						desc = lv_firewyrm_duel.0001.desc.wound_exploit
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_vipers_feint }
+						trigger = { var:fd_last_move ?= flag:dragon_vipers_feint }
 						desc = lv_firewyrm_duel.0001.desc.vipers_feint
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_dragonflame_barrage }
+						trigger = { var:fd_last_move ?= flag:dragon_dragonflame_barrage }
 						desc = lv_firewyrm_duel.0001.desc.dragonflame_barrage
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_commanding_cry }
+						trigger = { var:fd_last_move ?= flag:dragon_commanding_cry }
 						desc = lv_firewyrm_duel.0001.desc.commanding_cry
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_hidden_knowledge }
+						trigger = { var:fd_last_move ?= flag:dragon_hidden_knowledge }
 						desc = lv_firewyrm_duel.0001.desc.hidden_knowledge
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_risk_it_all }
+						trigger = { var:fd_last_move ?= flag:dragon_risk_it_all }
 						desc = lv_firewyrm_duel.0001.desc.risk_it_all
 					}
 					triggered_desc = {
-						trigger = { scope:fd_dragon_last_move = flag:dragon_collapse_ground }
+						trigger = { var:fd_last_move ?= flag:dragon_collapse_ground }
 						desc = lv_firewyrm_duel.0001.desc.collapse_ground
 					}
-				}
-				first_valid = { # Firewyrm Counter
+					# Firewyrm Moves
 					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_fume_burst }
-						desc = lv_firewyrm_duel.0001.desc.fume_burst
-					}
-					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_boneshattering_screech }
-						desc = lv_firewyrm_duel.0001.desc.boneshattering_screech
-					}
-					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_cone_of_flame }
+						trigger = { var:fd_last_move ?= flag:firewyrm_fume_burst }
 						desc = {
-							triggered_desc = {
-								trigger = { scope:fd_dragonrider = { NOT = { var:lv_dragon_state ?= flag:flying } } }
-								desc = lv_firewyrm_duel.0001.desc.cone_of_flame
-							}
-							triggered_desc = {
-								trigger = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
-								desc = lv_firewyrm_duel.0001.desc.cone_of_flame.miss
+							first_valid = {
+								triggered_desc = {
+									trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+									desc = lv_firewyrm_duel.0001.desc.fume_burst.firewyrm_vs_firewyrm
+								}
+								desc = lv_firewyrm_duel.0001.desc.fume_burst
 							}
 						}
 					}
 					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_frenzied_lunge }
+						trigger = { var:fd_last_move ?= flag:firewyrm_boneshattering_screech }
 						desc = {
-							triggered_desc = {
-								trigger = { scope:fd_dragonrider = { NOT = { var:lv_dragon_state ?= flag:flying } } }
-								desc = lv_firewyrm_duel.0001.desc.frenzied_lunge
-							}
-							triggered_desc = {
-								trigger = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
-								desc = lv_firewyrm_duel.0001.desc.frenzied_lunge.miss
+							first_valid = {
+								triggered_desc = {
+									trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+									desc = lv_firewyrm_duel.0001.desc.boneshattering_screech.firewyrm_vs_firewyrm
+								}
+								desc = lv_firewyrm_duel.0001.desc.boneshattering_screech
 							}
 						}
 					}
 					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_rockfall_roar }
-						desc = lv_firewyrm_duel.0001.desc.rockfall_roar
+						trigger = { var:fd_last_move ?= flag:firewyrm_cone_of_flame }
+						desc = {
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_opponent_dragon = {
+										NOR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									first_valid = {
+										triggered_desc = {
+											trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+											desc = lv_firewyrm_duel.0001.desc.cone_of_flame.firewyrm_vs_firewyrm
+										}
+										desc = lv_firewyrm_duel.0001.desc.cone_of_flame
+									}
+								}
+							}
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_opponent_dragon = {
+										OR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									triggered_desc = {
+										trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+										desc = lv_firewyrm_duel.0001.desc.cone_of_flame.miss.firewyrm_vs_firewyrm
+									}
+									desc = lv_firewyrm_duel.0001.desc.miss.cone_of_flame
+								}
+							}
+						}
 					}
 					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_molten_slough }
+						trigger = { var:fd_last_move = flag:firewyrm_frenzied_lunge }
+						desc = {
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_opponent_dragon = {
+										NOR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									first_valid = {
+										triggered_desc = {
+											trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+											desc = lv_firewyrm_duel.0001.desc.frenzied_lunge.firewyrm_vs_firewyrm
+										}
+										desc = lv_firewyrm_duel.0001.desc.frenzied_lunge
+									}
+								}
+							}
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_opponent_dragon = {
+										OR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									triggered_desc = {
+										trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+										desc = lv_firewyrm_duel.0001.desc.frenzied_lunge.miss.firewyrm_vs_firewyrm
+									}
+									desc = lv_firewyrm_duel.0001.desc.frenzied_lunge.miss
+								}
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { var:fd_last_move ?= flag:firewyrm_rockfall_roar }
+						desc = {
+							first_valid = {
+								triggered_desc = {
+									trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+									desc = lv_firewyrm_duel.0001.desc.rockfall_roar.firewyrm_vs_firewyrm
+								}
+								desc = lv_firewyrm_duel.0001.desc.rockfall_roar
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { var:fd_last_move ?= flag:firewyrm_molten_slough }
 						desc = lv_firewyrm_duel.0001.desc.molten_slough
 					}
 					triggered_desc = {
-						trigger = { scope:fd_firewyrm_last_move = flag:firewyrm_berserk_charge }
+						trigger = { var:fd_last_move ?= flag:firewyrm_berserk_charge }
 						desc = {
 							triggered_desc = {
-								trigger = { scope:fd_dragonrider = { NOT = { var:lv_dragon_state ?= flag:flying } } }
-								desc = lv_firewyrm_duel.0001.desc.berserk_charge
+								trigger = {
+									scope:fd_round_opponent_dragon = {
+										NOR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									first_valid = {
+										triggered_desc = {
+											trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+											desc = lv_firewyrm_duel.0001.desc.berserk_charge.firewyrm_vs_firewyrm
+										}
+										desc = lv_firewyrm_duel.0001.desc.berserk_charge
+									}
+								}
 							}
 							triggered_desc = {
-								trigger = { scope:fd_dragonrider = { var:lv_dragon_state ?= flag:flying } }
-								desc = lv_firewyrm_duel.0001.desc.berserk_charge.miss
+								trigger = {
+									scope:fd_round_opponent_dragon = {
+										OR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									triggered_desc = {
+										trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
+										desc = lv_firewyrm_duel.0001.desc.berserk_charge.miss.firewyrm_vs_firewyrm
+									}
+									desc = lv_firewyrm_duel.0001.desc.miss.berserk_charge
+								}
+							}
+						}
+					}
+				}
+				first_valid = { # Defender Counter
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_fume_burst } }
+						desc = {
+							first_valid = {
+								triggered_desc = {
+									trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+									desc = lv_firewyrm_duel.0001.desc.counter.fume_burst.firewyrm_vs_firewyrm
+								}
+								desc = lv_firewyrm_duel.0001.desc.counter.fume_burst
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_boneshattering_screech } }
+						desc = {
+							first_valid = {
+								triggered_desc = {
+									trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+									desc = lv_firewyrm_duel.0001.desc.counter.boneshattering_screech.firewyrm_vs_firewyrm
+								}
+								desc = lv_firewyrm_duel.0001.desc.counter.boneshattering_screech
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_cone_of_flame } }
+						desc = {
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_me_dragon = {
+										NOR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									first_valid = {
+										triggered_desc = {
+											trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+											desc = lv_firewyrm_duel.0001.desc.counter.cone_of_flame.firewyrm_vs_firewyrm
+										}
+										desc = lv_firewyrm_duel.0001.desc.counter.cone_of_flame
+									}
+								}
+							}
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_me_dragon = {
+										OR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									triggered_desc = {
+										trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+										desc = lv_firewyrm_duel.0001.desc.counter.cone_of_flame.miss.firewyrm_vs_firewyrm
+									}
+									desc = lv_firewyrm_duel.0001.desc.counter.cone_of_flame.miss
+								}
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_frenzied_lunge } }
+						desc = {
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_me_dragon = {
+										NOR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									first_valid = {
+										triggered_desc = {
+											trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+											desc = lv_firewyrm_duel.0001.desc.counter.frenzied_lunge.firewyrm_vs_firewyrm
+										}
+										desc = lv_firewyrm_duel.0001.desc.counter.frenzied_lunge
+									}
+								}
+							}
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_me_dragon = {
+										OR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									triggered_desc = {
+										trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+										desc = lv_firewyrm_duel.0001.desc.counter.frenzied_lunge.miss.firewyrm_vs_firewyrm
+									}
+									desc = lv_firewyrm_duel.0001.desc.counter.frenzied_lunge.miss
+								}
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_rockfall_roar } }
+						desc = {
+							first_valid = {
+								triggered_desc = {
+									trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+									desc = lv_firewyrm_duel.0001.desc.counter.rockfall_roar.firewyrm_vs_firewyrm
+								}
+								desc = lv_firewyrm_duel.0001.desc.counter.rockfall_roar
+							}
+						}
+					}
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_molten_slough } }
+						desc = lv_firewyrm_duel.0001.desc.counter.molten_slough
+					}
+					triggered_desc = {
+						trigger = { scope:fd_round_opponent = { var:fd_last_move = flag:firewyrm_berserk_charge } }
+						desc = {
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_me_dragon = {
+										NOR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									first_valid = {
+										triggered_desc = {
+											trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+											desc = lv_firewyrm_duel.0001.desc.counter.berserk_charge.firewyrm_vs_firewyrm
+										}
+										desc = lv_firewyrm_duel.0001.desc.counter.berserk_charge
+									}
+								}
+							}
+							triggered_desc = {
+								trigger = {
+									scope:fd_round_me_dragon = {
+										OR = {
+											var:lv_dragon_state ?= flag:flying
+											var:lv_dragon_state ?= flag:molten
+										}
+									}
+								}
+								desc = {
+									triggered_desc = {
+										trigger = { scope:fd_round_me_dragon ?= { lv_is_firewyrm = yes } }
+										desc = lv_firewyrm_duel.0001.desc.counter.berserk_charge.miss.firewyrm_vs_firewyrm
+									}
+									desc = lv_firewyrm_duel.0001.desc.counter.berserk_charge.miss
+								}
 							}
 						}
 					}
@@ -488,57 +808,335 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 
+		# Firewyrm
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_ten_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_1.0 }
+		}
+
+		# Firewyrm (Molten)
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_ten_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_nine_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_nine_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_eight_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_eight_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_seven_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_seven_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_six_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_six_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_five_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_five_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_four_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_four_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_three_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_three_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_two_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_two_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_one_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_one_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_zero_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_zero_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon (Riderless)
+		triggered_outfit = {
+			trigger = { level_ten_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { level_nine_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { level_eight_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { level_seven_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { level_six_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { level_five_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { level_four_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { level_three_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { level_two_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { level_one_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { level_zero_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_1.0 }
 		}
 	}
 
 	right_portrait = {
-		character = scope:fd_firewyrm
+		character = scope:fd_defender
 		animation = dragon_main
 		camera = lv_camera_firewyrm_duel_right
 
+		# Firewyrm
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_1.0 }
+		}
+
+		# Firewyrm (Molten)
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon (Riderless)
 		triggered_outfit = {
 			trigger = { level_ten_dragon_size_trigger = yes }
 			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
@@ -595,93 +1193,112 @@ lv_firewyrm_duel.0001 = {
 	immediate = {
 		play_music_cue = "mx_cue_combat_stinger"
 		agot_clear_dragon_animation_flags = yes
+		scope:fd_attacker = {
+			if = {
+				limit = { var:lv_dragon_state ?= flag:flying }
+				agot_set_dragon_animation_flag_effect = {
+					FLAG = dragon_hover
+					RIDING_DRAGON = yes
+				}
+			}
+			else = {
+				agot_set_dragon_animation_flag_effect = {
+					FLAG = dragon_idle
+					RIDING_DRAGON = yes
+				}
+			}
+		}
+		scope:fd_defender = {
+			if = {
+				limit = { var:lv_dragon_state ?= flag:flying }
+				agot_set_dragon_animation_flag_effect = {
+					FLAG = dragon_hover
+					RIDING_DRAGON = yes
+				}
+			}
+			else = {
+				agot_set_dragon_animation_flag_effect = {
+					FLAG = dragon_idle
+					RIDING_DRAGON = yes
+				}
+			}
+		}
 		if = {
-			limit = { var:lv_dragon_state ?= flag:flying }
-			agot_set_dragon_animation_flag_effect = {
-				FLAG = dragon_hover
-				RIDING_DRAGON = yes
+			limit = { this = scope:fd_attacker }
+			save_scope_as = fd_round_me
+			if = {
+				limit = { has_trait = dragon }
+				save_scope_as = fd_round_me_dragon
+			}
+			else = { scope:fd_attacker_dragon = { save_scope_as = fd_round_me_dragon } }
+			scope:fd_defender = {
+				save_scope_as = fd_round_opponent
+				if = {
+					limit = { has_trait = dragon }
+					save_scope_as = fd_round_opponent_dragon
+				}
+				else = { scope:fd_defender_dragon = { save_scope_as = fd_round_opponent_dragon } }
 			}
 		}
 		else = {
-			agot_set_dragon_animation_flag_effect = {
-				FLAG = dragon_idle
-				RIDING_DRAGON = yes
+			save_scope_as = fd_round_me
+			if = {
+				limit = { has_trait = dragon }
+				save_scope_as = fd_round_me_dragon
 			}
-		}
-		#scope:fd_firewyrm = {
-		#	agot_clear_dragon_animation_flags = yes
-		#	add_character_flag = dragon_roar
-		#}
-		lv_select_firewyrm_combat_options_from_pool_effect = yes
-
-		if = { # Show Firewyrm's last move
-			limit = { exists = scope:fd_firewyrm_last_move }
-			scope:fd_firewyrm = {
+			else = { scope:fd_defender_dragon = { save_scope_as = fd_round_me_dragon } }
+			scope:fd_attacker = {
+				save_scope_as = fd_round_opponent
 				if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_chomp }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_firewyrm_chomp_effect = yes }
+					limit = { has_trait = dragon }
+					save_scope_as = fd_round_opponent_dragon
 				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_fume_burst }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_fume_burst_effect = yes }
-				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_boneshattering_screech }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_boneshattering_screech_effect = yes }
-				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_cone_of_flame }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_cone_of_flame_effect = yes }
-				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_frenzied_lunge }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_frenzied_lunge_effect = yes }
-				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_rockfall_roar }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_rockfall_roar_effect = yes }
-				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_molten_slough }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_molten_slough_effect = yes }
-				}
-				else_if = {
-					limit = { scope:fd_firewyrm_last_move = flag:firewyrm_berserk_charge }
-					show_as_tooltip = { lv_firewyrm_vs_dragon_move_berserk_charge_effect = yes }
-				}
+				else = { scope:fd_attacker_dragon = { save_scope_as = fd_round_opponent_dragon } }
 			}
 		}
+		debug_log_scopes = yes
+		if = {
+			limit = { NOT = { scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying } } }
+			remove_variable = lv_dragon_state
+		}
+		lv_firewyrm_duel_select_options_from_pool_effect = yes
+		lv_firewyrm_duel_show_opponent_move_effect = yes
 	}
 
 	# SPECIAL OPTIONS
 	option = {
 		name = lv_firewyrm_duel.0001.stunned
-		trigger = { var:lv_dragon_state ?= flag:stunned }
+		trigger = { scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:stunned } }
 		exclusive = yes
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_stunned_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_stunned_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_stunned_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_stunned_effect = yes }
 		}
 	}
 
 	option = {
 		name = lv_firewyrm_duel.0001.takeoff
-		trigger = { NOT = { var:lv_dragon_state ?= flag:flying } }
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_takeoff_effect = yes }
+		trigger = {
+			scope:fd_round_me_dragon = {
+				lv_is_firewyrm = no
+				NOT = { var:lv_dragon_state ?= flag:flying }
+			}
+		}
+		show_as_tooltip = { lv_firewyrm_duel_move_takeoff_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_takeoff_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_takeoff_effect = yes }
 		}
 	}
 
 	option = {
 		name = lv_firewyrm_duel.0001.land
-		trigger = { var:lv_dragon_state ?= flag:flying }
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_land_effect = yes }
+		trigger = { scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying } }
+		show_as_tooltip = { lv_firewyrm_duel_move_land_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_land_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_land_effect = yes }
 		}
 	}
 
@@ -695,10 +1312,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.circle_beast
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_circle_beast_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_circle_beast_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_circle_beast_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_circle_beast_effect = yes }
 		}
 		stress_impact = {
 			patient = miniscule_stress_impact_loss
@@ -721,10 +1338,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.flame_test
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_flame_test_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_flame_test_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_flame_test_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_flame_test_effect = yes }
 		}
 	}
 
@@ -737,10 +1354,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.claws_out
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_claws_out_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_claws_out_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_claws_out_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_claws_out_effect = yes }
 		}
 	}
 
@@ -753,10 +1370,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.reckless_dive
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_reckless_dive_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_reckless_dive_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_reckless_dive_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_reckless_dive_effect = yes }
 		}
 	}
 
@@ -770,10 +1387,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.guard_skies
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_guard_skies_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_guard_skies_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_guard_skies_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_guard_skies_effect = yes }
 		}
 	}
 
@@ -786,10 +1403,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.rip_joints
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_rip_joints_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_rip_joints_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_rip_joints_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_rip_joints_effect = yes }
 		}
 	}
 
@@ -802,10 +1419,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.roar_challenge
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_roar_challenge_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_roar_challenge_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_roar_challenge_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_roar_challenge_effect = yes }
 		}
 	}
 
@@ -818,10 +1435,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.dive_strike
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_dive_strike_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_dive_strike_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_dive_strike_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_dive_strike_effect = yes }
 		}
 	}
 
@@ -835,10 +1452,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.tailspin_slam
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_tailspin_slam_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_tailspin_slam_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_tailspin_slam_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_tailspin_slam_effect = yes }
 		}
 	}
 
@@ -851,10 +1468,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.wound_exploit
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_wound_exploit_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_wound_exploit_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_wound_exploit_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_wound_exploit_effect = yes }
 		}
 	}
 
@@ -867,10 +1484,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.dragonflame_barrage
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_dragonflame_barrage_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_dragonflame_barrage_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_dragonflame_barrage_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_dragonflame_barrage_effect = yes }
 		}
 	}
 
@@ -884,10 +1501,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.chomp
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_dragon_chomp_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_dragon_chomp_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_dragon_chomp_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_dragon_chomp_effect = yes }
 		}
 	}
 
@@ -901,10 +1518,10 @@ lv_firewyrm_duel.0001 = {
 		}
 		skill = diplomacy
 		custom_tooltip = lv_firewyrm_duel.0001.tt.commanding_cry
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_commanding_cry_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_commanding_cry_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_commanding_cry_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_commanding_cry_effect = yes }
 		}
 	}
 
@@ -918,10 +1535,10 @@ lv_firewyrm_duel.0001 = {
 		}
 		skill = intrigue
 		custom_tooltip = lv_firewyrm_duel.0001.tt.vipers_feint
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_vipers_feint_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_vipers_feint_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_vipers_feint_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_vipers_feint_effect = yes }
 		}
 	}
 
@@ -935,10 +1552,10 @@ lv_firewyrm_duel.0001 = {
 		}
 		skill = learning
 		custom_tooltip = lv_firewyrm_duel.0001.tt.hidden_knowledge
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_hidden_knowledge_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_hidden_knowledge_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_hidden_knowledge_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_hidden_knowledge_effect = yes }
 		}
 	}
 
@@ -951,10 +1568,10 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.risk_it_all
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_risk_it_all_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_risk_it_all_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_risk_it_all_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_risk_it_all_effect = yes }
 		}
 	}
 
@@ -967,10 +1584,139 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		custom_tooltip = lv_firewyrm_duel.0001.tt.collapse_ground
-		show_as_tooltip = { lv_firewyrm_vs_dragon_move_collapse_ground_effect = yes }
+		show_as_tooltip = { lv_firewyrm_duel_move_collapse_ground_effect = yes }
 		if = {
-			limit = { scope:fd_firewyrm = { is_alive = yes } }
-			hidden_effect = { lv_firewyrm_vs_dragon_move_collapse_ground_effect = yes }
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_collapse_ground_effect = yes }
+		}
+	}
+
+	# Firewyrm Moves
+	option = {
+		name = lv_firewyrm_duel.0001.chomp
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_chomp
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.chomp
+		show_as_tooltip = { lv_firewyrm_duel_move_firewyrm_chomp_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_firewyrm_chomp_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.fume_burst
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_fume_burst
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.fume_burst
+		show_as_tooltip = { lv_firewyrm_duel_move_fume_burst_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_fume_burst_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.boneshattering_screech
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_boneshattering_screech
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.boneshattering_screech
+		show_as_tooltip = { lv_firewyrm_duel_move_boneshattering_screech_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_boneshattering_screech_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.cone_of_flame
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_cone_of_flame
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.cone_of_flame
+		show_as_tooltip = { lv_firewyrm_duel_move_cone_of_flame_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_cone_of_flame_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.frenzied_lunge
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_frenzied_lunge
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.frenzied_lunge
+		show_as_tooltip = { lv_firewyrm_duel_move_frenzied_lunge_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_frenzied_lunge_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.rockfall_roar
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_rockfall_roar
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.rockfall_roar
+		show_as_tooltip = { lv_firewyrm_duel_move_rockfall_roar_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_rockfall_roar_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.molten_slough
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_molten_slough
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.molten_slough
+		show_as_tooltip = { lv_firewyrm_duel_move_molten_slough_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_molten_slough_effect = yes }
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_duel.0001.berserk_charge
+		trigger = {
+			any_in_list = {
+				variable = fd_combat_moves
+				this = flag:firewyrm_berserk_charge
+			}
+		}
+		custom_tooltip = lv_firewyrm_duel.0001.tt.berserk_charge
+		show_as_tooltip = { lv_firewyrm_duel_move_berserk_charge_effect = yes }
+		if = {
+			limit = { scope:fd_round_opponent = { is_alive = yes } }
+			hidden_effect = { lv_firewyrm_duel_move_berserk_charge_effect = yes }
 		}
 	}
 
@@ -978,12 +1724,12 @@ lv_firewyrm_duel.0001 = {
 		if = {
 			limit = {
 				OR = {
-					scope:fd_dragonrider = { is_alive = no }
-					scope:fd_firewyrm = { is_alive = no }
+					scope:fd_attacker = { is_alive = no }
+					scope:fd_defender = { is_alive = no }
 				}
 			}
-			hidden_effect = { lv_remove_firewyrm_vs_dragon_combat_info_effect = yes }
-			scope:fd_dragonrider = {
+			hidden_effect = { lv_remove_firewyrm_duel_combat_info_effect = yes }
+			scope:fd_attacker = {
 				if = {
 					# Restrict to live characters to prevent errors.
 					limit = { is_alive = yes }
@@ -991,7 +1737,7 @@ lv_firewyrm_duel.0001 = {
 					remove_variable = engaged_in_dragon_combat
 				}
 			}
-			scope:fd_firewyrm = {
+			scope:fd_defender = {
 				if = {
 					# Restrict to live characters to prevent errors.
 					limit = { is_alive = yes }
@@ -1001,28 +1747,34 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		else = {
-			#If we're scope:fd_firewyrm, send scope:fd_dragonrider their instance of the event.
+			#If we're scope:fd_defender, send scope:fd_attacker their instance of the event.
 			#if = {
-			#	limit = { this = scope:fd_firewyrm }
-			#	scope:fd_dragonrider = { trigger_event = agot_dragon_combat.1001 }
+			#	limit = { this = scope:fd_defender }
+			#	scope:fd_attacker = { trigger_event = agot_dragon_combat.1001 }
 			#}
-			#Otherwise we're scope:fd_dragonrider, so end the round.
+			#Otherwise we're scope:fd_attacker, so end the round.
 			#else = { trigger_event = agot_dragon_combat.1002 }
+			#if = {
+			#	limit = { NOT = { scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying } } }
+			#	remove_variable = lv_dragon_state
+			#}
+			#hidden_effect = {
+			#	scope:fd_round_opponent = {
+			#		scope:fd_round_opponent_dragon = {
+			#			if = {
+			#				limit = { exists = var:lv_dragon_state }
+			#				remove_variable = lv_dragon_state
+			#			}
+			#		}
+			#		#lv_select_firewyrm_duel_move_for_firewyrm_effect = yes
+			#		trigger_event = lv_firewyrm_duel.0001
+			#	}
+			#}
 			if = {
-				limit = { NOT = { var:lv_dragon_state ?= flag:flying } }
-				remove_variable = lv_dragon_state
+				limit = { this = scope:fd_defender }
+				trigger_event = lv_firewyrm_duel.0002
 			}
-			hidden_effect = {
-				scope:fd_firewyrm = {
-					if = {
-						limit = { exists = var:lv_firewyrm_state }
-						remove_variable = lv_firewyrm_state
-					}
-					lv_select_firewyrm_vs_dragon_move_for_firewyrm_effect = yes
-				}
-			}
-
-			trigger_event = lv_firewyrm_duel.0002
+			else = { scope:fd_defender = { trigger_event = lv_firewyrm_duel.0001 } }
 		}
 	}
 }
@@ -1035,56 +1787,56 @@ lv_firewyrm_duel.0002 = {
 		if = {
 			limit = {
 				OR = {
-					scope:fd_dragonrider.var:fd_chance_of_winning >= 100
-					scope:fd_firewyrm = { is_alive = no }
+					scope:fd_attacker.var:fd_chance_of_winning >= 100
+					scope:fd_defender = { is_alive = no }
 				}
 			}
 			save_scope_value_as = {
 				name = fd_finished
 				value = yes
 			}
-			scope:fd_dragonrider = { save_scope_as = fd_victor }
-			scope:fd_firewyrm = { save_scope_as = fd_loser }
+			scope:fd_attacker = { save_scope_as = fd_victor }
+			scope:fd_defender = { save_scope_as = fd_loser }
 		}
 		if = {
 			limit = {
 				OR = {
-					scope:fd_firewyrm.var:fd_chance_of_winning >= 100
-					scope:fd_dragonrider = { is_alive = no }
-					scope:fd_dragon = { is_alive = no }
+					scope:fd_defender.var:fd_chance_of_winning >= 100
+					scope:fd_attacker = { is_alive = no }
+					scope:fd_attacker_dragon = { is_alive = no }
 				}
 			}
 			save_scope_value_as = {
 				name = fd_finished
 				value = yes
 			}
-			scope:fd_firewyrm = { save_scope_as = fd_victor }
-			scope:fd_dragonrider = { save_scope_as = fd_loser }
+			scope:fd_defender = { save_scope_as = fd_victor }
+			scope:fd_attacker = { save_scope_as = fd_loser }
 		}
 		if = {
 			limit = { exists = scope:fd_finished }
-			finalise_firewyrm_vs_dragon_combat_results_effect = yes
+			finalise_firewyrm_duel_combat_results_effect = yes
 		}
 		# If we don't, and this round is at or over the round_cap_limit, enter into sudden death.
 		else_if = {
 			limit = { var:fd_combat_current_round >= 10 }
 			if = {
-				limit = { scope:fd_dragon.dragon_combat_effectiveness > scope:fd_firewyrm.dragon_combat_effectiveness }
+				limit = { scope:fd_attacker_dragon.dragon_combat_effectiveness > scope:fd_defender.dragon_combat_effectiveness }
 				save_scope_value_as = {
 					name = fd_finished
 					value = yes
 				}
-				scope:fd_dragonrider = { save_scope_as = fd_victor }
-				scope:fd_firewyrm = { save_scope_as = fd_loser }
+				scope:fd_attacker = { save_scope_as = fd_victor }
+				scope:fd_defender = { save_scope_as = fd_loser }
 			}
 			else_if = {
-				limit = { scope:fd_firewyrm.dragon_combat_effectiveness > scope:fd_dragon.dragon_combat_effectiveness }
+				limit = { scope:fd_defender.dragon_combat_effectiveness > scope:fd_attacker_dragon.dragon_combat_effectiveness }
 				save_scope_value_as = {
 					name = fd_finished
 					value = yes
 				}
-				scope:fd_firewyrm = { save_scope_as = fd_victor }
-				scope:fd_dragonrider = { save_scope_as = fd_loser }
+				scope:fd_defender = { save_scope_as = fd_victor }
+				scope:fd_attacker = { save_scope_as = fd_loser }
 			}
 			# Otherwise, their prowess must be even, so we do a toss-up.
 			else = {
@@ -1094,27 +1846,27 @@ lv_firewyrm_duel.0002 = {
 							name = fd_finished
 							value = yes
 						}
-						scope:fd_dragonrider = { save_scope_as = fd_victor }
-						scope:fd_firewyrm = { save_scope_as = fd_loser }
+						scope:fd_attacker = { save_scope_as = fd_victor }
+						scope:fd_defender = { save_scope_as = fd_loser }
 					}
 					50 = {
 						save_scope_value_as = {
 							name = fd_finished
 							value = yes
 						}
-						scope:fd_firewyrm = { save_scope_as = fd_victor }
-						scope:fd_dragonrider = { save_scope_as = fd_loser }
+						scope:fd_defender = { save_scope_as = fd_victor }
+						scope:fd_attacker = { save_scope_as = fd_loser }
 					}
 				}
 			}
-			finalise_firewyrm_vs_dragon_combat_results_effect = yes
+			finalise_firewyrm_duel_combat_results_effect = yes
 		}
 		else = {
 			change_variable = {
 				name = fd_combat_current_round
 				add = 1
 			}
-			trigger_event = lv_firewyrm_duel.0001
+			scope:fd_attacker = { trigger_event = lv_firewyrm_duel.0001 }
 		}
 	}
 }
@@ -1129,27 +1881,195 @@ lv_firewyrm_duel.0003 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:sudden_strike }
-				desc = lv_firewyrm_duel.0003.desc.sudden_strike
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0003.desc.sudden_strike.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0003.desc.sudden_strike.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0003.desc.sudden_strike
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:dragonfire }
-				desc = lv_firewyrm_duel.0003.desc.dragonfire
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0003.desc.dragonfire.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0003.desc.dragonfire.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0003.desc.dragonfire
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:driven_to_ground }
-				desc = lv_firewyrm_duel.0003.desc.driven_to_ground
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0003.desc.driven_to_ground.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0003.desc.driven_to_ground.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0003.desc.driven_to_ground
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:disemboweled }
-				desc = lv_firewyrm_duel.0003.desc.disemboweled
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0003.desc.disemboweled.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0003.desc.disemboweled.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0003.desc.disemboweled
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:eviscerated }
-				desc = lv_firewyrm_duel.0003.desc.eviscerated
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0003.desc.eviscerated.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0003.desc.eviscerated.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0003.desc.eviscerated
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:chomp }
-				desc = lv_firewyrm_duel.0003.desc.chomp
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0003.desc.chomp.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0003.desc.chomp.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0003.desc.chomp
+					}
+				}
 			}
 		}
 	}
@@ -1244,57 +2164,145 @@ lv_firewyrm_duel.0003 = {
 			}
 		}
 
+		# Firewyrm
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_ten_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_1.0 }
+		}
+
+		# Firewyrm (Molten)
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_ten_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_nine_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_nine_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_eight_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_eight_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_seven_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_seven_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_six_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_six_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_five_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_five_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_four_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_four_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_three_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_three_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_two_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_two_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_one_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_one_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_zero_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_zero_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
 		}
-	}
 
-	right_portrait = {
-		character = scope:fd_firewyrm
-		animation = dragon_main
-		camera = lv_camera_firewyrm_duel_right
-
+		# Dragon (Riderless)
 		triggered_outfit = {
 			trigger = { level_ten_dragon_size_trigger = yes }
 			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
@@ -1341,6 +2349,195 @@ lv_firewyrm_duel.0003 = {
 		}
 	}
 
+	right_portrait = {
+		character = scope:fd_defender
+		animation = dragon_main
+		camera = lv_camera_firewyrm_duel_right
+
+		# Firewyrm
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_1.0 }
+		}
+
+		# Firewyrm (Molten)
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon (Riderless)
+		triggered_outfit = {
+			trigger = { level_ten_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { level_nine_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { level_eight_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { level_seven_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { level_six_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { level_five_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { level_four_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { level_three_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { level_two_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { level_one_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { level_zero_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_1.0 }
+		}
+	}
 
 	widgets = {
 		widget = {
@@ -1379,6 +2576,26 @@ lv_firewyrm_duel.0003 = {
 		name = lv_firewyrm_duel.0003.a.chomp
 		custom_tooltip = lv_firewyrm_duel.0003.a.tt.chomp
 	}
+
+	# You lived actually
+	after = {
+		if = {
+			limit = {
+				is_alive = yes
+				NAND = {
+					scope:fd_victor = scope:fd_victor_dragon
+					has_relation_rival = scope:fd_victor
+				}
+			}
+			scope:fd_loser = {
+				progress_towards_rival_effect = {
+					REASON = rival_lost_duel
+					CHARACTER = scope:fd_victor
+					OPINION = 0
+				}
+			}
+		}
+	}
 }
 
 #	scope:fd_victor's confirmation event.
@@ -1389,27 +2606,195 @@ lv_firewyrm_duel.0004 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:sudden_strike }
-				desc = lv_firewyrm_duel.0004.desc.sudden_strike
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0004.desc.sudden_strike.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0004.desc.sudden_strike.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0004.desc.sudden_strike
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:dragonfire }
-				desc = lv_firewyrm_duel.0004.desc.dragonfire
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0004.desc.dragonfire.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0004.desc.dragonfire.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0004.desc.dragonfire
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:driven_to_ground }
-				desc = lv_firewyrm_duel.0004.desc.driven_to_ground
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0004.desc.driven_to_ground.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0004.desc.driven_to_ground.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0004.desc.driven_to_ground
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:disemboweled }
-				desc = lv_firewyrm_duel.0004.desc.disemboweled
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0004.desc.disemboweled.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0004.desc.disemboweled.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0004.desc.disemboweled
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:eviscerated }
-				desc = lv_firewyrm_duel.0004.desc.eviscerated
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0004.desc.eviscerated.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0004.desc.eviscerated.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0004.desc.eviscerated
+					}
+				}
 			}
 			triggered_desc = {
 				trigger = { scope:dragon_death_rattle = flag:chomp }
-				desc = lv_firewyrm_duel.0004.desc.chomp
+				desc = {
+					first_valid = {
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_defender_dragon = { lv_is_firewyrm = yes }
+								}
+								trigger_else = { scope:fd_attacker_dragon = { lv_is_firewyrm = yes } }
+							}
+							desc = lv_firewyrm_duel.0004.desc.chomp.firewyrm_vs_firewyrm
+						}
+						triggered_desc = {
+							trigger = {
+								trigger_if = {
+									limit = { this = scope:fd_attacker }
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+								trigger_else = {
+									scope:fd_attacker_dragon = { lv_is_firewyrm = yes }
+									scope:fd_defender_dragon = { lv_is_firewyrm = no }
+								}
+							}
+							desc = lv_firewyrm_duel.0004.desc.chomp.firewyrm_vs_dragon
+						}
+						desc = lv_firewyrm_duel.0004.desc.chomp
+					}
+				}
 			}
 		}
 	}
@@ -1504,57 +2889,335 @@ lv_firewyrm_duel.0004 = {
 			}
 		}
 
+		# Firewyrm
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_ten_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_1.0 }
+		}
+
+		# Firewyrm (Molten)
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_ten_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_nine_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_nine_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_eight_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_eight_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_seven_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_seven_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_six_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_six_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_five_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_five_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_four_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_four_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_three_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_three_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_two_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_two_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_one_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_one_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
 		}
 		triggered_outfit = {
-			trigger = { var:current_dragon = { level_zero_dragon_size_trigger = yes } }
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_zero_dragon_size_trigger = yes } }
 			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon (Riderless)
+		triggered_outfit = {
+			trigger = { level_ten_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { level_nine_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { level_eight_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { level_seven_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { level_six_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { level_five_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { level_four_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { level_three_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { level_two_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { level_one_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { level_zero_dragon_size_trigger = yes }
+			outfit_tags = { no_clothes bald dynamic_camera_zoom_1.0 }
 		}
 	}
 
 	right_portrait = {
-		character = scope:fd_firewyrm
+		character = scope:fd_defender
 		animation = dragon_main
 		camera = lv_camera_firewyrm_duel_right
 
+		# Firewyrm
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes NOT = { var:lv_dragon_state ?= flag:molten } level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm dynamic_camera_zoom_1.0 }
+		}
+
+		# Firewyrm (Molten)
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = yes var:lv_dragon_state ?= flag:molten level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider_firewyrm_molten dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_ten_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.0 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_nine_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.1 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_eight_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.2 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_seven_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.3 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_six_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.4 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_five_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.5 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_four_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.6 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_three_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.7 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_two_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.8 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_one_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_0.9 }
+		}
+		triggered_outfit = {
+			trigger = { var:current_dragon ?= { lv_is_firewyrm = no level_zero_dragon_size_trigger = yes } }
+			outfit_tags = { dragonrider dynamic_camera_zoom_1.0 }
+		}
+
+		# Dragon (Riderless)
 		triggered_outfit = {
 			trigger = { level_ten_dragon_size_trigger = yes }
 			outfit_tags = { no_clothes bald dynamic_camera_zoom_0.0 }
@@ -1646,12 +3309,12 @@ lv_firewyrm_duel.0004 = {
 		custom_tooltip = {
 			text = lv_firewyrm_duel.0004.a.tt.chomp
 			if = {
-				limit = { scope:fd_dragon = { NOT = { has_character_flag = dragon_has_eaten_dragon_before } } }
+				limit = { scope:fd_attacker_dragon = { NOT = { has_character_flag = dragon_has_eaten_dragon_before } } }
 				random_list = {
 					5 = {
 						modifier = { # Has appropriate traits
 							add = 10
-							scope:fd_dragon = {
+							scope:fd_attacker_dragon = {
 								OR = {
 									has_trait = dragon_bloodthirsty
 									has_trait = dragon_voracious
@@ -1661,7 +3324,7 @@ lv_firewyrm_duel.0004 = {
 						}
 						modifier = { # Does not have inappropriate traits
 							factor = 0
-							scope:fd_dragon = {
+							scope:fd_attacker_dragon = {
 								OR = {
 									has_trait = dragon_friendly
 									has_trait = dragon_restrained
@@ -1680,23 +3343,31 @@ lv_firewyrm_duel.0004 = {
 						}
 						send_interface_toast = {
 							title = lv_firewyrm_duel.0004.chomp.t
-							left_icon = scope:fd_dragon
-							scope:fd_dragon = {
+							left_icon = scope:fd_attacker_dragon
+							scope:fd_attacker_dragon = {
 								add_trait = dragon_cannibal
 								add_character_flag = dragon_has_eaten_dragon_before
 							}
 						}
 					}
-					95 = { scope:fd_dragon = { add_character_flag = dragon_has_eaten_dragon_before } }
+					95 = { scope:fd_attacker_dragon = { add_character_flag = dragon_has_eaten_dragon_before } }
 				}
 			}
 		}
 	}
 
 	after = {
-		if = {
-			limit = { exists = var:lv_dragon_state }
-			remove_variable = lv_dragon_state
+		scope:fd_attacker_dragon ?= {
+			if = {
+				limit = { exists = var:lv_dragon_state }
+				remove_variable = lv_dragon_state
+			}
+		}
+		scope:fd_defender_dragon ?= {
+			if = {
+				limit = { exists = var:lv_dragon_state }
+				remove_variable = lv_dragon_state
+			}
 		}
 	}
 }
