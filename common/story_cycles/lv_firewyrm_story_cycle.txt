@@ -93,16 +93,20 @@ lv_firewyrm_story_cycle = {
 			var:lv_firewyrm_location = {
 				save_scope_as = lair_location
 				if = {
-					limit = { NOT = { var:lv_firewyrm ?= story_owner } }
+					limit = { NOT = { var:lv_firewyrm ?= scope:story.story_owner } }
 					set_variable = {
 						name = lv_firewyrm
-						value = story_owner
+						value = scope:story.story_owner
 					}
 				}
 			}
-			story_owner = {
-				set_employer = scope:lair_location.province_owner
-				return_to_court = yes
+			scope:lair_location = { province_owner = { save_scope_as = lair_holder } }
+			if = {
+				limit = { NOT = { story_owner = { is_courtier_of = scope:lair_holder } } }
+				story_owner = {
+					set_employer = scope:lair_holder
+					return_to_court = yes
+				}
 			}
 		}
 	}
