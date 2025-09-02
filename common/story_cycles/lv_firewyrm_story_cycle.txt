@@ -85,6 +85,19 @@ lv_firewyrm_story_cycle = {
 	#	}
 	#}
 
+	# Stay at your lair bozo
+	effect_group = {
+		days = 1
+		trigger = { story_owner = { NOT = { location ?= scope:story.var:lv_firewyrm_location } } }
+		fallback = {
+			var:lv_firewyrm_location = { save_scope_as = lair_location }
+			story_owner = {
+				set_employer = scope:lair_location.province_owner
+				return_to_court = yes
+			}
+		}
+	}
+
 	# If firewyrm gets tamed, end the story and send a special event to province owner
 	effect_group = {
 		days = 1

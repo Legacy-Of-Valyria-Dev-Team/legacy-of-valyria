@@ -39,9 +39,35 @@ lv_valyria_random_event.0010 = {
 
     after = {
         trigger_event = {
-            id = lv_valyria_random_event.0020
+            id = lv_valyria_random_event.0011
             days = 200
         }
+    }
+}
+# Background event to make sure we're in Valyria before the next ghost event, since it takes 200 days
+lv_valyria_random_event.0011 = {
+    hidden = yes
+
+    immediate = {
+        if = { # If any subregion of Valyria still ruined/valid, proceed with the check
+            limit = { situation:valyria_situation = { any_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } } }
+            if = {
+                limit = {
+                    location = {
+                        geographical_region = world_valyria_mainland
+                        lv_valyria_subregion_ruined = yes
+                    }
+                }
+                trigger_event = lv_valyria_random_event.0020
+            }
+            else = {
+                trigger_event = { # Let's evaluate every 7 days
+                    id = lv_valyria_random_event.0011
+                    days = 7
+                }
+            }
+        }
+        # Else do nothing, unless you want some sort of special/secret event about "silencing the ghosts" or something
     }
 }
 lv_valyria_random_event.0020 = {
@@ -123,7 +149,7 @@ lv_valyria_random_event.0031 = {
 	}
 	option = {
         name = lv_valyria_random_event.0031.a
-        death = { reason = death_vanished } # vanish in the ruins
+        death = { death_reason = death_vanished } # vanish in the ruins
     }
 
 }
@@ -176,8 +202,8 @@ lv_valyria_random_event.0040 = {
 				geographical_region = world_valyria_lands_of_the_long_summer
 			}
 		}
-        NOT = { has_character_flag = lv_saw_dragon }
-        # NOT = { has_character_flag = lv_valyria_danger_dragon_sighting_cooldown }
+        # NOT = { has_character_flag = lv_saw_dragon }
+        NOT = { has_character_flag = lv_valyria_danger_dragon_sighting_cooldown }
     }
     theme = realm
     override_background = { reference = lv_valyria_surface }
@@ -187,11 +213,11 @@ lv_valyria_random_event.0040 = {
 	}
 
 	immediate = {
-        add_character_flag = lv_saw_dragon
-        #add_character_flag = {
-        #    flag = lv_valyria_danger_dragon_sighting_cooldown
-        #    years = { 6 9 }
-        #}
+        # add_character_flag = lv_saw_dragon
+        add_character_flag = {
+            flag = lv_valyria_danger_dragon_sighting_cooldown
+            years = 20
+        }
     }
 
     option = {
@@ -215,9 +241,10 @@ lv_valyria_random_event.0050 = {
 				geographical_region = world_valyria_proper
 				geographical_region = world_valyria_lands_of_the_long_summer
 			}
+            has_holding_type = ruin_holding
 		}
-        NOT = { has_character_flag = saw_vanishing_city }
-        # NOT = { has_character_flag = lv_valyria_danger_vanishing_city_cooldown }
+        # NOT = { has_character_flag = saw_vanishing_city }
+        NOT = { has_character_flag = lv_valyria_danger_vanishing_city_cooldown }
     }
     theme = dread
     override_background = { reference = lv_valyria_small }
@@ -227,11 +254,11 @@ lv_valyria_random_event.0050 = {
 	}
 
     immediate = {
-        add_character_flag = saw_vanishing_city
-        #add_character_flag = {
-        #    flag = lv_valyria_danger_vanishing_city_cooldown
-        #    weeks = { 12 24 }
-        #}
+        # add_character_flag = saw_vanishing_city
+        add_character_flag = {
+            flag = lv_valyria_danger_vanishing_city_cooldown
+            weeks = { 12 24 }
+        }
     }
 
     option = {
@@ -333,7 +360,7 @@ lv_valyria_random_event.0080 = {
 
     option = {
         name = lv_valyria_random_event.0080.a
-        death = { reason = death_vanished }
+        death = { death_reason = death_vanished }
     }
 }
 
@@ -341,6 +368,7 @@ lv_valyria_random_event.0080 = {
 lv_valyria_random_event.0090 = {
     title = lv_valyria_random_event.0090.t
     desc = lv_valyria_random_event.0090.desc
+    trigger = { NOT = { has_character_flag = lv_valyria_danger_earth_tremors_cooldown } }
     theme = dread
     override_background = { reference = lv_valyria_surface }
     widgets = {
@@ -354,6 +382,13 @@ lv_valyria_random_event.0090 = {
         animation = fear
     }
 
+    immediate = {
+        add_character_flag = {
+            flag = lv_valyria_danger_earth_tremors_cooldown
+            weeks = { 12 24 }
+        }
+    }
+
     option = {
         name = lv_valyria_random_event.0090.a
         add_stress = 30
@@ -364,7 +399,7 @@ lv_valyria_random_event.0090 = {
         random_list = {
             10 = { add_gold = 75 }        # success, valuables in fissures
             50 = { add_trait = burned }     # badly burned / crushed
-            40 = { death = { reason = death_vanished } } # swallowed by the earth
+            40 = { death = { death_reason = death_vanished } } # swallowed by the earth
         }
     }
     option = {
@@ -381,11 +416,19 @@ lv_valyria_random_event.0090 = {
 lv_valyria_random_event.0100 = {
     title = lv_valyria_random_event.0100.t
     desc = lv_valyria_random_event.0100.desc
+    trigger = { NOT = { has_character_flag = lv_valyria_danger_swarm_cooldown } }
     theme = dread
     override_background = { reference = lv_valyria_surface }
     left_portrait = {
         character = root
         animation = fear
+    }
+
+    immediate = {
+        add_character_flag = {
+            flag = lv_valyria_danger_swarm_cooldown
+            weeks = { 12 24 }
+        }
     }
 
     option = {
@@ -450,7 +493,7 @@ lv_valyria_random_event.0110 = {
         random_list = {
             40 = { add_trait = burned }                     # scorched by the serpents
             40 = { add_injury = yes }                       # bitten or clawed
-            20 = { death = { reason = death_vanished } }    # overwhelmed by the serpents
+            20 = { death = { death_reason = death_vanished } }    # overwhelmed by the serpents
         }
     }
     option = {
@@ -503,7 +546,7 @@ lv_valyria_random_event.0120 = {
                 add_trait = burned
                 trigger_event = lv_valyria_random_event.0140
             }
-            20 = { death = { reason = death_vanished } }
+            20 = { death = { death_reason = death_vanished } }
         }
     }
     option = {

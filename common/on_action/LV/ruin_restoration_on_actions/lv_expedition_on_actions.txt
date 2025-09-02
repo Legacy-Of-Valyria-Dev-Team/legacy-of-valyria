@@ -13,11 +13,13 @@ travel_danger_events_on_action = {
 			has_trait = dragon
 		}
 		# If Valyria, MUST be green
-		trigger_if = {
-			limit = { geographical_region = world_valyria_mainland }
-			lv_valyria_subregion_restored = yes
+		location = {
+			trigger_if = {
+				limit = { geographical_region = world_valyria_mainland }
+				lv_valyria_subregion_restored = yes
+			}
+			trigger_else = { always = yes }
 		}
-		trigger_else = { always = yes }
 	}
 }
 
@@ -39,11 +41,10 @@ lv_travel_danger_events_on_action = {
 			has_trait = dragon
 		}
 		# If Valyria, must NOT be green
-		trigger_if = {
-			limit = { geographical_region = world_valyria_mainland }
+		location = {
+			geographical_region = world_valyria_mainland
 			lv_valyria_subregion_ruined = yes
 		}
-		trigger_else = { always = yes }
 	}
 	random_events = {
 		chance_of_no_event = {
@@ -71,6 +72,7 @@ lv_travel_danger_events_on_action = {
 		175 = lv_valyria_random_event.0040 # Dragon Sighting
 		350 = lv_valyria_random_event.0050 # Ruins: The Vanishing City
 		175 = lv_valyria_random_event.0090 # Earthquake reveals lava river
+		175 = lv_valyria_random_event.0100 # Swarm
 		175 = lv_valyria_random_event.0110 # Ash Serpents
 		350 = lv_valyria_random_event.0120 # Toxic Fumes: Sulfur
 	}
@@ -121,7 +123,10 @@ lv_special_location_on_action = {
 								any_county_in_region = {
 									region = world_valyria_proper
 									percent >= 0.5
-									title_province = { NOT = { has_holding_type = ruin_holding } }
+									title_province = {
+										NOT = { has_holding_type = ruin_holding }
+										NOT = { has_holding_type = wilderness_holding }
+									}
 								}
 							}
 							trigger_event = lv_special_region_event.0001
@@ -139,7 +144,12 @@ lv_special_location_on_action = {
 								any_county_in_region = {
 									region = world_valyria_proper
 									percent >= 0.5
-									title_province = { has_holding_type = ruin_holding }
+									title_province = {
+										OR = {
+											has_holding_type = ruin_holding
+											has_holding_type = wilderness_holding
+										}
+									}
 								}
 							}
 							trigger_event = lv_special_region_event.0001
@@ -162,7 +172,10 @@ lv_special_location_on_action = {
 								any_county_in_region = {
 									region = world_valyria_lands_of_the_long_summer
 									percent >= 0.5
-									title_province = { NOT = { has_holding_type = ruin_holding } }
+									title_province = {
+										NOT = { has_holding_type = ruin_holding }
+										NOT = { has_holding_type = wilderness_holding }
+									}
 								}
 							}
 							trigger_event = lv_special_region_event.0001
@@ -180,7 +193,12 @@ lv_special_location_on_action = {
 								any_county_in_region = {
 									region = world_valyria_lands_of_the_long_summer
 									percent >= 0.5
-									title_province = { has_holding_type = ruin_holding }
+									title_province = {
+										OR = {
+											has_holding_type = ruin_holding
+											has_holding_type = wilderness_holding
+										}
+									}
 								}
 							}
 							trigger_event = lv_special_region_event.0001
@@ -208,7 +226,10 @@ lv_special_location_on_action = {
 								any_county_in_region = {
 									region = world_valyria_lands_of_the_long_summer
 									percent >= 0.5
-									title_province = { NOT = { has_holding_type = ruin_holding } }
+									title_province = {
+										NOT = { has_holding_type = ruin_holding }
+										NOT = { has_holding_type = wilderness_holding }
+									}
 								}
 							}
 							trigger_event = lv_special_region_event.0001
@@ -226,7 +247,12 @@ lv_special_location_on_action = {
 								any_county_in_region = {
 									region = sea_smoking_sea
 									percent >= 0.5
-									title_province = { has_holding_type = ruin_holding }
+									title_province = {
+										OR = {
+											has_holding_type = ruin_holding
+											has_holding_type = wilderness_holding
+										}
+									}
 								}
 							}
 							trigger_event = lv_special_region_event.0001
