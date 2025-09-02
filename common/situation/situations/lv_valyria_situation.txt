@@ -114,8 +114,24 @@
 	##################################################
 	on_monthly = {
 		every_situation_sub_region = { # Do monthly events
+			every_situation_sub_region_county = { # Background cleaning stuff
+				title_province = {
+					if = {
+						limit = {
+							has_variable = lv_firewyrm
+							NOT = { exists = var:lv_firewyrm }
+						}
+						remove_variable = lv_firewyrm
+					}
+				}
+			}
 			every_situation_sub_region_county = {
-				limit = { holder = { NOT = { has_trait = ruin } } }
+				limit = {
+					holder = {
+						NOT = { has_trait = ruin }
+						NOT = { has_trait = wilderness }
+					}
+				}
 				save_scope_as = county
 
 				# Set stewardship buff
