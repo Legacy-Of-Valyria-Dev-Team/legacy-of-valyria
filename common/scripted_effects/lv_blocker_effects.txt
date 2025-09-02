@@ -107,19 +107,24 @@ lv_valyria_update_subregion_progress_variables = {
 		var:subregion_$SUBREGION$_total = { save_scope_as = subregion_total }
 		var:subregion_$SUBREGION$_count = { save_scope_as = subregion_count }
 		situation_sub_region:$SUBREGION$ = {
+			# INSTANT - Based on progression thresholds
 			if = {
-				limit = { lv_valyria_subregion_progress < 25 }
-				change_phase = { phase = valyria_ruined }
+				limit = { has_game_rule = lv_green_valyria_instant }
+				if = {
+					limit = { lv_valyria_subregion_progress < 25 }
+					change_phase = { phase = valyria_ruined }
+				}
+				else_if = {
+					limit = { lv_valyria_subregion_progress < 50 }
+					change_phase = { phase = valyria_restored_01 }
+				}
+				else_if = {
+					limit = { lv_valyria_subregion_progress < 75 }
+					change_phase = { phase = valyria_restored_02 }
+				}
+				else = { change_phase = { phase = valyria_rehabilitated } }
 			}
-			else_if = {
-				limit = { lv_valyria_subregion_progress < 50 }
-				change_phase = { phase = valyria_restored_01 }
-			}
-			else_if = {
-				limit = { lv_valyria_subregion_progress < 75 }
-				change_phase = { phase = valyria_restored_02 }
-			}
-			else = { change_phase = { phase = valyria_rehabilitated } }
+			# GRADUAL - Handled via the yearly situation pulse (lv_valyria_situation.txt)
 		}
 	}
 }
