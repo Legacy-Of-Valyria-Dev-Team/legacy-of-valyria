@@ -232,8 +232,8 @@ agot_EE_establish_north_valyria_decision = {
 		NOT = { exists = involved_activity }
 		is_imprisoned = no
 		#Can't already be a empire.
-		NOT = { highest_held_title_tier = tier_empire }
-		NOT = { exists = title:k_north_valyria.holder }
+		#NOT = { highest_held_title_tier = tier_empire }
+		NOT = { exists = title:e_north_valyria.holder }
 	}
 
 	effect = {
@@ -246,7 +246,7 @@ agot_EE_establish_north_valyria_decision = {
 						type = created
 						save_scope_as = title_change
 					}
-					title:k_north_valyria = {
+					title:e_north_valyria = {
 						change_title_holder = {
 							holder = scope:founder
 							change = scope:title_change
@@ -261,25 +261,25 @@ agot_EE_establish_north_valyria_decision = {
 			title:k_mantarys = {
 				every_in_de_jure_hierarchy = {
 					limit = { tier = tier_duchy }
-					set_de_jure_liege_title = title:k_north_valyria
+					set_de_jure_liege_title = title:e_north_valyria
 				}
 			}
 			title:k_tolos = {
 				every_in_de_jure_hierarchy = {
 					limit = { tier = tier_duchy }
-					set_de_jure_liege_title = title:k_north_valyria
+					set_de_jure_liege_title = title:e_north_valyria
 				}
 			}
 			title:k_elyria_and_velos = {
 				every_in_de_jure_hierarchy = {
 					limit = { tier = tier_duchy }
-					set_de_jure_liege_title = title:k_north_valyria
+					set_de_jure_liege_title = title:e_north_valyria
 				}
 			}
 			title:k_draconys = {
 				every_in_de_jure_hierarchy = {
 					limit = { tier = tier_duchy }
-					set_de_jure_liege_title = title:k_north_valyria
+					set_de_jure_liege_title = title:e_north_valyria
 				}
 			}
 		}
@@ -328,12 +328,10 @@ agot_EE_reestablish_old_valyria_decision = {
 			}
 		}
 		#In Northern Valyria and belongs to a Valyrian culture.
-		OR = {
-			has_title = title:k_north_valyria
-			AND = {
-				any_directly_owned_province = { geographical_region = world_essos_painted_mountains }
-				culture = { has_cultural_pillar = heritage_valyrian }
-			}
+		AND = {
+			has_title = title:e_north_valyria
+			any_directly_owned_province = { geographical_region = world_essos_painted_mountains }
+			culture = { has_cultural_pillar = heritage_valyrian }
 		}
 	}
 
@@ -344,12 +342,9 @@ agot_EE_reestablish_old_valyria_decision = {
 		is_imprisoned = no
 		# Should have highest prestige level to claim the mantle of a successor to Valyria.
 		prestige_level >= max_prestige_level
-		OR = {
+		AND = {
 			completely_controls_region = world_essos_painted_mountains
-			AND = {
-				highest_held_title_tier > tier_kingdom
-				has_title = title:k_north_valyria
-			}
+			has_title = title:e_north_valyria
 		}
 	}
 	is_valid_showing_failures_only = {
