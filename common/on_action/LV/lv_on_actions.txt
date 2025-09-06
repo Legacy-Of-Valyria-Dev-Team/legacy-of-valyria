@@ -585,7 +585,10 @@ lv_on_game_start = {
 }
 
 on_game_start_after_lobby = {
-	on_actions = { lv_ruins_setup }
+	on_actions = {
+		lv_ruins_setup
+		lv_post_start_fixes
+	}
 }
 
 lv_ruins_setup = {
@@ -639,6 +642,21 @@ lv_ruins_setup = {
 			title:c_elos = { set_coa = ruins_coa }
 
 			title:c_old_ghis = { set_coa = ruins_coa }
+		}
+	}
+}
+
+lv_post_start_fixes = {
+	effect = {
+		# Remove dummy characters from confederations
+		title:c_axe_camp.holder ?= {
+			confederation ?= {
+				save_scope_as = lakefolk_confederation
+				every_confederation_member = {
+					limit = { agot_is_dummy_character = yes }
+					scope:lakefolk_confederation = { remove_confederation_member = prev }
+				}
+			}
 		}
 	}
 }
