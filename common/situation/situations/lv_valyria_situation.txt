@@ -113,6 +113,16 @@
 	# On Actions
 	##################################################
 	on_monthly = {
+		# Wilderness therapy
+		title:c_wilderness = {
+			holder = {
+				if = {
+					limit = { agot_is_dummy_character = yes } # Given AGOT's setup, the holder of c_wilderness will always need this, but idk chaos reigns
+					add_stress = -1000
+				}
+			}
+		}
+
 		every_situation_sub_region = { # Do monthly events
 			# Background cleaning stuff
 			every_situation_sub_region_county = {
@@ -129,12 +139,7 @@
 
 			# Regular monthly pulse
 			every_situation_sub_region_county = {
-				limit = {
-					holder = {
-						NOT = { has_trait = ruin }
-						NOT = { has_trait = wilderness }
-					}
-				}
+				limit = { holder = { agot_is_dummy_character = no } }
 				save_scope_as = county
 
 				# Set stewardship buff
@@ -184,7 +189,7 @@
 
 			# Regular yearly pulse
 			every_situation_sub_region_county = {
-				limit = { holder = { NOT = { has_trait = ruin } } }
+				limit = { holder = { agot_is_dummy_character = no } }
 				title_province = {
 					# UNCOMMENT ONCE ALL OUTCOMES ARE DONE
 					#if = { # Toxic fumes events every year
@@ -257,7 +262,7 @@
 				always = no
 
 				# Valyrian
-				NOT = { has_trait = ruin }
+				agot_is_dummy_character = no
 				OR = {
 					house ?= { has_house_modifier = dragonrider_house_modifier }
 					dynasty ?= { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
@@ -278,7 +283,7 @@
 				always = no
 
 				# Non-Valyrian
-				NOT = { has_trait = ruin }
+				agot_is_dummy_character = no
 			}
 		}
 
@@ -291,7 +296,7 @@
 				always = no
 
 				# Non-Valyrian
-				NOT = { has_trait = ruin }
+				agot_is_dummy_character = no
 			}
 		}
 
@@ -304,7 +309,7 @@
 				always = no
 
 				# Non-Valyrian
-				NOT = { has_trait = ruin }
+				agot_is_dummy_character = no
 			}
 		}
 	}
