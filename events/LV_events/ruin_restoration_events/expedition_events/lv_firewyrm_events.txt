@@ -105,9 +105,21 @@ lv_firewyrm_event.0001 = {
 	}
 
 	immediate = {
-		lv_spawn_firewyrm_effect = {
-			LOCATION = scope:firewyrm_source
-			GENERATE_BLOCKER = yes
+		if = {
+			limit = { NOT = { exists = scope:firewyrm } }
+			if = {
+				limit = { exists = scope:firewyrm_source }
+				lv_spawn_firewyrm_effect = {
+					LOCATION = scope:firewyrm_source
+					GENERATE_BLOCKER = yes
+				}
+			}
+			else = {
+				lv_spawn_firewyrm_effect = {
+					LOCATION = location
+					GENERATE_BLOCKER = no
+				}
+			}
 		}
 		if = {
 			limit = {
@@ -1195,7 +1207,7 @@ lv_firewyrm_duel.0001 = {
 		agot_clear_dragon_animation_flags = yes
 		scope:fd_attacker = {
 			if = {
-				limit = { var:lv_dragon_state ?= flag:flying }
+				limit = { scope:fd_attacker_dragon = { var:lv_dragon_state ?= flag:flying } }
 				agot_set_dragon_animation_flag_effect = {
 					FLAG = dragon_hover
 					RIDING_DRAGON = yes
@@ -1210,7 +1222,7 @@ lv_firewyrm_duel.0001 = {
 		}
 		scope:fd_defender = {
 			if = {
-				limit = { var:lv_dragon_state ?= flag:flying }
+				limit = { scope:fd_defender_dragon = { var:lv_dragon_state ?= flag:flying } }
 				agot_set_dragon_animation_flag_effect = {
 					FLAG = dragon_hover
 					RIDING_DRAGON = yes
@@ -1257,10 +1269,6 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		debug_log_scopes = yes
-		if = {
-			limit = { NOT = { scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying } } }
-			remove_variable = lv_dragon_state
-		}
 		lv_firewyrm_duel_select_options_from_pool_effect = yes
 		lv_firewyrm_duel_show_opponent_move_effect = yes
 	}
@@ -1770,6 +1778,12 @@ lv_firewyrm_duel.0001 = {
 			#		trigger_event = lv_firewyrm_duel.0001
 			#	}
 			#}
+			scope:fd_round_me_dragon = {
+				if = {
+					limit = { NOT = { var:lv_dragon_state ?= flag:flying } }
+					remove_variable = lv_dragon_state
+				}
+			}
 			if = {
 				limit = { this = scope:fd_defender }
 				trigger_event = lv_firewyrm_duel.0002
