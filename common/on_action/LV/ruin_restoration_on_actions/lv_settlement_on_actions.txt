@@ -9,23 +9,63 @@ lv_settlement_failsafe = {
 			has_game_rule = lv_colonisation_agot
 			agot_is_dummy_character = yes
 		}
-		scope:title = { tier = tier_county }
+		scope:title = {
+			tier = tier_county
+			title_province = {
+				OR = {
+					has_holding_type = ruin_holding
+					has_holding_type = unknown_holding
+					has_holding_type = wilderness_holding
+				}
+			}
+		}
 	}
 	effect = {
 		scope:title = {
 			if = {
-				limit = {
-					title_province = {
-						OR = {
-							has_holding_type = ruin_holding
-							has_holding_type = wilderness_holding
-						}
-						save_temporary_scope_as = ruin
-					}
+				limit = { has_game_rule = lv_colonisation_instant }
+				title_province = {
+					lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = no }
+					save_scope_as = completed_ruin
 				}
-				lv_settlement_establish_effect = {
-					ACTOR = root
-					PROVINCE = scope:ruin
+				holder = { trigger_event = agot_ruins.1000 }
+				set_county_faith = holder.faith
+				if = {
+					limit = { culture = culture:unknown_culture }
+					if = {
+						limit = {
+							holder.culture = culture:high_valyrian
+							has_game_rule = agot_hv_conversion_offshoots
+							title_province = { geographical_region = world_westeros }
+						}
+						set_county_culture = culture:westerosi_valyrian
+					}
+					else_if = {
+						limit = {
+							holder.culture = culture:high_valyrian
+							has_game_rule = agot_hv_conversion_offshoots
+							NOT = { title_province = { geographical_region = world_westeros } }
+						}
+						set_county_culture = culture:essosi_valyrian
+					}
+					else = { set_county_culture = holder.culture }
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						title_province = {
+							OR = {
+								has_holding_type = ruin_holding
+								has_holding_type = wilderness_holding
+							}
+							save_temporary_scope_as = ruin
+						}
+					}
+					lv_settlement_establish_effect = {
+						ACTOR = root
+						PROVINCE = scope:ruin
+					}
 				}
 			}
 		}
@@ -46,7 +86,10 @@ lv_settlement_on_start = {
 				exists = scope:liege
 				exists = scope:ruin
 			}
-			scope:liege = { remove_short_term_gold = var:lv_settlement_cost }
+			if = {
+				limit = { exists = var:lv_settlement_cost }
+				scope:liege = { remove_short_term_gold = var:lv_settlement_cost }
+			}
 			if = {
 				limit = { NOT = { scope:liege ?= scope:settler } }
 				scope:liege = { trigger_event = lv_settlement_event.0010 }
