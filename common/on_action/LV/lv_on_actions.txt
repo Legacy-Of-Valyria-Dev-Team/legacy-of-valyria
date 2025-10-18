@@ -4,6 +4,13 @@ on_game_start = {
 		lv_titles_setup
 		lv_vassals_setup
 		lv_on_game_start
+
+		cob_on_game_start
+		cob_set_legacies
+		cob_house_dna
+		cob_disputed_lands_cleanup
+		cob_set_dragonstone_faiths
+		cob_set_birthplaces
     }
 }
 
@@ -588,7 +595,10 @@ on_game_start_after_lobby = {
 }
 
 lv_ruins_setup = {
-	trigger = { NOT = { has_game_rule = lv_colonisation_agot } }
+	trigger = {
+		NOT = { has_game_rule = lv_colonisation_agot }
+		NOT = { has_game_rule = lv_colonisation_instant }
+	}
 	effect = {
 		# Set up blockers
 		every_county_in_region = {
@@ -640,7 +650,7 @@ lv_ruins_setup_non_default = {
 		every_county_in_region = {
 			limit = { title_province = { has_holding_type = ruin_holding } }
 			region = world_valyria_mainland
-			title_province = { lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = yes } }
+			title_province = { lv_valyria_update_subregion_progress_effect = { REFRESH_ONLY = no ADD_BLOCKER = yes } }
 		}
 	}
 }

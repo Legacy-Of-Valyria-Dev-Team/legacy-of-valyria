@@ -56,7 +56,7 @@ lv_settlement_establish_effect = {
 		# This is to facilitate the terrain changes despite little to no blocker buildings
 		if = {
 			limit = { NOT = { has_game_rule = lv_colonisation_default } }
-			lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = no }
+			lv_valyria_update_subregion_progress_effect = { REFRESH_ONLY = no ADD_BLOCKER = no }
 		}
 	}
 	$ACTOR$ = {
@@ -80,7 +80,15 @@ lv_settlement_establish_effect = {
 
 		# Now we give it to the actual settler
 		if = {
-			limit = { NOT = { this = scope:liege } }
+			limit = {
+				NOT = { this = scope:liege }
+				scope:liege = {
+					NOT = {
+						# Can't have county vassals as a count, of course
+						highest_held_title_tier = tier_county
+					}
+				}
+			}
 			create_title_and_vassal_change = {
 				type = granted
 				save_scope_as = change
@@ -153,7 +161,7 @@ lv_abandon_settlement_effect = {
 			# This is to facilitate the terrain changes despite little to no blocker buildings
 			if = {
 				limit = { NOT = { has_game_rule = lv_colonisation_default } }
-				lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = yes }
+				lv_valyria_update_subregion_progress_effect = { REFRESH_ONLY = no ADD_BLOCKER = yes }
 			}
 		}
 

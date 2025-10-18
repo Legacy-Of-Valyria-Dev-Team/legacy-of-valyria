@@ -4,7 +4,7 @@
 	}
 	decision_group_type = major
 	desc = agot_proclaim_iron_throne_desc
-	ai_goal	= yes
+	ai_goal = yes
 	ai_potential = { always = yes }
 	ai_will_do = { base = 10000 }
 
@@ -36,9 +36,10 @@
 			text = agot_proclaim_it
 			any_empire = {
 				title_capital_county.title_province = { geographical_region = world_westeros_seven_kingdoms }
-				count >= 5
 				save_temporary_scope_as = de_jure_empire
 				root = { completely_controls = scope:de_jure_empire }
+				is_titular = no
+				count >= 5
 			}
 		}
 		has_title = title:d_kings_landing
@@ -75,27 +76,27 @@
 			resolve_title_and_vassal_change = scope:change_it
 			hidden_effect = {
 				copy_title_history = root.primary_title
-                set_variable = kingsguard
-                agot_set_empire_tier_realm_paramountcy = yes
+                #set_variable = kingsguard
+                #agot_set_empire_tier_realm_paramountcy = yes
 			}
 		}
 		add_prestige = 7000
 		dynasty = { add_dynasty_prestige = 3500 }
 		add_legitimacy = 2100 #Max Legitimacy
 		add_dread = 100
-		add_tyranny	= -35
+		add_tyranny = -35
 		gain_legitimizing_legend_seed_tooltip_effect = yes
 		give_nickname = nick_the_conqueror
-		agot_create_artifact_iron_throne_effect = { OWNER = this }
+		agot_create_fake_iron_throne_effect = { OWNER = this }
 		change_government = lp_feudal_government
-		agot_set_legitimate_house = {
-			TITLE = title:e_the_iron_throne
-			HOUSE = root.house
-		}
-		agot_set_new_house_progress = {
-			TITLE = title:e_the_iron_throne
-			PROGRESS = 100
-		}
+		#agot_set_legitimate_house = {
+		#	TITLE = title:e_the_iron_throne
+		#	HOUSE = root.house
+		#}
+		#agot_set_new_house_progress = {
+		#	TITLE = title:e_the_iron_throne
+		#	PROGRESS = 100
+		#}
 		hidden_effect = {
 			legend_seed_great_deed_dynasty_effect = yes
 			every_vassal_or_below = {
@@ -144,6 +145,16 @@
 			scope:fake_artifact = {
 				add_durability = -1000
 			}
+		}
+
+		if = {
+			limit = {
+				title:k_the_most_devout.holder ?= {
+					is_independent_ruler = yes
+					faith = root.faith
+				}
+			}
+			title:k_the_most_devout.holder ?= { agot_assign_high_septon_effect = yes }
 		}
 
 		save_scope_as = i_am_the_king
