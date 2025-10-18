@@ -1,0 +1,277 @@
+﻿agot_innovations_setup_effect = {
+	every_culture_global = {
+		if = {
+			limit = {
+				agot_is_wildling_culture = no
+			}
+			add_innovation = innovation_battlements
+		}
+		if = {
+			limit = {
+				agot_is_wildling_culture = no
+				NOR = {
+					this = culture:andalosi
+					this = culture:crannogman
+					this = culture:skagosi
+					this = culture:braavosi
+					this = culture:norvoshi
+					this = culture:pentoshi
+					this = culture:hartalari
+					this = culture:myrish
+					this = culture:tyroshi
+					this = culture:volantene
+				}
+				NAND = {
+					this = culture:bearman
+					game_start_date < 8000.1.1
+				}
+				NAND = {
+					this = culture:krakenman
+					game_start_date < 8000.1.1
+				}
+				NAND = {
+					this = culture:wolfswood_clansman
+					game_start_date < 8000.1.1
+				}
+				NAND = {
+					this = culture:hill_clansman
+					game_start_date < 8100.1.1
+				}
+				NAND = {
+					this = culture:sisterman
+					game_start_date < 8175.1.1
+				}
+				NAND = {
+					this = culture:fingerman
+					game_start_date < 8150.1.1
+				}
+			}
+			add_innovation = innovation_hoardings
+		}
+		if = {
+			limit = {
+				agot_is_wildling_culture = no
+				NOR = {
+					this = culture:andalosi
+					this = culture:crannogman
+					this = culture:skagosi
+					this = culture:braavosi
+					this = culture:norvoshi
+					this = culture:pentoshi
+					this = culture:hartalari
+					this = culture:myrish
+					this = culture:tyroshi
+					this = culture:volantene
+
+					this = culture:crownlander
+					this = culture:fingerman
+					this = culture:sisterman
+					this = culture:clawman
+					this = culture:barrowman
+					this = culture:bearman
+					this = culture:harborman
+					this = culture:krakenman
+					this = culture:hill_clansman
+					this = culture:northman
+					this = culture:wolfswood_clansman
+					this = culture:ironborn
+				}
+				NAND = {
+					this = culture:stormlander
+					game_start_date < 8260.1.1
+				}
+				NAND = {
+					this = culture:marcher
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:vineman
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:honeywiner
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:reachman
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:shieldman
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:riverlander
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:valeman
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:moonman
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:high_valyrian
+					game_start_date < 8270.1.1
+				}
+				NAND = {
+					this = culture:stone_dornish
+					game_start_date < 8280.1.1
+				}
+			}
+			add_innovation = innovation_machicolations
+		}
+	}
+}
+
+agot_culture_variable_setup_effect = {
+	culture:high_valyrian = {
+		if = {
+			limit = { has_game_rule = agot_hv_conversion_offshoots }
+			set_variable = {
+				name = wv_culture
+				value = culture:westerosi_valyrian
+			}
+			set_variable = {
+				name = ev_culture
+				value = culture:essosi_valyrian
+			}
+		}
+	}
+	culture:ironborn = {
+		set_variable = {
+			name = greenborn_culture
+			value = culture:greenborn
+		}
+	}
+	culture:greenborn = {
+		set_variable = {
+			name = ironborn_culture
+			value = culture:ironborn
+		}
+	}
+	culture:fangman = {
+		set_variable = wildling_culture
+	}
+	culture:forestman = {
+		set_variable = wildling_culture
+	}
+	culture:nightrunner = {
+		set_variable = wildling_culture
+	}
+	culture:frozen_shoreman = {
+		set_variable = wildling_culture
+	}
+	culture:hornfoot = {
+		set_variable = wildling_culture
+	}
+	culture:lakeman = {
+		set_variable = wildling_culture
+	}
+	culture:ice_riverman = {
+		set_variable = wildling_culture
+	}
+	culture:thenn = {
+		set_variable = wildling_culture
+	}
+}
+
+agot_high_valyrian_conversion = {
+	if = {
+		limit = {
+			has_culture = culture:high_valyrian
+			OR = {
+				is_lowborn = yes
+				agot_has_fake_dynasty = yes
+			}
+			#stop bastards from getting converted before they are assigned a house
+			trigger_if = {
+				limit = {
+					exists = mother
+					exists = mother.dynasty
+				}
+				NOT = { mother.culture = culture:high_valyrian }
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					employer ?= {
+						capital_province ?= {
+							NOT = { 
+								OR = {
+									geographical_region = world_westeros 
+									geographical_region = world_valyria_mainland
+								}
+							}
+						}
+					}
+					scope:new_employer ?= {
+						capital_province ?= {
+							NOT = { 
+								OR = {
+									geographical_region = world_westeros 
+									geographical_region = world_valyria_mainland
+								}
+							}
+						}
+					}
+					scope:host ?= {
+						capital_province ?= {
+							NOT = { 
+								OR = {
+									geographical_region = world_westeros 
+									geographical_region = world_valyria_mainland
+								}
+							}
+						}
+					}
+					location ?= {
+						county ?= {
+							title_province ?= {
+								NOT = { 
+									OR = {
+										geographical_region = world_westeros 
+										geographical_region = world_valyria_mainland
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			set_culture = culture:essosi_valyrian
+		}		
+		else = {
+			limit = {
+				OR = {
+					employer ?= {
+						capital_province ?= {
+							NOT = { geographical_region = world_valyria_mainland }
+						}
+					}
+					scope:new_employer ?= {
+						capital_province ?= {
+							NOT = { geographical_region = world_valyria_mainland }
+						}
+					}
+					scope:host ?= {
+						capital_province ?= {
+							NOT = { geographical_region = world_valyria_mainland }
+						}
+					}
+					location ?= {
+						county ?= {
+							title_province ?= {
+								NOT = { geographical_region = world_valyria_mainland }
+							}
+						}
+					}
+				}
+			}
+			set_culture = culture:westerosi_valyrian
+		}
+	}
+}
