@@ -124,6 +124,68 @@
 			add_innovation = innovation_machicolations
 		}
 	}
+	#AGOT AUH TODO Temp Fix
+	if = {
+		limit = { game_start_date >= 400.1.1 }
+		culture:first_man = { add_innovation = innovation_agot_heraldry }
+		culture:summer_rhoynish = { add_innovation = innovation_agot_heraldry }
+	}
+	if = {
+		limit = { game_start_date >= 3300.1.1 }
+		culture:andal = { add_innovation = innovation_development_03 }
+		culture:axeman = { add_innovation = innovation_development_03 }
+		culture:essosi_valyrian = { add_innovation = innovation_development_03 }
+		culture:gogossosi = { add_innovation = innovation_development_03 }
+		culture:mantaryan = { add_innovation = innovation_development_03 }
+		culture:tolosi = { add_innovation = innovation_development_03 }
+		culture:elyrian = { add_innovation = innovation_development_03 }
+		culture:painted_clansman = { add_innovation = innovation_development_03 }
+		culture:essarian = { add_innovation = innovation_development_03 }
+		culture:lorathi = { add_innovation = innovation_development_03 }
+		culture:qohorik = { add_innovation = innovation_development_03 }
+	}
+	if = {
+		limit = { game_start_date >= 7950.1.1 }
+		culture:braavosi = { add_innovation = innovation_cranes }
+		culture:volantene = { add_innovation = innovation_cranes }
+	}
+	if = {
+		limit = { game_start_date >= 8096.1.1 }
+		culture:hartalari = { add_innovation = innovation_rightful_ownership }
+	}
+	if = {
+		limit = { game_start_date >= 8260.1.1 }
+		culture:crownlander = { add_innovation = innovation_trebuchet }
+		culture:honeywiner = { add_innovation = innovation_trebuchet }
+		culture:marcher = { add_innovation = innovation_trebuchet }
+		culture:reachman = { add_innovation = innovation_trebuchet }
+		culture:salt_dornish = { add_innovation = innovation_trebuchet }
+		culture:sand_dornish = { add_innovation = innovation_trebuchet }
+		culture:stone_dornish = { add_innovation = innovation_trebuchet }
+		culture:valeman = { add_innovation = innovation_trebuchet }
+		culture:vineman = { add_innovation = innovation_trebuchet }
+		culture:westerman = { add_innovation = innovation_trebuchet }
+	}
+	if = {
+		limit = { game_start_date >= 8270.1.1 }
+		culture:clawman = { add_innovation = innovation_trebuchet }
+		culture:andal = { add_innovation = innovation_trebuchet }
+		culture:axeman = { add_innovation = innovation_trebuchet }
+		culture:essosi_valyrian = { add_innovation = innovation_trebuchet }
+		culture:gogossosi = { add_innovation = innovation_trebuchet }
+		culture:mantaryan = { add_innovation = innovation_trebuchet }
+		culture:tolosi = { add_innovation = innovation_trebuchet }
+		culture:elyrian = { add_innovation = innovation_trebuchet }
+		culture:painted_clansman = { add_innovation = innovation_trebuchet }
+		culture:essarian = { add_innovation = innovation_trebuchet }
+		culture:lorathi = { add_innovation = innovation_trebuchet }
+		culture:qohorik = { add_innovation = innovation_trebuchet }
+		culture:rhoynish = { add_innovation = innovation_cranes }
+	}
+	if = {
+		limit = { game_start_date >= 8275.1.1 }
+		culture:stormlander = { add_innovation = innovation_trebuchet }
+	}
 }
 
 agot_culture_variable_setup_effect = {
@@ -175,6 +237,46 @@ agot_culture_variable_setup_effect = {
 	}
 	culture:thenn = {
 		set_variable = wildling_culture
+	}
+}
+
+agot_automatic_culture_conversion = {
+	agot_unknown_culture_conversion = yes
+	agot_high_valyrian_conversion = yes
+}
+
+agot_unknown_culture_conversion = {
+	if = {
+		limit = {
+			culture = culture:unknown_culture
+			NOT = { agot_is_dummy_character = yes }
+		}
+		if = {
+			limit = {
+				exists = capital_county
+				NOT = { capital_county.culture = culture:unknown_culture }
+			}
+			set_culture = capital_county.culture
+		}
+		else_if = {
+			limit = {
+				exists = liege_or_court_owner
+				NOT = { liege_or_court_owner.culture = culture:unknown_culture }
+			}
+			set_culture = liege_or_court_owner.culture
+		}
+		else = {
+			random_ruler = {
+				limit = {
+					NOT = { agot_is_dummy_character = yes }
+				}
+				prev = { set_culture = prev.culture }
+			}
+		}
+		add_character_flag = {
+			flag = converted_unknown_culture
+			days = 1
+		}
 	}
 }
 

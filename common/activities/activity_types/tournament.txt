@@ -1,5 +1,4 @@
 ﻿activity_tournament = {
-
 	is_shown = {
 		highest_held_title_tier > tier_barony
 		is_landed = yes
@@ -8,7 +7,8 @@
 				is_ai = yes
 			}
 			is_at_war = no
-			ai_has_conqueror_personality = no
+			NOT = { has_variable = conqueror }
+
 			#AGOT Added
 			agot_mw_is_in_realm_at_megawar = no
 		}
@@ -23,12 +23,13 @@
 				has_realm_law = uncrowned
 			}
 		}
+
 		#AGOT Added
 		NOT = { government_has_flag = government_is_nw }
 		NOT = { government_has_flag = government_is_uninteractable }
 		NOT = { has_government = pirate_government }
 	}
-
+	
 	can_start_showing_failures_only = {
 		NOT = { is_activity_type_on_cooldown = activity_tournament }
 		is_available_adult = yes
@@ -123,13 +124,13 @@
 	# desc is only shown in debug AI watch window
 	ai_will_do = {
 		value = 0
-
+		
 		# Base
 		add = {
 			value = 30
 			desc = "base"
 		}
-
+		
 		if = { # Liege already hosting a grand activity
 			limit = {
 				liege = { has_ongoing_grand_activity_trigger = yes }
@@ -236,7 +237,7 @@
 		# Court
 		if = {
 			limit = {
-				has_royal_court = yes
+				has_royal_court = yes 
 				has_court_type = court_warlike
 			}
 			add = {
@@ -261,7 +262,7 @@
 		}
 		# Culture
 		if = {
-			limit = {
+			limit = { 
 				culture = { has_cultural_tradition = tradition_warrior_culture }
 			}
 			add = {
@@ -270,7 +271,7 @@
 			}
 		}
 		if = {
-			limit = {
+			limit = { 
 				culture = { has_cultural_tradition = tradition_martial_admiration }
 			}
 			add = {
@@ -280,7 +281,7 @@
 		}
 		#AGOT Disabled
 		# if = {
-		# 	limit = {
+		# 	limit = { 
 		# 		culture = { has_cultural_tradition = tradition_chanson_de_geste }
 		# 	}
 		# 	add = {
@@ -379,6 +380,13 @@
             add = {
             	value = -100
             	desc = "Builder"
+            }
+        }
+        if = { # There's no piety in this
+            limit = { ai_has_pious_builder_personality = yes }
+            add = {
+            	value = -100
+            	desc = "Pious Builder"
             }
         }
         if = {
@@ -480,6 +488,58 @@
         #     add = {
         #     	value = 100
         #     	desc = "tournament_world_india_motivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_north_east }
+        #         NOT = {
+		# 			exists = global_var:tournament_world_asia_north_east_motivation
+		# 		}
+        #     }
+        #     add = {
+        #     	value = 100
+        #     	desc = "tournament_world_asia_north_east_motivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_southeast }
+        #         NOT = {
+		# 			exists = global_var:tournament_world_asia_southeast_motivation
+		# 		}
+        #     }
+        #     add = {
+        #     	value = 100
+        #     	desc = "tournament_world_asia_southeast_motivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_china }
+        #         NOT = {
+		# 			exists = global_var:tournament_world_asia_china_motivation
+		# 		}
+        #     }
+        #     add = {
+        #     	value = 100
+        #     	desc = "tournament_world_asia_china_motivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_japan }
+        #         NOT = {
+		# 			exists = global_var:tournament_world_asia_japan_motivation
+		# 		}
+        #     }
+        #     add = {
+        #     	value = 100
+        #     	desc = "tournament_world_asia_japan_motivation"
         #     }
         # }
 
@@ -589,6 +649,54 @@
         #     	desc = "tournament_world_india_demotivation"
         #     }
         # }
+        # if = {
+        #     limit = {
+		# 		years_from_game_start > 100
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_north_east }
+        #         exists = global_var:tournament_world_asia_north_east_motivation
+        #     }
+        #     add = {
+        #     	value = -45
+        #     	desc = "tournament_world_asia_north_east_demotivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+		# 		years_from_game_start > 100
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_southeast }
+        #         exists = global_var:tournament_world_asia_southeast_motivation
+        #     }
+        #     add = {
+        #     	value = -45
+        #     	desc = "tournament_world_asia_southeast_demotivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+		# 		years_from_game_start > 100
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_china }
+        #         exists = global_var:tournament_world_asia_china_motivation
+        #     }
+        #     add = {
+        #     	value = -45
+        #     	desc = "tournament_world_asia_china_demotivation"
+        #     }
+        # }
+        # if = {
+        #     limit = {
+		# 		years_from_game_start > 100
+        #         exists = capital_county
+		# 		capital_county.title_province = { geographical_region = world_asia_japan }
+        #         exists = global_var:tournament_world_asia_japan_motivation
+        #     }
+        #     add = {
+        #     	value = -45
+        #     	desc = "tournament_world_asia_japan_demotivation"
+        #     }
+        # }
 
 		#AGOT Added, Westeros
 		if = {
@@ -621,13 +729,8 @@
 		if = {
         	limit = {
         	    any_held_title = {
-					tier = tier_county
-        	        any_county_province = {
-        	            any_province_epidemic = {
-        	                count >= 1
-        	                outbreak_intensity < apocalyptic
-        	            }
-        	        }
+					title_tier = county
+        	        has_province_with_epidemic = { intensity < apocalyptic }
         	    }
         	    would_follow_social_distancing_value >= -1
         	}
@@ -639,12 +742,7 @@
     	else_if = {
     	    limit = {
     	        any_realm_county = {
-    	            any_county_province = {
-    	                any_province_epidemic = {
-    	                    count >= 1
-    	                    outbreak_intensity < apocalyptic
-    	                }
-    	            }
+    	            has_province_with_epidemic = { intensity < apocalyptic }
     	        }
     	        would_follow_social_distancing_value >= -1
     	    }
@@ -656,13 +754,8 @@
     	if = {
     	    limit = {
     	        any_held_title = {
-					tier = tier_county
-    	            any_county_province = {
-    	                any_province_epidemic = {
-    	                    count >= 1
-    	                    outbreak_intensity = apocalyptic
-    	                }
-    	            }
+					title_tier = county
+    	            has_province_with_epidemic = { intensity = apocalyptic }
     	        }
     	    }
     	    add = {
@@ -673,13 +766,8 @@
     	else_if = {
     	    limit = {
     	        any_held_title = {
-					tier = tier_county
-    	            any_county_province = {
-    	                any_province_epidemic = {
-    	                    count >= 1
-    	                    outbreak_intensity = apocalyptic
-    	                }
-    	            }
+					title_tier = county
+    	            has_province_with_epidemic = { intensity = apocalyptic }
     	        }
     	    }
     	    add = {
@@ -689,16 +777,26 @@
     	}
     	#we don't want the Pope to host tournaments
     	#AGOT Disabled
-    	#if = {
-    	#	limit = {
-    	#		government_has_flag = government_is_theocracy
-    	#		has_title = title:k_papal_state
-    	#	}
-    	#	add = {
-    	#		value = -1000
-    	#		desc = "Is Pope"
-    	#	}
-    	#}
+    	# if = {
+    	# 	limit = {
+    	# 		government_has_flag = government_is_theocracy
+    	# 		has_title = title:k_papal_state
+    	# 	}
+    	# 	add = {
+    	# 		value = -1000
+    	# 		desc = "Is Pope"
+    	# 	}
+    	# }
+    	# Celestial gov has better things to do
+    	if = {
+    		limit = {
+    			government_has_flag = government_is_celestial
+    		}
+    		add = {
+    			value = -1000
+    			desc = "Is Celestial"
+    		}
+    	}
 		if = {
 			limit = {
 				is_ai = yes
@@ -708,7 +806,14 @@
 		}
 	}
 
-	ai_check_interval = 60
+	ai_check_interval_by_tier = {
+		barony = 0
+		county = 60
+		duchy = 60
+		kingdom = 60
+		empire = 60
+		hegemony = 60
+	}
 
 	ai_will_select_province = {
 		# Base
@@ -796,23 +901,11 @@
 			}
 		}
 		#AGOT Disabled
-		# if = {
-		# 	limit = {
-		# 		OR = {
-		# 			has_building_or_higher = generic_university
-		# 			has_building_or_higher = al_azhar_university
-		# 			has_building_or_higher = sankore_university
-		# 			has_building_or_higher = siena_university
-		# 			has_building_or_higher = nalanda_university
-		# 			has_building_or_higher = al_qarawiyyin_university_01
-		# 			has_building_or_higher = somapura_university_01
-		# 			has_building_or_higher = cluny_abbey_01
-		# 		}
+		# triggered_desc = {
+		# 	trigger = {
+		# 		has_building_with_flag = special_university
 		# 	}
-		# 	add = {
-		# 		value = 1
-		# 		desc = activity_tournament_province_generic_university_desc
-		# 	}
+		# 	desc = activity_tournament_province_generic_university_desc
 		# }
 		#AGOT Added, Harrenhal
 		if = {
@@ -840,13 +933,9 @@
 				desc = activity_tournament_province_agot_ashford_tourney_grounds_01_desc
 			}
 		}
-		#LV Added
+		#LEGACY OF VALYRIA ADDED
 		if = {
-			limit = {
-				OR = {
-					has_building_or_higher = great_arena_of_valyria_02
-				}
-			}
+			limit = { has_building_or_higher = great_arena_of_valyria_02 }
 			add = {
 				value = 5
 				desc = activity_tournament_province_cv_the_great_arena_of_valyria
@@ -890,15 +979,15 @@
 		desc = activity_tournament_province_desc
 		# +++ / always a good thing
 		triggered_desc = {
-			trigger = {
-				county.development_level >= great_development_level
+			trigger = { 
+				county.development_level >= great_development_level 
 			}
 			desc = activity_tournament_province_desc_development_great
 		}
 		# ++ / double plus good
 		triggered_desc = {
-			trigger = {
-				county.development_level >= good_development_level
+			trigger = { 
+				county.development_level >= good_development_level 
 				NOT = {
 					county.development_level >= great_development_level
 				}
@@ -907,8 +996,8 @@
 		}
 		# + / plus good
 		triggered_desc = {
-			trigger = {
-				county.development_level >= medium_development_level
+			trigger = { 
+				county.development_level >= medium_development_level 
 				NOT = {
 					county.development_level >= good_development_level
 				}
@@ -965,7 +1054,7 @@
 			trigger = { has_building_or_higher = agot_ashford_tourney_grounds_01 }
 			desc = activity_tournament_province_agot_ashford_tourney_grounds_01_desc
 		}
-		#CV Added
+		#LEGACY OF VALYRIA ADDED
 		triggered_desc = {
 			trigger = { has_building_or_higher = great_arena_of_valyria_02 }
 			desc = activity_tournament_province_lv_great_arena_of_valyria_02_desc
@@ -978,13 +1067,7 @@
 		#AGOT Disabled
 		# triggered_desc = {
 		# 	trigger = {
-		# 		OR = {
-		# 			has_building_or_higher = generic_university
-		# 			has_building_or_higher = al_azhar_university
-		# 			has_building_or_higher = sankore_university
-		# 			has_building_or_higher = siena_university
-		# 			has_building_or_higher = nalanda_university
-		# 		}
+		# 		has_building_with_flag = special_university
 		# 	}
 		# 	desc = activity_tournament_province_generic_university_desc
 		# }
@@ -1086,7 +1169,7 @@
 				has_building_or_higher = generic_harrenhal_01
 				#AGOT Added, Ashford
 				has_building_or_higher = agot_ashford_tourney_grounds_01
-				#CV Added
+				#LEGACY OF VALYRIA ADDED
 				has_building_or_higher = great_arena_of_valyria_02
 				#AGOT Disabled
 				#has_building_or_higher = hall_of_heroes_01
@@ -1198,7 +1281,7 @@
 		}
 		else_if = {
 			limit = {
-				county.development_level >= good_development_level
+				county.development_level >= good_development_level 
 				NOT = {
 					county.development_level >= great_development_level
 				}
@@ -1207,7 +1290,7 @@
 		}
 		else_if = {
 			limit = {
-				county.development_level >= great_development_level
+				county.development_level >= great_development_level 
 			}
 			add = 30
 		}
@@ -1215,163 +1298,345 @@
 
 	cost = {
 		gold = {
-			add = {
-				add = {
-					value = tournament_base_cost
-					desc = tournament_base_cost
+			value = 0
+			if = {
+				limit = {
+					has_treasury = no
 				}
 				add = {
-					value = tournament_base_cost
-					multiply = activity_cost_scale_by_era
-					subtract = tournament_base_cost
-					desc = activity_cost_scale_by_era_desc
-				}
-				#AGOT Disabled
-				# if = {
-				# 	limit = { scope:province ?= { has_building_or_higher = hall_of_heroes_01 } }
-				# 	add = {
-				# 		value = 0
-				# 		add = {
-				# 			value = tournament_base_cost
-				# 			add = {
-				# 				value = tournament_base_cost
-				# 				multiply = activity_cost_scale_by_era
-				# 				subtract = tournament_base_cost
-				# 			}
-				# 		}
-				# 		multiply = tournament_activity_cost_max_discount_value
-				# 		desc = tournament_activity_cost_max_discount_desc
-				# 	}
-				# }
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = war_camps_01 } }
 					add = {
-						value = 0
+						value = tournament_base_cost
+						desc = tournament_base_cost
+					}
+					add = {
+						value = tournament_base_cost
+						multiply = activity_cost_scale_by_era
+						subtract = tournament_base_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					#AGOT Disabled
+					# if = {
+					# 	limit = { scope:province ?= { has_building_or_higher = hall_of_heroes_01 } }
+					# 	add = {
+					# 		value = 0
+					# 		add = {
+					# 			value = tournament_base_cost
+					# 			add = {
+					# 				value = tournament_base_cost
+					# 				multiply = activity_cost_scale_by_era
+					# 				subtract = tournament_base_cost
+					# 			}
+					# 		}
+					# 		multiply = tournament_activity_cost_max_discount_value
+					# 		desc = tournament_activity_cost_max_discount_desc
+					# 	}
+					# }
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = war_camps_01 } } 
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_discount_value
+							desc = tournament_activity_cost_discount_war_camps_desc
 						}
-						multiply = tournament_activity_cost_discount_value
-						desc = tournament_activity_cost_discount_war_camps_desc
 					}
-				}
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = barracks_01 } }
-					add = {
-						value = 0
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = barracks_01 } }
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_discount_value
+							desc = tournament_activity_cost_discount_barracks_desc
 						}
-						multiply = tournament_activity_cost_discount_value
-						desc = tournament_activity_cost_discount_barracks_desc
 					}
-				}
-				#AGOT Added, Harrenhal
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } }
-					add = {
-						value = 0
+					#AGOT Added, Harrenhal
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_harrenhal
 						}
-						multiply = tournament_activity_cost_max_discount_value
-						desc = tournament_cost_discount_harrenhal
 					}
-				}
-				#AGOT Added, Harrenhal
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
-					add = {
-						value = 0
+					#AGOT Added, Harrenhal
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_harrenhal
 						}
-						multiply = tournament_activity_cost_max_discount_value
-						desc = tournament_cost_discount_harrenhal
 					}
-				}
-				#AGOT Added, Harrenhal
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
-					add = {
-						value = 0
+					#AGOT Added, Harrenhal
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_harrenhal
 						}
-						multiply = tournament_activity_cost_max_discount_value
-						desc = tournament_cost_discount_harrenhal
 					}
-				}
-				#AGOT Added, Ashford
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } }
-					add = {
-						value = 0
+					#AGOT Added, Ashford
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } } 
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_ashford
 						}
-						multiply = tournament_activity_cost_max_discount_value
-						desc = tournament_cost_discount_ashford
 					}
-				}
-				#CV Added
-				if = {
-					limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-					add = {
-						value = 0
+					#CV Added
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 						add = {
-							value = tournament_base_cost
+							value = 0
 							add = {
 								value = tournament_base_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
 							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_cv_arena
 						}
-						multiply = tournament_activity_cost_max_discount_value
-						desc = tournament_cost_discount_cv_arena
+					}
+					# Some people get one free.
+					if = {
+						limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+						multiply = 0
+					}
+					min = 0
+					if = {
+						limit = {
+							is_ai = yes
+							has_character_flag = tournament_ai_override
+						}
+						multiply = 0
 					}
 				}
-				# Some people get one free.
-				if = {
-					limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-					multiply = 0
+			}
+			if = {
+				limit = {
+					confederation ?= { has_cohesion_level_parameter = any_member_activity_cost_reduced }
 				}
-				min = 0
-				if = {
-					limit = {
-						is_ai = yes
-						has_character_flag = tournament_ai_override
+				multiply = {
+					value = 0.9
+					desc = CB_COHESION_PARAMETER_DISCOUNT
+				}
+			}
+		}
+		treasury = {
+			value = 0
+			if = {
+				limit = {
+					has_treasury = yes
+				}
+				add = {
+					add = {
+						value = tournament_base_cost
+						desc = tournament_base_cost
 					}
-					multiply = 0
+					add = {
+						value = tournament_base_cost
+						multiply = activity_cost_scale_by_era
+						subtract = tournament_base_cost
+						desc = activity_cost_scale_by_era_desc
+					}
+					#AGOT Disabled
+					# if = {
+					# 	limit = { scope:province ?= { has_building_or_higher = hall_of_heroes_01 } }
+					# 	add = {
+					# 		value = 0
+					# 		add = {
+					# 			value = tournament_base_cost
+					# 			add = {
+					# 				value = tournament_base_cost
+					# 				multiply = activity_cost_scale_by_era
+					# 				subtract = tournament_base_cost
+					# 			}
+					# 		}
+					# 		multiply = tournament_activity_cost_max_discount_value
+					# 		desc = tournament_activity_cost_max_discount_desc
+					# 	}
+					# }
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = war_camps_01 } } 
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_discount_value
+							desc = tournament_activity_cost_discount_war_camps_desc
+						}
+					}
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = barracks_01 } }
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_discount_value
+							desc = tournament_activity_cost_discount_barracks_desc
+						}
+					}
+					#AGOT Added, Harrenhal
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_harrenhal
+						}
+					}
+					#AGOT Added, Harrenhal
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_harrenhal
+						}
+					}
+					#AGOT Added, Harrenhal
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_harrenhal
+						}
+					}
+					#AGOT Added, Ashford
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } } 
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_ashford
+						}
+					}
+					#LEGACY OF VALYRIA
+					if = {
+						limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+						add = {
+							value = 0
+							add = {
+								value = tournament_base_cost
+								add = {
+									value = tournament_base_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_base_cost
+								}
+							}
+							multiply = tournament_activity_cost_max_discount_value
+							desc = tournament_cost_discount_cv_arena
+						}
+					}
+					# Some people get one free.
+					if = {
+						limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+						multiply = 0
+					}
+					min = 0
+					if = {
+						limit = {
+							is_ai = yes
+							has_character_flag = tournament_ai_override
+						}
+						multiply = 0
+					}
 				}
 			}
 		}
@@ -1380,68 +1645,151 @@
 	ui_predicted_cost = {
 		# All costs are balanced on County/Early Era starting point
 		gold = {
-			# Base Cost
-			add = {
-				value = tournament_base_cost
-				desc = tournament_base_cost
-			}
-			# Scale by Era
-			multiply = {
-				value = activity_cost_scale_by_era
-				desc = activity_cost_scale_by_era_desc
-			}
-
-			# OPTIONS
-			add = {
-				value = { # Calculate the average of the three option costs
-					value = 0
-					add = tournament_option_bad_cost
-					add = tournament_option_normal_cost
-					add = tournament_option_good_cost
-					add = tournament_option_very_good_cost
-					#add = tournament_option_splendid_cost # Prediction becomes very costly with this
-					# Scale by era
-					multiply = activity_cost_scale_by_era
-					# Divide by total number of option levels to get an average option cost
-					divide = 4
-				}
-				# Mult 2 because there are two option categories with the same costs
-				multiply = 2
-			}
-
-			# CONTESTS
-			add = {
-				value = 113 # Average contest cost in the Early Era
-				# Scale average cost by era
-				multiply = activity_cost_scale_by_era
-				# Try to account for the average number of planned contest based on era
-				if = {
-					limit = {
-						root.culture = { has_cultural_era_or_later = culture_era_late_medieval }
-					}
-					multiply = 3 # average number to be hosted in the late era
-				}
-				else_if = {
-					limit = {
-						root.culture = { has_cultural_era_or_later = culture_era_high_medieval }
-					}
-					multiply = 2 # average number to be hosted in the high era
-				}
-				else = {
-					multiply = 1 # otherwise, we assume 1
-				}
-			}
-
-			# Some people get a freebie
+			value = 0
 			if = {
-				limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-				multiply = 0
-			}
+				limit = {
+					has_treasury = no
+				}
+				add = {
+					value = tournament_base_cost
+					desc = tournament_base_cost
+				}
+				# Scale by Era
+				multiply = {
+					value = activity_cost_scale_by_era
+					desc = activity_cost_scale_by_era_desc
+				}
 
-			# Make it a multiple of 5 (rounded up)
-			divide = 5
-			ceiling = yes
-			multiply = 5
+				# OPTIONS
+				add = {
+					value = { # Calculate the average of the three option costs
+						value = 0 
+						add = tournament_option_bad_cost
+						add = tournament_option_normal_cost
+						add = tournament_option_good_cost
+						add = tournament_option_very_good_cost
+						#add = tournament_option_splendid_cost # Prediction becomes very costly with this
+						# Scale by era 
+						multiply = activity_cost_scale_by_era
+						# Divide by total number of option levels to get an average option cost
+						divide = 4
+					}
+					# Mult 2 because there are two option categories with the same costs 
+					multiply = 2
+				}
+
+				# CONTESTS 
+				add = {
+					value = 113 # Average contest cost in the Early Era
+					# Scale average cost by era
+					multiply = activity_cost_scale_by_era
+					# Try to account for the average number of planned contest based on era
+					if = {
+						limit = {
+							root.culture = { has_cultural_era_or_later = culture_era_late_medieval }
+						}
+						multiply = 3 # average number to be hosted in the late era
+					}
+					else_if = {
+						limit = {
+							root.culture = { has_cultural_era_or_later = culture_era_high_medieval }
+						}
+						multiply = 2 # average number to be hosted in the high era
+					}
+					else = {
+						multiply = 1 # otherwise, we assume 1
+					}
+				}
+
+				# Some people get a freebie
+				if = {
+					limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+					multiply = 0
+				}
+				
+				# Make it a multiple of 5 (rounded up)
+				divide = 5
+				ceiling = yes 
+				multiply = 5
+			}
+			if = {
+				limit = {
+					confederation ?= { has_cohesion_level_parameter = any_member_activity_cost_reduced }
+				}
+				multiply = {
+					value = 0.9
+					desc = CB_COHESION_PARAMETER_DISCOUNT
+				}
+			}
+		}
+		treasury = {
+			value = 0
+			if = {
+				limit = {
+					has_treasury = yes
+				}
+				add = {
+					value = tournament_base_cost
+					desc = tournament_base_cost
+				}
+				# Scale by Era
+				multiply = {
+					value = activity_cost_scale_by_era
+					desc = activity_cost_scale_by_era_desc
+				}
+
+				# OPTIONS
+				add = {
+					value = { # Calculate the average of the three option costs
+						value = 0 
+						add = tournament_option_bad_cost
+						add = tournament_option_normal_cost
+						add = tournament_option_good_cost
+						add = tournament_option_very_good_cost
+						#add = tournament_option_splendid_cost # Prediction becomes very costly with this
+						# Scale by era 
+						multiply = activity_cost_scale_by_era
+						# Divide by total number of option levels to get an average option cost
+						divide = 4
+					}
+					# Mult 2 because there are two option categories with the same costs 
+					multiply = 2
+				}
+
+				# CONTESTS 
+				add = {
+					value = 113 # Average contest cost in the Early Era
+					# Scale average cost by era
+					multiply = activity_cost_scale_by_era
+					# Try to account for the average number of planned contest based on era
+					if = {
+						limit = {
+							root.culture = { has_cultural_era_or_later = culture_era_late_medieval }
+						}
+						multiply = 3 # average number to be hosted in the late era
+					}
+					else_if = {
+						limit = {
+							root.culture = { has_cultural_era_or_later = culture_era_high_medieval }
+						}
+						multiply = 2 # average number to be hosted in the high era
+					}
+					else = {
+						multiply = 1 # otherwise, we assume 1
+					}
+				}
+
+				# Some people get a freebie
+				if = {
+					limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+					multiply = 0
+				}
+				
+				# Make it a multiple of 5 (rounded up)
+				divide = 5
+				ceiling = yes 
+				multiply = 5
+			}
 		}
 	}
 
@@ -1585,7 +1933,7 @@
    	window_characters = {
 		player = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:player ?= { add_to_list = characters }
 			}
@@ -1595,7 +1943,7 @@
 		}
 		host = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:host ?= { add_to_list = characters }
 			}
@@ -1605,7 +1953,7 @@
 		}
 		melee_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:melee_winner ?= { add_to_list = characters }
 			}
@@ -1615,7 +1963,7 @@
 		}
 		archery_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:archery_winner ?= { add_to_list = characters }
 			}
@@ -1625,7 +1973,7 @@
 		}
 		horse_race_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:horse_race_winner ?= { add_to_list = characters }
 			}
@@ -1635,7 +1983,7 @@
 		}
 		recital_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:recital_winner ?= { add_to_list = characters }
 			}
@@ -1645,7 +1993,7 @@
 		}
 		joust_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:joust_winner ?= { add_to_list = characters }
 			}
@@ -1655,7 +2003,7 @@
 		}
 		duel_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:duel_winner ?= { add_to_list = characters }
 			}
@@ -1665,7 +2013,7 @@
 		}
 		board_game_winner = {
 			camera = camera_body
-
+			
 			effect = {
 				scope:activity.var:board_game_winner ?= { add_to_list = characters }
 			}
@@ -1696,7 +2044,10 @@
 	map_entity = {
 		trigger = {
 			activity_location.culture = {
-				has_graphical_india_culture_group_trigger = yes
+				OR = {
+					has_graphical_india_culture_group_trigger = yes
+					has_graphical_east_asia_culture_group_trigger = yes
+				}
 			}
 		}
 		reference = "building_indian_tournament_01_entity"
@@ -1757,14 +2108,17 @@
 
 	locale_background = { #India Background
 		trigger = {
-			activity_location.culture = {
-				has_graphical_india_culture_group_trigger = yes
+			activity_location = {
+				OR = {
+					culture = { has_graphical_india_culture_group_trigger = yes }
+					culture = { has_graphical_east_asia_culture_group_trigger = yes }
+					steppe_building_gfx_use_east_asian_trigger = yes
+					steppe_building_gfx_use_indian_trigger = yes
+				}
 			}
 			activity_location = {
 				OR = {
-					#AGOT Modified
-					#terrain = jungle
-					agot_is_jungle_terrain = yes
+					terrain = jungle
 					AND = {
 						OR = {
 							#AGOT Modified
@@ -1789,15 +2143,15 @@
 							#AGOT Modified
 							# geographical_region = world_india
 							# geographical_region = world_burma
+							# geographical_region = world_asia_southeast
 							geographical_region = graphical_india
 						}
 					}
 					#AGOT Disabled
 					# AND = {
 					# 	terrain = forest
-					# 	OR = {
-					# 		geographical_region = world_africa_west
-					# 	}
+					# 	geographical_region = world_africa_west
+
 					# }
 				}
 			}
@@ -1827,38 +2181,86 @@
 
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_accommodations_bad
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_bad_cost
 								desc = tournament_accommodations_bad
+								add = {
+									value = tournament_option_bad_cost
+									desc = tournament_accommodations_bad
+								}
+								add = {
+									value = tournament_option_bad_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_bad_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_bad_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_bad_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_accommodations_bad
+								add = {
+									value = tournament_option_bad_cost
+									desc = tournament_accommodations_bad
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_bad_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_bad_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -1897,38 +2299,86 @@
 
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_accommodations_normal
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_normal_cost
 								desc = tournament_accommodations_normal
+								add = {
+									value = tournament_option_normal_cost
+									desc = tournament_accommodations_normal
+								}
+								add = {
+									value = tournament_option_normal_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_normal_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_normal_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_normal_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_accommodations_normal
+								add = {
+									value = tournament_option_normal_cost
+									desc = tournament_accommodations_normal
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_normal_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_normal_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -1980,38 +2430,86 @@
 
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_accommodations_good
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_good_cost
 								desc = tournament_accommodations_good
+								add = {
+									value = tournament_option_good_cost
+									desc = tournament_accommodations_good
+								}
+								add = {
+									value = tournament_option_good_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_good_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_good_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_good_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_accommodations_good
+								add = {
+									value = tournament_option_good_cost
+									desc = tournament_accommodations_good
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_good_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_good_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -2023,38 +2521,86 @@
 			tournament_prizes_bad = {
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_prizes_bad
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_bad_cost
 								desc = tournament_prizes_bad
+								add = {
+									value = tournament_option_bad_cost
+									desc = tournament_prizes_bad
+								}
+								add = {
+									value = tournament_option_bad_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_bad_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_bad_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_bad_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_prizes_bad
+								add = {
+									value = tournament_option_bad_cost
+									desc = tournament_prizes_bad
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_bad_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_bad_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -2089,41 +2635,88 @@
 				}
 			}
 			tournament_prizes_normal = {
-
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_prizes_normal
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_normal_cost
 								desc = tournament_prizes_normal
+								add = {
+									value = tournament_option_normal_cost
+									desc = tournament_prizes_normal
+								}
+								add = {
+									value = tournament_option_normal_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_normal_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_normal_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_normal_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_prizes_normal
+								add = {
+									value = tournament_option_normal_cost
+									desc = tournament_prizes_normal
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_normal_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_normal_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -2139,41 +2732,89 @@
 			}
 			tournament_prizes_good = {
 				default = yes
-
+				
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_prizes_good
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_good_cost
 								desc = tournament_prizes_good
+								add = {
+									value = tournament_option_good_cost
+									desc = tournament_prizes_good
+								}
+								add = {
+									value = tournament_option_good_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_good_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_good_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_good_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_prizes_good
+								add = {
+									value = tournament_option_good_cost
+									desc = tournament_prizes_good
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_good_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_good_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -2215,41 +2856,88 @@
 				}
 			}
 			tournament_prizes_very_good = {
-
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_prizes_very_good
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_very_good_cost
 								desc = tournament_prizes_very_good
+								add = {
+									value = tournament_option_very_good_cost
+									desc = tournament_prizes_very_good
+								}
+								add = {
+									value = tournament_option_very_good_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_very_good_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_very_good_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_very_good_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_prizes_very_good
+								add = {
+									value = tournament_option_very_good_cost
+									desc = tournament_prizes_very_good
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_very_good_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_very_good_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -2300,41 +2988,89 @@
 				}
 			}
 			tournament_prizes_splendid = {
-
+				
 				cost = {
 					gold = {
-						add = {
-							desc = tournament_prizes_splendid
+						value = 0
+						if = {
+							limit = {
+								has_treasury = no
+							}
 							add = {
-								value = tournament_option_splendid_cost
 								desc = tournament_prizes_splendid
+								add = {
+									value = tournament_option_splendid_cost
+									desc = tournament_prizes_splendid
+								}
+								add = {
+									value = tournament_option_splendid_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_splendid_cost
+									desc = activity_cost_scale_by_era_desc
+								}
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
+								}
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
+							}
+						}
+					}
+					treasury = {
+						value = 0
+						if = {
+							limit = {
+								has_treasury = yes
 							}
 							add = {
-								value = tournament_option_splendid_cost
-								multiply = activity_cost_scale_by_era
-								subtract = tournament_option_splendid_cost
-								desc = activity_cost_scale_by_era_desc
-							}
-							if = {
-								limit = {
-									has_perk = journey_planner_perk
+								desc = tournament_prizes_splendid
+								add = {
+									value = tournament_option_splendid_cost
+									desc = tournament_prizes_splendid
 								}
-								multiply = {
-									value = voyager_journey_planner_value
-									desc = journey_planner_perk_name
+								add = {
+									value = tournament_option_splendid_cost
+									multiply = activity_cost_scale_by_era
+									subtract = tournament_option_splendid_cost
+									desc = activity_cost_scale_by_era_desc
 								}
-							}
-							# Some people get one free.
-							if = {
-								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-								multiply = 0
-							}
-							if = {
-								limit = {
-									is_ai = yes
-									has_character_flag = tournament_ai_override
+								if = {
+									limit = {
+										has_perk = journey_planner_perk
+									}
+									multiply = {
+										value = voyager_journey_planner_value
+										desc = journey_planner_perk_name
+									}
 								}
-								multiply = 0
+								# Some people get one free.
+								if = {
+									limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+									multiply = 0
+								}
+								if = {
+									limit = {
+										is_ai = yes
+										has_character_flag = tournament_ai_override
+									}
+									multiply = 0
+								}
 							}
 						}
 					}
@@ -2482,7 +3218,7 @@
 					}
 				}
 				if = {
-					limit = {
+					limit = { 
 						culture = { has_cultural_tradition = tradition_warrior_culture }
 					}
 					add = {
@@ -2491,7 +3227,7 @@
 					}
 				}
 				if = {
-					limit = {
+					limit = { 
 						culture = { has_cultural_tradition = tradition_martial_admiration }
 					}
 					add = {
@@ -2501,7 +3237,7 @@
 				}
 				#AGOT Disabled
 				# if = {
-				# 	limit = {
+				# 	limit = { 
 				# 		culture = { has_cultural_tradition = tradition_chanson_de_geste }
 				# 	}
 				# 	add = {
@@ -2510,8 +3246,8 @@
 				# 	}
 				# }
 				if = {
-					limit = {
-						culture = {
+					limit = { 
+						culture = { 
 							OR = {
 								#AGOT Modified
 								# has_cultural_pillar = heritage_central_germanic
@@ -2528,7 +3264,7 @@
 					}
 					add = {
 						#AGOT Modified
-						#value = 15
+						#value = 15						
 						value = 50
 						desc = game_rule_category_culture
 					}
@@ -2553,158 +3289,326 @@
 					}
 				}
 				gold = {
-					add = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
+						}
 						add = {
-							value = tournament_contest_base_cost #Base level for Contest
+							add = {
+								value = tournament_contest_base_cost #Base level for Contest
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_melee_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = royal_armory_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_melee_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = stables_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_melee_contest_cost_low_discount_desc
+								}
+							}
+							#AGOT Added, Harrenhal
 							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_melee_cost
-						}
-						add = {
-							value = tournament_contest_base_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_base_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = royal_armory_01
-								}
-							}
-							add = {
-								value = 0
+								limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
 								add = {
-									value = tournament_contest_base_cost
+									value = 0
 									add = {
 										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
 									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_melee_contest_cost_discount_desc
-							}
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = stables_01
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_harrenhal
 								}
 							}
-							add = {
-								value = 0
+							#AGOT Added, Harrenhal
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
 								add = {
-									value = tournament_contest_base_cost
+									value = 0
 									add = {
 										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
 									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_harrenhal
 								}
-								multiply = tournament_contest_cost_low_discount_value
-								desc = tournament_melee_contest_cost_low_discount_desc
 							}
-						}
-						#AGOT Added, Harrenhal
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
-							add = {
-								value = 0
+							#AGOT Added, Harrenhal
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
 								add = {
-									value = tournament_contest_base_cost
+									value = 0
 									add = {
 										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
 									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_harrenhal
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_harrenhal
 							}
-						}
-						#AGOT Added, Harrenhal
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
-							add = {
-								value = 0
+							#AGOT Added, Ashford
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } } 
 								add = {
-									value = tournament_contest_base_cost
+									value = 0
 									add = {
 										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
 									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_ashford
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_harrenhal
 							}
-						}
-						#AGOT Added, Harrenhal
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } }
-							add = {
-								value = 0
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 								add = {
-									value = tournament_contest_base_cost
-									add = {
-										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
-									}
-								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_harrenhal
-							}
-						}
-						#AGOT Added, Ashford
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } }
-							add = {
-								value = 0
-								add = {
-									value = tournament_contest_base_cost
-									add = {
-										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
-									}
-								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_ashford
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
-								add = {
-									value = tournament_base_cost
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_base_cost #Base level for Contest
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_melee_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = royal_armory_01
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_melee_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = stables_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_melee_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							#AGOT Added, Harrenhal
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = harrenhal_01 } } 
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_harrenhal
+								}
+							}
+							#AGOT Added, Harrenhal
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = generic_harrenhal_01 } } 
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_harrenhal
+								}
+							}
+							#AGOT Added, Harrenhal
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = ruins_harrenhal_01 } } 
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_harrenhal
+								}
+							}
+							#AGOT Added, Ashford
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = agot_ashford_tourney_grounds_01 } } 
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_ashford
+								}
+							}
+							#LEGACY OF VALYRIA
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -2728,7 +3632,7 @@
 
 		# ARCHERY
 		# contest_archery_aptitude_value
-		tournament_phase_archery = {
+		tournament_phase_archery = {			
 			is_shown = {}
 
 			can_pick = {} #Deliberately empty; should be able to host this anywhere
@@ -2825,8 +3729,8 @@
 					}
 				}
 				if = {
-					limit = {
-						culture = {
+					limit = { 
+						culture = { 
 							OR = {
 								#AGOT Modified
 								# has_cultural_pillar = heritage_akan
@@ -2847,7 +3751,7 @@
 					}
 					add = {
 						#AGOT Modified
-						#value = 15
+						#value = 15						
 						value = 50
 						desc = game_rule_category_culture
 					}
@@ -2872,90 +3776,190 @@
 					}
 				}
 				gold = {
-					add = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
+						}
 						add = {
-							value = tournament_contest_base_cost #Base level for Contest
+							add = {
+								value = tournament_contest_base_cost #Base level for Contest
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_archery_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = archery_ranges_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_archery_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = military_camps_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_archery_contest_cost_low_discount_desc
+								}
+							}
+							#LEGACY OF VALYRIA
 							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_archery_cost
-						}
-						add = {
-							value = tournament_contest_base_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_base_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = archery_ranges_01
-								}
-							}
-							add = {
-								value = 0
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 								add = {
-									value = tournament_contest_base_cost
-									add = {
-										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
-									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_archery_contest_cost_discount_desc
-							}
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = military_camps_01
-								}
-							}
-							add = {
-								value = 0
-								add = {
-									value = tournament_contest_base_cost
-									add = {
-										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
-									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_archery_contest_cost_low_discount_desc
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
-								add = {
-									value = tournament_base_cost
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_base_cost #Base level for Contest
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_archery_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = archery_ranges_01
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_archery_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = military_camps_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_archery_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							#LEGACY OF VALYRIA
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -3016,91 +4020,96 @@
 						desc = tourney_participant_wit
 					}
 				}
-				if = {
-					limit = {
-						culture = { has_cultural_tradition = tradition_fp1_northern_stories }
+				culture = {
+					if = {
+						limit = {
+							has_cultural_tradition = tradition_fp1_northern_stories
+						}
+						add = {
+							value = 25
+							desc = tradition_fp1_northern_stories_name
+						}
 					}
-					add = {
-						value = 25
-						desc = tradition_fp1_northern_stories_name
+					if = {
+						limit = {
+							has_cultural_parameter = poet_trait_gives_bonuses
+						}
+						add = {
+							value = 50
+							desc = tradition_poetry_name
+						}
+					}
+					if = {
+						limit = {
+							has_cultural_tradition = tradition_storytellers
+						}
+						add = {
+							value = 50
+							desc = tradition_storytellers_name
+						}
+					}
+					#AGOT Disabled
+					# if = {
+					# 	limit = {
+					# 		has_cultural_pillar = heritage_brythonic
+					# 	}
+					# 	add = {
+					# 		value = 25
+					# 		desc = heritage_brythonic_name
+					# 	}
+					# }
+					#AGOT Disabled
+					# if = {
+					# 	limit = {
+					# 		has_cultural_pillar = heritage_goidelic
+					# 	}
+					# 	add = {
+					# 		value = 25
+					# 		desc = heritage_goidelic_name
+					# 	}
+					# }
+					#AGOT Disabled
+					# if = {
+					# 	limit = {
+					# 		has_cultural_pillar = heritage_north_germanic
+					# 	}
+					# 	add = {
+					# 		value = 25
+					# 		desc = heritage_north_germanic_name
+					# 	}
+					# }
+					#AGOT Disabled
+					# if = {
+					# 	limit = {
+					# 		has_cultural_pillar = heritage_latin
+					# 	}
+					# 	add = {
+					# 		value = 25
+					# 		desc = game_rule_category_culture
+					# 	}
+					# }
+					#AGOT Added
+					if = {
+						limit = {
+							AND = {
+								has_cultural_pillar = heritage_valyrian
+								NOR = {
+									this = culture:westerosi_valyrian
+									this = culture:high_valyrian
+								}
+							}
+						}
+						add = {
+							value = 25
+							desc = game_rule_category_culture
+						}
 					}
 				}
-				if = {
-					limit = {
-						culture = { has_cultural_tradition = tradition_poetry }
-					}
-					add = {
-						value = 50
-						desc = tradition_poetry_name
-					}
-				}
-				if = {
-					limit = {
-						culture = { has_cultural_tradition = tradition_storytellers }
-					}
-					add = {
-						value = 50
-						desc = tradition_storytellers_name
-					}
-				}
-				#AGOT Disabled
-				# if = {
-				# 	limit = {
-				# 		culture = { has_cultural_pillar = heritage_brythonic }
-				# 	}
-				# 	add = {
-				# 		value = 25
-				# 		desc = heritage_brythonic_name
-				# 	}
-				# }
-				#AGOT Disabled
-				# if = {
-				# 	limit = {
-				# 		culture = { has_cultural_pillar = heritage_goidelic }
-				# 	}
-				# 	add = {
-				# 		value = 25
-				# 		desc = heritage_goidelic_name
-				# 	}
-				# }
-				#AGOT Disabled
-				# if = {
-				# 	limit = {
-				# 		culture = { has_cultural_pillar = heritage_north_germanic }
-				# 	}
-				# 	add = {
-				# 		value = 25
-				# 		desc = heritage_north_germanic_name
-				# 	}
-				# }
 				if = {
 					limit = { government_has_flag = government_is_tribal }
 					add = {
 						value = 50
 						desc = tribal_government
-					}
-				}
-				if = {
-					limit = {
-						culture = {
-							OR = {
-								#AGOT Modified
-								# has_cultural_pillar = heritage_brythonic
-								# has_cultural_pillar = heritage_goidelic
-								# has_cultural_pillar = heritage_latin
-								AND = {
-									has_cultural_pillar = heritage_valyrian
-									NOR = {
-										this = culture:westerosi_valyrian
-										this = culture:high_valyrian
-									}
-								}
-							}
-						}
-					}
-					add = {
-						value = 25
-						desc = game_rule_category_culture
 					}
 				}
 			}
@@ -3123,93 +4132,165 @@
 					}
 				}
 				gold = {
-					add = {
-						add = {
-							value = tournament_contest_cheap_cost #Very cheap, requires basically nothing
-							desc = tournament_recital_cost
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
 						}
 						add = {
-							value = tournament_contest_cheap_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_cheap_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						#AGOT Disabled
-						# if = { #building reducing the cost
-						# 	limit = {
-						# 		scope:province ?= {
-						# 			OR = {
-						# 				has_building_or_higher = generic_university
-						# 				has_building_or_higher = al_azhar_university
-						# 				has_building_or_higher = sankore_university
-						# 				has_building_or_higher = siena_university
-						# 				has_building_or_higher = nalanda_university
-						# 			}
-						# 		}
-						# 	}
-						# 	add = {
-						# 		value = 0
-						# 		add = {
-						# 			value = tournament_contest_cheap_cost
-						# 			add = {
-						# 				value = tournament_contest_cheap_cost
-						# 				multiply = activity_cost_scale_by_era
-						# 				subtract = tournament_contest_cheap_cost
-						# 			}
-						# 		}
-						# 		multiply = tournament_contest_cost_discount_value
-						# 		desc = tournament_recital_contest_cost_discount_desc
-						# 	}
-						# }
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = warrior_lodges_01
-								}
+							add = {
+								value = tournament_contest_cheap_cost #Very cheap, requires basically nothing
+								desc = tournament_recital_cost
 							}
 							add = {
-								value = 0
+								value = tournament_contest_cheap_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_cheap_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_with_flag = special_university
+									}
+								}
 								add = {
-									value = tournament_contest_cheap_cost
+									value = 0
 									add = {
 										value = tournament_contest_cheap_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_cheap_cost
+										add = {
+											value = tournament_contest_cheap_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_cheap_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_recital_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = warrior_lodges_01
 									}
 								}
-								multiply = tournament_contest_cost_low_discount_value
-								desc = tournament_recital_contest_cost_low_discount_desc
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
 								add = {
-									value = tournament_base_cost
+									value = 0
+									add = {
+										value = tournament_contest_cheap_cost
+										add = {
+											value = tournament_contest_cheap_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_cheap_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_recital_contest_cost_low_discount_desc
+								}
+							}
+							#LEGACY OF VALYRIA
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_cheap_cost #Very cheap, requires basically nothing
+								desc = tournament_recital_cost
+							}
+							add = {
+								value = tournament_contest_cheap_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_cheap_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_with_flag = special_university
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_cheap_cost
+										add = {
+											value = tournament_contest_cheap_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_cheap_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_recital_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = warrior_lodges_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_cheap_cost
+										add = {
+											value = tournament_contest_cheap_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_cheap_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_recital_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -3234,7 +4315,7 @@
 
 		# JOUST
 		# contest_horse_aptitude_value
-		tournament_phase_joust = {
+		tournament_phase_joust = {			
 			is_shown = {}
 
 			can_pick = {
@@ -3246,23 +4327,20 @@
 						capital_province = { geographical_region = world_westeros_seven_kingdoms }
 					}
 				}
-				#CV Added
 				trigger_else = {
+					#AGOT Modified
+					#culture = { has_cultural_parameter = can_host_joust_contests }
 					OR = {
-						scope:province = {
-							has_building_or_higher = great_arena_of_valyria_02
-						}
+						culture = { has_cultural_parameter = can_host_joust_contests }
+						faith = { has_doctrine_parameter = can_host_joust_contests }
+
+						#LEGACY OF VALYRIA ADDED
+						scope:province = { has_building_or_higher = great_arena_of_valyria_02 }
 						# The check to the province specifically is an interesting choice
 						# So I'll comment this out to make way for AGOT 0.4's change instead of delete, since this might be deliberate
 						#scope:province.culture = {
 						#	has_cultural_parameter = can_host_joust_contests
 						#}
-						#AGOT Modified
-						#culture = { has_cultural_parameter = can_host_joust_contests }
-						OR = {
-							culture = { has_cultural_parameter = can_host_joust_contests }
-							faith = { has_doctrine_parameter = can_host_joust_contests }
-						}
 					}
 				}
 				scope:province = { #Horses do not like big hills or marshes
@@ -3272,7 +4350,7 @@
 						# terrain = desert_mountains
 						agot_is_wetlands_terrain = yes
 						agot_is_the_bog_terrain = yes
-					}
+					} 
 				}
 				scope:province.culture = { #Ensure the honses are properly shod and such
 					AND = {
@@ -3298,7 +4376,7 @@
 				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
-
+				
 				# Achievements.
 				#AGOT Disabled
 				# if = {
@@ -3370,7 +4448,7 @@
 					value = contest_horse_aptitude_value
 					desc = contest_horse_aptitude_value
 				}
-
+				
 				#AGOT Added
 				if = {
 					limit = {
@@ -3380,8 +4458,8 @@
 						value = 200
 						desc = contest_ai_base
 					}
-				}
-
+				}				
+				
 				if = {
 					limit = {
 						has_trait = tourney_participant
@@ -3397,7 +4475,7 @@
 					}
 				}
 				if = {
-					limit = {
+					limit = { 
 						culture = { has_cultural_tradition = tradition_chivalry }
 					}
 					add = {
@@ -3406,7 +4484,7 @@
 					}
 				}
 				if = {
-					limit = {
+					limit = { 
 						culture = { has_cultural_tradition = tradition_martial_admiration }
 					}
 					add = {
@@ -3416,7 +4494,7 @@
 				}
 				#AGOT Disabled
 				# if = {
-				# 	limit = {
+				# 	limit = { 
 				# 		culture = { has_cultural_tradition = tradition_chanson_de_geste }
 				# 	}
 				# 	add = {
@@ -3443,8 +4521,8 @@
 					}
 				}
 				if = {
-					limit = {
-						culture = {
+					limit = { 
+						culture = { 
 							OR = {
 								#AGOT Modified
 								# has_cultural_pillar = heritage_frankish
@@ -3458,7 +4536,7 @@
 					}
 					add = {
 						#AGOT Modified
-						#value = 15
+						#value = 15						
 						value = 200
 						desc = game_rule_category_culture
 					}
@@ -3483,90 +4561,190 @@
 					}
 				}
 				gold = {
-					add = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
+						}
 						add = {
-							value = tournament_contest_expensive_cost #Very cheap, requires basically nothing
+							add = {
+								value = tournament_contest_expensive_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_joust_cost
+							}
+							add = {
+								value = tournament_contest_expensive_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_expensive_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = jousting_lists_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_expensive_cost
+										add = {
+											value = tournament_contest_expensive_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_expensive_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_joust_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = stables_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_expensive_cost
+										add = {
+											value = tournament_contest_expensive_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_expensive_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_joust_contest_cost_low_discount_desc
+								}
+							}
+							#LEGACY OF VALYRIA ADDED
 							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_joust_cost
-						}
-						add = {
-							value = tournament_contest_expensive_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_expensive_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = jousting_lists_01
-								}
-							}
-							add = {
-								value = 0
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 								add = {
-									value = tournament_contest_expensive_cost
-									add = {
-										value = tournament_contest_expensive_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_expensive_cost
-									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_joust_contest_cost_discount_desc
-							}
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = stables_01
-								}
-							}
-							add = {
-								value = 0
-								add = {
-									value = tournament_contest_expensive_cost
-									add = {
-										value = tournament_contest_expensive_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_expensive_cost
-									}
-								}
-								multiply = tournament_contest_cost_low_discount_value
-								desc = tournament_joust_contest_cost_low_discount_desc
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
-								add = {
-									value = tournament_base_cost
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_expensive_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_joust_cost
+							}
+							add = {
+								value = tournament_contest_expensive_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_expensive_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = jousting_lists_01
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_expensive_cost
+										add = {
+											value = tournament_contest_expensive_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_expensive_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_joust_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = stables_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_expensive_cost
+										add = {
+											value = tournament_contest_expensive_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_expensive_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_joust_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -3575,7 +4753,7 @@
 
 		# WRESTLING
 		# contest_pugilism_aptitude_value
-		tournament_phase_wrestling = {
+		tournament_phase_wrestling = {			
 			is_shown = {}
 
 			can_pick = { #Available to all, given how prolific it is.
@@ -3640,8 +4818,8 @@
 					}
 				}
 				if = {
-					limit = {
-						culture = {
+					limit = { 
+						culture = { 
 							OR = {
 								#AGOT Modified
 								# has_cultural_pillar = heritage_akan
@@ -3688,8 +4866,8 @@
 					}
 				}
 				if = {
-					limit = {
-						culture = {
+					limit = { 
+						culture = { 
 							OR = {
 								#AGOT Modified
 								# has_cultural_pillar = heritage_burman
@@ -3724,70 +4902,150 @@
 					}
 				}
 				gold = {
-					add = {
-						add = {
-							value = tournament_contest_base_cost #Very cheap, requires basically nothing
-							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_wrestling_cost
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
 						}
 						add = {
-							value = tournament_contest_base_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_base_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = regimental_grounds_01
+							add = {
+								value = tournament_contest_base_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
 								}
+								desc = tournament_wrestling_cost
 							}
 							add = {
-								value = 0
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = regimental_grounds_01
+									}
+								}
 								add = {
-									value = tournament_contest_base_cost
+									value = 0
 									add = {
 										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
 									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_wrestling_contest_cost_discount_desc
 								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_wrestling_contest_cost_discount_desc
 							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 								add = {
-									value = tournament_base_cost
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_base_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_wrestling_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = regimental_grounds_01
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_wrestling_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
 							}
-							multiply = 0
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -3796,7 +5054,7 @@
 
 		# DUEL
 		# contest_foot_aptitude_value
-		tournament_phase_duel = {
+		tournament_phase_duel = {			
 			is_shown = {}
 
 			can_pick = {} #Deliberate; one-on-one martial contests were pretty widespread
@@ -3899,90 +5157,190 @@
 					}
 				}
 				gold = {
-					add = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
+						}
 						add = {
-							value = tournament_contest_base_cost #Very cheap, requires basically nothing
+							add = {
+								value = tournament_contest_base_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_duel_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = blacksmiths_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_duel_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = smiths_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_duel_contest_cost_low_discount_desc
+								}
+							}
+							#LEGACY OF VALYRIA ADDED
 							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_duel_cost
-						}
-						add = {
-							value = tournament_contest_base_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_base_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = blacksmiths_01
-								}
-							}
-							add = {
-								value = 0
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 								add = {
-									value = tournament_contest_base_cost
-									add = {
-										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
-									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_duel_contest_cost_discount_desc
-							}
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = smiths_01
-								}
-							}
-							add = {
-								value = 0
-								add = {
-									value = tournament_contest_base_cost
-									add = {
-										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
-									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_duel_contest_cost_low_discount_desc
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
-								add = {
-									value = tournament_base_cost
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_base_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_duel_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = blacksmiths_01
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_duel_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = smiths_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_duel_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -3991,7 +5349,7 @@
 
 		# BOARD GAME
 		# contest_board_game_aptitude_value
-		tournament_phase_board_game = {
+		tournament_phase_board_game = {			
 			is_shown = {}
 
 			can_pick = {} #Board games in all different forms were seen all over the globe
@@ -4076,97 +5434,190 @@
 					}
 				}
 				gold = {
-					add = {
-						add = {
-							value = tournament_contest_base_cost #Very cheap, requires basically nothing
-							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_board_games_cost
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
 						}
 						add = {
-							value = tournament_contest_base_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_base_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						#AGOT Disabled
-						# if = { #building reducing the cost
-						# 	limit = {
-						# 		scope:province ?= {
-						# 			OR = {
-						# 				has_building_or_higher = generic_university
-						# 				has_building_or_higher = al_azhar_university
-						# 				has_building_or_higher = sankore_university
-						# 				has_building_or_higher = siena_university
-						# 				has_building_or_higher = nalanda_university
-						# 			}
-						# 		}
-						# 	}
-						# 	add = {
-						# 		value = 0
-						# 		add = {
-						# 			value = tournament_contest_base_cost
-						# 			add = {
-						# 				value = tournament_contest_base_cost
-						# 				multiply = activity_cost_scale_by_era
-						# 				subtract = tournament_contest_base_cost
-						# 			}
-						# 		}
-						# 		multiply = tournament_contest_cost_discount_value
-						# 		desc = tournament_board_games_contest_cost_discount_desc
-						# 	}
-						# }
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = warrior_lodges_01
+							add = {
+								value = tournament_contest_base_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
 								}
+								desc = tournament_board_games_cost
 							}
 							add = {
-								value = 0
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_with_flag = special_university
+									}
+								}
 								add = {
-									value = tournament_contest_base_cost
+									value = 0
 									add = {
 										value = tournament_contest_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_board_games_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = warrior_lodges_01
 									}
 								}
-								multiply = tournament_contest_cost_low_discount_value
-								desc = tournament_board_games_contest_cost_low_discount_desc
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
 								add = {
-									value = tournament_base_cost
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_board_games_contest_cost_low_discount_desc
+								}
+							}
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_base_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_board_games_cost
+							}
+							add = {
+								value = tournament_contest_base_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_base_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_with_flag = special_university
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_board_games_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = warrior_lodges_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_base_cost
+										add = {
+											value = tournament_contest_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_base_cost
+										}
+									}
+									multiply = tournament_contest_cost_low_discount_value
+									desc = tournament_board_games_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -4190,7 +5641,7 @@
 
 		# HORSE RACE
 		# contest_horse_race_aptitude_value
-		tournament_phase_horse_race = {
+		tournament_phase_horse_race = {			
 			is_shown = { # Appears to have not really been a thing in West Africa buuut we need a least a lil bit of honse there, so
 				#NOT = {
 				#	location = {
@@ -4208,7 +5659,7 @@
 						#terrain = the_bog
 						agot_is_wetlands_terrain = yes
 						agot_is_the_bog_terrain = yes
-					}
+					} 
 				}
 			}
 
@@ -4229,7 +5680,7 @@
 				#AGOT Modified: Vanilla bugfix
 				#tournament_add_as_spectator_effect = yes
 				tournament_add_contestant_or_spectator_effect = yes
-
+				
 				if = {
 					limit = {
 						is_in_guest_subset = { name = qualified }
@@ -4338,8 +5789,8 @@
 				# 	}
 				# }
 				if = {
-					limit = {
-						culture = {
+					limit = { 
+						culture = { 
 							OR = {
 								#AGOT Modified
 								# has_cultural_pillar = heritage_magyar
@@ -4374,90 +5825,190 @@
 					}
 				}
 				gold = {
-					add = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = no
+						}
 						add = {
-							value = tournament_contest_horse_cost #Very cheap, requires basically nothing
+							add = {
+								value = tournament_contest_horse_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_horse_racing_cost
+							}
+							add = {
+								value = tournament_contest_horse_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_horse_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = jousting_lists_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_horse_cost
+										add = {
+											value = tournament_contest_horse_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_horse_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_horse_racing_contest_cost_discount_desc
+								}
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = stables_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_horse_cost
+										add = {
+											value = tournament_contest_horse_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_horse_cost
+										}
+									}
+									multiply = tournament_activity_cost_discount_value
+									desc = tournament_horse_racing_contest_cost_low_discount_desc
+								}
+							}
+							#LEGACY OF VALYRIA ADDED
 							if = {
-								limit = { government_has_flag = government_is_tribal }
-								divide = 2
-							}
-							desc = tournament_horse_racing_cost
-						}
-						add = {
-							value = tournament_contest_horse_cost
-							multiply = activity_cost_scale_by_era
-							subtract = tournament_contest_horse_cost
-							desc = activity_cost_scale_by_era_desc
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = jousting_lists_01
-								}
-							}
-							add = {
-								value = 0
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
 								add = {
-									value = tournament_contest_horse_cost
-									add = {
-										value = tournament_contest_horse_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_horse_cost
-									}
-								}
-								multiply = tournament_contest_cost_discount_value
-								desc = tournament_horse_racing_contest_cost_discount_desc
-							}
-						}
-						if = { #building reducing the cost
-							limit = {
-								scope:province ?= {
-									has_building_or_higher = stables_01
-								}
-							}
-							add = {
-								value = 0
-								add = {
-									value = tournament_contest_horse_cost
-									add = {
-										value = tournament_contest_horse_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_contest_horse_cost
-									}
-								}
-								multiply = tournament_activity_cost_discount_value
-								desc = tournament_horse_racing_contest_cost_low_discount_desc
-							}
-						}
-						#CV Added
-						if = {
-							limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
-							add = {
-								value = 0
-								add = {
-									value = tournament_base_cost
+									value = 0
 									add = {
 										value = tournament_base_cost
-										multiply = activity_cost_scale_by_era
-										subtract = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
+						}
+					}
+				}
+				treasury = {
+					value = 0
+					if = {
+						limit = {
+							has_treasury = yes
+						}
+						add = {
+							add = {
+								value = tournament_contest_horse_cost #Very cheap, requires basically nothing
+								if = {
+									limit = { government_has_flag = government_is_tribal }
+									divide = 2
+								}
+								desc = tournament_horse_racing_cost
+							}
+							add = {
+								value = tournament_contest_horse_cost
+								multiply = activity_cost_scale_by_era
+								subtract = tournament_contest_horse_cost
+								desc = activity_cost_scale_by_era_desc
+							}
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = jousting_lists_01
 									}
 								}
-								multiply = tournament_activity_cost_max_discount_value
-								desc = tournament_cost_discount_cv_arena
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_horse_cost
+										add = {
+											value = tournament_contest_horse_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_horse_cost
+										}
+									}
+									multiply = tournament_contest_cost_discount_value
+									desc = tournament_horse_racing_contest_cost_discount_desc
+								}
 							}
-						}
-						# Some people get one free.
-						if = {
-							limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
-							multiply = 0
-						}
-						min = 0
-						if = {
-							limit = {
-								is_ai = yes
-								has_character_flag = tournament_ai_override
+							if = { #building reducing the cost
+								limit = {
+									scope:province ?= {
+										has_building_or_higher = stables_01
+									}
+								}
+								add = {
+									value = 0
+									add = {
+										value = tournament_contest_horse_cost
+										add = {
+											value = tournament_contest_horse_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_contest_horse_cost
+										}
+									}
+									multiply = tournament_activity_cost_discount_value
+									desc = tournament_horse_racing_contest_cost_low_discount_desc
+								}
 							}
-							multiply = 0
+							#LEGACY OF VALYRIA ADDED
+							if = {
+								limit = { scope:province ?= { has_building_or_higher = great_arena_of_valyria_02 } }
+								add = {
+									value = 0
+									add = {
+										value = tournament_base_cost
+										add = {
+											value = tournament_base_cost
+											multiply = activity_cost_scale_by_era
+											subtract = tournament_base_cost
+										}
+									}
+									multiply = tournament_activity_cost_max_discount_value
+									desc = tournament_cost_discount_cv_arena
+								}
+							}
+							# Some people get one free.
+							if = {
+								limit = { factor_zero_if_entitled_to_freebie_activity_trigger = yes }
+								multiply = 0
+							}
+							min = 0
+							if = {
+								limit = {
+									is_ai = yes
+									has_character_flag = tournament_ai_override
+								}
+								multiply = 0
+							}
 						}
 					}
 				}
@@ -4484,7 +6035,7 @@
 			}
 
 			on_phase_active = {
-				# Save intent target for final summary event
+				# Save intent target for final summary event 
 				if = {
 					limit = { this = scope:host }
 					scope:activity = { progress_activity_phase_after = { weeks = 2 } }
@@ -4497,7 +6048,7 @@
 			}
 		}
 	}
-
+	
 	###################
 	# LOCALES
 	###################
@@ -4531,9 +6082,9 @@
 	###################
 
 	open_invite = yes
-
+	
 	max_guests = 250
-
+	
 	can_be_activity_guest = {
 		is_adult = yes
 		in_diplomatic_range = scope:host
@@ -4701,7 +6252,7 @@
 		modifier = {
    		   scope:host = {
    		   		any_active_accolade = {
-					has_accolade_parameter = acclaimed_knight_tournament_invite_acceptance_bonus
+					accolade_parameter = acclaimed_knight_tournament_invite_acceptance_bonus
 				}
    		   }
    		   add = accolade_tournament_invite_acceptance_value
@@ -4710,6 +6261,11 @@
    		   government_has_flag = government_is_mercenary
    		   add = -5000
    		}
+		#AGOT Disabled
+		# modifier = {
+   		#    has_title = title:h_china
+   		#    add = -5000
+   		# }
 
 		#AGOT Added
 		modifier = {
@@ -4941,7 +6497,7 @@
 			}
 		}
 	}
-
+	
 	###################
 	# ON ACTIONS
 	###################
@@ -4953,203 +6509,203 @@
 
 	on_start = { # Activity scope
 		#if = { # Activity count debugging, left in for QA purposes
-		#	limit = {
-		#		debug_only = yes
-		#	}
-		#	if = {
-		#		limit = {
-		#			NOT = {
-		#				exists = global_var:tournament_count
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_count
-		#			value = 1
-		#		}
-		#	}
-		#	else = {
-		#		change_global_variable = {
-		#			name = tournament_count
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host = { highest_held_title_tier = tier_county }
-		#			NOT = {
-		#				exists = global_var:tournament_c
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_c
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host = { highest_held_title_tier = tier_county }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_c
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host = { highest_held_title_tier = tier_duchy }
-		#			NOT = {
-		#				exists = global_var:tournament_d
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_d
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host = { highest_held_title_tier = tier_duchy }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_d
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host = { highest_held_title_tier >= tier_kingdom }
-		#			NOT = {
-		#				exists = global_var:tournament_k
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_k
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host = { highest_held_title_tier >= tier_kingdom }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_k
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_middle_east }
-		#			NOT = {
-		#				exists = global_var:tournament_world_middle_east
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_world_middle_east
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_middle_east }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_world_middle_east
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_europe }
-		#			NOT = {
-		#				exists = global_var:tournament_world_europe
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_world_europe
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_europe }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_world_europe
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_steppe }
-		#			NOT = {
-		#				exists = global_var:tournament_world_steppe
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_world_steppe
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_steppe }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_world_steppe
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_africa }
-		#			NOT = {
-		#				exists = global_var:tournament_world_africa
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_world_africa
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_africa }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_world_africa
-		#			add = 1
-		#		}
-		#	}
-		#
-		#	if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_india }
-		#			NOT = {
-		#				exists = global_var:tournament_world_india
-		#			}
-		#		}
-		#		set_global_variable = {
-		#			name = tournament_world_india
-		#			value = 1
-		#		}
-		#	}
-		#	else_if = {
-		#		limit = {
-		#			scope:host.location = { geographical_region = world_india }
-		#		}
-		#		change_global_variable = {
-		#			name = tournament_world_india
-		#			add = 1
-		#		}
-		#	}
-		#}
+			#	limit = {
+			#		debug_only = yes
+			#	}
+			#	if = {
+			#		limit = {
+			#			NOT = {
+			#				exists = global_var:tournament_count
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_count
+			#			value = 1
+			#		}
+			#	}
+			#	else = {
+			#		change_global_variable = {
+			#			name = tournament_count
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host = { highest_held_title_tier = tier_county }
+			#			NOT = {
+			#				exists = global_var:tournament_c
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_c
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host = { highest_held_title_tier = tier_county }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_c
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host = { highest_held_title_tier = tier_duchy }
+			#			NOT = {
+			#				exists = global_var:tournament_d
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_d
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host = { highest_held_title_tier = tier_duchy }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_d
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host = { highest_held_title_tier >= tier_kingdom }
+			#			NOT = {
+			#				exists = global_var:tournament_k
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_k
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host = { highest_held_title_tier >= tier_kingdom }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_k
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_middle_east }
+			#			NOT = {
+			#				exists = global_var:tournament_world_middle_east
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_world_middle_east
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_middle_east }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_world_middle_east
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_europe }
+			#			NOT = {
+			#				exists = global_var:tournament_world_europe
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_world_europe
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_europe }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_world_europe
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_steppe }
+			#			NOT = {
+			#				exists = global_var:tournament_world_steppe
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_world_steppe
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_steppe }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_world_steppe
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_africa }
+			#			NOT = {
+			#				exists = global_var:tournament_world_africa
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_world_africa
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_africa }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_world_africa
+			#			add = 1
+			#		}
+			#	}
+			#	
+			#	if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_india }
+			#			NOT = {
+			#				exists = global_var:tournament_world_india
+			#			}
+			#		}
+			#		set_global_variable = {
+			#			name = tournament_world_india
+			#			value = 1
+			#		}
+			#	}
+			#	else_if = {
+			#		limit = {
+			#			scope:host.location = { geographical_region = world_india }
+			#		}
+			#		change_global_variable = {
+			#			name = tournament_world_india
+			#			add = 1
+			#		}
+			#	}
+			#}
 		scope:host = {
 			if = {
 				limit = {
@@ -5240,7 +6796,7 @@
 					days = 20
 				}
 			}
-
+			
 			scope:activity = {
 				### PROGRESS TO VICTORY ###
 				if = {
@@ -5370,9 +6926,9 @@
 								province = scope:activity.activity_location
 								is_clergy = yes
 								faith = scope:host.faith
-								is_available_ai_adult = yes
+								is_available_ai_adult = yes								
 								has_no_particular_noble_roots_trigger = yes
-
+								
 							}
 						}
 						random_pool_character = {
@@ -5381,7 +6937,7 @@
 								is_clergy = yes
 								faith = scope:host.faith
 								is_available_ai_adult = yes
-								has_no_particular_noble_roots_trigger = yes
+								has_no_particular_noble_roots_trigger = yes								
 							}
 							save_scope_as = tournament_priest
 						}
@@ -5510,7 +7066,7 @@
 				}
 			}
 		}
-
+		
 		# Make sure that Tournaments are held roughly every 5 years per major world area
 		#AGOT Disabled
 		# if = {
@@ -5526,14 +7082,14 @@
 		# 		days = 1825
 		# 	}
 		# }
-
+		
 		#AGOT Disabled
 		# if = {
 		# 	limit = {
 		# 		scope:host.location = {
 		# 			geographical_region = world_europe
 		# 			NOT = {
-		# 				geographical_region = world_europe_west
+		# 				geographical_region = world_europe_west 
 		# 			}
 		# 		}
 		# 		NOT = {
@@ -5546,7 +7102,7 @@
 		# 		days = 1825
 		# 	}
 		# }
-
+		
 		#AGOT Disabled
 		# if = {
 		# 	limit = {
@@ -5561,7 +7117,7 @@
 		# 		days = 1825
 		# 	}
 		# }
-
+		
 		#AGOT Disabled
 		# if = {
 		# 	limit = {
@@ -5576,7 +7132,7 @@
 		# 		days = 1825
 		# 	}
 		# }
-
+		
 		#AGOT Disabled
 		# if = {
 		# 	limit = {
@@ -5591,7 +7147,7 @@
 		# 		days = 1825
 		# 	}
 		# }
-
+		
 		#AGOT Disabled
 		# if = {
 		# 	limit = {
@@ -5602,6 +7158,66 @@
 		# 	}
 		# 	set_global_variable = {
 		# 		name = tournament_world_india_motivation
+		# 		value = yes
+		# 		days = 1825
+		# 	}
+		# }
+		
+		#AGOT Disabled
+		# if = {
+		# 	limit = {
+		# 		scope:host.location = { geographical_region = world_asia_southeast }
+		# 		NOT = {
+		# 			exists = global_var:tournament_world_asia_southeast_motivation
+		# 		}
+		# 	}
+		# 	set_global_variable = {
+		# 		name = tournament_world_asia_southeast_motivation
+		# 		value = yes
+		# 		days = 1825
+		# 	}
+		# }
+		
+		#AGOT Disabled
+		# if = {
+		# 	limit = {
+		# 		scope:host.location = { geographical_region = world_asia_china }
+		# 		NOT = {
+		# 			exists = global_var:tournament_world_asia_china_motivation
+		# 		}
+		# 	}
+		# 	set_global_variable = {
+		# 		name = tournament_world_asia_china_motivation
+		# 		value = yes
+		# 		days = 1825
+		# 	}
+		# }
+		
+		#AGOT Disabled
+		# if = {
+		# 	limit = {
+		# 		scope:host.location = { geographical_region = world_asia_japan }
+		# 		NOT = {
+		# 			exists = global_var:tournament_world_asia_japan_motivation
+		# 		}
+		# 	}
+		# 	set_global_variable = {
+		# 		name = tournament_world_asia_japan_motivation
+		# 		value = yes
+		# 		days = 1825
+		# 	}
+		# }
+		
+		#AGOT Disabled
+		# if = {
+		# 	limit = {
+		# 		scope:host.location = { geographical_region = world_asia_north_east }
+		# 		NOT = {
+		# 			exists = global_var:tournament_world_asia_north_east_motivation
+		# 		}
+		# 	}
+		# 	set_global_variable = {
+		# 		name = tournament_world_asia_north_east_motivation
 		# 		value = yes
 		# 		days = 1825
 		# 	}
@@ -5648,7 +7264,7 @@
 	on_leave_travel_state = {
 		if = {
 			limit = {
-				NOT = { this = scope:host }
+				this != scope:host
 				is_playable_character = yes
 				highest_held_title_tier >= tier_duchy
 				primary_title = {
@@ -5759,7 +7375,7 @@
 					type = toast_tournament_qualifying
 					title = tournament_qualified_ptv_toast
 					left_icon = root
-					custom_tooltip = tournament_qualified_ptv_tt
+					custom_tooltip = tournament_qualified_ptv_tt 
 				}
 			}
 		}
@@ -5887,7 +7503,7 @@
 		tournament_contest_information = "activity_locale_other_custom_widgets"
 
 		tournament_progress_to_victory_widget = "activity_locale_window_right_bar_container"
-
+		
 		tournament_bottom_middle_widget = "activity_locale_bottom_middle"
 
 		tournament_active_phase_contest_info_button = "bottom_right_content_before_guests"

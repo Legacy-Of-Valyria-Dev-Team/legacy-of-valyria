@@ -15,16 +15,26 @@ oligarchic_government = {
 		use_as_base_on_rank_up = yes
 		inherit_from_dynastic_government = no
 		sticky_government = yes
+		house_aspirations = yes
+		noble_families = yes
+		admin_allows_holding_multiple_primary_tier_titles = yes
+		treasury = yes
+		replace_gold_cost_by_treasury = yes
 	}
 
+	royal_court = top_liege
+
 	domicile_type = estate
+	main_administrative_tier = duchy
+	min_appointment_tier = duchy
+	minimum_provincial_maa_tier = duchy
 
 	fallback = 3
 
 	primary_holding = castle_holding
 	#AGOT Modified
 	#valid_holdings = { city_holding }
-	valid_holdings = { city_holding settlement_holding }
+	valid_holdings = { city_holding temple_citadel_holding ruin_holding settlement_holding }
 	#AGOT Modified
 	#required_county_holdings = { castle_holding city_holding church_holding }
 	required_county_holdings = { castle_holding city_holding }
@@ -43,21 +53,43 @@ oligarchic_government = {
 		vassal_limit = 100
 		active_accolades = -1
 		title_creation_cost_mult = -0.5
+		mercenary_hire_cost_mult = 2
+		men_at_arms_maintenance = 0.5
+
+		# Vassals get Treasury income that is this percentage less than their taxes to their liege
+		monthly_treasury_from_liege_mult = -0.15
 	}
 
-	# Use flags instead of has_government for moddability if possible (i.e., wherever not visible to the player).
-	flag = government_is_administrative
+	top_liege_character_modifier = {
+		# 85% of vassal income goes to the treasury
+		monthly_treasury_from_vassals = 0.85
+		men_at_arms_maintenance = 1.5
+		men_at_arms_recruitment_cost = 1
+	}
 
-	# These flags only exist for loc and in-game descriptions
-	flag = government_has_influence
-	flag = government_has_title_men_at_arms
-	flag = government_has_powerful_families
-	flag = government_is_settled
+	flags = {
+		government_is_administrative
+
+		# These flags only exist for loc and in-game descriptions
+		government_has_influence
+		government_has_treasury
+		government_has_title_men_at_arms
+		government_has_powerful_families
+		government_is_settled
+		government_uses_domicile_but_not_adventurer
+		government_uses_domain_limit
+		government_uses_admin_province_obligations
+		#AGOT Added
+		government_is_default #For grouping governments that should use the regular lifestyle perks.
+		#Free City specific stuff for next government overhaul
+		government_is_oligarchic
+		government_is_free_city
+	}
+
+	mechanic_type = administrative
+	is_mechanic_type_default = yes
+
 	color = { 72 6 92 }
-
-	#AGOT Added
-	flag = government_is_default #For grouping governments that should use the regular lifestyle perks.
-	#Free City specific stuff for next government overhaul
-	flag = government_is_oligarchic
-	flag = government_is_free_city
+	realm_mask_offset = { 0.0 0.01 }
+	realm_mask_scale = { 1 1 }
 }
