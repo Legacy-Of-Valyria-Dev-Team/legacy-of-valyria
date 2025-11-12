@@ -570,7 +570,21 @@ lv_valyria_random_event.0110 = {
         name = lv_valyria_random_event.0110.a
         random_list = {
             40 = { add_trait = burned }                     # scorched by the serpents
-            40 = { add_injury = yes }                       # bitten or clawed
+            40 = { # bitten or clawed
+                if = {
+                    limit = { has_trait = wounded_3 }
+                    death = { death_reason = death_wounds }
+                }
+                else_if = {
+                    limit = { has_trait = wounded_2 }
+                    add_trait = wounded_3
+                }
+                else_if = {
+                    limit = { has_trait = wounded_1 }
+                    add_trait = wounded_2
+                }
+                else = { add_trait = wounded_1 }
+            }   
             20 = { death = { death_reason = death_vanished } }    # overwhelmed by the serpents
         }
     }
