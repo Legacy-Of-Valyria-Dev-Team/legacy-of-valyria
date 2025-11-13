@@ -1,0 +1,141 @@
+﻿# Legacy of Valyria On Game Start After Lobby On Actions
+# - All on actions effects after pressing play goes here
+on_game_start_after_lobby = {
+	on_actions = {
+		lv_ruins_setup
+		lv_ruins_setup_non_default
+		lv_ruins_setup_coa
+		lv_post_start_fixes
+	}
+}
+
+lv_ruins_setup = {
+	trigger = {
+		NOT = { has_game_rule = lv_colonisation_agot }
+		NOT = { has_game_rule = lv_colonisation_instant }
+	}
+	effect = {
+		# Set up blockers
+		every_county_in_region = {
+			limit = {
+				title_province = {
+					OR = {
+						has_holding_type = ruin_holding
+						has_holding_type = wilderness_holding
+					}
+				}
+			}
+			region = world_valyria_mainland
+			title_province = {
+				# PREDEFINED BLOCKERS
+				if = {
+					limit = { this = province:9437 }
+					lv_add_blocker_effect = {
+						FORCE = yes
+						BLOCKER_BUILDING = lokirian_barracks_01
+					}
+				}
+				if = {
+					limit = { has_holding_type = ruin_holding }
+					lv_blocker_generation_predefined_ruined_holdings_effect = yes
+				}
+				lv_blocker_generation_predefined_mines_effect = yes
+				lv_blocker_generation_predefined_noxious_gases_effect = yes
+
+				# RANDOMLY-GENERATED BLOCKERS
+				if = {
+					limit = { NOT = { has_game_rule = lv_colonisation_lite } }
+					lv_blocker_generation_random_noxious_gases_effect = yes
+					lv_blocker_generation_random_unexplored_caves_effect = yes
+					lv_blocker_generation_random_swamp_effect = yes
+					lv_blocker_generation_random_stonemen_encampment_effect = yes
+					lv_blocker_generation_random_bandit_camps_effect = yes
+				}
+			}
+		}
+	}
+}
+
+# Assign 1 blocker count with the idea of the holding itself being a blocker
+# Basically: One upgraded settlement = reduce blocker count by 1
+# Handy for game rules like Lite or AGOT, where there aren't any other blockers
+lv_ruins_setup_non_default = {
+	trigger = { NOT = { has_game_rule = lv_colonisation_default } }
+	effect = {
+		every_county_in_region = {
+			limit = { title_province = { has_holding_type = ruin_holding } }
+			region = world_valyria_mainland
+			title_province = { lv_valyria_update_subregion_progress_effect = { REFRESH_ONLY = no ADD_BLOCKER = yes } }
+		}
+	}
+}
+
+lv_ruins_setup_coa = {
+    effect = {
+        # Volantene Ruins
+		if = {
+			limit = { game_start_date >= 7300.1.1 }
+            title:c_sarhoy = { set_coa = ruins_coa }
+            title:c_sar_mell = { set_coa = ruins_coa }
+			title:c_mestoy = { set_coa = ruins_coa }
+            title:c_ar_voleys = { set_coa = ruins_coa }
+
+			title:c_ghoyan_drohe = { set_coa = ruins_coa }
+            title:c_golhuru = { set_coa = ruins_coa }
+            title:c_sar_moyhan = { set_coa = ruins_coa }
+            title:c_ar_noy = { set_coa = ruins_coa }
+            title:c_sar_erilidyes = { set_coa = ruins_coa }
+            title:c_glohulu = { set_coa = ruins_coa }
+            title:c_chroyane = { set_coa = ruins_coa }
+            title:c_nor_salis = { set_coa = ruins_coa }
+            title:c_rhoyne_vale = { set_coa = ruins_coa }
+            title:c_ar_muhoy = { set_coa = ruins_coa }
+            title:c_gloomy_gate = { set_coa = ruins_coa }
+            title:c_ny_sar = { set_coa = ruins_coa }
+            title:c_sar_drea = { set_coa = ruins_coa }
+            title:c_ar_geryas = { set_coa = ruins_coa }
+            title:c_nyssa = { set_coa = ruins_coa }
+            title:c_sar_rhoy = { set_coa = ruins_coa }
+            title:c_kolaut = { set_coa = ruins_coa }
+            title:c_garinoy = { set_coa = ruins_coa }
+            title:c_northfields = { set_coa = ruins_coa }
+            title:c_ar_selrys = { set_coa = ruins_coa }
+            title:c_sobyrha = { set_coa = ruins_coa }
+		}
+        # Doom of Valyria Ruins
+        if = {
+			limit = { game_start_date >= 7800.1.1 }
+            title:c_draconys = { set_coa = ruins_coa }
+            title:c_valenys = { set_coa = ruins_coa }
+            title:c_vysarion = { set_coa = ruins_coa }
+            title:c_anogaria = { set_coa = ruins_coa }
+            title:c_anyros = { set_coa = ruins_coa }
+            title:c_aelyra = { set_coa = ruins_coa }
+            title:c_vasrion = { set_coa = ruins_coa }
+
+			title:c_bhorash = { set_coa = ruins_coa }
+            title:c_vezenkarys = { set_coa = ruins_coa }
+
+			title:c_ghozai = { set_coa = ruins_coa }
+            title:c_velos = { set_coa = ruins_coa }
+			title:c_elos = { set_coa = ruins_coa }
+
+			title:c_old_ghis = { set_coa = ruins_coa }
+		}
+	}
+}
+
+lv_post_start_fixes = {
+	effect = {
+		# Remove dummy characters from confederations
+		title:c_axe_camp.holder ?= {
+			confederation ?= {
+				save_scope_as = lakefolk_confederation
+				every_confederation_member = {
+					limit = { agot_is_dummy_character = yes }
+					scope:lakefolk_confederation = { remove_confederation_member = prev }
+				}
+			}
+		}
+	}
+}
