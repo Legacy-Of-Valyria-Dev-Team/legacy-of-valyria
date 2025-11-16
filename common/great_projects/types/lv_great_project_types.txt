@@ -1,0 +1,325 @@
+﻿@rehabilitate_valyria = "gfx/interface/illustrations/activity_header_backgrounds/activity_valyria_colonisation.dds"
+@icon_generic_great_project = "gfx/interface/icons/great_projects/_default.dds"
+
+# Rehabilitate Valyria
+lv_rehabilitate_valyria = {
+	icon = { reference = @icon_generic_great_project }
+	illustration = { reference = @rehabilitate_valyria }
+	
+	is_shown = {
+        any_realm_province = {
+            geographical_region = world_valyria_subregion_restorable
+            county = { any_county_situation_sub_region = { NOT = { sub_region_current_phase = valyria_rehabilitated } } }
+        }
+	}
+
+	province_filter = geographical_region
+    province_filter_target = "world_valyria_subregion_restorable"
+
+	is_location_valid = {
+		scope:province = {
+            root.top_liege = { completely_controls = scope:province.duchy }
+            custom_tooltip = {
+				text = LV_REHABILITATE_VALYRIA_CAN_PLAN_IN_LOCATION
+				NOT = {
+					duchy = {
+						any_in_de_jure_hierarchy = {
+							tier = tier_barony
+							title_province = { any_great_project_in_province = { great_project_type = lv_rehabilitate_valyria } }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	can_start_planning = {
+        custom_tooltip = {
+            text = LV_REHABILITATE_VALYRIA_MUST_OWN_SUBREGION
+            any_realm_province = {
+                geographical_region = world_valyria_subregion_restorable
+                duchy = { root.top_liege = { completely_controls = prev } }
+            }
+        }
+        custom_tooltip = {
+            text = LV_REHABILITATE_VALYRIA_CAN_START_PLANNING
+            any_realm_province = {
+                geographical_region = world_valyria_subregion_restorable
+                duchy = {
+                    root.top_liege = { completely_controls = prev }
+                    NOT = {
+                        any_in_de_jure_hierarchy = {
+                            tier = tier_barony
+                            title_province = { any_great_project_in_province = { great_project_type = lv_rehabilitate_valyria } }
+                        }
+                    }
+                }
+            }
+        }
+	}
+
+	cost = { treasury_or_gold = great_project_base_starting_cost }
+
+	construction_time = {
+		value = great_project_base_construction_time
+		multiply = common_great_project_construction_time_multiplier_value
+	}
+
+	allowed_contributor_filter = {
+        top_liege = yes
+		vassals = yes
+        tributaries = yes
+	}
+
+	contributor_cooldown = standard_contributor_cooldown_value
+	
+	on_start_build = {}
+	
+	on_complete = {
+        lv_valyria_retrieve_subregion_effect = yes
+        if = {
+            limit = { NOT = { exists = scope:sub_region } }
+            custom_tooltip = great_project_type_lv_rehabilitate_valyria_region_is_rehabilitated_fallback
+        }
+        else = { custom_tooltip = great_project_type_lv_rehabilitate_valyria_region_is_rehabilitated }
+        scope:province ?= { lv_valyria_rehabilitate_subregion_effect = yes }
+		great_project_notify_completion = { CHARACTER = scope:owner }
+	}
+	
+	on_cancel = {}
+
+	project_contributions = {
+		master_engineer = {
+			contributor_is_valid = {
+				custom_tooltip = {
+					text = great_project_contribution_must_be_province_owner_or_above
+                    trigger_if = {
+                        limit = { exists = scope:great_project }
+                        OR = {
+                            this = scope:great_project.great_project_location.province_owner
+                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
+                        }
+                    }
+                    trigger_else = { always = no }
+				}
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 5
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				great_project_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {							
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		advanced_logistics = {
+			contributor_is_valid = {
+				custom_tooltip = {
+					text = great_project_contribution_must_be_province_owner_or_above
+                    trigger_if = {
+                        limit = { exists = scope:great_project }
+                        OR = {
+                            this = scope:great_project.great_project_location.province_owner
+                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
+                        }
+                    }
+                    trigger_else = { always = no }
+				}
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 15
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				great_project_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {							
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		valyrian_steel_tools = {
+			contributor_is_valid = {
+				custom_tooltip = {
+					text = great_project_contribution_must_be_province_owner_or_above
+                    trigger_if = {
+                        limit = { exists = scope:great_project }
+                        OR = {
+                            this = scope:great_project.great_project_location.province_owner
+                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
+                        }
+                    }
+                    trigger_else = { always = no }
+				}
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 16
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				great_project_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {							
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		doom_driven_workforce = {
+			contributor_is_valid = {
+				custom_tooltip = {
+					text = great_project_contribution_must_be_province_owner_or_above
+                    trigger_if = {
+                        limit = { exists = scope:great_project }
+                        OR = {
+                            this = scope:great_project.great_project_location.province_owner
+                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
+                        }
+                    }
+                    trigger_else = { always = no }
+				}
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 4
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				great_project_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {							
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = {
+				value = chinese_great_projects_contribution_ai_will_do_base_value
+			}
+		}
+
+        # Optional contributions
+        # - Shadow Guard: Protect from hostile threats/plots related to the rehabilitation efforts (maybe involve the Faceless Men theories here)
+        # - Purify the Fourteen Flames: Available if duchy/region has a volcano. May unlock great project to Pacify the Smoking Sea
+        # - Reclaim the Valyrian Roads: County-bonuses once done
+        # - Search the Dragonlords' Vaults: Chance of getting gold or artifacts
+	}
+
+	ai_target_quick_trigger = {
+		adult = yes
+		rank = empire
+	}
+	ai_check_interval_by_tier = {					
+		barony = 0
+		county = 0
+		duchy = 0
+		kingdom = 0
+		empire = 6
+		hegemony = 6
+	}
+	ai_will_do = {
+		value = 30
+		if = {
+			limit = { treasury >= 20000 }
+			add = 70
+		}
+		if = {
+			limit = { is_at_war = yes }
+			multiply = 0
+		}
+	}
+
+	completion_sound_effect = @msg_completion_effect_generic
+}
+
+
