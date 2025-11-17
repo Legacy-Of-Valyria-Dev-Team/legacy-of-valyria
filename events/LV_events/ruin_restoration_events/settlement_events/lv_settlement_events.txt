@@ -41,6 +41,13 @@ scripted_effect lv_settlement_confirm_effect = {
 			}
 		}
 		else = { create_story = lv_settlement_story_cycle }
+		send_interface_toast = {
+			type = event_toast_effect_neutral
+			title = lv_settlement_accepted
+			left_icon = root
+			right_icon = scope:owner
+			custom_tooltip = lv_settlement_accepted_desc
+		}
 	}
 	start_travel_plan = {
 		destination = scope:ruin
@@ -142,6 +149,7 @@ lv_settlement_event.0002 = {
 					limit = {
 						is_available_adult = yes
 						is_human = yes
+						NOT = { has_variable = lv_settlement_refused }
 					}
 					root = {
 						add_to_variable_list = {
@@ -156,6 +164,7 @@ lv_settlement_event.0002 = {
 					limit = {
 						is_available_adult = yes
 						is_human = yes
+						NOT = { has_variable = lv_settlement_refused }
 					}
 					root = {
 						add_to_variable_list = {
@@ -236,6 +245,10 @@ lv_settlement_event.0003 = {
 		custom_tooltip = {
 			text = lv_settlement_event.0003.b.tt
 			scope:liege = { trigger_event = lv_settlement_event.0004 }
+			set_variable = {
+				name = lv_settlement_refused
+				months = 6
+			}
 		}
 	}
 }
@@ -255,6 +268,11 @@ lv_settlement_event.0004 = {
 	right_portrait = {
 		character = var:si_selected_character
 		animation = disapproval
+	}
+
+	immediate = {
+		var:si_selected_character = { save_scope_as = rejector }
+		custom_tooltip = lv_settlement_event.0004.tt
 	}
 
 	# Ok, choose another
