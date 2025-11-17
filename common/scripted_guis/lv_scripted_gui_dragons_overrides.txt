@@ -1,4 +1,59 @@
 ﻿# Overridden from 00_agot_dragons_scripted_gui.txt
+capture_wild_dragon = {
+	scope = character
+
+	is_shown = {
+		scope:owner ?= {
+			agot_has_an_active_dragonpit = yes
+		}
+		has_trait = dragon
+		is_alive = yes
+		OR = {
+			any_liege_or_above = { this = scope:owner }
+			location.county = {
+				holder = {
+					OR = {
+						any_liege_or_above = { this = scope:owner }
+						this = scope:owner
+					}
+				}
+				agot_title_is_an_active_dragonpit = yes
+			}
+		}
+		NOT = { has_character_flag = owned_dragon }
+		NOT = { has_character_flag = in_dragonpit }
+	}
+
+	is_valid = {
+		scope:owner = {
+			custom_tooltip = {
+				text = agot_capture_dragon_cd_gui_tt
+				NOT = {
+					has_variable = capture_cd
+				}
+			}
+		}
+
+		# NO CAPTURING FIREWYRMS FOR NOW
+		NOT = { lv_is_firewyrm = yes }
+	}
+
+	ai_is_valid = {
+		scope:owner ?= {
+			agot_has_an_active_dragonpit = yes
+		}
+		has_trait = dragon
+		exists = employer
+		NOT = { has_character_flag = owned_dragon }
+		NOT = { has_character_flag = in_dragonpit }
+	}
+
+	effect = {
+		agot_change_dragonpit_status = yes
+	}
+}
+
+# Overridden from 00_agot_dragons_scripted_gui.txt
 agot_dragonpit_amenities_gui = {
 	scope = character
 
