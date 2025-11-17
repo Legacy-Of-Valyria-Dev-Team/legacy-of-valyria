@@ -1,0 +1,46 @@
+﻿# Legacy of Valyria great project scripted effects
+
+lv_rehabilitate_valyria_reward_effect = {
+	if = {
+		limit = { NOT = { global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded } }
+		scope:founder ?= {
+			dynasty ?= {
+				# add_dynasty_modifier = (something cool here probably)
+				add_dynasty_prestige = excessive_dynasty_prestige_gain
+			}
+		}
+	}
+	add_prestige = monumental_prestige_gain
+	add_piety = omega_piety_gain
+}
+
+# Fix since the default PDX scripted effect is causing errors
+lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+	if = {
+		limit = { this != scope:owner }
+		send_interface_toast = {
+			title = great_project_contribution_msg_t
+			left_icon = root
+			right_icon = scope:owner
+			
+			great_project_contribution_completion_reward_$LEVEL$_effect = { EXTRA_EFFECT = $NON_OWNER_REWARD_EFFECT$ }
+		}
+	}
+	else = {
+		send_interface_toast = {
+			title = great_project_contribution_msg_t
+			left_icon = root
+			right_icon = scope:province.county
+			
+			great_project_contribution_completion_reward_$LEVEL$_effect = { EXTRA_EFFECT = $OWNER_REWARD_EFFECT$ }
+		}
+	}
+}
+
+lv_rehabilitate_valyria_optional_reward_effect = {
+	# Precalculate event outcome
+
+
+	# Trigger event
+
+}

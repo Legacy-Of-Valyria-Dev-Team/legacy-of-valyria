@@ -1,9 +1,9 @@
 ﻿@rehabilitate_valyria = "gfx/interface/illustrations/activity_header_backgrounds/activity_valyria_colonisation.dds"
-@icon_generic_great_project = "gfx/interface/icons/great_projects/_default.dds"
+@icon_dragon = "gfx/interface/icons/icon_dragon.dds"
 
 # Rehabilitate Valyria
 lv_rehabilitate_valyria = {
-	icon = { reference = @icon_generic_great_project }
+	icon = { reference = @icon_dragon }
 	illustration = { reference = @rehabilitate_valyria }
 	
 	is_shown = {
@@ -62,7 +62,7 @@ lv_rehabilitate_valyria = {
 
 	construction_time = {
 		value = great_project_base_construction_time
-		multiply = common_great_project_construction_time_multiplier_value
+		multiply = lv_rehabilitate_valyria_construction_time_multiplier_value
 	}
 
 	allowed_contributor_filter = {
@@ -73,41 +73,65 @@ lv_rehabilitate_valyria = {
 
 	contributor_cooldown = standard_contributor_cooldown_value
 	
-	on_start_build = {}
-	
+	on_start_build = {
+		lv_valyria_retrieve_subregion_effect = yes
+
+		# Send notification event to owner for flavor
+		scope:owner ?= {
+			if = {
+				limit = {
+					NAND = {
+						global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded
+						exists = var:lv_world_valyria_attempted_rehabilitation
+					}
+				}
+				trigger_event = lv_great_project.0001
+			}
+		}
+	}
+
 	on_complete = {
         lv_valyria_retrieve_subregion_effect = yes
         if = {
             limit = { NOT = { exists = scope:sub_region } }
             custom_tooltip = great_project_type_lv_rehabilitate_valyria_region_is_rehabilitated_fallback
         }
-        else = { custom_tooltip = great_project_type_lv_rehabilitate_valyria_region_is_rehabilitated }
-        scope:province ?= { lv_valyria_rehabilitate_subregion_effect = yes }
+        else = {
+			custom_tooltip = great_project_type_lv_rehabilitate_valyria_region_is_rehabilitated
+			scope:province ?= {
+				lv_valyria_rehabilitate_subregion_effect = yes
+				every_county_in_region = {
+					region = scope:sub_region
+					add_county_modifier = {
+						modifier = lv_valyria_recent_rehabilitation_efforts_modifier
+						years = 50
+					}
+				}
+			}
+			scope:owner ?= {
+				show_as_tooltip = { lv_rehabilitate_valyria_reward_effect = yes }
+				trigger_event = lv_great_project.0003
+			}
+		}
+		custom_tooltip = great_project_type_lv_rehabilitate_valyria_region_is_rehabilitated_stop_danger
 		great_project_notify_completion = { CHARACTER = scope:owner }
 	}
-	
+
 	on_cancel = {}
 
 	project_contributions = {
+		# STAFFING AND TERRAIN REHABILITATION
 		master_engineer = {
 			contributor_is_valid = {
-				custom_tooltip = {
-					text = great_project_contribution_must_be_province_owner_or_above
-                    trigger_if = {
-                        limit = { exists = scope:great_project }
-                        OR = {
-                            this = scope:great_project.great_project_location.province_owner
-                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
-                        }
-                    }
-                    trigger_else = { always = no }
-				}
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
 			}
 
 			cost = {
 				treasury_or_gold = {
 					value = great_project_base_contribution_cost
-					multiply = 5
+					multiply = 2.8
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
 				}
 			}
 
@@ -116,7 +140,7 @@ lv_rehabilitate_valyria = {
 			is_required = yes
 
 			on_complete = {
-				great_project_reward_contribution_completion_notification_effect = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
 					LEVEL = minor
 					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
 					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
@@ -128,7 +152,418 @@ lv_rehabilitate_valyria = {
 				# great_project_contribution_catalyst_effect = yes
 			}
 
-			ai_check_interval_by_tier = {							
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		surveying_equipment_and_personnel = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 1.6
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		volcanic_sealing_projects = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 1.2
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		containment_barriers = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 0.8
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		topsoil_replenishment = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 2.2
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		erosion_control = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 1
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		toxic_soil_remediation = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 0.8
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		cleansing_ashen_wells = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 1.4
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		valyrian_arboriculture = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 1.4
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		# MATERIALS AND RESOURCES
+		valyrian_steel_tools = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 3
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		specialized_transport_wagons = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 2
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
 				barony = 0
 				county = 12
 				duchy = 9
@@ -140,23 +575,15 @@ lv_rehabilitate_valyria = {
 		}
 		advanced_logistics = {
 			contributor_is_valid = {
-				custom_tooltip = {
-					text = great_project_contribution_must_be_province_owner_or_above
-                    trigger_if = {
-                        limit = { exists = scope:great_project }
-                        OR = {
-                            this = scope:great_project.great_project_location.province_owner
-                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
-                        }
-                    }
-                    trigger_else = { always = no }
-				}
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
 			}
 
 			cost = {
 				treasury_or_gold = {
 					value = great_project_base_contribution_cost
-					multiply = 15
+					multiply = 2.6
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
 				}
 			}
 
@@ -165,7 +592,7 @@ lv_rehabilitate_valyria = {
 			is_required = yes
 
 			on_complete = {
-				great_project_reward_contribution_completion_notification_effect = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
 					LEVEL = minor
 					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
 					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
@@ -177,7 +604,7 @@ lv_rehabilitate_valyria = {
 				# great_project_contribution_catalyst_effect = yes
 			}
 
-			ai_check_interval_by_tier = {							
+			ai_check_interval_by_tier = {
 				barony = 0
 				county = 12
 				duchy = 9
@@ -187,25 +614,17 @@ lv_rehabilitate_valyria = {
 			}
 			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
 		}
-		valyrian_steel_tools = {
+		foundation_reinforcement = {
 			contributor_is_valid = {
-				custom_tooltip = {
-					text = great_project_contribution_must_be_province_owner_or_above
-                    trigger_if = {
-                        limit = { exists = scope:great_project }
-                        OR = {
-                            this = scope:great_project.great_project_location.province_owner
-                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
-                        }
-                    }
-                    trigger_else = { always = no }
-				}
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
 			}
 
 			cost = {
 				treasury_or_gold = {
 					value = great_project_base_contribution_cost
-					multiply = 16
+					multiply = 0.6
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
 				}
 			}
 
@@ -214,7 +633,7 @@ lv_rehabilitate_valyria = {
 			is_required = yes
 
 			on_complete = {
-				great_project_reward_contribution_completion_notification_effect = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
 					LEVEL = minor
 					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
 					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
@@ -226,7 +645,90 @@ lv_rehabilitate_valyria = {
 				# great_project_contribution_catalyst_effect = yes
 			}
 
-			ai_check_interval_by_tier = {							
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		food_stores = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 0.4
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		# INFRASTRUCTURE AND WORKFORCE
+		provincial_camps = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
+			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 1.8
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
 				barony = 0
 				county = 12
 				duchy = 9
@@ -238,23 +740,15 @@ lv_rehabilitate_valyria = {
 		}
 		doom_driven_workforce = {
 			contributor_is_valid = {
-				custom_tooltip = {
-					text = great_project_contribution_must_be_province_owner_or_above
-                    trigger_if = {
-                        limit = { exists = scope:great_project }
-                        OR = {
-                            this = scope:great_project.great_project_location.province_owner
-                            is_liege_or_above_of = scope:great_project.great_project_location.province_owner
-                        }
-                    }
-                    trigger_else = { always = no }
-				}
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
 			}
 
 			cost = {
 				treasury_or_gold = {
 					value = great_project_base_contribution_cost
-					multiply = 4
+					multiply = 2.4
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
 				}
 			}
 
@@ -263,7 +757,7 @@ lv_rehabilitate_valyria = {
 			is_required = yes
 
 			on_complete = {
-				great_project_reward_contribution_completion_notification_effect = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
 					LEVEL = minor
 					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
 					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
@@ -275,7 +769,7 @@ lv_rehabilitate_valyria = {
 				# great_project_contribution_catalyst_effect = yes
 			}
 
-			ai_check_interval_by_tier = {							
+			ai_check_interval_by_tier = {
 				barony = 0
 				county = 12
 				duchy = 9
@@ -283,16 +777,177 @@ lv_rehabilitate_valyria = {
 				empire = 6
 				hegemony = 6
 			}
-			ai_will_do = {
-				value = chinese_great_projects_contribution_ai_will_do_base_value
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		local_security_forces = {
+			contributor_is_valid = {
+				custom_tooltip = great_project_type_lv_rehabilitate_valyria_contribution_discount_tooltip
+				highest_held_title_tier > tier_barony
 			}
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 0.4
+					multiply = lv_rehabilitate_valyria_contribution_cost_multiplier_value
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+			
+			is_required = yes
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = minor
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+				#AGOT Disabled
+				# great_project_contribution_catalyst_effect = yes
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
 		}
 
         # Optional contributions
         # - Shadow Guard: Protect from hostile threats/plots related to the rehabilitation efforts (maybe involve the Faceless Men theories here)
         # - Purify the Fourteen Flames: Available if duchy/region has a volcano. May unlock great project to Pacify the Smoking Sea
         # - Reclaim the Valyrian Roads: County-bonuses once done
-        # - Search the Dragonlords' Vaults: Chance of getting gold or artifacts
+
+		# ARTIFACT CONTRIBUTIONS
+		# Gives chance at obtaining Valyrian Steel
+		minimal_artifact_surveys = {
+			contributor_is_valid = { highest_held_title_tier > tier_barony }
+
+			# Can only pay for this or the extensive option
+			is_shown = {
+				trigger_if = {
+					limit = { exists = scope:great_project }
+					scope:great_project ?= {
+						any_contribution = {
+							contribution_id = extensive_artifact_surveys
+							contribution_is_funded = no
+						}
+					}
+				}
+				trigger_else = { always = yes }
+			}
+
+			cost = { treasury_or_gold = { value = great_project_base_contribution_cost } }
+
+			contributor_cooldown = individual_contribution_cooldown_value
+
+			is_required = no
+
+			on_complete = {
+				if = {
+					limit = {
+						scope:great_project ?= {
+							any_contribution = {
+								contribution_id = extensive_artifact_surveys
+								contribution_is_funded = no
+							}
+						}
+					}
+					lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+						LEVEL = minor
+						NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+						OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					}
+					custom_tooltip = {
+						text = great_project_type_lv_rehabilitate_valyria_contribution_minimal_artifact_surveys_tooltip
+						trigger_event = lv_great_project.0006
+					}
+				}
+			}
+			on_contribution_funded = { great_project_notify_contribution = yes }
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
+		extensive_artifact_surveys = {
+			contributor_is_valid = { highest_held_title_tier > tier_barony }
+
+			cost = {
+				treasury_or_gold = {
+					value = great_project_base_contribution_cost
+					multiply = 3
+				}
+			}
+
+			contributor_cooldown = individual_contribution_cooldown_value
+
+			is_required = no
+
+			on_complete = {
+				lv_rehabilitate_valyria_reward_contribution_completion_notification_effect = {
+					LEVEL = major
+					NON_OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+					OWNER_REWARD_EFFECT = great_project_reward_contribution_completion_null
+				}
+				custom_tooltip = {
+					text = great_project_type_lv_rehabilitate_valyria_contribution_extensive_artifact_surveys_tooltip
+					trigger_event = lv_great_project.0006
+				}
+			}
+			on_contribution_funded = {
+				great_project_notify_contribution = yes
+
+				# Pseudo-refund since we can't refund contributions
+				scope:great_project ?= {
+					if = {
+						limit = {
+							any_contribution = {
+								contribution_id = minimal_artifact_surveys
+								contribution_is_funded = yes
+								save_temporary_scope_as = artifact_contribution
+							}
+						}
+						scope:artifact_contribution ?= {
+							contributor = {
+								send_interface_toast = {
+									type = event_toast_effect_neutral
+									title = minimal_artifact_surveys_costs_refunded_title
+									left_icon = root
+									right_icon = scope:owner
+									custom_tooltip = minimal_artifact_surveys_costs_refunded_desc
+									add_gold = great_project_base_contribution_cost
+								}
+							}
+						}
+					}
+				}
+			}
+
+			ai_check_interval_by_tier = {
+				barony = 0
+				county = 12
+				duchy = 9
+				kingdom = 6
+				empire = 6
+				hegemony = 6
+			}
+			ai_will_do = { value = chinese_great_projects_contribution_ai_will_do_base_value }
+		}
 	}
 
 	ai_target_quick_trigger = {
@@ -322,4 +977,5 @@ lv_rehabilitate_valyria = {
 	completion_sound_effect = @msg_completion_effect_generic
 }
 
+# Pacify the Smoking Sea
 
