@@ -1,8 +1,11 @@
 ﻿namespace = lv_great_project
 
 # Directory
+# Rehabilitate Valyria
 # lv_great_project.0001 - Notification: First attempt
 # lv_great_project.0002
+# lv_great_project.0003 - Notification: Success
+# lv_great_project.0004 - Global Notification
 
 # Notification: First attempt
 lv_great_project.0001 = {
@@ -36,6 +39,10 @@ lv_great_project.0001 = {
 		reference = plains
 	}
 	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
 		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
 		reference = lv_valyria_surface
 	}
@@ -64,13 +71,92 @@ lv_great_project.0001 = {
 	}
 
 	after = {
-		set_global_variable = {
-			name = lv_world_valyria_rehabilitation_status
-			value = flag:attempted
+		if = {
+			limit = { NOT = { exists = global_var:lv_world_valyria_rehabilitation_status } }
+			set_global_variable = {
+				name = lv_world_valyria_rehabilitation_status
+				value = flag:attempted
+			}
 		}
 		set_variable = {
 			name = lv_world_valyria_attempted_rehabilitation
 			value = yes
+		}
+	}
+}
+
+lv_great_project.0003 = {
+	type = character_event
+	title = lv_great_project.0003.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded }
+				desc = lv_great_project.0003.desc.subsequent
+			}
+			desc = lv_great_project.0003.desc
+		}
+	}
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = ecstasy
+	}
+
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+
+	override_effect_2d = {
+		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	option = {
+		name = lv_great_project.0003.a
+		lv_rehabilitate_valyria_reward_effect = yes
+	}
+
+	after = {
+		if = {
+			limit = { NOT = { global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded } }
+			set_global_variable = {
+				name = lv_world_valyria_rehabilitation_status
+				value = flag:succeeded
+			}
+			# Send global notification to everyone
+			every_player = { trigger_event = lv_great_project.0004 }
+		}
+	}
+}
+
+lv_great_project.0004 = {
+	type = character_event
+	window = fullscreen_event
+	title = lv_great_project.0004.t
+	desc = lv_great_project.0004.desc
+	theme = dragon
+	
+	override_background = { reference = lv_valyria_surface_restored }
+
+	option = {
+		name = {
+			trigger = { this = scope:owner }
+			text = lv_great_project.0004.a
+		}
+		name = {
+			trigger = { NOT = { this = scope:owner } }
+			text = lv_great_project.0004.a.other
 		}
 	}
 }
