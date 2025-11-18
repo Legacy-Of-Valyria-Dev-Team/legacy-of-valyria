@@ -1,14 +1,13 @@
 ﻿# Legacy of Valyria Settlement on actions
-on_title_gain = { on_actions = { lv_settlement_failsafe } }
-on_travel_plan_arrival = { on_actions = { lv_settlement_on_arrival } }
+
+# COMMENT OUT FOR NOW, CAUSES BUGS
+#on_title_gain = { on_actions = { lv_settlement_failsafe } }
 
 # If somehow someone gains a ruin title, execute the change to a colony holding
 lv_settlement_failsafe = {
 	trigger = {
-		NAND = {
-			has_game_rule = lv_colonisation_agot
-			agot_is_dummy_character = yes
-		}
+		NOT = { has_game_rule = lv_colonisation_agot }
+		agot_is_dummy_character = no
 		scope:title = {
 			tier = tier_county
 			title_province = {
@@ -68,6 +67,8 @@ lv_settlement_failsafe = {
 		}
 	}
 }
+
+on_travel_plan_arrival = { on_actions = { lv_settlement_on_arrival } }
 
 # On actions associated with the travel plan
 lv_settlement_on_start = {
