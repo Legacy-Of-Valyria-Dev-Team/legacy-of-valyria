@@ -36,8 +36,50 @@ lv_restore_valyrian_freehold_decision = {
 	is_valid = {
 		prestige_level >= max_prestige_level
 
-		completely_controls = title:e_valyria
-		completely_controls = title:e_lands_of_long_summer
+		custom_tooltip = {
+			text = lv_restore_valyrian_freehold_valyria_requirement_tooltip
+			completely_controls = title:e_valyria
+			completely_controls = title:e_lands_of_long_summer
+		}
+		custom_tooltip = {
+			text = lv_restore_valyrian_freehold_former_colonies_requirement_tooltip
+			any_empire = {
+				OR = {
+					this = title:e_old_valyria
+					this = title:e_ghiscar
+					this = title:e_volantis
+					this = title:e_rhoyne
+					this = title:e_three_daughters
+					this = title:e_pentos
+				}
+				save_temporary_scope_as = former_colony
+				root = {
+					OR = {
+						completely_controls = scope:former_colony
+						trigger_if = {
+							limit = { scope:former_colony = title:e_ghiscar }
+							completely_controls = title:k_meereen
+							completely_controls = title:k_yunkai
+							completely_controls = title:k_astapor
+							completely_controls = title:d_new_ghis # To bypass need for Old Ghis
+						}
+						trigger_else_if = {
+							limit = { scope:former_colony = title:e_volantis }
+							completely_controls = title:d_volantis # To bypass need for Rhoynar ruins (probably add more checks since Volantis is massive)
+						}
+						trigger_else_if = {
+							limit = { scope:former_colony = title:e_three_daughters }
+							completely_controls = title:k_tyrosh
+							completely_controls = title:k_lys
+							completely_controls = title:k_myr
+						}
+						trigger_else = { always = no }
+					}
+				}
+				is_titular = no
+				count >= 2
+			}
+		}
 	}
 
 	is_valid_showing_failures_only = {
