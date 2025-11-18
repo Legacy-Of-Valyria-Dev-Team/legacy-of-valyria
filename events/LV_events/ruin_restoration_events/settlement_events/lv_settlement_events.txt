@@ -237,6 +237,77 @@ lv_settlement_event.0003 = {
 			text = lv_settlement_event.0003.a.tt
 			lv_settlement_confirm_effect = yes
 		}
+
+		ai_chance = {
+			base = 100
+			ai_value_modifier = {
+				ai_boldness = 2
+				ai_honor = 2
+			}
+			modifier = {
+				factor = 2
+				likes_character_trigger = { CHARACTER = scope:liege }
+				OR = {
+					has_trait = loyal
+					has_trait = trusting
+				}
+			}
+			modifier = {
+	            add = 15
+	            likes_character_trigger = { CHARACTER = scope:liege }
+	        }
+			modifier = {
+	            add = 15
+	            OR = {
+					has_trait = loyal
+					has_trait = trusting
+				}
+	        }
+			modifier = {
+                add = 15
+                has_trait = diligent
+            }
+			modifier = {
+	            add = 15
+	            OR = {
+					has_trait = lifestyle_traveler
+					has_trait = lifestyle_wayfarer
+					has_trait = lifestyle_voyager
+				}
+	        }
+			modifier = {
+				factor = 0
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					NOT = { scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } } }
+				}
+				has_trait = craven
+			}
+			modifier = {
+				factor = 0.1
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					NOT = { scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } } }
+				}
+				ai_value_modifier = { ai_rationality = 2 }
+			}
+			modifier = {
+				factor = 0.25
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } }
+				}
+				has_trait = craven
+			}
+			modifier = {
+				factor = 0.75
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } }
+				}
+				ai_value_modifier = { ai_rationality = 2 }
+			}
+		}
 	}
 
 	# No
@@ -248,6 +319,73 @@ lv_settlement_event.0003 = {
 			set_variable = {
 				name = lv_settlement_refused
 				months = 6
+			}
+		}
+
+		ai_chance = {
+			base = 100
+			ai_value_modifier = {
+				ai_boldness = 0.5
+				ai_honor = 0.5
+			}
+			modifier = {
+	            factor = 2
+				dislikes_character_trigger = { CHARACTER = scope:liege }
+				OR = {
+					has_trait = cynical
+					has_trait = disloyal
+				}
+	        }
+	        modifier = {
+	            add = 20
+	            dislikes_character_trigger = { CHARACTER = scope:liege }
+	        }
+			modifier = {
+	            add = 20
+				OR = {
+					has_trait = cynical
+					has_trait = disloyal
+				}
+	        }
+			modifier = {
+                add = 15
+                has_trait = arrogant
+            }
+			modifier = {
+				factor = 2
+				has_trait = craven
+			}
+			modifier = {
+				factor = 1000
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					NOT = { scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } } }
+				}
+				has_trait = craven
+			}
+			modifier = {
+				factor = 10
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					NOT = { scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } } }
+				}
+				ai_value_modifier = { ai_rationality = 2 }
+			}
+			modifier = {
+				factor = 2
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } }
+				}
+				has_trait = craven
+			}
+			modifier = {
+				factor = 1.25
+				scope:ruin ?= {
+					geographical_region = world_valyria_mainland
+					scope:liege = { any_realm_province = { geographical_region = world_valyria_mainland } }
+				}
+				ai_value_modifier = { ai_rationality = 2 }
 			}
 		}
 	}

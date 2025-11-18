@@ -2,6 +2,8 @@
 # - All on actions effects after initial map generation (but before playing) goes here
 on_game_start = {
     on_actions = {
+		lv_remove_realms
+
 		lv_culture_and_history_setup
 		lv_provinces_setup
 		lv_titles_setup
@@ -15,6 +17,71 @@ on_game_start = {
 		cob_set_dragonstone_faiths
 		cob_set_birthplaces
     }
+}
+
+# Bye map
+lv_remove_realms = {
+	on_actions = {
+		lv_remove_realm_rhoyne
+		lv_remove_realm_volantis
+		lv_remove_realm_valyria
+		lv_remove_realm_north_valyria
+		lv_remove_realm_ghiscar
+		lv_remove_realm_far_east_essos
+		lv_remove_realm_sothoryos
+    }
+}
+
+lv_remove_realm_rhoyne = {
+	trigger = { lv_realm_rhoyne_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_rhoyne }
+	}
+}
+
+lv_remove_realm_volantis = {
+	trigger = { lv_realm_volantis_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_volantis }
+	}
+}
+
+lv_remove_realm_valyria = {
+	trigger = { lv_realm_valyria_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_lands_of_long_summer }
+		agot_remove_realm_effect = { REALM = title:e_valyria }
+	}
+}
+
+lv_remove_realm_north_valyria = {
+	trigger = { lv_realm_north_valyria_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_old_valyria }
+	}
+}
+
+lv_remove_realm_ghiscar = {
+	trigger = { lv_realm_ghiscar_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_ghiscar }
+	}
+}
+
+lv_remove_realm_far_east_essos = {
+	trigger = { lv_realm_far_east_essos_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_asshai }
+		agot_remove_realm_effect = { REALM = title:k_vehar }
+	}
+}
+
+lv_remove_realm_sothoryos = {
+	trigger = { lv_realm_sothoryos_disabled = yes }
+	effect = {
+		agot_remove_realm_effect = { REALM = title:e_sothoryos }
+		agot_remove_realm_effect = { REALM = title:e_sothoryos_major_east }
+	}
 }
 
 # Set up culture and history-related stuff here
@@ -84,43 +151,46 @@ lv_culture_and_history_setup = {
 lv_provinces_setup = {
 	effect = {
 		# Add buildings to special provinces here instead of in history to avoid missing-ruler errors
-		province:8232 = { # Volantis Harbor
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_building = common_tradeport_08
-			add_building = guild_halls_08
-			add_building = agot_urban_farms_08
-			add_building = breweries_07
-		}
-		province:8233 = { # Fishmonger's Square
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_building = guild_halls_04
-			add_building = breweries_06
-		}
-		province:8234 = { # Western Waterfront
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_building = guild_halls_05
-			add_building = barracks_07
-		}
-		province:8235 = { # Eastern Waterfront
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_building = regimental_grounds_07
-			add_building = barracks_07
-		}
-		province:8236 = { # Old Volantis
-			add_province_modifier = extra_building_slot
-			add_province_modifier = extra_building_slot
-			add_building = barracks_08
-			add_building = breweries_08
-		}
-		province:8240 = { # The Great Plaza
-			add_province_modifier = extra_building_slot
-			add_building = city_walls_04
+		if = {
+			limit = { lv_realm_volantis_disabled = no }
+			province:8232 = { # Volantis Harbor
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_building = common_tradeport_08
+				add_building = guild_halls_08
+				add_building = agot_urban_farms_08
+				add_building = breweries_07
+			}
+			province:8233 = { # Fishmonger's Square
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_building = guild_halls_04
+				add_building = breweries_06
+			}
+			province:8234 = { # Western Waterfront
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_building = guild_halls_05
+				add_building = barracks_07
+			}
+			province:8235 = { # Eastern Waterfront
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_building = regimental_grounds_07
+				add_building = barracks_07
+			}
+			province:8236 = { # Old Volantis
+				add_province_modifier = extra_building_slot
+				add_province_modifier = extra_building_slot
+				add_building = barracks_08
+				add_building = breweries_08
+			}
+			province:8240 = { # The Great Plaza
+				add_province_modifier = extra_building_slot
+				add_building = city_walls_04
+			}
 		}
 	}
 }
@@ -131,6 +201,7 @@ lv_titles_setup = {
 		# Changes the Ruins title's color to be transparent
 		title:d_ruins = { set_color_from_title = title:d_lv_map_transparent_color }
 		title:c_wilderness = { set_color_from_title = title:d_lv_map_transparent_color }
+		title:d_unknown = { set_color_from_title = title:d_lv_map_transparent_color }
 	}
 }
 
@@ -155,15 +226,26 @@ lv_vassals_setup = {
 				any_held_title = {
 					OR = {
 						# VOLANTIS
-						this = title:c_old_volantis
+						AND = {
+							lv_realm_volantis_disabled = no
+							this = title:c_old_volantis
+						}
 
 						# ASSHAI
-						this = title:c_asshai
-						this = title:c_maruza
-						this = title:c_ostiros
+						AND = {
+							lv_realm_far_east_essos_disabled = no
+							OR = {
+								this = title:c_asshai
+							this = title:c_maruza
+							this = title:c_ostiros
+							}
+						}
 
 						# Oros
-						this = title:c_oros
+						AND = {
+							lv_realm_valyria_disabled = no
+							this = title:c_oros
+						}
 					}
 				}
 			}
@@ -270,8 +352,14 @@ lv_on_game_start = {
             value = yes
         }
 
-		lv_free_city_setup_effect = { KINGDOM_TITLE = title:k_volantis }
-		lv_free_city_setup_effect = { KINGDOM_TITLE = title:k_the_basilisk_isles }
-		lv_free_city_setup_effect = { KINGDOM_TITLE = title:k_gogossos }
+		if = {
+			limit = { lv_realm_volantis_disabled = no }
+			lv_free_city_setup_effect = { KINGDOM_TITLE = title:k_volantis }
+		}
+		if = {
+			limit = { lv_realm_sothoryos_disabled = no }
+			lv_free_city_setup_effect = { KINGDOM_TITLE = title:k_the_basilisk_isles }
+			lv_free_city_setup_effect = { KINGDOM_TITLE = title:k_gogossos }
+		}
 	}
 }
