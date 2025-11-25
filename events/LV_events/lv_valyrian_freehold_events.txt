@@ -1,6 +1,10 @@
 ﻿namespace = lv_valyrian_freehold
 
-# Form New Valyria
+# Directory
+# lv_valyrian_freehold.0001 - Form Valyrian Freehold
+# lv_valyrian_freehold.0002 - Notification: Announce formation of the Freehold
+
+# Form Valyrian Freehold
 lv_valyrian_freehold.0001 = {
 	type = character_event
 	window = fullscreen_event
@@ -10,20 +14,153 @@ lv_valyrian_freehold.0001 = {
 
 	override_background = { reference = lv_valyria_prospering }
 
-	immediate = {
-		save_scope_as = scoped_emperor
-	}
+	immediate = { save_scope_as = restorer }
 
 	option = {
 		name = lv_valyrian_freehold.0001.a
 		set_nickname_effect = { NICKNAME = nick_the_restorer }
+		if = {
+			limit = { government_has_flag = government_is_feudal }
+			custom_tooltip = {
+				text = lv_valyrian_freehold.0001.tooltip.styling
+				title:h_valyrian_freehold = {
+					set_variable = {
+						name = lv_freehold_style
+						value = flag:imperial
+					}
+				}
+			}
+		}
 		lv_restore_valyrian_freehold_effect = yes
 	}
 
 	after = {
-		#every_player = {
-		#	limit = { this != root }
-		#	trigger_event = lv_valyrian_freehold.0002
-		#}
+		every_player = {
+			limit = { this != scope:restorer }
+			trigger_event = lv_valyrian_freehold.0002
+		}
 	}
+}
+
+# Notification: Announce formation of the Freehold
+lv_valyrian_freehold.0002 = {
+	type = character_event
+	window = fullscreen_event
+	title = lv_valyrian_freehold.0002.t
+	desc = lv_valyrian_freehold.0002.desc
+	theme = emperor
+
+	override_background = { reference = lv_valyria_prospering }
+
+	immediate = {
+		save_scope_as = restorer
+		custom_tooltip = lv_valyrian_freehold.0002.tooltip
+	}
+
+	option = { name = lv_valyrian_freehold.0002.a }
+}
+
+# Important city reconquered
+lv_valyrian_freehold.0100 = {
+	type = character_event
+	window = fullscreen_event
+	title = {
+		first_valid = {
+			triggered_desc = { # Notable unconquered areas (For now only Braavos and New Ghis)
+				trigger = {
+					OR = {
+						scope:county = title:c_braavos
+						scope:county = title:c_new_ghis
+					}
+				}
+				desc = lv_valyrian_freehold.0100.t.newly_conquered
+			}
+			desc = lv_valyrian_freehold.0100.t
+		}
+	}
+	desc = {
+		desc = lv_valyrian_freehold.0100.desc.intro
+		first_valid = {
+			# NORTH VALYRIA
+			triggered_desc = { # Elyria
+				trigger = { scope:county = title:c_elyria }
+				desc = lv_valyrian_freehold.0100.desc.elyria
+			}
+			triggered_desc = { # Mantarys
+				trigger = { scope:county = title:c_mantarys }
+				desc = lv_valyrian_freehold.0100.desc.mantarys
+			}
+			triggered_desc = { # Tolos
+				trigger = { scope:county = title:c_tolos }
+				desc = lv_valyrian_freehold.0100.desc.tolos
+			}
+			# FREE CITIES
+			triggered_desc = { # Volantis
+				trigger = { scope:county = title:c_old_volantis }
+				desc = lv_valyrian_freehold.0100.desc.volantis
+			}
+			triggered_desc = { # Tyrosh
+				trigger = { scope:county = title:c_tyrosh }
+				desc = lv_valyrian_freehold.0100.desc.tyrosh
+			}
+			triggered_desc = { # Lys
+				trigger = { scope:county = title:c_lys }
+				desc = lv_valyrian_freehold.0100.desc.lys
+			}
+			triggered_desc = { # Myr
+				trigger = { scope:county = title:c_myr }
+				desc = lv_valyrian_freehold.0100.desc.myr
+			}
+			triggered_desc = { # Pentos
+				trigger = { scope:county = title:c_pentos }
+				desc = lv_valyrian_freehold.0100.desc.pentos
+			}
+			# RHOYNE
+			triggered_desc = { # Chroyane
+				trigger = { scope:county = title:c_chroyane }
+				desc = lv_valyrian_freehold.0100.desc.chroyane
+			}
+			triggered_desc = { # Ny Sar
+				trigger = { scope:county = title:c_ny_sar }
+				desc = lv_valyrian_freehold.0100.desc.ny_sar
+			}
+			# GHISCAR
+			triggered_desc = { # Meereen
+				trigger = { scope:county = title:c_meereen }
+				desc = lv_valyrian_freehold.0100.desc.meereen
+			}
+			triggered_desc = { # Yunkai
+				trigger = { scope:county = title:c_yunkai }
+				desc = lv_valyrian_freehold.0100.desc.yunkai
+			}
+			triggered_desc = { # Astapor
+				trigger = { scope:county = title:c_astapor }
+				desc = lv_valyrian_freehold.0100.desc.astapor
+			}
+			triggered_desc = { # New Ghis
+				trigger = { scope:county = title:c_new_ghis }
+				desc = lv_valyrian_freehold.0100.desc.new_ghis
+			}
+			triggered_desc = { # Old Ghis
+				trigger = { scope:county = title:c_old_ghis }
+				desc = lv_valyrian_freehold.0100.desc.old_ghis
+			}
+			triggered_desc = { # Gogossos / Gorgai
+				trigger = { scope:county = title:c_gogossos }
+				desc = lv_valyrian_freehold.0100.desc.gogossos
+			}
+			# UNCONQUERED SIGNIFICANT AREAS
+			triggered_desc = { # Braavos
+				trigger = { scope:county = title:c_braavos }
+				desc = lv_valyrian_freehold.0100.desc.braavos
+			}
+		}
+	}
+	theme = emperor
+
+	override_background = { reference = lv_valyria_prospering }
+
+	immediate = { save_scope_as = restorer }
+
+	option = { name = lv_valyrian_freehold.0100.a }
 }
