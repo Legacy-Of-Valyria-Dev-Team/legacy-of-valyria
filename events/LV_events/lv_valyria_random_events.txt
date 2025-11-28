@@ -1,5 +1,75 @@
 ﻿namespace = lv_valyria_random_event
+
 #ghosts - 1
+# Pre-event to avoid the ghosts: You get worsening nightmares and see apparitions while traveling here
+lv_valyria_random_event.0009 = {
+    title = lv_valyria_random_event.0009.t
+    desc = lv_valyria_random_event.0009.desc
+    theme = dread
+    override_background = { reference = lv_valyria_surface }
+    left_portrait = {
+		character = root
+		animation = paranoia
+	}
+    trigger = {
+        location = { geographical_region = world_valyria_subregion_restorable }
+        NOT = { has_character_flag = saw_figures }
+    }
+
+    immediate = { location = { save_scope_as = haunted_location } }
+
+	option = { # Go ahead and get haunted bozo
+        name = lv_valyria_random_event.0009.a
+        hidden_effect = {
+            random_list = {
+                50 = {}
+                50 = {
+                    trigger_event = {
+                        id = lv_valyria_random_event.0010
+                        days = 7
+                    }
+                }
+            }
+        }
+        ai_chance = {
+			base = 5
+			modifier = {
+				factor = 2
+                has_trait = arrogant
+                OR = {
+                    has_trait = zealous # (god) will protect me
+                    has_trait = cynical # Ghosts aren't real
+                    has_trait = possessed_1 # I already have demons in me lol
+                    has_trait = lunatic_1 # Sssdfg
+                }
+			}
+            modifier = {
+				factor = 2
+                has_trait = cynical
+			}
+		}
+    }
+    option = { # Nah find some other none-haunted route
+        name = lv_valyria_random_event.0009.b
+        current_travel_plan ?= {
+            delay_travel_plan = {
+                weeks = 2
+                add = yes
+            }
+        }
+        ai_chance = {
+			base = 95
+            modifier = {
+				factor = 2
+				has_trait = paranoid
+			}
+			modifier = {
+				factor = 2
+				has_trait = craven
+			}
+		}
+    }
+}
 lv_valyria_random_event.0010 = {
     title = lv_valyria_random_event.0010.t
     desc = lv_valyria_random_event.0010.desc
@@ -10,12 +80,7 @@ lv_valyria_random_event.0010 = {
 		animation = paranoia
 	}
     trigger = {
-        location = {
-			OR = {
-				geographical_region = world_valyria_proper
-				geographical_region = world_valyria_lands_of_the_long_summer
-			}
-		}
+        location = { geographical_region = world_valyria_subregion_restorable }
         NOT = { has_character_flag = saw_figures }
     }
 	
@@ -203,13 +268,13 @@ lv_valyria_random_event.0030 = {
         name = lv_valyria_random_event.0030.a
         hidden_effect = {
             random_list = {
-                34 = {
+                20 = {
                     trigger_event = lv_valyria_random_event.0031
                 }
-                33 = {
+                40 = {
                     trigger_event = lv_valyria_random_event.0032
                 }
-                33 = {
+                40 = {
                     trigger_event = lv_valyria_random_event.0033
                 }
             }
