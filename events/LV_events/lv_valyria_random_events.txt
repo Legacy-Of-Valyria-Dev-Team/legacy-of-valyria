@@ -1,5 +1,75 @@
-namespace = lv_valyria_random_event
+﻿namespace = lv_valyria_random_event
+
 #ghosts - 1
+# Pre-event to avoid the ghosts: You get worsening nightmares and see apparitions while traveling here
+lv_valyria_random_event.0009 = {
+    title = lv_valyria_random_event.0009.t
+    desc = lv_valyria_random_event.0009.desc
+    theme = dread
+    override_background = { reference = lv_valyria_surface }
+    left_portrait = {
+		character = root
+		animation = paranoia
+	}
+    trigger = {
+        location = { geographical_region = world_valyria_subregion_restorable }
+        NOT = { has_character_flag = saw_figures }
+    }
+
+    immediate = { location = { save_scope_as = haunted_location } }
+
+	option = { # Go ahead and get haunted bozo
+        name = lv_valyria_random_event.0009.a
+        hidden_effect = {
+            random_list = {
+                50 = {}
+                50 = {
+                    trigger_event = {
+                        id = lv_valyria_random_event.0010
+                        days = 7
+                    }
+                }
+            }
+        }
+        ai_chance = {
+			base = 5
+			modifier = {
+				factor = 2
+                has_trait = arrogant
+                OR = {
+                    has_trait = zealous # (god) will protect me
+                    has_trait = cynical # Ghosts aren't real
+                    has_trait = possessed_1 # I already have demons in me lol
+                    has_trait = lunatic_1 # Sssdfg
+                }
+			}
+            modifier = {
+				factor = 2
+                has_trait = cynical
+			}
+		}
+    }
+    option = { # Nah find some other none-haunted route
+        name = lv_valyria_random_event.0009.b
+        current_travel_plan ?= {
+            delay_travel_plan = {
+                weeks = 2
+                add = yes
+            }
+        }
+        ai_chance = {
+			base = 95
+            modifier = {
+				factor = 2
+				has_trait = paranoid
+			}
+			modifier = {
+				factor = 2
+				has_trait = craven
+			}
+		}
+    }
+}
 lv_valyria_random_event.0010 = {
     title = lv_valyria_random_event.0010.t
     desc = lv_valyria_random_event.0010.desc
@@ -10,12 +80,7 @@ lv_valyria_random_event.0010 = {
 		animation = paranoia
 	}
     trigger = {
-        location = {
-			OR = {
-				geographical_region = world_valyria_proper
-				geographical_region = world_valyria_lands_of_the_long_summer
-			}
-		}
+        location = { geographical_region = world_valyria_subregion_restorable }
         NOT = { has_character_flag = saw_figures }
     }
 	
@@ -25,16 +90,50 @@ lv_valyria_random_event.0010 = {
         name = lv_valyria_random_event.0010.a
         add_stress = 25
         add_trait = paranoid
+        ai_chance = {
+			base = 50
+            modifier = {
+				factor = 4
+				has_trait = paranoid
+			}
+			modifier = {
+				factor = 2
+				has_trait = craven
+			}
+		}
     }
     option = {
         name = lv_valyria_random_event.0010.b
         add_prestige = 100
         add_stress = 40
+        ai_chance = {
+			base = 50
+			modifier = {
+				factor = 2
+                has_trait = arrogant
+                OR = {
+                    has_trait = zealous
+                    has_trait = possessed_1
+                    has_trait = lunatic_1
+                }
+			}
+		}
     }
     option = {
         name = lv_valyria_random_event.0010.c
         add_stress = -20
         add_trait = lunatic_1
+        ai_chance = {
+			base = 50
+            modifier = {
+				factor = 4
+				has_trait = lunatic_1
+			}
+			modifier = {
+				factor = 2
+				has_trait = eccentric
+			}
+		}
     }
 
     after = {
@@ -50,7 +149,7 @@ lv_valyria_random_event.0011 = {
 
     immediate = {
         if = { # If any subregion of Valyria still ruined/valid, proceed with the check
-            limit = { situation:valyria_situation = { any_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } } }
+            limit = { situation:valyria_situation = { any_situation_sub_region = { sub_region_current_phase = valyria_ruined } } }
             if = {
                 limit = {
                     location = {
@@ -82,13 +181,22 @@ lv_valyria_random_event.0020 = {
 
     option = {
         name = lv_valyria_random_event.0020.a
-        trigger_event = lv_valyria_random_event.0030
         add_stress = 35
-        add_trait = melancholic
+        add_trait = depressed_1
+        ai_chance = {
+			base = 50
+            modifier = {
+				factor = 4
+				has_trait = paranoid
+			}
+            modifier = {
+				factor = 2
+				has_trait = craven
+			}
+		}
     }
     option = {
         name = lv_valyria_random_event.0020.b
-        trigger_event = lv_valyria_random_event.0030
         add_prestige = 150
         add_piety = 100
 		add_stress = 45
@@ -96,17 +204,52 @@ lv_valyria_random_event.0020 = {
 			5 = { add_trait = dragon_dreams }
 			95 = {}
 		}
+        ai_chance = {
+			base = 50
+            modifier = {
+				factor = 4
+				has_trait = arrogant
+			}
+            modifier = {
+				factor = 2
+				has_trait = wrathful
+			}
+            modifier = {
+				factor = 2
+				has_trait = ambitious
+			}
+            modifier = {
+				factor = 2
+				has_trait = vengeful
+			}
+            modifier = {
+				factor = 2
+				has_trait = stubborn
+			}
+		}
     }
     option = {
         name = lv_valyria_random_event.0020.c
-        trigger_event = lv_valyria_random_event.0030
         add_stress = -20
         if = {
             limit = { has_trait = lunatic_1 }
             add_trait = eccentric
         }
         else = { add_trait = lunatic_1 }
+        ai_chance = {
+			base = 50
+            modifier = {
+				factor = 4
+                OR = {
+                    has_trait = possessed_1
+                    has_trait = lunatic_1
+                    has_trait = eccentric
+                }
+			}
+		}
     }
+
+    after = { trigger_event = lv_valyria_random_event.0030 }
 }
 
 lv_valyria_random_event.0030 = {
@@ -125,13 +268,13 @@ lv_valyria_random_event.0030 = {
         name = lv_valyria_random_event.0030.a
         hidden_effect = {
             random_list = {
-                34 = {
+                20 = {
                     trigger_event = lv_valyria_random_event.0031
                 }
-                33 = {
+                40 = {
                     trigger_event = lv_valyria_random_event.0032
                 }
-                33 = {
+                40 = {
                     trigger_event = lv_valyria_random_event.0033
                 }
             }
@@ -340,7 +483,7 @@ lv_valyria_random_event.0070 = {
                     30 = { agot_create_artifact_valyrian_steel_armor_effect = { OWNER = root } }
                     30 = { agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root CREATOR = root } }
                     30 = { create_artifact_dragon_egg_black_effect = { OWNER = ROOT } }
-                    10 = { agot_create_artifact_glass_candle_effect = { OWNER = ROOT } }
+                    10 = { agot_create_artifact_glass_candle_effect = { OWNER = ROOT COLOR = purple } }
                 }
             }
             40 = { }
@@ -492,7 +635,21 @@ lv_valyria_random_event.0110 = {
         name = lv_valyria_random_event.0110.a
         random_list = {
             40 = { add_trait = burned }                     # scorched by the serpents
-            40 = { add_injury = yes }                       # bitten or clawed
+            40 = { # bitten or clawed
+                if = {
+                    limit = { has_trait = wounded_3 }
+                    death = { death_reason = death_wounds }
+                }
+                else_if = {
+                    limit = { has_trait = wounded_2 }
+                    add_trait = wounded_3
+                }
+                else_if = {
+                    limit = { has_trait = wounded_1 }
+                    add_trait = wounded_2
+                }
+                else = { add_trait = wounded_1 }
+            }   
             20 = { death = { death_reason = death_vanished } }    # overwhelmed by the serpents
         }
     }

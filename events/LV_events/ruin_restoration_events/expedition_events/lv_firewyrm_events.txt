@@ -4,6 +4,7 @@
 
 # lv_firewyrm_event.0001 - Firewyrm encounter
 # lv_firewyrm_event.0100 - Firewyrm gone
+# lv_firewyrm_event.0200 - Attempt to place firewyrm in dragonpit
 
 # Firewyrm encounter
 lv_firewyrm_event.0001 = {
@@ -69,6 +70,10 @@ lv_firewyrm_event.0001 = {
 		reference = plains
 	}
 	override_background = {
+		trigger = { scope:firewyrm_source = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
 		trigger = { scope:firewyrm_source = { lv_valyria_subregion_ruined = yes } }
 		reference = lv_valyria_surface
 	}
@@ -105,9 +110,21 @@ lv_firewyrm_event.0001 = {
 	}
 
 	immediate = {
-		lv_spawn_firewyrm_effect = {
-			LOCATION = scope:firewyrm_source
-			GENERATE_BLOCKER = yes
+		if = {
+			limit = { NOT = { exists = scope:firewyrm } }
+			if = {
+				limit = { exists = scope:firewyrm_source }
+				lv_spawn_firewyrm_effect = {
+					LOCATION = scope:firewyrm_source
+					GENERATE_BLOCKER = yes
+				}
+			}
+			else = {
+				lv_spawn_firewyrm_effect = {
+					LOCATION = location
+					GENERATE_BLOCKER = no
+				}
+			}
 		}
 		if = {
 			limit = {
@@ -228,7 +245,7 @@ lv_firewyrm_event.0100 = {
 
 	left_portrait = {
 		character = root
-		scripted_animation = happiness
+		animation = happiness
 	}
 	lower_right_portrait = { character = scope:firewyrm }
 
@@ -239,6 +256,94 @@ lv_firewyrm_event.0100 = {
 
 	option = { name = lv_firewyrm_event.0100.a }
 }
+
+# DO NOT IMPLEMENT YET
+# Just have ready for when we're ready to implement taming mechanics in the future
+#
+# Attempt to place firewyrm in dragonpit
+#lv_firewyrm_event.0200 = {
+#	type = character_event
+#	title = lv_firewyrm_event.0200.t
+#	desc = lv_firewyrm_event.0200.desc
+#
+#	theme = dragon
+#
+#	override_background = {
+#		trigger = {
+#			scope:former_lair = {
+#				lv_valyria_subregion_restored = yes
+#				OR = {
+#					agot_is_desert_terrain = yes
+#					agot_is_desert_mountains_terrain = yes
+#				}
+#			}
+#		}
+#		reference = ep2_travel_settlement_ruin_desert
+#	}
+#	override_background = {
+#		trigger = {
+#			scope:former_lair = {
+#				lv_valyria_subregion_restored = yes
+#				OR = {
+#					agot_is_drylands_terrain = yes
+#					agot_is_oasis_terrain = yes
+#					agot_is_canyon_terrain = yes
+#				}
+#			}
+#		}
+#		reference = drylands
+#	}
+#	override_background = {
+#		trigger = {
+#			scope:former_lair = {
+#				lv_valyria_subregion_restored = yes
+#				OR = {
+#					agot_is_steppe_terrain = yes
+#				}
+#			}
+#		}
+#		reference = mpo_steppe_evening
+#	}
+#	override_background = {
+#		trigger = {
+#			scope:former_lair = {
+#				lv_valyria_subregion_restored = yes
+#				OR = {
+#					agot_is_taiga_terrain = yes
+#					agot_is_taiga_bog_terrain = yes
+#					agot_is_glacier_terrain = yes
+#					agot_is_frozen_flats_terrain = yes
+#				}
+#			}
+#		}
+#		reference = bp3_steppe_winter
+#	}
+#	override_background = {
+#		trigger = { scope:former_lair = { lv_valyria_subregion_restored = yes } }
+#		reference = plains
+#	}
+#	override_background = {
+#		trigger = { scope:former_lair = { lv_valyria_subregion_ruined = yes } }
+#		reference = lv_valyria_surface
+#	}
+#	override_effect_2d = {
+#		trigger = { scope:former_lair = { lv_valyria_subregion_ruined = yes } }
+#		reference = smoke
+#	}
+#
+#	left_portrait = {
+#		character = root
+#		animation = happiness
+#	}
+#	lower_right_portrait = { character = scope:firewyrm }
+#
+#	immediate = {
+#		scope:former_lair = { save_scope_as = lair_location }
+#		custom_tooltip = lv_firewyrm_cleared_tooltip
+#	}
+#
+#	option = { name = lv_firewyrm_event.0200.a }
+#}
 
 namespace = lv_firewyrm_duel
 
@@ -458,7 +563,7 @@ lv_firewyrm_duel.0001 = {
 										trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
 										desc = lv_firewyrm_duel.0001.desc.cone_of_flame.miss.firewyrm_vs_firewyrm
 									}
-									desc = lv_firewyrm_duel.0001.desc.miss.cone_of_flame
+									desc = lv_firewyrm_duel.0001.desc.cone_of_flame.miss
 								}
 							}
 						}
@@ -556,7 +661,7 @@ lv_firewyrm_duel.0001 = {
 										trigger = { scope:fd_round_opponent_dragon ?= { lv_is_firewyrm = yes } }
 										desc = lv_firewyrm_duel.0001.desc.berserk_charge.miss.firewyrm_vs_firewyrm
 									}
-									desc = lv_firewyrm_duel.0001.desc.miss.berserk_charge
+									desc = lv_firewyrm_duel.0001.desc.berserk_charge.miss
 								}
 							}
 						}
@@ -1195,7 +1300,7 @@ lv_firewyrm_duel.0001 = {
 		agot_clear_dragon_animation_flags = yes
 		scope:fd_attacker = {
 			if = {
-				limit = { var:lv_dragon_state ?= flag:flying }
+				limit = { scope:fd_attacker_dragon = { var:lv_dragon_state ?= flag:flying } }
 				agot_set_dragon_animation_flag_effect = {
 					FLAG = dragon_hover
 					RIDING_DRAGON = yes
@@ -1210,7 +1315,7 @@ lv_firewyrm_duel.0001 = {
 		}
 		scope:fd_defender = {
 			if = {
-				limit = { var:lv_dragon_state ?= flag:flying }
+				limit = { scope:fd_defender_dragon = { var:lv_dragon_state ?= flag:flying } }
 				agot_set_dragon_animation_flag_effect = {
 					FLAG = dragon_hover
 					RIDING_DRAGON = yes
@@ -1257,10 +1362,6 @@ lv_firewyrm_duel.0001 = {
 			}
 		}
 		debug_log_scopes = yes
-		if = {
-			limit = { NOT = { scope:fd_round_me_dragon = { var:lv_dragon_state ?= flag:flying } } }
-			remove_variable = lv_dragon_state
-		}
 		lv_firewyrm_duel_select_options_from_pool_effect = yes
 		lv_firewyrm_duel_show_opponent_move_effect = yes
 	}
@@ -1770,6 +1871,12 @@ lv_firewyrm_duel.0001 = {
 			#		trigger_event = lv_firewyrm_duel.0001
 			#	}
 			#}
+			scope:fd_round_me_dragon = {
+				if = {
+					limit = { NOT = { var:lv_dragon_state ?= flag:flying } }
+					remove_variable = lv_dragon_state
+				}
+			}
 			if = {
 				limit = { this = scope:fd_defender }
 				trigger_event = lv_firewyrm_duel.0002
@@ -2128,29 +2235,19 @@ lv_firewyrm_duel.0003 = {
 		reference = bp3_steppe_winter
 	}
 	override_background = {
-		trigger = {
-			location = {
-				lv_valyria_subregion_restored = yes
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_restored = yes } }
 		reference = plains
 	}
 	override_background = {
-		trigger = {
-			location = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { location = { lv_valyria_subregion_ruined = yes } }
 		reference = lv_valyria_surface
 	}
 	override_effect_2d = {
-		trigger = {
-			location = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_ruined = yes } }
 		reference = smoke
 	}
 
@@ -2853,29 +2950,19 @@ lv_firewyrm_duel.0004 = {
 		reference = bp3_steppe_winter
 	}
 	override_background = {
-		trigger = {
-			location = {
-				lv_valyria_subregion_restored = yes
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_restored = yes } }
 		reference = plains
 	}
 	override_background = {
-		trigger = {
-			location = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { location = { lv_valyria_subregion_ruined = yes } }
 		reference = lv_valyria_surface
 	}
 	override_effect_2d = {
-		trigger = {
-			location = {
-				geographical_region = world_valyria_mainland
-				county = { any_county_situation_sub_region = { NOT = { has_sub_region_phase_parameter = valyria_green } } }
-			}
-		}
+		trigger = { location = { lv_valyria_subregion_ruined = yes } }
 		reference = smoke
 	}
 

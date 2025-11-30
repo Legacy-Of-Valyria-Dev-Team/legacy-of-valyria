@@ -113,16 +113,6 @@
 	# On Actions
 	##################################################
 	on_monthly = {
-		# Wilderness therapy
-		title:c_wilderness = {
-			holder = {
-				if = {
-					limit = { agot_is_dummy_character = yes } # Given AGOT's setup, the holder of c_wilderness will always need this, but idk chaos reigns
-					add_stress = -1000
-				}
-			}
-		}
-
 		every_situation_sub_region = { # Do monthly events
 			# Background cleaning stuff
 			every_situation_sub_region_county = {
@@ -184,9 +174,6 @@
 	# Uncomment and finalize once all relevant pulse effects are done
 	on_yearly = {
 		every_situation_sub_region = { # Do yearly events
-			# Background situation stuff
-			lv_valyria_update_subregion_progress_effect = { ADD_BLOCKER = no }
-
 			# Regular yearly pulse
 			every_situation_sub_region_county = {
 				limit = { holder = { agot_is_dummy_character = no } }
@@ -216,6 +203,9 @@
 							}
 							has_building_or_higher = valyria_mines_01
 							NOT = { has_building = valyria_mines_03 }
+
+							# Restored Valyria = No more firewyrms
+							lv_valyria_subregion_ruined = yes
 						}
 						save_scope_as = mines_province
 						set_variable = {
@@ -242,6 +232,12 @@
 		#		change_development_level = 100
 		#	}
 		#}
+
+		# Bye
+		if = {
+			limit = { lv_realm_valyria_disabled = yes }
+			end_situation = yes
+		}
 	}
 
 	##################################################
@@ -340,12 +336,14 @@
 		valyria_restored_01 = { # 1/3 of the blockers cleared
 			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
 			map_province_effect = valyria_restored_01
+			map_province_effect_intensity = 0.25
 
 			future_phases = { valyria_restored_02 = {} }
 		}
 		valyria_restored_01_transition = { # 1/3 of the blockers cleared
 			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
 			map_province_effect = valyria_restored_01
+			map_province_effect_intensity = 0.25
 
 			future_phases = {
 				valyria_restored_02 = {
@@ -357,6 +355,7 @@
 		valyria_restored_02 = { # 2/3 of the blockers cleared
 			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
 			map_province_effect = valyria_restored_02
+			map_province_effect_intensity = 0.075
 
 			parameters = { valyria_green = yes }
 
@@ -365,6 +364,7 @@
 		valyria_restored_02_transition = { # 2/3 of the blockers cleared
 			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
 			map_province_effect = valyria_restored_02
+			map_province_effect_intensity = 0.075
 
 			parameters = { valyria_green = yes }
 
@@ -377,7 +377,11 @@
 		}
 		valyria_rehabilitated = { # Fully restored
 			icon = "gfx/interface/icons/situations/debug_situation/plentiful_harvest.dds"
-			map_province_effect = valyria_rehabilitated
+			map_province_effect = valyria_restored_02
+			map_province_effect_intensity = 0.5
+
+			# Somehow the shaders for restored_02 look more natural. Try to tweak eventually
+			#map_province_effect = valyria_rehabilitated
 
 			parameters = { valyria_green = yes }
 		}

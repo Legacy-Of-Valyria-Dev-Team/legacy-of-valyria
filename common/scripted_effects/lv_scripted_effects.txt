@@ -237,6 +237,35 @@ lv_distribute_county_effect = {
 	}
 }
 
+# Free City-fier effect
+lv_free_city_setup_effect = {
+	$KINGDOM_TITLE$ = {
+		if = {
+			limit = { exists = holder }
+			holder = {
+				every_vassal_or_below = {
+					limit = {
+						highest_held_title_tier >= tier_county
+						NOT = {
+							this = title:d_the_red_priesthood.holder
+							this = title:c_temple_of_the_lord_of_light.holder
+						}
+					}
+					if = {
+						limit = { has_dlc_feature = admin_gov }
+						change_government = administrative_government
+					}
+					else = { change_government = republic_government }
+				}
+			}
+			set_variable = {
+				name = years_since_election
+				value = title_held_years
+			}
+		}
+	}
+}
+
 # Savi's effect
 lv_adventurer_colonize = {
 	primary_title = {

@@ -1,0 +1,69 @@
+﻿# Legacy of Valyria situation scripted effects
+
+# Requires: 'province' scope
+# Output Scope: 'sub_region' scope
+lv_valyria_retrieve_subregion_effect = {
+	situation:valyria_situation ?= {
+		every_situation_sub_region = {
+			every_situation_sub_region_geographical_region = {
+				limit = { scope:province ?= { geographical_region = prev } }
+				save_scope_as = sub_region
+			}
+		}
+	}
+}
+
+# Requires: province scope
+lv_valyria_rehabilitate_subregion_effect = {
+	switch = {
+		trigger = geographical_region
+		# Valyria
+		world_valyria_subregion_valyria = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = valyria } }
+		world_valyria_subregion_aquos_dhaen = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = aquos_dhaen } }
+		world_valyria_subregion_tyria = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = tyria } }
+		world_valyria_subregion_dragonfields = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = dragonfields } }
+
+		# Lyria
+		world_valyria_subregion_kastaryia = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = kastaryia } }
+		world_valyria_subregion_mhysa_faer = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = mhysa_faer } }
+
+		# Lokiria
+		world_valyria_subregion_gelios = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = gelios } }
+		world_valyria_subregion_pyrys = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = pyrys } }
+		world_valyria_subregion_egrys = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = egrys } }
+		world_valyria_subregion_nuqiria = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = nuqiria } }
+
+		# Lands of the Long Summer
+		world_valyria_subregion_jarqanor = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = jarqanor } }
+		world_valyria_subregion_rhyos = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = rhyos } }
+		world_valyria_subregion_orbar = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = orbar } }
+		world_valyria_subregion_jelmazmar = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = jelmazmar } }
+		world_valyria_subregion_daervos = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = daervos } }
+		world_valyria_subregion_sombazbion = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = sombazbion } }
+		world_valyria_subregion_oros = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = oros } }
+		world_valyria_subregion_vharomar = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = vharomar } }
+		world_valyria_subregion_martivia = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = martivia } }
+		world_valyria_subregion_argava = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = argava } }
+		world_valyria_subregion_port_of_sighs = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = port_of_sighs } }
+		world_valyria_subregion_zoglos = { lv_valyria_progress_subregion_rehabilitation = { SUBREGION = zoglos } }
+	}
+}
+
+lv_valyria_progress_subregion_rehabilitation = {
+	situation:valyria_situation = {
+		situation_sub_region:$SUBREGION$ = {
+			if = {
+				limit = { sub_region_current_phase = valyria_ruined }
+				change_phase = { phase = valyria_restored_01 }
+			}
+			else_if = {
+				limit = { sub_region_current_phase = valyria_restored_01 }
+				change_phase = { phase = valyria_restored_02 }
+			}
+			else_if = {
+				limit = { sub_region_current_phase = valyria_restored_02 }
+				change_phase = { phase = valyria_rehabilitated }
+			}
+		}
+	}
+}

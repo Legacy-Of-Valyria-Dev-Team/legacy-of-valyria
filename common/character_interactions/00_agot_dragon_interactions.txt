@@ -1,0 +1,775 @@
+﻿cradle_egg = {
+	category = interaction_category_friendly
+	common_interaction = yes
+	interface_priority = 80
+	icon = icon_scheme_dragon
+	desc = cradle_egg_desc
+
+	target_type = artifact
+	target_filter = actor_artifacts
+
+	ai_target_quick_trigger = {
+		adult = yes
+	}
+	ai_targets = {
+		ai_recipients = self
+	}
+	ai_frequency = 84
+
+	can_be_picked_artifact = {
+		scope:target = {
+			has_variable = dragon_egg
+			has_none_of_variables = {
+				name = cradled_egg
+				name = dud_egg
+			}
+		}
+	}
+
+
+	is_shown = {
+		scope:actor = {
+			this = scope:recipient
+			any_character_artifact = {
+				has_variable = dragon_egg
+				has_none_of_variables = {
+					name = cradled_egg
+					name = dud_egg
+				}
+			}
+			is_human = yes #just to be sure
+		}
+		agot_dragon_population_alive = yes
+	}
+
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			custom_tooltip = {
+				text = has_a_dragon
+				any_relation = {
+					type = agot_dragon
+					count = 0
+				}
+			}
+			NOT = { has_trait = dragonwidowed }
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = started_cradling_egg_notification_title
+				desc = started_cradling_egg_notification_desc
+				left_icon = scope:actor
+				right_icon = scope:target
+			}
+
+			every_character_artifact = {
+				limit = {
+					has_all_variables = {
+						name = dragon_egg
+						name = cradled_egg
+					}
+				}
+				save_scope_as = current_egg
+				custom_description = {
+					text = stop_cradling_egg
+					remove_variable = cradled_egg
+					remove_variable = cradled_egg_year
+				}
+			}
+		}
+
+		scope:target = {
+			set_variable = cradled_egg
+			set_variable = { name = cradled_egg_year value = current_year }
+			equip_artifact_to_owner_replace = yes
+		}
+	}
+
+	auto_accept = yes
+
+	ai_will_do = {
+		base = 0
+
+		#Only try to cradle if you have a chance
+		modifier = {
+			add = 100
+			trigger_if = {
+				limit = {
+					NOT = { has_game_rule = dragons_anyone }
+				}
+				agot_has_dragonblood_heritage = yes
+			}
+		}
+	}
+}
+
+give_egg = {
+	category = interaction_category_friendly
+	interface_priority = 80
+	icon = icon_scheme_dragon
+	desc = give_egg_desc
+
+	target_type = artifact
+	target_filter = actor_artifacts
+
+	ai_frequency = 60
+	ai_targets = {
+		ai_recipients = children
+	}
+
+	can_be_picked_artifact = {
+		scope:target = {
+			has_variable = dragon_egg
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = yes }
+				}
+				has_none_of_variables = {
+					name = cradled_egg
+					name = selected_egg_for_hatching
+					name = dud_egg
+				}
+			}
+			NOT = { has_variable = agot_artifact_cannot_gift }
+		}
+	}
+
+	is_shown = {
+		scope:actor = {
+			is_human = yes
+			any_character_artifact = {
+				has_variable = dragon_egg
+				NOT = { has_variable = agot_artifact_cannot_gift }
+			}
+			NOT = { this = scope:recipient }
+		}
+		scope:recipient = {
+			is_human = yes
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = gave_egg_for_cradling_notification_title
+				desc = gave_egg_for_cradling_notification_desc
+				left_icon = scope:recipient
+				right_icon = scope:target
+			}
+		}
+
+		scope:recipient = {
+			send_interface_toast = {
+				type = dragon_neutral_toast
+				title = received_egg_for_cradling_notification_title
+				desc = received_egg_for_cradling_notification_desc
+				left_icon = scope:recipient
+				right_icon = scope:target
+			}
+			add_opinion = {
+				target = scope:actor
+				modifier = gift_artifact_opinion
+				opinion = 60
+			}
+
+			every_character_artifact = {
+				limit = {
+					has_all_variables = {
+						name = dragon_egg
+						name = cradled_egg
+					}
+				}
+				save_scope_as = current_egg
+				custom_description = {
+					text = stop_cradling_egg
+					remove_variable = cradled_egg
+					remove_variable = cradled_egg_year
+				}
+			}
+		}
+
+		scope:target = {
+			set_owner = scope:recipient
+			equip_artifact_to_owner_replace = yes
+		}
+	}
+
+	auto_accept = yes
+
+	ai_will_do = {
+		base = 0
+
+		#Give eggs to your children
+		modifier = {
+			add = 25
+			scope:recipient = {
+				is_child_of = scope:actor
+			}
+		}
+		#especially heir
+		modifier = {
+			add = 75
+			scope:recipient = {
+				is_heir_of = scope:actor
+			}
+		}
+		opinion_modifier = { # Opinion Factor
+			who = scope:actor
+			opinion_target = scope:recipient
+			multiplier = 0.5
+		}
+		#Give eggs to lover
+		modifier = {
+			add = 10
+			scope:recipient = {
+				has_relation_lover = scope:actor
+				has_relation_soulmate = scope:actor
+			}
+		}
+		#bonus points
+		modifier = {
+			factor = 5
+			scope:recipient = {
+				OR = {
+					has_relation_friend = scope:actor
+					has_relation_best_friend = scope:actor
+				}
+			}
+		}
+		#If you are weak, less chance to get an egg
+		modifier = {
+			add = -40
+			scope:recipient = {
+				OR = {
+					has_trait = physique_bad_1
+					has_trait = physique_bad_2
+					has_trait = physique_bad_3
+				}
+			}
+		}
+		#don't give eggs to people who can't ride, or to our nemesis/rival
+		modifier = {
+			factor = 0
+			scope:recipient = {
+				OR = {
+					has_trait = incapable
+					has_trait = crippled
+					has_trait = infirm
+					has_relation_potential_rival = scope:actor
+					has_relation_rival = scope:actor
+					has_relation_nemesis = scope:actor
+					trigger_if = {
+						limit = {
+							NOT = { has_game_rule = dragons_anyone }
+						}
+						agot_has_dragonblood_heritage = no
+					}
+				}
+			}
+		}
+		#if my kids aren't riders, you dont get to be one
+		modifier = {
+			factor = 0
+			AND = {
+				scope:recipient = {
+					NOT = { is_child_of = scope:actor }
+				}
+				scope:actor = {
+					any_child = {
+						AND = {
+							any_relation = {
+								type = agot_dragon
+								count = 0
+							}
+							any_character_artifact = {
+								has_none_of_variables = {
+									name = dragon_egg
+									name = cradled_egg
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		#Already has a dragon
+		modifier = {
+			factor = 0
+			scope:recipient = {
+				OR = {
+					any_relation = {
+						type = agot_dragon
+					}
+					any_character_artifact = {
+						has_all_variables = {
+							name = dragon_egg
+							name = cradled_egg
+						}
+					}
+				}
+			}
+		}
+		#Canon Dragons
+		modifier = {
+			factor = 0
+			agot_canon_dragons_enabled = yes
+			AND = {
+				scope:recipient = { agot_is_canon_rider = yes }
+				scope:recipient = { agot_has_canon_cradle_egg = no }
+			}
+		}
+	}
+}
+
+agot_instruct_to_conduct_terror_campaign = {
+	category = interaction_category_diplomacy
+	interface_priority = 90
+	icon = icon_scheme_dragon
+
+	desc = agot_instruct_to_conduct_terror_campaign_desc
+	use_diplomatic_range = yes
+
+	is_shown = {
+		OR = {
+			scope:recipient.employer ?= scope:actor
+			scope:recipient.top_liege ?= scope:actor
+		}
+		scope:recipient = {
+			is_current_dragonrider = yes
+			NOT = { has_character_flag = conducting_terror_campaign }
+		}
+		NOT = { scope:recipient = scope:actor }
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			is_adult = yes
+			var:current_dragon = {
+				dragon_can_do_terror_campaign = yes
+			}
+			custom_description = {
+				text = agot_rejecting_terror_campaign
+				NOT = { has_character_flag = rejecting_terror_campaign }
+			}
+		}
+	}
+
+	on_accept = {
+		scope:recipient = {
+			trigger_event = {
+				id = agot_dragon.0008
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = guests
+		ai_recipients = courtiers
+		max = 10
+	}
+	ai_targets = {
+		ai_recipients = vassals
+		max = 10
+	}
+	ai_target_quick_trigger = {
+		adult = yes
+		prison = no
+	}
+	ai_frequency = 2
+	ai_potential = {
+		is_at_war = yes # At war
+	}
+	ai_will_do = {
+		base = 0
+		modifier = {
+			add = 20
+			OR = {
+				has_trait = wrathful
+				has_trait = sadistic
+				has_trait = callous
+			}
+		}
+		modifier = {
+			factor = 0
+			OR = {
+				has_trait = just
+				has_trait = compassionate
+			}
+		}
+	}
+
+	cost = {
+	}
+
+	auto_accept = yes
+}
+
+agot_stop_conducting_terror_campaign = {
+	category = interaction_category_diplomacy
+	interface_priority = 90
+	icon = icon_scheme_dragon
+
+	desc = agot_stop_conducting_terror_campaign_desc
+	use_diplomatic_range = yes
+
+	is_shown = {
+		NOT = { scope:recipient = scope:actor }
+		scope:recipient = { has_character_flag = conducting_terror_campaign }
+		OR = {
+			scope:recipient.employer ?= scope:actor
+			scope:recipient.top_liege ?= scope:actor
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		custom_tooltip = {
+			text = agot_refusing_stop_conducting_terror_campaign_tt
+			scope:recipient = {
+				NOT = { has_character_flag = refusing_to_stop_terror_campaign }
+			}
+		}
+	}
+
+	on_accept = {
+		scope:recipient = {
+			trigger_event = {
+				id = agot_dragon.0009
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = guests
+		ai_recipients = courtiers
+		max = 10
+	}
+	ai_targets = {
+		ai_recipients = vassals
+		max = 10
+	}
+	ai_target_quick_trigger = {
+		adult = yes
+		prison = no
+	}
+	ai_frequency = 2
+
+	cost = {
+	}
+
+	auto_accept = yes
+}
+
+#LEGACY OF VALYRIA MODIFIED
+slay_dragon_interaction = {
+	icon = icon_combat
+	desc = slay_dragon_interaction_desc
+
+	category = interaction_category_diplomacy
+	interface_priority = 90
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+
+	is_shown = {
+		scope:actor = { is_ai = no }
+		scope:recipient = {
+			has_trait = dragon
+			NOT = { has_character_flag = owned_dragon }
+		}
+		OR = {
+			scope:actor = {
+				any_realm_province = {
+					scope:recipient.location = this
+				}
+			}
+
+			scope:actor = {
+				any_memory = {
+					OR = {
+						has_memory_type = spouse_died
+						has_memory_type = soulmate_died
+						has_memory_type = lover_died
+						has_memory_type = best_friend_died
+						has_memory_type = friend_died
+						has_memory_type = relative_died
+					}
+					memory_participant:dead_relation ?= {
+						trigger_if = {
+							limit = {
+								exists = killer
+							}
+							killer = scope:recipient
+						}
+						trigger_else = {
+							always = no
+						}
+					}
+				}
+			}
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			custom_tooltip = {
+				text = dragon_is_in_dragonpit
+				NOT = { has_character_flag = in_dragonpit }
+			}
+			custom_tooltip = {
+				text = dragon_is_in_combat
+				NOT = { has_character_flag = in_dragon_combat }
+			}
+		}
+		scope:actor = {
+			is_available_adult = yes
+			prowess >= 20
+			NOT = { has_trait = craven }
+			custom_description = {
+				text = ds_cooldown_desc
+				NOR = {
+					has_character_flag = recently_fought_dragon
+					has_character_flag = ds_cooldown
+					has_character_flag = in_dragon_combat
+				}
+			}
+		}
+	}
+	on_accept = {
+		scope:actor = {
+			if = { # LEGACY OF VALYRIA FIREWYRM
+				limit = { scope:recipient = { lv_is_firewyrm = yes } }
+				scope:recipient = { save_scope_as = firewyrm }
+				scope:firewyrm.location = { save_scope_as = firewyrm_source }
+				trigger_event = lv_firewyrm_event.0001
+			}
+			else = { # DEFAULT AGOT (Dragon)
+				save_scope_as = human
+				scope:recipient = { save_scope_as = dragon }
+
+				scope:dragon.location = { save_scope_as = background_wilderness_scope }
+
+				# To prevent multiple dragon slaying attempts at the same time from player
+				# and for dragon
+				scope:human = { add_character_flag = in_dragon_combat }
+				scope:dragon = { add_character_flag = in_dragon_combat }
+				# Will be removed during events as needed
+
+				if = {
+					limit = {
+						scope:actor = {
+							any_memory = {
+								OR = {
+									has_memory_type = spouse_died
+									has_memory_type = soulmate_died
+									has_memory_type = lover_died
+									has_memory_type = best_friend_died
+									has_memory_type = friend_died
+									has_memory_type = relative_died
+								}
+								memory_participant:dead_relation ?= {
+									trigger_if = {
+										limit = {
+											exists = killer
+										}
+										killer = scope:recipient
+									}
+									trigger_else = {
+										always = no
+									}
+									save_temporary_scope_as = dragon_kill
+								}
+							}
+						}
+					}
+
+					scope:dragon_kill = { save_scope_as = vengeance_candidate }
+				}
+				random_list = {
+
+					40 = {
+						custom_tooltip = {
+							text = slay_dragon_interaction.found_cave
+							trigger_event = {
+								id = agot_dragon_slaying_events.0001
+								#days = { 3 10 }
+							}
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_friendly
+								}
+							}
+							factor = 1.5
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_impulsive
+								}
+							}
+							factor = 1.5
+						}
+						modifier = {
+							trigger = {
+								has_trait_xp = {
+									trait = lifestyle_hunter
+									track = hunter
+									value >= 50
+								}
+							}
+							factor = 1.2
+						}
+						modifier = {
+							trigger = { has_trait = dragonslayer }
+							factor = 2
+						}
+					}
+					40 = {
+						custom_tooltip = {
+							text = slay_dragon_interaction.cannot_find_cave
+							trigger_event = {
+								id = agot_dragon_slaying_events.0003
+								days = { 3 10 }
+							}
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_skittish
+								}
+							}
+							factor = 1.5
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_restrained
+								}
+							}
+							factor = 1.5
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_solitary
+								}
+							}
+							factor = 2
+						}
+					}
+					20 = {
+						custom_tooltip = {
+							text = slay_dragon_interaction.found_by_dragon
+							trigger_event = {
+								id = agot_dragon_slaying_events.0002
+								days = { 3 10 }
+							}
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_aggressive
+								}
+							}
+							factor = 1.5
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_defiant
+								}
+							}
+							factor = 1.5
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_voracious
+								}
+							}
+							factor = 1.75
+						}
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_bloodthirsty
+								}
+							}
+							factor = 2
+						}
+
+						# Friendly dragons don't attack... usually
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_friendly
+								}
+							}
+							factor = 0.25
+						}
+
+						# Dragon injuries
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_wounded_1
+								}
+							}
+							factor = 0.9
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_wounded_2
+								}
+							}
+							factor = 0.75
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_wounded_3
+								}
+							}
+							factor = 0.25
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_wounded_4
+								}
+							}
+							factor = 0.1
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_wounded_5
+								}
+							}
+							factor = 0
+						}
+
+						modifier = {
+							trigger = {
+								scope:dragon = {
+									has_trait = dragon_ill
+								}
+							}
+							factor = 0.1
+						}
+					}
+				}
+			}
+		}
+	}
+}
