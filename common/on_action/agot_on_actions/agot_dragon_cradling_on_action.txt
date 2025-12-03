@@ -1,11 +1,15 @@
-﻿# OVERRIDDEN FROM agot_dragon_cradling_on_actions.txt
+﻿yearly_global_pulse = {
+	on_actions = {
+		on_dragon_lay_master_on_action
+		on_dragon_cooldown_pass
+	}
+}
+
 on_dragon_cooldown_pass = {
 	effect = {
 		if = {
 			limit = {
-				any_living_dragon = {
-					exists = this
-				}
+				agot_dragon_population_alive = yes
 			}
 			every_artifact = {
 				limit = {
@@ -156,7 +160,7 @@ on_dragon_cooldown_pass = {
 	}
 }
 
-
+#LEGACY OF VALYRIA MODIFIED
 on_dragon_lay_master_on_action = {
 	effect = {
 		every_in_global_list = {
@@ -168,20 +172,11 @@ on_dragon_lay_master_on_action = {
 			}
 			random = {
 				chance = 2
-
-				## in valyria
+				#LEGACY OF VALYRIA ADDED
 				modifier = {
-					liege_or_court_owner.capital_province ?= {
-						geographical_region = world_valyria
-					}
+					liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
 					add = 12
 				}
-				### Dragon fertility spell
-				#modifier = {
-				#	has_character_flag = zz_valyria_blood_magic_dragon_fertility_flag
-				#	add = 20
-				#}
-
 				# humming one is the loneliest number
 				modifier = {
 					agot_dragon_population_low = yes

@@ -1,28 +1,5 @@
 ﻿# Legacy of Valyria Expedition on actions
 
-# Default travel danger events
-# Root: Character
-travel_danger_events_on_action = {
-	# LOV TRIGGER OVERRIDE
-	# - If Valyria is a wasteland, disable
-	trigger = {
-		is_migrating = no # No Danger events while migrating
-		#AGOT Added
-		NOR = {
-			current_travel_plan ?= { has_travel_option = dragon_flight_option }
-			has_trait = dragon
-		}
-		# If Valyria, MUST be green, else we override with our custom danger events below
-		location = {
-			trigger_if = {
-				limit = { geographical_region = world_valyria_mainland }
-				lv_valyria_subregion_restored = yes
-			}
-			trigger_else = { always = yes }
-		}
-	}
-}
-
 # Forced Valyrian travel danger events
 on_travel_plan_movement = {
 	on_actions = {
@@ -35,17 +12,14 @@ on_travel_plan_movement = {
 # Valyrian
 lv_travel_danger_events_on_action = {
 	trigger = {
-		is_migrating = no
+		is_migrating = no # No Danger events while migrating
 		#AGOT Added
 		NOR = {
 			current_travel_plan ?= { has_travel_option = dragon_flight_option }
 			has_trait = dragon
 		}
 		# If Valyria, must NOT be green
-		location = {
-			geographical_region = world_valyria_mainland
-			lv_valyria_subregion_ruined = yes
-		}
+		location = { lv_valyria_subregion_ruined = yes }
 	}
 	random_events = {
 		chance_of_no_event = {
@@ -79,7 +53,7 @@ lv_travel_danger_events_on_action = {
 
 lv_travel_danger_sea_events_on_action = {
 	trigger = {
-		is_migrating = no
+		is_migrating = no # No Danger events while migrating
 		#AGOT Added
 		NOR = {
 			current_travel_plan ?= { has_travel_option = dragon_flight_option }
@@ -120,7 +94,12 @@ lv_travel_danger_sea_events_on_action = {
 
 lv_travel_danger_firewyrm_on_action = {
 	trigger = {
-		is_migrating = no
+		is_migrating = no # No Danger events while migrating
+		#AGOT Added
+		NOR = {
+			current_travel_plan ?= { has_travel_option = dragon_flight_option }
+			has_trait = dragon
+		}
 		location = {
 			NAND = {
 				has_variable = lv_firewyrm
