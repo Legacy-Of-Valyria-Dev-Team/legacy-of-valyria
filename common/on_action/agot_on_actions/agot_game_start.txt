@@ -24,6 +24,7 @@ agot_on_game_start = {
 			name = AGOT_is_loaded
 			value = yes
 		}
+		agot_set_culture_descriptions_effect = yes
 
 		# Free Cities Setup
 		agot_free_city_setup_effect = yes
@@ -49,6 +50,15 @@ agot_on_game_start = {
 				current_year < 8289
 			}
 			character:Xho_1 ?= { death = { death_reason = death_vanished } }
+		}
+
+		### Murder Jenny for historical character setup
+		if = { # Jenny Oldstones
+			limit = {
+				character:Targaryen_hh_10 ?= { is_alive = yes }
+				current_year < 8239
+			}
+			character:Targaryen_hh_10 ?= { death = { death_reason = death_vanished } }
 		}
 
 		### Unlock battlements innovation as a workaround for auto-upgraded holdings
@@ -553,72 +563,73 @@ agot_on_game_start = {
 				}
 			}
 
+			# give Blackfyre loyalist modifiers
+			if = {
+				limit = {
+					current_date >= 8236.2.13 #AGOT TODO; set proper dates for each house
+					is_lowborn = no
+					OR = {
+						house = dynasty:dynn_Butterwell.dynasty_founder.house
+						house = dynasty:dynn_Sunderland.dynasty_founder.house
+						house = dynasty:dynn_Peake.dynasty_founder.house
+						house = dynasty:dynn_Osgrey.dynasty_founder.house
+						house = dynasty:dynn_Ball.dynasty_founder.house
+						house = dynasty:dynn_Yronwood.dynasty_founder.house
+						house = dynasty:dynn_Vyrwel.dynasty_founder.house
+						house = dynasty:dynn_Bracken.dynasty_founder.house
+						house = dynasty:dynn_Hightower.dynasty_founder.house
+						house = dynasty:dynn_Hersy.dynasty_founder.house
+						house = dynasty:dynn_Costayne.dynasty_founder.house
+						house = dynasty:dynn_Shawney.dynasty_founder.house
+						house = dynasty:dynn_Oakheart.dynasty_founder.house
+					}
+				}
+				house = { add_house_modifier = agot_historical_loyalty_blackfyre }
+			}
+
 			# give Targaryen loyalist modifiers
 			if = {
 				limit = {
 					current_date >= 8282.9.15 #AGOT TODO; set proper dates for each house
 					is_lowborn = no
-				}
-				if = {
-					limit = {
-						OR = {
-							house = dynasty:dynn_Hayford.dynasty_founder.house
-							house = dynasty:dynn_Darry.dynasty_founder.house
-							house = dynasty:dynn_Goodbrook.dynasty_founder.house
-							house = dynasty:dynn_Rowan.dynasty_founder.house
-							house = dynasty:dynn_Oakheart.dynasty_founder.house
-							house = dynasty:dynn_Tarly.dynasty_founder.house
-							house = dynasty:dynn_Hightower.dynasty_founder.house
-							house = dynasty:dynn_Hasty.dynasty_founder.house
-							house = dynasty:dynn_Lonmouth.dynasty_founder.house
-							house = dynasty:dynn_Rykker.dynasty_founder.house
-							house = dynasty:dynn_Ashford.dynasty_founder.house
-							house = dynasty:dynn_Boggs.dynasty_founder.house
-							house = dynasty:dynn_Brune.dynasty_founder.house
-							house = house:house_Brownhollow
-							house = dynasty:dynn_Bush.dynasty_founder.house
-							house = dynasty:dynn_Pyne.dynasty_founder.house
-							house = dynasty:dynn_Hardy.dynasty_founder.house
-							house = dynasty:dynn_Cave.dynasty_founder.house
-							house = dynasty:dynn_Crabb.dynasty_founder.house
-							house = dynasty:dynn_Celtigar.dynasty_founder.house
-							house = dynasty:dynn_Velaryon.dynasty_founder.house
-							house = dynasty:dynn_Massey.dynasty_founder.house
-							house = dynasty:dynn_Mooton.dynasty_founder.house
-							house = dynasty:dynn_Butterwell.dynasty_founder.house
-							house = dynasty:dynn_Sunderland.dynasty_founder.house
-							house = dynasty:dynn_Peake.dynasty_founder.house
-							house = dynasty:dynn_Osgrey.dynasty_founder.house
-							house = dynasty:dynn_Ball.dynasty_founder.house
-							house = dynasty:dynn_Yronwood.dynasty_founder.house
-							house = dynasty:dynn_Mooton.dynasty_founder.house
-							house = dynasty:dynn_Vyrwel.dynasty_founder.house
-							house = dynasty:dynn_Bracken.dynasty_founder.house
-							house = dynasty:dynn_Hersy.dynasty_founder.house
-							house = dynasty:dynn_Tyrell.dynasty_founder.house
-						}
+					OR = {
+						house = dynasty:dynn_Hayford.dynasty_founder.house
+						house = dynasty:dynn_Darry.dynasty_founder.house
+						house = dynasty:dynn_Goodbrook.dynasty_founder.house
+						house = dynasty:dynn_Rowan.dynasty_founder.house
+						house = dynasty:dynn_Oakheart.dynasty_founder.house
+						house = dynasty:dynn_Tarly.dynasty_founder.house
+						house = dynasty:dynn_Hightower.dynasty_founder.house
+						house = dynasty:dynn_Hasty.dynasty_founder.house
+						house = dynasty:dynn_Lonmouth.dynasty_founder.house
+						house = dynasty:dynn_Rykker.dynasty_founder.house
+						house = dynasty:dynn_Ashford.dynasty_founder.house
+						house = dynasty:dynn_Boggs.dynasty_founder.house
+						house = dynasty:dynn_Brune.dynasty_founder.house
+						house = house:house_Brownhollow
+						house = dynasty:dynn_Bush.dynasty_founder.house
+						house = dynasty:dynn_Pyne.dynasty_founder.house
+						house = dynasty:dynn_Hardy.dynasty_founder.house
+						house = dynasty:dynn_Cave.dynasty_founder.house
+						house = dynasty:dynn_Crabb.dynasty_founder.house
+						house = dynasty:dynn_Celtigar.dynasty_founder.house
+						house = dynasty:dynn_Velaryon.dynasty_founder.house
+						house = dynasty:dynn_Massey.dynasty_founder.house
+						house = dynasty:dynn_Mooton.dynasty_founder.house
+						house = dynasty:dynn_Butterwell.dynasty_founder.house
+						house = dynasty:dynn_Sunderland.dynasty_founder.house
+						house = dynasty:dynn_Peake.dynasty_founder.house
+						house = dynasty:dynn_Osgrey.dynasty_founder.house
+						house = dynasty:dynn_Ball.dynasty_founder.house
+						house = dynasty:dynn_Yronwood.dynasty_founder.house
+						house = dynasty:dynn_Mooton.dynasty_founder.house
+						house = dynasty:dynn_Vyrwel.dynasty_founder.house
+						house = dynasty:dynn_Bracken.dynasty_founder.house
+						house = dynasty:dynn_Hersy.dynasty_founder.house
+						house = dynasty:dynn_Tyrell.dynasty_founder.house
 					}
-
-					house = { add_house_modifier = agot_historical_loyalty_targaryen }
 				}
-				if = {
-					limit = {
-						OR = {
-							house = dynasty:dynn_Butterwell.dynasty_founder.house
-							house = dynasty:dynn_Sunderland.dynasty_founder.house
-							house = dynasty:dynn_Peake.dynasty_founder.house
-							house = dynasty:dynn_Osgrey.dynasty_founder.house
-							house = dynasty:dynn_Ball.dynasty_founder.house
-							house = dynasty:dynn_Yronwood.dynasty_founder.house
-							house = dynasty:dynn_Vyrwel.dynasty_founder.house
-							house = dynasty:dynn_Bracken.dynasty_founder.house
-							house = dynasty:dynn_Hightower.dynasty_founder.house
-							house = dynasty:dynn_Hersy.dynasty_founder.house
-						}
-					}
-
-					house = { add_house_modifier = agot_historical_loyalty_blackfyre }
-				}
+				house = { add_house_modifier = agot_historical_loyalty_targaryen }
 			}
 		}
 
@@ -699,7 +710,7 @@ agot_on_game_start = {
 					title_province = { save_scope_as = siren_distribution_province }
 				}
 				if = {
-					limit = { scope:siren_distribution_province.culture = culture:lakeman }
+					limit = { scope:siren_distribution_province.culture = culture:lakefolk }
 					create_character = {
 						location = character:Local_Rulers.capital_province
 						random_traits = yes
@@ -1136,9 +1147,9 @@ agot_on_game_start = {
 				else_if = {
 					limit = {
 						OR = {
-							culture = culture:valeman
-							culture = culture:moonman
-							culture = culture:fingerman
+							culture = culture:valeman_main_main
+							culture = culture:valeman_main_upper
+							culture = culture:valeman_main_finger
 							culture = culture:sisterman
 						}
 					}
@@ -1155,11 +1166,11 @@ agot_on_game_start = {
 							culture = culture:forestman
 							culture = culture:frozen_shoreman
 							culture = culture:harborman
-							culture = culture:hill_clansman
+							culture = culture:northern_clan
 							culture = culture:hornfoot
 							culture = culture:ice_riverman
 							culture = culture:krakenman
-							culture = culture:lakeman
+							culture = culture:lakefolk
 							culture = culture:nightrunner
 							culture = culture:northman
 							culture = culture:sisterman
@@ -1466,6 +1477,9 @@ agot_on_game_start = {
 				}
 			}
 		}
+
+		### Scenario setup (landless->landed scenarios)
+		agot_on_game_start_historical_scenario_setup = yes
 
 		### Run effects on dragons
 		agot_dragons_on_start_effect = yes
@@ -2651,7 +2665,7 @@ agot_on_game_start_after_lobby = {
 					}
 				}
 			}
-			## Mop up any remaining supersirens 
+			## Mop up any remaining supersirens
 			if = {
 				limit = { has_character_flag = supersiren_flag }
 				death = natural
