@@ -1,36 +1,74 @@
 ﻿# Legacy of Valyria Settlement on actions
-on_title_gain = { on_actions = { lv_settlement_failsafe } }
-on_travel_plan_arrival = { on_actions = { lv_settlement_on_arrival } }
+
+# COMMENT OUT FOR NOW, CAUSES BUGS
+#on_title_gain = { on_actions = { lv_settlement_failsafe } }
 
 # If somehow someone gains a ruin title, execute the change to a colony holding
 lv_settlement_failsafe = {
 	trigger = {
-		NAND = {
-			has_game_rule = lv_colonisation_agot
-			has_trait = ruin
+		NOT = { has_game_rule = lv_colonisation_agot }
+		agot_is_dummy_character = no
+		scope:title = {
+			tier = tier_county
+			title_province = {
+				OR = {
+					has_holding_type = ruin_holding
+					has_holding_type = unknown_holding
+					has_holding_type = wilderness_holding
+				}
+			}
 		}
-		scope:title = { tier = tier_county }
 	}
 	effect = {
 		scope:title = {
 			if = {
-				limit = {
-					title_province = {
-						OR = {
-							has_holding_type = ruin_holding
-							has_holding_type = wilderness_holding
+				limit = { has_game_rule = lv_colonisation_instant }
+				title_province = { save_scope_as = completed_ruin }
+				holder = { trigger_event = agot_ruins.1000 }
+				set_county_faith = holder.faith
+				if = {
+					limit = { culture = culture:unknown_culture }
+					if = {
+						limit = {
+							holder.culture = culture:high_valyrian
+							has_game_rule = agot_hv_conversion_offshoots
+							title_province = { geographical_region = world_westeros }
 						}
-						save_temporary_scope_as = ruin
+						set_county_culture = culture:westerosi_valyrian
 					}
+					else_if = {
+						limit = {
+							holder.culture = culture:high_valyrian
+							has_game_rule = agot_hv_conversion_offshoots
+							NOT = { title_province = { geographical_region = world_westeros } }
+						}
+						set_county_culture = culture:essosi_valyrian
+					}
+					else = { set_county_culture = holder.culture }
 				}
-				lv_settlement_establish_effect = {
-					ACTOR = root
-					PROVINCE = scope:ruin
+			}
+			else = {
+				if = {
+					limit = {
+						title_province = {
+							OR = {
+								has_holding_type = ruin_holding
+								has_holding_type = wilderness_holding
+							}
+							save_temporary_scope_as = ruin
+						}
+					}
+					lv_settlement_establish_effect = {
+						ACTOR = root
+						PROVINCE = scope:ruin
+					}
 				}
 			}
 		}
 	}
 }
+
+on_travel_plan_arrival = { on_actions = { lv_settlement_on_arrival } }
 
 # On actions associated with the travel plan
 lv_settlement_on_start = {
@@ -46,7 +84,10 @@ lv_settlement_on_start = {
 				exists = scope:liege
 				exists = scope:ruin
 			}
-			scope:liege = { remove_short_term_gold = var:lv_settlement_cost }
+			if = {
+				limit = { exists = var:lv_settlement_cost }
+				scope:liege = { remove_short_term_gold = var:lv_settlement_cost }
+			}
 			if = {
 				limit = { NOT = { scope:liege ?= scope:settler } }
 				scope:liege = { trigger_event = lv_settlement_event.0010 }
@@ -83,12 +124,7 @@ lv_settlement_on_arrival = {
 				if = {
 					limit = {
 						scope:ruin = {
-							province_owner = {
-								OR = {
-									has_trait = ruin
-									has_trait = wilderness
-								}
-							}
+							province_owner = { agot_is_dummy_character = yes }
 							OR = {
 								has_holding_type = ruin_holding
 								has_holding_type = wilderness_holding

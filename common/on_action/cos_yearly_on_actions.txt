@@ -5,131 +5,98 @@ yearly_global_pulse = {
 	on_actions = { cos_yearly_global_pulse }
 }
 
-
 cos_yearly_global_pulse = {
-	effect = {	
-		
-		random_realm_province = {
+	trigger = { lv_realm_sothoryos_disabled = no }
+	effect = {
+		every_ruler = {
 			limit = {
-				has_holding_type = ruin_holding
-				OR = {
-					has_building = small_ruin_04
-					has_building = medium_ruin_04
-					has_building = jungle_ruin_04
-					has_building = jungle_ruin_deep_04
-					has_building = large_ruin_04
+				agot_is_dummy_character = no
+				any_directly_owned_province = {
+					has_holding_type = ruin_holding
+					OR = {
+						has_building = small_ruin_04
+						has_building = medium_ruin_04
+						has_building = jungle_ruin_04
+						has_building = jungle_ruin_deep_04
+						has_building = large_ruin_04
+					}
 				}
 			}
-			save_scope_as = completed_ruin
-			remove_province_modifier = agot_ruin_reconstruction
-			barony = { set_coa = this.holder.house }
+			random_realm_province = {
+				limit = {
+					has_holding_type = ruin_holding
+					OR = {
+						has_building = small_ruin_04
+						has_building = medium_ruin_04
+						has_building = jungle_ruin_04
+						has_building = jungle_ruin_deep_04
+						has_building = large_ruin_04
+					}
+				}
+				save_scope_as = completed_ruin
+				remove_province_modifier = agot_ruin_reconstruction
+				barony = { set_coa = this.holder.house }
+			}
+			trigger_event = agot_ruins.1000
 		}
-		
-		trigger_event = agot_ruins.1000
 		
 		#add_gold = 100000
-		
-		every_province = {
-			limit = { 
-				has_building = ghoulish_bat_tame 
+
+		every_county_in_region = {
+			region = world_sothoryos
+			every_county_province = {
+				if = { # Unhappy Ghouls
+					limit = {
+						has_building = ghoulish_bat_tame
+						province_owner = { NOT = { faith = faith:the_eternal_maw } }
+					}
+					remove_building = ghoulish_bat_tame
+					add_building = ghoulish_bat_1
+				}
+				if = { # Unhappy Basilisks
+					limit = {
+						has_building = ravenous_basilisk_tame
+						province_owner = { NOT = { faith = faith:the_thirst } }
+					}
+					remove_building = ravenous_basilisk_tame
+					add_building = ravenous_basilisk_1
+				}
+				if = { # Reset Ravenous Basilisk Blockers
+					limit = { has_building = ravenous_basilisk_2 }
+					remove_building = ravenous_basilisk_2
+					add_building = ravenous_basilisk_1
+				}
+				if = { # Reset Basilisk Blockers
+					limit = { has_building = basilisk_2 }
+					remove_building = basilisk_2
+					add_building = basilisk_1
+				}
+				if = { # Reset Ghoulish Bat Blockers
+					limit = { has_building = ghoulish_bat_2 }
+					remove_building = ghoulish_bat_2
+					add_building = ghoulish_bat_1
+				}
+				if = { # Reset Bat Blockers
+					limit = { has_building = cos_bat_2 }
+					remove_building = cos_bat_2
+					add_building = cos_bat_1
+				}
+				if = { # Reset Carnivorous Plant Blockers
+					limit = { has_building = cos_carn_plant_2 }
+					remove_building = cos_carn_plant_2
+					add_building = cos_carn_plant_1
+				}
+				if = { # Reset Alpha Wyvern Blockers
+					limit = { has_building = cos_wyvern_alpha_2 }
+					remove_building = cos_wyvern_alpha_2
+					add_building = cos_wyvern_alpha_1
+				}
+				if = { # Reset Wyvern Blockers
+					limit = { has_building = cos_wyvern_2 }
+					remove_building = cos_wyvern_2
+					add_building = cos_wyvern_1
+				}
 			}
-			limit = { 
-				NOT = { faith = faith:the_eternal_maw}
-			}
-			save_scope_as = unhappy_ghouls
-		}
-		scope:unhappy_ghouls = {		
-				remove_building = ghoulish_bat_tame
-				add_building = ghoulish_bat_1
-		}
-		every_province = {
-			limit = { 
-				has_building = ravenous_basilisk_tame
-			}
-			limit = { 
-				NOT = { faith = faith:the_thirst}
-			}
-			save_scope_as = unhappy_basilisks
-		}
-		scope:unhappy_basilisks = {		
-				remove_building = ravenous_basilisk_tame
-				add_building = ravenous_basilisk_1
-		}
-		
-		
-		
-		
-		
-		
-		every_province = {
-			limit = { 
-				has_building = ravenous_basilisk_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = ravenous_basilisk_2
-				add_building = ravenous_basilisk_1
-		}
-		every_province = {
-			limit = { 
-				has_building = basilisk_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = basilisk_2
-				add_building = basilisk_1
-		}
-		every_province = {
-			limit = { 
-				has_building = cos_bat_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = cos_bat_2
-				add_building = cos_bat_1
-		}
-		every_province = {
-			limit = { 
-				has_building = ghoulish_bat_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = ghoulish_bat_2
-				add_building = ghoulish_bat_1
-		}
-		every_province = {
-			limit = { 
-				has_building = cos_carn_plant_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = cos_carn_plant_2
-				add_building = cos_carn_plant_1
-		}
-		every_province = {
-			limit = { 
-				has_building = cos_wyvern_alpha_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = cos_wyvern_alpha_2
-				add_building = cos_wyvern_alpha_1
-		}
-		every_province = {
-			limit = { 
-				has_building = cos_wyvern_2
-			}
-			save_scope_as = reset_blocker
-		}
-		scope:reset_blocker = {		
-				remove_building = cos_wyvern_2
-				add_building = cos_wyvern_1
 		}
 	}
 }	

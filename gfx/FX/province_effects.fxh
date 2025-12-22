@@ -88,8 +88,21 @@ PixelShader =
 			return PdxReadBuffer4( ProvinceEffectDataBuffer, Index );
 		}
 
-		void SampleProvinceEffectsMask( float2 MapCoords, inout EffectIntensities ConditionData )
+		void BilinearSampleProvinceEffectsMask( float2 MapCoords, inout EffectIntensities ConditionData )
 		{
+			#ifdef LOW_SPEC_SHADERS
+				ConditionData._Drought = 0.0f;
+				ConditionData._Flood = 0.0f;
+				ConditionData._Summer = 0.0f;
+				ConditionData._Snow = 0.0f;
+				// Legacy of Valyria
+				ConditionData._ValyriaRuined = 0.0f;
+				ConditionData._ValyriaRestored1 = 0.0f;
+				ConditionData._ValyriaRestored2 = 0.0f;
+				ConditionData._ValyriaRehabilitated = 0.0f;
+				return;
+			#endif
+
 			// ProvinceEffects mask
 			float2 Pixel = MapCoords * IndirectionMapSize + 0.5f;
 			float2 FracCoord = frac( Pixel );
@@ -104,9 +117,9 @@ PixelShader =
 			float x2 = lerp( C12.g, C22.g, FracCoord.x );
 
 			// Opacity
-			float Impact = lerp( x1, x2, FracCoord.y );
-			Impact = RemapClamped( lerp( x1, x2, FracCoord.y ), 0.0, OpacityLowImpactValue, 0.0, 0.5 );
-			Impact += RemapClamped( lerp( x1, x2, FracCoord.y ), OpacityLowImpactValue, OpacityHighImpactValue, 0.0, 0.5 );
+			float ImpactTemp = lerp( x1, x2, FracCoord.y );
+			float Impact = RemapClamped( ImpactTemp, 0.0f, OpacityLowImpactValue, 0.0f, 0.5f );
+			Impact += RemapClamped( ImpactTemp, OpacityLowImpactValue, OpacityHighImpactValue, 0.0f, 0.5f );
 
 			// ProvinceEffects condition filtering
 			float Dro1 = lerp( C11.r == DROUGHT_INDEX, C21.r == DROUGHT_INDEX, FracCoord.x );
@@ -143,18 +156,47 @@ PixelShader =
 			ConditionData._ValyriaRehabilitated = lerp( ValyriaRehabilitated1, ValyriaRehabilitated2, FracCoord.y ) * Impact;
 		}
 
+		void SampleProvinceEffectsMask( float2 MapCoords, inout EffectIntensities ConditionData )
+		{
+			#ifdef LOW_SPEC_SHADERS
+				ConditionData._Drought = 0.0f;
+				ConditionData._Flood = 0.0f;
+				ConditionData._Summer = 0.0f;
+				ConditionData._Snow = 0.0f;
+				// Legacy of Valyria
+				ConditionData._ValyriaRuined = 0.0f;
+				ConditionData._ValyriaRestored1 = 0.0f;
+				ConditionData._ValyriaRestored2 = 0.0f;
+				ConditionData._ValyriaRehabilitated = 0.0f;
+				return;
+			#endif
+
+			float2 Pixel = MapCoords * IndirectionMapSize + 0.5f;
+			Pixel = floor( Pixel ) / IndirectionMapSize - InvIndirectionMapSize / 2.0f;
+			float4 Sample = SampleProvinceEffects( Pixel );
+
+			float ImpactTemp = Sample.g;
+
+			float Impact = RemapClamped( ImpactTemp, 0.0f, OpacityLowImpactValue, 0.0f, 0.5f );
+			Impact += RemapClamped( ImpactTemp, OpacityLowImpactValue, OpacityHighImpactValue, 0.0f, 0.5f );
+
+			ConditionData._Drought = ( Sample.r == DROUGHT_INDEX ) * Impact;
+			ConditionData._Flood = ( Sample.r == FLOOD_INDEX ) * Impact;
+			ConditionData._Summer = ( Sample.r == SUMMER_INDEX ) * Impact;
+			ConditionData._Snow = ( Sample.r == SNOW_INDEX ) * Impact;
+			// Legacy of Valyria
+			ConditionData._ValyriaRuined = ( Sample.r == VALYRIARUINED_INDEX ) * Impact;
+			ConditionData._ValyriaRestored1 = ( Sample.r == VALYRIARESTORED1_INDEX ) * Impact;
+			ConditionData._ValyriaRestored2 = ( Sample.r == VALYRIARESTORED2_INDEX ) * Impact;
+			ConditionData._ValyriaRehabilitated = ( Sample.r == VALYRIAREHABILITATED_INDEX ) * Impact;
+		}
+
 		void ApplyDroughtDiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float2 WorldSpacePosXz, float ConditionValue )
 		{
 			if ( ConditionValue <= SKIP_VALUE )
 			{
 				return;
 			}
-			float2 MapCoords = WorldSpacePosXz * WorldSpaceToTerrain0To1;
-			float2 DetailUV = CalcDetailUV( WorldSpacePosXz );
-
-			float4 DroughtDiffuse = Diffuse;
-			float3 DroughtNormal = Normal;
-			float4 DroughtProperties = Properties;
 
 			float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
 			SlopeMultiplier = RemapClamped( SlopeMultiplier, DroughtSlopeMin, 1.0f, 0.0f, 1.0f );
@@ -164,6 +206,13 @@ PixelShader =
 			{
 				return;
 			}
+
+			float2 MapCoords = WorldSpacePosXz * WorldSpaceToTerrain0To1;
+			float2 DetailUV = CalcDetailUV( WorldSpacePosXz );
+
+			float4 DroughtDiffuse = Diffuse;
+			float3 DroughtNormal = Normal;
+			float4 DroughtProperties = Properties;
 
 			float ColorPositionValue = lerp( DroughtColorMaskPositionFrom, DroughtColorMaskPositionTo, ConditionValue );
 			float ColorContrastValue = lerp( DroughtColorMaskContrastFrom, DroughtColorMaskContrastTo, ConditionValue );
@@ -183,7 +232,7 @@ PixelShader =
 			float DryNoiseMask = PdxTex2D( ProvinceEffectsNoise, DryMaskUV ).r;
 
 			float DryMask = LevelsScan( DryNoiseMask, DryPositionValue, DryContrastValue ) * DroughtDryTextureBlendWeight * DroughtBlendWeight;
-			float2 DryBlendFactors = CalcHeightBlendFactors( float2( Diffuse.a, DryTexDiffuse.a ), float2( 1.0f - DryMask, DryMask ), DetailBlendRange );
+			float2 DryBlendFactors = CalcHeightBlendFactors( float2( Diffuse.a, DryTexDiffuse.a ), float2( 1.0f - DryMask, DryMask ), DetailBlendRange * DroughtDryTextureBlendContrast);
 
 			// Base terrain color change
 			float ColorNoise = LevelsScan( DryNoiseMask, ColorPositionValue, ColorContrastValue );
@@ -194,6 +243,14 @@ PixelShader =
 			DroughtDiffuse.rgb = lerp( DroughtDiffuse.rgb, DryTexDiffuse.rgb, DryBlendFactors.y );
 			DroughtNormal = lerp( DroughtNormal, DryTexNormal, DryBlendFactors.y );
 			DroughtProperties = lerp( DroughtProperties, DryTexProperties, DryBlendFactors.y );
+
+			float DroughtWaterMask = smoothstep( 0.0f, 0.104f, ( 1.0f - DroughtProperties.a ) * DryMask );
+			if ( DroughtWaterMask > 0.0001f )
+			{
+				DroughtDiffuse.rgb = lerp( DroughtDiffuse.rgb, DryTexDiffuse.rgb, DroughtWaterMask * 0.1f );
+				DroughtProperties.a = lerp( DroughtProperties.a , DryTexProperties.a , DroughtWaterMask );
+				DroughtNormal = lerp( DroughtNormal , DryTexNormal , DroughtWaterMask * 0.5f );
+			}
 
 			// Cracks Area Mask
 			float2 CrackedMaskUV = float2( MapCoords.x * 2.0f, MapCoords.y ) * DroughtCracksAreaMaskTiling;
@@ -227,6 +284,7 @@ PixelShader =
 			{
 				return;
 			}
+			ConditionValue *= 0.95f;
 
 			float2 MapCoords = WorldSpacePosXz * WorldSpaceToTerrain0To1;
 			float2 TextureUV = MapCoords * float2( 2.0f, 1.0f );
@@ -525,6 +583,16 @@ PixelShader =
 
 		void ApplyProvinceEffectsTerrain( in EffectIntensities ConditionData, inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float3 WorldSpacePos, inout float WaterNormalLerp )
 		{
+			#ifdef LOW_SPEC_SHADERS
+				return;
+			#endif
+			// Do not apply any effects to the snow.
+			float3 SnowColor = float3( 0.698f, 0.737f, 0.765f );
+			if ( !any( abs( Diffuse.rgb - SnowColor ) >= 0.45f ) )
+			{
+				return;
+			}
+
 			ApplyDroughtDiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._Drought );
 			ApplyFloodingDiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._Flood, WaterNormalLerp );
 			ApplySummerDiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._Summer );
@@ -557,7 +625,7 @@ PixelShader =
 			float3 DroughtDiffuse = AdjustHsv( Diffuse.rgb, 0.0f, DroughtPreSaturation, DroughtPreValue );
 			DroughtDiffuse = Overlay( DroughtDiffuse, DroughtOverlayTree );
 			Diffuse.rgb = lerp( Diffuse.rgb, DroughtDiffuse, ConditionValue );
-			Diffuse.a = lerp( Diffuse.a, smoothstep( 0.0f, 2.0f, Diffuse.a ), ConditionValue );
+			Diffuse.a = lerp( Diffuse.a, smoothstep( 0.8f, 0.85f, Diffuse.a ), ConditionValue );
 		}
 
 		void ApplySummerDiffuseTree( inout float4 Diffuse, float2 WorldSpacePosXz, float ConditionValue )
@@ -588,7 +656,7 @@ PixelShader =
 				return;
 			}
 
-			Diffuse.a = lerp( Diffuse.a, smoothstep( 0.0f, 1.5f, Diffuse.a ), ConditionValue );
+			Diffuse.a = lerp( Diffuse.a, smoothstep( 0.8f, 0.85f, Diffuse.a ), ConditionValue );
 		}
 
 		// Legacy of Valyria
@@ -671,9 +739,12 @@ PixelShader =
 
 		void ApplyProvinceEffectsTree( in EffectIntensities ConditionData, inout float4 Diffuse, float2 MapCoords, float2 WorldSpacePosXz )
 		{
+			#ifdef LOW_SPEC_SHADERS
+				return;
+			#endif
 			ApplyDroughtDiffuseTree( Diffuse, WorldSpacePosXz, ConditionData._Drought );
 			ApplySummerDiffuseTree( Diffuse, WorldSpacePosXz, ConditionData._Summer );
-			ApplySnowDiffuseTree( Diffuse, ConditionData._Snow );
+			// ApplySnowDiffuseTree( Diffuse, ConditionData._Snow );
 
 			// Legacy of Valyria
 			// ApplyValyriaRuinedDiffuseTree( Diffuse, ConditionData._ValyriaRuined );
@@ -700,6 +771,9 @@ PixelShader =
 
 		void ApplyProvinceEffectsDecal( in EffectIntensities ConditionData, inout float3 Diffuse, float2 MapCoords )
 		{
+			#ifdef LOW_SPEC_SHADERS
+				return;
+			#endif
 			ApplyDroughtDiffuseDecal( Diffuse, ConditionData._Drought );
 
 			DebugCondition( Diffuse.rgb, ConditionData );

@@ -1,0 +1,931 @@
+﻿yearly_global_pulse = {
+	on_actions = {
+		agot_assign_slave_master
+		agot_artifact_market_management
+		agot_jon_snow_learns
+		agot_citadel_yearly_pulse
+		agot_king_is_dying
+		agot_legitimate_house_maintenance
+		agot_faegon_invasion
+		agot_banking
+		agot_dragonrider_forced_duel_list_yearly
+	}
+}
+
+agot_banking = {
+	effect = {
+		#Banking - yearly investment fund results
+		every_in_global_list = {
+			variable = IB_Shareholder
+			limit = {
+				has_character_flag = IB_Director
+			}
+			trigger_event = {
+				id = agot_banking.0402
+			}
+		}
+		every_in_global_list = {
+			variable = bank1_Shareholder
+			limit = {
+				has_character_flag = bank1_Director
+			}
+			trigger_event = {
+				id = agot_banking.0402
+			}
+		}
+		every_in_global_list = {
+			variable = bank2_Shareholder
+			limit = {
+				has_character_flag = bank2_Director
+			}
+			trigger_event = {
+				id = agot_banking.0402
+			}
+		}
+		every_in_global_list = {
+			variable = bank3_Shareholder
+			limit = {
+				has_character_flag = bank3_Director
+			}
+			trigger_event = {
+				id = agot_banking.0402
+			}
+		}
+
+		#Bank bookkeeping and dividend payout
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:IB_BookkeepingYears
+				}
+			}
+			set_global_variable = {
+				name = IB_BookkeepingYears
+				value = 1
+			}
+		}
+		else = {
+			if = {
+				limit = {
+					global_var:IB_BookkeepingYears < 4
+				}
+				change_global_variable = {
+					name = IB_BookkeepingYears
+					add = 1
+				}
+			}
+			else = {
+				every_in_global_list = {
+					variable = IB_Shareholder
+					limit = {
+						has_character_flag = IB_Director
+					}
+					trigger_event = {
+						id = agot_banking.0201
+						days = 30
+					}
+				}
+				set_global_variable = {
+					name = IB_BookkeepingYears
+					value = 0
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:bank1_BookkeepingYears
+				}
+			}
+			set_global_variable = {
+				name = bank1_BookkeepingYears
+				value = 1
+			}
+		}
+		else = {
+			if = {
+				limit = {
+					global_var:bank1_BookkeepingYears < 4
+				}
+				change_global_variable = {
+					name = bank1_BookkeepingYears
+					add = 1
+				}
+			}
+			else = {
+				every_in_global_list = {
+					variable = bank1_Shareholder
+					limit = {
+						has_character_flag = bank1_Director
+					}
+					trigger_event = {
+						id = agot_banking.0201
+						days = 30
+					}
+				}
+				set_global_variable = {
+					name = bank1_BookkeepingYears
+					value = 0
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:bank2_BookkeepingYears
+				}
+			}
+			set_global_variable = {
+				name = bank2_BookkeepingYears
+				value = 1
+			}
+		}
+		else = {
+			if = {
+				limit = {
+					global_var:bank2_BookkeepingYears < 4
+				}
+				change_global_variable = {
+					name = bank2_BookkeepingYears
+					add = 1
+				}
+			}
+			else = {
+				every_in_global_list = {
+					variable = bank2_Shareholder
+					limit = {
+						has_character_flag = bank2_Director
+					}
+					trigger_event = {
+						id = agot_banking.0201
+						days = 30
+					}
+				}
+				set_global_variable = {
+					name = bank2_BookkeepingYears
+					value = 0
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:bank3_BookkeepingYears
+				}
+			}
+			set_global_variable = {
+				name = bank3_BookkeepingYears
+				value = 1
+			}
+		}
+		else = {
+			if = {
+				limit = {
+					global_var:bank3_BookkeepingYears < 4
+				}
+				change_global_variable = {
+					name = bank3_BookkeepingYears
+					add = 1
+				}
+			}
+			else = {
+				every_in_global_list = {
+					variable = bank3_Shareholder
+					limit = {
+						has_character_flag = bank3_Director
+					}
+					trigger_event = {
+						id = agot_banking.0201
+						days = 30
+					}
+				}
+				set_global_variable = {
+					name = bank3_BookkeepingYears
+					value = 0
+				}
+			}
+		}
+	}
+}
+
+agot_yearly_culture_conversion = {
+	effect = {
+		agot_automatic_culture_conversion = yes
+	}
+}
+
+agot_yearly_faith_conversion = {
+	effect = {
+		agot_automatic_faith_conversion = yes
+	}
+}
+
+agot_assign_slave_master = {
+	effect = {
+		every_ruler = {
+			limit = {
+				agot_has_slave_population_trigger = yes
+			}
+			add_trait = slave_master
+		}
+	}
+}
+
+agot_yearly_playable_pulse = {
+	events = {
+	}
+	on_actions = {
+		on_wall_election
+		on_yearly_btw_maintenance
+	}
+	effect = {
+		if = {
+			limit = {
+				any_equipped_character_artifact = {
+					has_artifact_modifier = dragon_blood_and_bones_potion_modifier
+				}
+				NOT = {
+					any_owned_story = {
+						story_type = story_dragonkind_elixir
+					}
+				}
+			}
+			create_story = story_dragonkind_elixir
+		}
+	}
+}
+
+# Triggers for every character in the game
+agot_yearly_dragon_pulse = {
+	trigger = {
+		has_trait = dragon # We only want dragons
+	}
+	on_actions = {
+		agot_yearly_dragon_aging # Events that happen to all dragons yearly
+		agot_yearly_wild_dragon_pulse # Only wild events go here
+		agot_yearly_owned_dragon_pulse # Only owned events go here
+		agot_yearly_dragon_mate_pulse # Have dragons find mates
+		agot_yearly_dragon_cull #If too many dragons are in the world, start culling
+	}
+}
+
+agot_yearly_dragon_aging = {
+	effect = {
+		if = {
+			limit = { # First age trigger
+				age > 2
+				age < 6
+				number_of_personality_traits < 1
+				number_of_personality_traits < personality_trait_limit
+				trigger_if = {
+					limit = { has_game_rule = agot_canon_dragons_enabled_traits }
+					NOT = { has_character_flag = agot_developing_canon_dragon_traits }
+				}
+			}
+			random_list = {
+				50 = { # 50% chance to not get trait
+					modifier = { # but run at 5 if none yet
+						factor = 0
+						age = 5
+					}
+				}
+				50 = {
+					random_list = {
+						70 = { # 70% chance to not get input
+							agot_give_random_dragon_personality_trait = yes
+						}
+						30 = { # 30% chance to get input
+							modifier = {
+								exists = var:cradlemate
+								has_relation_agot_dragon = var:cradlemate
+								var:cradlemate = {
+									dynasty ?= { has_dynasty_perk = dragonrider_dynasty_legacy_1 }
+								}
+								add = 130
+							}
+							modifier = { # but only if owned
+								factor = 0
+								NOT = { has_character_flag = owned_dragon }
+							}
+							agot_dragon_personality_input_events = yes
+						}
+					}
+					agot_growing_dragon_cannibal_trait_chance = yes
+				}
+			}
+		}
+		else_if = {
+			limit = { # Second age trigger
+				age > 5
+				age < 10
+				number_of_personality_traits < 2
+				number_of_personality_traits < personality_trait_limit
+				trigger_if = {
+					limit = { has_game_rule = agot_canon_dragons_enabled_traits }
+					NOT = { has_character_flag = agot_developing_canon_dragon_traits }
+				}
+			}
+			random_list = {
+				50 = { # 50% chance to not get trait
+					modifier = { # but run at 9 if none yet
+						factor = 0
+						age = 9
+					}
+				}
+				50 = {
+					random_list = {
+						70 = { # 70% chance to not get input
+							agot_give_random_dragon_personality_trait = yes
+						}
+						30 = { # 30% chance to get input
+							modifier = {
+								exists = var:cradlemate
+								has_relation_agot_dragon = var:cradlemate
+								var:cradlemate = {
+									dynasty ?= { has_dynasty_perk = dragonrider_dynasty_legacy_1 }
+								}
+								add = 130
+							}
+							modifier = { # but only if owned
+								factor = 0
+								NOT = { has_character_flag = owned_dragon }
+							}
+							agot_dragon_personality_input_events = yes
+						}
+					}
+					agot_growing_dragon_cannibal_trait_chance = yes
+				}
+			}
+		}
+		else_if = {
+			limit = { # Third age trigger
+				age > 9
+				age < 15
+				number_of_personality_traits < 3
+				number_of_personality_traits < personality_trait_limit
+				trigger_if = {
+					limit = { has_game_rule = agot_canon_dragons_enabled_traits }
+					NOT = { has_character_flag = agot_developing_canon_dragon_traits }
+				}
+			}
+			random_list = {
+				50 = { # 50% chance to not get trait
+					modifier = { # but run at 14 if none yet
+						factor = 0
+						age = 14
+					}
+				}
+				50 = {
+					random_list = {
+						70 = { # 70% chance to not get input
+							agot_give_random_dragon_personality_trait = yes
+						}
+						30 = { # 30% chance to get input
+							modifier = {
+								exists = var:cradlemate
+								has_relation_agot_dragon = var:cradlemate
+								var:cradlemate = {
+									dynasty ?= { has_dynasty_perk = dragonrider_dynasty_legacy_1 }
+								}
+								add = 130
+							}
+							modifier = { # but only if owned
+								factor = 0
+								NOT = { has_character_flag = owned_dragon }
+							}
+							agot_dragon_personality_input_events = yes
+						}
+					}
+					agot_growing_dragon_cannibal_trait_chance = yes
+				}
+			}
+		}
+	}
+}
+
+agot_yearly_wild_dragon_pulse = {
+	trigger = {
+		NOT = { has_character_flag = owned_dragon } # We only want wild dragons
+	}
+	random_events = {
+		65 = 0
+		30 = agot_dragon.0003 # Dragon starts roaming
+		5 = agot_filler_dragon.0095 # Dragon does something bad
+		1 = agot_filler_dragon.0007 # Dragon is being worshiped
+	}
+	effect = {
+		if = {
+			limit = {
+				is_female = yes
+			}
+			random = {
+				chance = {
+					value = 1
+					if = {
+						limit = {
+							has_trait = dragon_fertile
+						}
+						add = 1
+					}
+				}
+				create_character = {
+					location = root.location
+					trait = dragon
+					age = 0
+					template = agot_dragon_hatchling_template
+					random_traits = no
+					save_scope_as = dragon
+				}
+				scope:dragon = { set_mother = prev }
+			}
+		}
+	}
+}
+
+agot_yearly_owned_dragon_pulse = {
+	trigger = {
+		has_character_flag = owned_dragon # We only want owned dragons
+	}
+	random_events = {
+		200 = 0
+		10 = agot_filler_dragon.0001 # Dragonpit storming
+		10 = agot_filler_dragon.0003 # Child burned / killed by dragon
+		10 = agot_filler_dragon.0005 # Dragon used to raise funds
+		10 = agot_filler_dragon.0012 # Dragon stress trait events - Comfort eater
+		10 = agot_filler_dragon.0014 # Dragon stress trait events - Contrite
+		10 = agot_filler_dragon.0016 # Dragon stress trait events - Drunkard
+		10 = agot_filler_dragon.0018 # Dragon stress trait events - Flagellant
+		10 = agot_filler_dragon.0020 # Dragon stress trait events - Improvident
+		10 = agot_filler_dragon.0022 # Dragon stress trait events - Inappetetic
+		10 = agot_filler_dragon.0024 # Dragon stress trait events - Irritable
+		10 = agot_filler_dragon.0026 # Dragon stress trait events - Profligate
+		10 = agot_filler_dragon.0028 # Dragon stress trait events - Rakish
+		10 = agot_filler_dragon.0030 # Dragon stress trait events - Reclusive
+		10 = agot_filler_dragon.0032 # Dragon stress trait events - Athletic
+		10 = agot_filler_dragon.0034 # Dragon stress trait events - Confider
+		10 = agot_filler_dragon.0036 # Dragon stress trait events - Journaller
+		10 = agot_filler_dragon.0038 # Dragon stress trait events - Uncouth
+		10 = agot_filler_dragon.0040 # Dragon education trait events - Diplomacy
+		10 = agot_filler_dragon.0042 # Dragon education trait events - Martial
+		10 = agot_filler_dragon.0044 # Dragon education trait events - Stewardship
+		10 = agot_filler_dragon.0046 # Dragon education trait events - Intrigue
+		10 = agot_filler_dragon.0048 # Dragon education trait events - Learning
+		10 = agot_filler_dragon.0050 # Dragon lifestyle trait events - Reveler
+		10 = agot_filler_dragon.0052 # Dragon lifestyle trait events - Blademaster
+		10 = agot_filler_dragon.0054 # Dragon lifestyle trait events - Hunter
+		10 = agot_filler_dragon.0056 # Dragon lifestyle trait events - Mystic
+		10 = agot_filler_dragon.0058 # Dragon lifestyle trait events - Physician
+		10 = agot_filler_dragon.0060 # Dragon lifestyle trait events - Herbalist
+		10 = agot_filler_dragon.0062 # Dragon lifestyle trait events - Gardener
+		10 = agot_filler_dragon.0064 # Physician wants to create a potion from your dragon
+		10 = agot_filler_dragon.0075 # Walk your dragon
+		10 = agot_filler_dragon.0081 # Knight wants to fight dragon
+		10 = agot_filler_dragon.0086 # Merchant wants to ride dragon
+		2 = agot_filler_dragon.0088 # Craven rider looks to stop being a craven
+		5 = agot_filler_dragon.0090 # Eccentric becomes fire obsessed
+		10 = agot_filler_dragon.0092 # Child wants to ride dragon
+		10 = agot_filler_dragon.0101 # Dragonrider courtier attracts liege
+		10 = agot_filler_dragon.0103 # Dragonrider is in prison
+	}
+}
+
+agot_yearly_dragon_mate_pulse = {
+	trigger = {
+		AND = {
+			age > 15
+			age < 150
+			is_female = yes
+			num_of_relation_soulmate = 0
+			NOT = { has_trait = dragon_cannibal }
+			NOT = { has_variable = dragon_gender_hidden }
+		}
+	}
+	effect = {
+		save_scope_as = dragon_female
+		random_list = {
+			98 = { }
+			2 = {
+				location = {
+					random_character_in_location = { # Hot single dragons in your area
+						limit = {
+							has_trait = dragon
+							age > 15
+							age < 150
+							# Similar age
+							trigger_if = {
+								limit = { age < 50 }
+								scope:dragon_female = { age < 50 }
+							}
+							trigger_else_if = {
+								limit = { age < 100 }
+								scope:dragon_female = {
+									age >= 50
+									age < 100
+								}
+							}
+							trigger_else = {
+								scope:dragon_female = {
+									age >= 100
+									age < 150
+								}
+							}
+							# Only wild & wild or owned & owned
+							trigger_if = {
+								limit = { NOT = { has_character_flag = owned_dragon } }
+								scope:dragon_female = { NOT = { has_character_flag = owned_dragon } }
+							}
+							trigger_if = {
+								limit = { has_character_flag = owned_dragon }
+								scope:dragon_female = { has_character_flag = owned_dragon }
+							}
+							# Is single male
+							is_male = yes
+							num_of_relation_soulmate = 0
+							# No direct parents / children
+							NOT = { is_child_of = scope:dragon_female }
+							NOT = { is_parent_of = scope:dragon_female }
+							# No cannibals
+							NOT = { has_trait = dragon_cannibal }
+							# Revealed gender
+							NOT = { has_variable = dragon_gender_hidden }
+						}
+						save_scope_as = dragon_male
+					}
+				}
+				if = {
+					limit = { exists = scope:dragon_male }
+					set_relation_soulmate = scope:dragon_male
+					if = {
+						limit = {
+							exists = court_owner
+						}
+						court_owner = {
+							trigger_event = {
+								id = agot_dragon.0019
+							}
+						}
+					}
+					if = {
+						limit = {
+							scope:dragon_male = { exists = court_owner }
+							OR = { # Not same as female
+								scope:dragon_female = { NOT = { exists = court_owner } }
+								scope:dragon_female.court_owner = { NOT = { this = scope:dragon_male.court_owner } }
+							}
+						}
+						scope:dragon_male.court_owner = {
+							trigger_event = {
+								id = agot_dragon.0019
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+#LEGACY OF VALYRIA MODIFIED
+agot_yearly_dragon_cull = {
+	trigger = {
+		any_in_global_list = {
+			variable = living_dragons
+			count > agot_dragon_cull_limit
+		}
+		trigger_if = { # Don't kill last dragon of a location
+			limit = { has_character_flag = owned_dragon }
+			location = {
+				any_character_in_location = {
+					has_trait = dragon
+					NOT = { this = root }
+					has_character_flag = owned_dragon
+				}
+			}
+		}
+	}
+	effect = {
+		# First, this should only trigger 1/50 times to avoid overkill and predictability
+		random_list = {
+			49 = {}
+			1 = {
+				if = { # Owned dragons
+					limit = {
+						has_character_flag = owned_dragon
+					}
+					random_list = { # Ways to kill owned dragons
+						1 = { # Old age
+							trigger = {
+								age > 200
+								#LEGACY OF VALYRIA ADDED
+								NOR = {
+									has_trait = immortal
+									liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
+								}
+							}
+							death = { death_reason = death_old_age }
+						}
+						1 = { # Flew away to Valyria
+							trigger = {
+								age > 80
+								NOT = { has_character_flag = in_dragonpit }
+								NOT = { exists = var:current_rider }
+								#LEGACY OF VALYRIA ADDED
+								NOR = {
+									has_trait = immortal
+									liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
+								}
+							}
+							random_list = {
+								75 = { death = { death_reason = death_flew_away_to_valyria } }
+								25 = { death = { death_reason = death_flew_away_to_sothoryos } }
+							}
+						}
+					}
+				}
+				else = { # Wild dragons
+					random_list = { # Ways to kill wild dragons
+						1 = { # Old age
+							trigger = {
+								age > 200
+								#LEGACY OF VALYRIA ADDED
+								NAND = { # Firewyrms don't die as long as they're in Valyria
+									has_trait = firewyrm
+									location ?= { geographical_region = world_valyria }
+								}
+							}
+							death = { death_reason = death_old_age }
+						}
+						1 = { # Flew away
+							trigger = {
+								age > 80
+								#LEGACY OF VALYRIA ADDED
+								NAND = { # Firewyrms don't die as long as they're in Valyria
+									has_trait = firewyrm
+									location ?= { geographical_region = world_valyria }
+								}
+							}
+							random_list = {
+								75 = { death = { death_reason = death_flew_away_to_valyria } }
+								25 = { death = { death_reason = death_flew_away_to_sothoryos } }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_faegon_invasion = {
+	trigger = {
+		exists = title:e_the_iron_throne.holder
+		has_game_rule = agot_faegon_invasion_enabled
+		NOR = {
+			has_game_rule = agot_shatter_duchies
+			has_game_rule = agot_shatter_duchies
+			has_game_rule = agot_shatter_petty_kingdoms
+			has_game_rule = agot_shatter_kingdoms
+			exists = global_var:faegon_invasion
+		}
+	}
+	effect = {
+		if = {
+			limit = {
+				OR = {
+					game_start_date >= 8282.9.15
+					game_start_date >= 8284.6.2
+				}
+				current_date >= 8298.1.1
+				current_date <= 8300.1.1
+				NOT = {
+					any_ruler = {
+						any_owned_story = {
+							story_type = story_agot_scenario_rr
+						}
+					}
+				}
+			}
+			title:c_princes_quarter.holder = {
+				trigger_event = { id = agot_faegon_invasion.0001 days = { 0 181 } }
+			}
+		}
+	}
+}
+
+agot_jon_snow_learns = {
+	effect = {
+		random = {
+			chance = 10 # MTTH 10 years
+			every_ruler = {
+				limit = {
+					is_character_stark_7 = yes
+					exists = real_father
+					NOT = { father = real_father }
+				}
+				trigger_event = { # Can happen any time that year
+					id = agot_events_bastard.0920
+					days = { 1 364 }
+				}
+			}
+		}
+	}
+}
+
+agot_citadel_yearly_pulse = {
+	on_actions = {
+		agot_citadel_election
+		agot_citadel_find_lowborns
+		#agot_citadel_find_lost_maesters
+		#agot_citadel_seed_archmaesters
+	}
+}
+
+agot_citadel_election = {
+	effect = {
+		global_var:citadel_title.holder ?= {
+			trigger_event = agot_maester.9904
+		}
+	}
+}
+
+# Hunt for lowborns to help fill the citadel
+agot_citadel_find_lowborns = {
+	effect = {
+		while = {
+			count < 3
+			random_living_character = {
+				limit = {
+					agot_is_maester_candidate = yes
+				}
+				save_scope_as = maester_candidate
+				scope:maester_candidate ?= {
+					agot_send_to_citadel_effect = { MAESTER_CANDIDATE = scope:maester_candidate }
+				}
+			}
+		}
+	}
+}
+
+agot_citadel_find_lost_maesters = {
+	effect = {
+		every_living_maester = {
+			agot_citadel_recover_lost_rats_effect = yes
+		}
+	}
+}
+
+#5 Year Pulse Events which exist to create more instabiliy in enormous realms
+
+agot_instability = {
+	random_events = {
+		chance_of_no_event = {
+			value = 50
+			if = {
+				limit = {
+					has_game_rule = lesser_realm_stability
+				}
+				add = -30
+			}
+			if = {
+				limit = {
+					has_game_rule = higher_realm_stability
+				}
+				add = 50
+			}
+			if = {
+				limit = {
+					has_game_rule = extreme_realm_stability
+				}
+				add = 100
+			}
+		}
+		1 = agot_instability.1001 # Greyjoy Rebellion / Laughing Storm Rebellion
+		1 = agot_instability.1100 # Exant Blackfyre Invaders
+	}
+}
+
+agot_form_special_titles = {
+	random_events = {
+		25 = 0
+		100 = agot_gold_company_formation.0001 # Dynamic Golden Company
+	}
+}
+
+
+#Used for War of Succession
+agot_king_is_dying = {
+	effect = {
+		every_ruler = {
+			limit = {
+				highest_held_title_tier = tier_empire
+				is_landed = yes
+				health < death_chance_starts_health
+				NOT = { government_has_flag = government_is_administrative }
+			}
+			add_character_flag = king_is_dying
+			if = {
+				limit = { has_perk = know_thyself_perk }
+				add_character_flag = already_has_know_thyself_perk
+			}
+			else = { add_perk = know_thyself_perk }
+		}
+	}
+}
+
+agot_legitimate_house_maintenance = {
+	effect = {
+		every_in_global_list = {
+			variable = legitimate_house_titles
+			limit = {
+				exists = holder
+			}
+			save_scope_as = legitimate_house_title_for_maintenance
+			# First maintenance is simple - if the legitimate house is not the holder's house,
+			# update the house progress for the new house for that year and give a claim to the legitimate house.
+			if = {
+				limit = {
+					var:legitimate_house != holder.house
+				}
+				holder = {
+					agot_update_new_house_yearly_progress = {
+						TITLE = scope:legitimate_house_title_for_maintenance
+					}
+				}
+				# Now if the legitimate house exists, give a claim to the title to them via event.
+				if = {
+					limit = {
+						exists = var:legitimate_house.house_head
+						var:legitimate_house.house_head = {
+							is_alive = yes
+						}
+					}
+					var:legitimate_house.house_head = {
+						if = {
+							limit = {
+								NOT = { has_strong_claim_on = scope:legitimate_house_title_for_maintenance }
+							}
+							trigger_event = agot_legitimate_house.0002
+						}
+						every_close_family_member = {
+							limit = {
+								house = scope:legitimate_house_title_for_maintenance.var:legitimate_house
+								NOR = {
+									has_strong_claim_on = scope:legitimate_house_title_for_maintenance
+									has_weak_claim_on = scope:legitimate_house_title_for_maintenance
+								}
+							}
+							trigger_event = agot_legitimate_house.0002
+						}
+					}
+				}
+			}
+			# The second maintenance is more complex - handling house changes without title changes.
+			# Given we have an on_action for title gain to maintain the current house
+			# it should always match the current holder, with the exception of if the
+			# holder's house changed without changing ownership (e.g. new parent reveal).
+			# While we'll try to make sure the current house for a title changes where
+			# the house changes too, this maintinance changes it if it doesn't match,
+			# since if it hasn't changed hands, it should match the holder's new house.
+			if = {
+				limit = {
+					exists = var:current_house
+					NOT = { var:current_house = holder.house }
+				}
+				var:current_house = { save_scope_as = old_current_house }
+				agot_set_current_house = {
+					TITLE = scope:legitimate_house_title_for_maintenance
+					HOUSE = holder.house
+				}
+				# There is also a chance that they were the legitimate house, but now are not.
+				# So we also need to change the legitimate house if their old house was legit.
+				if = {
+					limit = {
+						var:legitimate_house = scope:old_current_house
+					}
+					agot_set_legitimate_house = {
+						TITLE = scope:legitimate_house_title_for_maintenance
+						HOUSE = holder.house
+					}
+				}
+			}
+		}
+	}
+}
+
+agot_dragonrider_forced_duel_list_yearly = {
+	trigger = {
+		exists = title:b_ruins.holder
+	}
+	effect = {
+		title:b_ruins.holder = {
+			trigger_event = agot_dragon_combat.1012
+			trigger_event = {
+				id = agot_dragon_combat.1012
+				months = 6
+			}
+		}
+	}
+}

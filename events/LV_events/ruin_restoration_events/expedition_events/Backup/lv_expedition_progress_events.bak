@@ -1,0 +1,308 @@
+﻿namespace = lv_expedition_progress_event
+# These are random events that correspond to an existing blocker in the county
+# Regardless of outcome, will progress charting progress on the area
+# Higher chance of occuring if intent is "Chart the Area"
+
+# Directory
+
+# Unexplored Caves
+# lv_expedition_progress_event.0001 - A Tunnel Too Deep
+# lv_expedition_progress_event.0002 - The Call of the Void (Branching)
+# lv_expedition_progress_event.0003 - The Carvings Stir
+# lv_expedition_progress_event.0004 - Seal the Passage
+# lv_expedition_progress_event.0005 - Echoes of the Deep
+
+# Swamps
+# lv_expedition_progress_event.0020 - Arrival
+
+# A Tunnel Too Deep
+lv_expedition_progress_event.0001 = {
+	type = character_event
+	title = lv_expedition_progress_event.0001.t
+	desc = lv_expedition_progress_event.0001.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	trigger = {
+		# Add variable or something here for long event chains
+		current_travel_plan = { num_entourage_characters >= 3 }
+	}
+
+	left_portrait = {
+		character = root
+		animation = worry
+	}
+
+	right_portrait = {
+		character = scope:splinter_leader
+		animation = paranoia
+	}
+	lower_left_portrait = scope:splinter_member_1
+	lower_right_portrait = scope:splinter_member_2
+
+	override_background = ep3_camp_night
+
+	immediate = {
+		current_travel_plan = {
+			random_entourage_character = { save_scope_as = splinter_leader }
+			random_entourage_character = {
+				limit = { this = scope:splinter_leader }
+				save_scope_as = splinter_member_1
+			}
+			random_entourage_character = {
+				limit = {
+					NOR = {
+						this = scope:splinter_leader
+						this = scope:splinter_member_1
+					}
+				}
+				save_scope_as = splinter_member_2
+			}
+		}
+	}
+
+	option = {
+		name = lv_expedition_progress_event.0001.a
+		trigger_event = {
+			id = lv_expedition_progress_event.0002
+			days = { 3 7 }
+		}
+	}
+}
+
+# The Call of the Void
+lv_expedition_progress_event.0002 = {
+	type = character_event
+	title = lv_expedition_progress_event.0002.t
+	desc = lv_expedition_progress_event.0002.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	override_background = ep3_camp
+
+	# Leave it be
+	option = {
+		name = lv_expedition_progress_event.0002.a
+		trigger_event = lv_expedition_progress_event.0003
+	}
+
+	# Seal the passage (Insta-clears blocker but no rewards or resolution)
+	option = {
+		name = lv_expedition_progress_event.0002.b
+	}
+
+	# Investigate further
+	option = {
+		name = lv_expedition_progress_event.0002.c
+		
+	}
+
+	# Secret chain
+	option = {
+		name = lv_expedition_progress_event.0002.d
+		trigger = {
+			OR = {
+				learning >= high_skill_rating
+				has_trait = lifestyle_mystic
+				has_trait = scholar
+			}
+		}
+	}
+}
+
+# The Carvings Stir
+lv_expedition_progress_event.0003 = {
+	type = character_event
+	title = lv_expedition_progress_event.0003.t
+	desc = lv_expedition_progress_event.0003.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	option = {
+		name = lv_expedition_progress_event.0003.a
+		custom_tooltip = lv_expedition_progress_event.0003.a.tt
+		# Add debuff to the expedition or at least those involved
+	}
+}
+
+# Seal the Passage
+lv_expedition_progress_event.0004 = {
+	type = character_event
+	title = lv_expedition_progress_event.0004.t
+	desc = lv_expedition_progress_event.0004.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	# Hmmm
+	option = {
+		name = lv_expedition_progress_event.0004.a
+		custom_tooltip = lv_expedition_progress_event.0004.a.tt
+		involved_activity = {
+			activity_location = {
+				if = {
+					limit = { has_building = unexplored_caves_01 }
+					remove_building = unexplored_caves_01
+				}
+				else_if = {
+					limit = { has_building = unexplored_caves_02 }
+					remove_building = unexplored_caves_02
+				}
+				else_if = { # This shouldn't be a thing but clear just to be safe
+					limit = { has_building = unexplored_caves_03 }
+					remove_building = unexplored_caves_03
+				}
+				hidden_effect = {
+					lv_blocker_cleared_effect = yes
+					remove_variable = blocker_outcome
+				}
+			}
+		}
+	}
+}
+
+# Echoes in the Deep
+lv_expedition_progress_event.0005 = {
+	type = character_event
+	title = lv_expedition_progress_event.0005.t
+	desc = lv_expedition_progress_event.0005.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	# Hmmm
+	option = {
+		name = lv_expedition_progress_event.0005.a
+		custom_tooltip = {
+			text = lv_expedition_progress_event.0005.a.tt
+			trigger_event = lv_expedition_progress_event.0006
+		}
+	}
+}
+
+# What Lurks Beneath
+lv_expedition_progress_event.0006 = {
+	type = character_event
+	title = lv_expedition_progress_event.0006.t
+	desc = lv_expedition_progress_event.0006.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	# Hmmm
+	option = {
+		name = lv_expedition_progress_event.0006.a
+		#custom_tooltip = lv_expedition_progress_event.0006.a.tt
+	}
+
+	option = {
+		name = lv_expedition_progress_event.0006.b
+		#custom_tooltip = lv_expedition_progress_event.0006.b.tt
+	}
+}
+
+# Turn Away the Abyss
+lv_expedition_progress_event.0007 = {
+	type = character_event
+	title = lv_expedition_progress_event.0007.t
+	desc = lv_expedition_progress_event.0007.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	# Hmmm
+	option = {
+		name = lv_expedition_progress_event.0007.a
+		custom_tooltip = lv_expedition_progress_event.0007.a.tt
+		# Gain prestige or piety (wisdom or restraint).
+		# Gain lore-based modifier or event hook.
+		# Team morale remains high.
+		# No treasure, but no doom either.
+	}
+}
+
+# The Deepest Chamber
+lv_expedition_progress_event.0008 = {
+	type = character_event
+	title = lv_expedition_progress_event.0008.t
+	desc = lv_expedition_progress_event.0008.desc
+	theme = wanderer_journey_focus
+
+	# Remove once implemented pls
+	orphan = yes
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	# Hmmm
+	option = {
+		name = lv_expedition_progress_event.0008.a
+		custom_tooltip = lv_expedition_progress_event.0008.a.tt
+		involved_activity = {
+			activity_location = {
+				if = {
+					limit = { has_building = unexplored_caves_01 }
+					remove_building = unexplored_caves_01
+				}
+				else_if = {
+					limit = { has_building = unexplored_caves_02 }
+					remove_building = unexplored_caves_02
+				}
+				else_if = { # This shouldn't be a thing but clear just to be safe
+					limit = { has_building = unexplored_caves_03 }
+					remove_building = unexplored_caves_03
+				}
+				hidden_effect = {
+					lv_blocker_cleared_effect = yes
+					remove_variable = blocker_outcome
+				}
+			}
+		}
+		# Gain rare artifact (potentially cursed or powerful).
+		# Add temporary or hidden trait: "Touched by the Deep".
+		# Team casualties or sanity loss.
+		# Potential future events tied to what was awakened.
+	}
+}

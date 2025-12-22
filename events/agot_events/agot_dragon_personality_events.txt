@@ -1,0 +1,1394 @@
+﻿namespace = agot_dragon_personality
+
+# This file is for events that are called on the owner of a dragon
+# as it grows up and play a role in shaping its personality.
+
+# See agot_dragon_personality_input_events scripted effect.
+# Expected scope for dragon is "growing_dragon".
+
+agot_dragon_personality.0001 = { # dragon_friendly
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0001.t
+	desc = agot_dragon_personality.0001.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_friendly
+			change_draconic_dread = {
+				VALUE = -2
+			}
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0001.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0001.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_friendly
+			add_trait_force_tooltip = dragon_aggressive
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0001.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_skittish }
+				NOT = { has_trait = dragon_bloodthirsty }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_skittish
+		}
+		stress_impact = {
+			sadistic = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0002 = { # dragon_aggressive
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0002.t
+	desc = agot_dragon_personality.0002.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_aggressive
+			change_draconic_dread = {
+				VALUE = 2
+			}
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0002.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0002.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_aggressive
+			add_trait_force_tooltip = dragon_friendly
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0002.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_bloodthirsty }
+				NOT = { has_trait = dragon_skittish }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_bloodthirsty
+		}
+		stress_impact = {
+			compassionate = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0003 = { # dragon_skittish
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0003.t
+	desc = agot_dragon_personality.0003.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_skittish
+			change_draconic_dread = {
+				VALUE = -4
+			}
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0003.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0003.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_skittish
+			add_trait_force_tooltip = dragon_bloodthirsty
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0003.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_accepting }
+				NOT = { has_trait = dragon_defiant }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_accepting
+		}
+		stress_impact = {
+			stubborn = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0004 = { # dragon_bloodthirsty
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0004.t
+	desc = agot_dragon_personality.0004.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_bloodthirsty
+			change_draconic_dread = {
+				VALUE = 4
+			}
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0004.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0004.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_bloodthirsty
+			add_trait_force_tooltip = dragon_skittish
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0004.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_accepting }
+				NOT = { has_trait = dragon_defiant }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_defiant
+		}
+		stress_impact = {
+			fickle = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0005 = { # dragon_accepting
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0005.t
+	desc = agot_dragon_personality.0005.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_accepting
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0005.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0005.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_accepting
+			add_trait_force_tooltip = dragon_defiant
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0005.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_supporting }
+				NOT = { has_trait = dragon_imperious }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_supporting
+		}
+		stress_impact = {
+			arrogant = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0006 = { # dragon_defiant
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0006.t
+	desc = agot_dragon_personality.0006.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_defiant
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0006.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0006.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_defiant
+			add_trait_force_tooltip = dragon_accepting
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0006.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_supporting }
+				NOT = { has_trait = dragon_imperious }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_imperious
+		}
+		stress_impact = {
+			humble = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0007 = { # dragon_supporting
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0007.t
+	desc = agot_dragon_personality.0007.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_supporting
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0007.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0007.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_supporting
+			add_trait_force_tooltip = dragon_imperious
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0007.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_calculating }
+				NOT = { has_trait = dragon_impulsive }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_calculating
+		}
+		stress_impact = {
+			wrathful = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0008 = { # dragon_imperious
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0008.t
+	desc = agot_dragon_personality.0008.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_imperious
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0008.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0008.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_imperious
+			add_trait_force_tooltip = dragon_supporting
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0008.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_calculating }
+				NOT = { has_trait = dragon_impulsive }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_impulsive
+		}
+		stress_impact = {
+			patient = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0009 = { # dragon_calculating
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0009.t
+	desc = agot_dragon_personality.0009.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_calculating
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0009.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0009.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_calculating
+			add_trait_force_tooltip = dragon_impulsive
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0009.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_cooperative }
+				NOT = { has_trait = dragon_solitary }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_cooperative
+		}
+		stress_impact = {
+			shy = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0010 = { # dragon_impulsive
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0010.t
+	desc = agot_dragon_personality.0010.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_impulsive
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0010.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0010.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_impulsive
+			add_trait_force_tooltip = dragon_calculating
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0010.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_cooperative }
+				NOT = { has_trait = dragon_solitary }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_solitary
+		}
+		stress_impact = {
+			gregarious = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0011 = { # dragon_cooperative
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0011.t
+	desc = agot_dragon_personality.0011.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_cooperative
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0011.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0011.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_cooperative
+			add_trait_force_tooltip = dragon_solitary
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0011.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_restrained }
+				NOT = { has_trait = dragon_voracious }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_restrained
+		}
+		stress_impact = {
+			gluttonous = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0012 = { # dragon_solitary
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0012.t
+	desc = agot_dragon_personality.0012.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_solitary
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0012.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0012.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_solitary
+			add_trait_force_tooltip = dragon_cooperative
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0012.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_restrained }
+				NOT = { has_trait = dragon_voracious }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_voracious
+		}
+		stress_impact = {
+			temperate = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0013 = { # dragon_restrained
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0013.t
+	desc = agot_dragon_personality.0013.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_restrained
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0013.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0013.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_restrained
+			add_trait_force_tooltip = dragon_voracious
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0013.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_aggressive }
+				NOT = { has_trait = dragon_friendly }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_friendly
+		}
+		stress_impact = {
+			rude = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+agot_dragon_personality.0014 = { # dragon_voracious
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0014.t
+	desc = agot_dragon_personality.0014.desc
+	theme = dragon
+	left_portrait = {
+		character = root
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+	immediate = {
+		scope:growing_dragon = {
+			add_trait = dragon_voracious
+		}
+	}
+
+	option = { # Let it be
+		name = agot_dragon_personality.0014.a
+
+		ai_chance = {
+			base = 0
+
+			modifier = {
+				add = 100
+				has_game_rule = agot_canon_dragons_enabled_traits
+			}
+		}
+	}
+
+	option = { # Shift to opposite
+		name = agot_dragon_personality.0014.b
+		custom_tooltip = agot_dragon_personality.change_effect
+		scope:growing_dragon = {
+			remove_trait = dragon_voracious
+			add_trait_force_tooltip = dragon_restrained
+			agot_dragon_personality_forced_effect = yes
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+
+	option = { # Enhance
+		name = agot_dragon_personality.0014.c
+		trigger = {
+			scope:growing_dragon = {
+				NOT = { has_trait = dragon_aggressive }
+				NOT = { has_trait = dragon_friendly }
+				number_of_personality_traits < personality_trait_limit
+			}
+		}
+		scope:growing_dragon = {
+			add_trait = dragon_aggressive
+		}
+		stress_impact = {
+			calm = major_stress_gain
+		}
+
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+#LEGACY OF VALYRIA MODIFIED
+# Non-core personality traits that can be added to a dragon
+agot_dragon_personality.0015 = { # dragon_cannibal
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0015.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					has_character_flag = read_dragonlore_book
+				}
+				desc = agot_dragon_personality.0015.warning.desc
+			}
+			triggered_desc = {
+				trigger = { NOT = { has_character_flag = read_dragonlore_book } }
+				desc = agot_dragon_personality.0015.desc
+			}
+		}
+		triggered_desc = {
+			trigger = {
+				has_character_flag = read_dragonlore_book
+				scope:growing_dragon = {
+					OR = {
+						has_trait = dragon_aggressive
+						has_trait = dragon_bloodthirsty
+					}
+				}
+			}
+			desc = agot_dragon_personality.0015.aggressive.desc
+		}
+		triggered_desc = {
+			trigger = {
+				has_character_flag = read_dragonlore_book
+				scope:growing_dragon = {
+					has_trait = dragon_voracious
+					NOR = {
+						has_trait = dragon_aggressive
+						has_trait = dragon_bloodthirsty
+					}
+				}
+			}
+			desc = agot_dragon_personality.0015.voracious.desc
+		}
+		triggered_desc = {
+			trigger = {
+				has_character_flag = read_dragonlore_book
+				scope:growing_dragon = {
+					has_trait = dragon_voracious
+					OR = {
+						has_trait = dragon_aggressive
+						has_trait = dragon_bloodthirsty
+					}
+				}
+			}
+			desc = agot_dragon_personality.0015.voracious_aggressive_bloodthirsty.desc
+		}
+		triggered_desc = {
+			trigger = {
+				has_character_flag = read_dragonlore_book
+			}
+			desc = agot_dragon_personality.0015.warning.end
+		}
+	}
+
+	trigger = {
+		scope:growing_dragon = {
+			is_alive = yes
+			exists = court_owner
+			has_character_flag = owned_dragon
+			NOR = {
+				has_trait = dragon_cannibal
+				has_trait = dragon_restrained
+				has_trait = dragon_friendly
+				has_trait = dragon_supporting
+			}
+			OR = {
+				has_trait = dragon_aggressive
+				has_trait = dragon_voracious
+				has_trait = dragon_bloodthirsty
+			}
+		}
+		any_in_global_list = {
+			variable = living_dragons
+			count >= lower_cannibal_dragon_value
+		}
+		trigger_if = {
+			limit = {
+				any_in_global_list = {
+					variable = living_dragons
+					count < upper_cannibal_dragon_value
+				}
+			}
+			any_in_global_list = {
+				variable = living_dragons
+				count < 1
+				has_trait = dragon_cannibal
+			}
+		}
+		trigger_else = {
+			any_in_global_list = {
+				variable = living_dragons
+				count < global_dragon_cannibal_limit
+				has_trait = dragon_cannibal
+			}
+		}
+		scope:growing_dragon_victim = {
+			NOT = { this = scope:growing_dragon } # Not the would-be cannibal
+			has_character_flag = owned_dragon # Is owned or tamed
+			location = scope:growing_dragon.location # In the same location
+			NOT = { has_trait = dragon_cannibal } # No cascading cannibalism
+			dragon_combat_effectiveness <= scope:growing_dragon.dragon_combat_effectiveness # Not stronger than the dragon
+		}
+	}
+	theme = dragon
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+	lower_center_portrait = {
+		character = scope:growing_dragon_victim
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		if = {
+			limit = { NOT = { has_character_flag = read_dragonlore_book } }
+			scope:growing_dragon = {
+				add_trait = dragon_cannibal
+			}
+			scope:growing_dragon_victim = {
+				death = {
+					death_reason = death_dragon_ate
+					killer = scope:growing_dragon
+				}
+			}
+		}
+		else = {
+			scope:growing_dragon = {
+				add_trait = dragon_cannibal
+			}
+
+		}
+	}
+
+	option = { # Can't do anything about it
+		name = agot_dragon_personality.0015.a
+		trigger = {
+			NOT = { has_character_flag = read_dragonlore_book }
+		}
+		flavor = agot_dragon_personality.0015.a.f
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_boldness = -0.5
+				ai_compassion = 0.1
+			}
+		}
+		stress_impact = {
+			forgiving = minor_stress_impact_loss
+			compassionate = minor_stress_impact_loss
+			vengeful = medium_stress_impact_gain
+		}
+	}
+
+	option = { # Send away
+		name = agot_dragon_personality.0015.b
+		trigger = {
+			NOT = { has_character_flag = read_dragonlore_book }
+		}
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_compassion = 0.5
+				ai_rationality = -0.1
+			}
+		}
+		scope:growing_dragon = {
+			agot_dragon_flees_province = yes
+		}
+		stress_impact = {
+			vengeful = minor_stress_impact_gain
+		}
+	}
+
+	option = { # Execute
+		name = agot_dragon_personality.0015.c
+		flavor = agot_dragon_personality.0015.c.f
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_rationality = 0.2
+				ai_compassion = -0.2
+				ai_vengefulness = 0.2
+			}
+		}
+		show_as_tooltip = {
+			scope:growing_dragon = {
+				death = {
+					killer = root
+					death_reason = death_execution
+				}
+			}
+		}
+		hidden_effect = {
+			random_list = {
+				80 = {
+					scope:growing_dragon = {
+						death = {
+							death_reason = death_execution
+							killer = root
+						}
+					}
+				}
+				20 = {
+					trigger_event = agot_dragon_personality.0016
+				}
+			}
+		}
+		stress_impact = {
+			compassionate = minor_stress_impact_gain
+			vengeful = minor_stress_impact_loss
+			paranoid = minor_stress_impact_loss
+		}
+	}
+
+	option = { # Educate Dragon
+		name = agot_dragon_personality.0015.d
+		trigger = {
+			has_character_flag = read_dragonlore_book
+		}
+		flavor = agot_dragon_personality.0015.d.f
+		ai_chance = {
+			base = 0
+			ai_value_modifier = {
+				ai_rationality = 0.2
+				ai_compassion = -0.2
+				ai_vengefulness = 0.2
+			}
+		}
+		duel = {
+			skill = learning
+			value = high_skill_rating
+			40 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = 3.5
+					min = -49
+				}
+				desc = agot_dragon_personality.0015.d.success
+				send_interface_toast = {
+					title = agot_dragon_personality.0015.d.success.tt
+					left_icon = root
+					scope:growing_dragon = {
+						remove_trait = dragon_cannibal
+					}
+					#custom_tooltip = agot_dragon_personality.0015.d.success.tt
+					stress_impact = {
+						base = medium_stress_impact_loss
+					}
+				}
+			}
+			60 = {
+				compare_modifier = {
+					value = scope:duel_value
+					multiplier = -3.5
+					min = -49
+				}
+				desc = agot_dragon_personality.0015.d.failure
+				send_interface_toast = {
+					title = agot_dragon_personality.0015.d.failure.tt
+					left_icon = root
+					#custom_tooltip = agot_dragon_personality.0015.d.failure.tt
+					stress_impact = {
+						base = medium_stress_impact_gain
+					}
+				}
+			}
+		}
+		stress_impact = {
+			compassionate = minor_stress_impact_gain
+			vengeful = minor_stress_impact_loss
+			paranoid = minor_stress_impact_loss
+		}
+	}
+}
+
+agot_dragon_personality.0016 = { # dragon_cannibal escapes execution
+	type = character_event
+	window = agot_dragon_character_event
+	title = agot_dragon_personality.0016.t
+	desc = {
+		desc = agot_dragon_personality.0016.desc_start
+		triggered_desc = {
+			trigger = { exists = scope:slain_knight }
+			desc = agot_dragon_personality.0016.desc_knight
+		}
+		triggered_desc = {
+			trigger = { NOT = { exists = scope:slain_knight } }
+			desc = agot_dragon_personality.0016.desc_guard
+		}
+		desc = agot_dragon_personality.0016.desc_end
+	}
+	theme = dragon
+	left_portrait = {
+		character = root
+		animation = shock
+	}
+	lower_center_portrait = {
+		character = scope:slain_knight
+	}
+	right_portrait = {
+		character = scope:growing_dragon
+		animation = dragon_main
+		camera = camera_dragon_event_standing
+
+		#Add this so dragon fits within event window
+		outfit_tags = { linear_camera_zoom }
+	}
+
+	immediate = {
+		random_knight = {
+			limit = {
+				location = scope:growing_dragon.location
+				is_current_dragonrider_warfare = no
+			}
+			death = {
+				death_reason = death_dragon_ate
+				killer = scope:growing_dragon
+			}
+			save_scope_as = slain_knight
+		}
+		scope:growing_dragon = {
+			agot_dragon_flees_province = yes
+		}
+	}
+
+	option = {
+		name = agot_dragon_personality.0016.a
+		stress_impact = {
+			arrogant = minor_stress_impact_gain
+			compassionate = minor_stress_impact_gain
+			vengeful = minor_stress_impact_gain
+			paranoid = minor_stress_impact_gain
+		}
+	}
+}

@@ -688,7 +688,7 @@ widget = {
 								datacontext = "[FrontEndLoadView.GetContinueSave]"
 								visible = "[FrontEndLoadView.CanDoContinue]"
 								enabled = "[Not( SaveGameItem.HasMissingDLCs )]"
-								onclick = "[PdxGuiTriggerAllAnimations('main_menu_continue')]"
+								onclick = "[FrontEndLoadView.OnContinue]"
 								clicksound = "event:/SFX/UI/Generic/sfx_ui_generic_start_game"
 
 								state = {
@@ -702,10 +702,11 @@ widget = {
 									on_start = "[PdxGuiInterruptThenTriggerAllAnimations('main_menu_glow_continue_enter','main_menu_glow_continue_leave')]"
 								}
 
+								# Triggered from code, don't re-name.
 								state = {
 									name = "main_menu_continue"
 									delay = 1.5
-									on_finish = "[FrontEndLoadView.OnContinue]"
+									on_finish = "[FrontEndLoadView.PostContinueFade]"
 								}
 
 								state = {
@@ -748,27 +749,42 @@ widget = {
 										alwaystransparent = yes
 									}
 
-									coat_of_arms_icon = {
-										name = "realm_flag"
-										alwaystransparent = yes
+									widget = {
+										size = { 64 64 }
 
-										size = { 62 62 }
-										coat_of_arms_slot = "[SaveGameItem.GetCoatOfArms.GetSlot('(int32)124','(int32)124')]"
-										coat_of_arms = "[SaveGameItem.GetCoatOfArms.GetTexture('(int32)124','(int32)124')]"
-										coat_of_arms_mask = "[SaveGameItem.GetPlayerGovernment.GetRealmMask]"
-
-										coa_realm_overlay  = {
-											texture = "[SaveGameItem.GetPlayerGovernment.GetRealmFrame('(int32)62')]"
+										coa_realm_shadow = {
+											texture = "[SaveGameItem.GetPlayerGovernment.GetRealmFrameShadow('(int32)62')]"
 											frame = "[SaveGameItem.GetPlayerTier]"
-											framesize = { 62 71 }
-											size = { 62 71 }
+											framesize = { 64 64 }
+											size = { 64 64 }
 										}
+										
+										coat_of_arms_icon = {
+											name = "realm_flag"
+											parentanchor = center
+											alwaystransparent = yes
 
-										coa_realm_topframe  = {
-											texture = "gfx/interface/coat_of_arms/topframe_62.dds"
-											frame = "[SaveGameItem.GetPlayerTier]"
-											framesize = { 62 71 }
-											size = { 62 71 }
+											size = { 64 64 }
+											coat_of_arms_slot = "[SaveGameItem.GetCoatOfArms.GetSlot('(int32)124','(int32)124')]"
+											coat_of_arms = "[SaveGameItem.GetCoatOfArms.GetTexture('(int32)124','(int32)124')]"
+											coat_of_arms_mask = "[SaveGameItem.GetPlayerGovernment.GetRealmMask]"
+											coat_of_arms_offset = "[SaveGameItem.GetPlayerGovernment.GetRealmMaskOffset]"
+											coat_of_arms_scale = "[SaveGameItem.GetPlayerGovernment.GetRealmMaskScale]"
+
+											coa_realm_overlay  = {
+												texture = "[SaveGameItem.GetPlayerGovernment.GetRealmFrame('(int32)62')]"
+												frame = "[SaveGameItem.GetPlayerTier]"
+												framesize = { 64 64 }
+												size = { 64 64 }
+											}
+
+											coa_realm_topframe  = {
+												texture = "gfx/interface/coat_of_arms/topframe_62.dds"
+												frame = "[SaveGameItem.GetPlayerTier]"
+												framesize = { 64 64 }
+												position = { 0 -8 }
+												size = { 64 64 }
+											}
 										}
 									}
 								}
@@ -1463,7 +1479,7 @@ widget = {
 					vbox = {
 						layoutpolicy_horizontal = expanding
 						spacing = 4
-						#AGOT Disabled
+						#AGOT Modified
 						# hbox = {
 							# layoutpolicy_horizontal = expanding
 							# min_width = 270
@@ -1515,32 +1531,7 @@ widget = {
 							# }
 						# }
 
-						#AGOT Added
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							text = "BOOKMARK_CHARACTER_CULTURE"
-							autoresize = no
-							align = nobaseline
-						}
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							text = "BOOKMARK_CHARACTER_RELIGION"
-							autoresize = no
-							align = nobaseline
-						}
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							text = "BOOKMARK_CHARACTER_REALM"
-							autoresize = no
-							align = nobaseline
-							tooltip = "BOOKMARK_CHARACTER_REALM"
-						}
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							text = "BOOKMARK_CHARACTER_GOVERNMENT"
-							autoresize = no
-							align = nobaseline
-						}
+						agot_challenge_character_info = {}
 
 						text_single = {
 							layoutpolicy_horizontal = expanding
@@ -1558,6 +1549,7 @@ widget = {
 					#AGOT Modified
 					# margin = { 24 12 }
 					margin = { 24 -12 }
+					#AGOT Added
 					margin_bottom = -34
 
 					divider_light = {
@@ -1658,6 +1650,7 @@ widget = {
 									align = nobaseline
 									default_format = "#clickable"
 									alwaystransparent = yes
+									max_width = 90
 								}
 								
 								vbox = {

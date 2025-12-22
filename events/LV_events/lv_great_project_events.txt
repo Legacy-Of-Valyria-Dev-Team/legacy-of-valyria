@@ -1,0 +1,365 @@
+﻿namespace = lv_great_project
+
+# Directory
+# Rehabilitate Valyria
+# lv_great_project.0001 - Notification: First attempt
+# lv_great_project.0002
+# lv_great_project.0003 - Notification: Success
+# lv_great_project.0004 - Global Notification
+# lv_great_project.0006 - Optional Contribution: Found artifact
+
+# Notification: First attempt
+lv_great_project.0001 = {
+	type = character_event
+	title = lv_great_project.0001.t
+	desc = {
+		first_valid = {
+			triggered_desc = { # Rehabilitation has worked before and it's your first time doing it
+				trigger = {
+					global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded
+					NOT = { exists = var:lv_world_valyria_attempted_rehabilitation }
+				}
+				desc = lv_great_project.0001.desc.succeeded
+			}
+			triggered_desc = { # Rehabilitation has been attempted but has yet to succeed
+				trigger = { global_var:lv_world_valyria_rehabilitation_status ?= flag:attempted }
+				desc = lv_great_project.0001.desc.attempted
+			}
+			desc = lv_great_project.0001.desc
+		}
+	}
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = idle
+	}
+
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+
+	override_effect_2d = {
+		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	option = {
+		name = {
+			trigger = {
+				global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded
+				NOT = { exists = var:lv_world_valyria_attempted_rehabilitation }
+			}
+			text = lv_great_project.0001.a.succeeded
+		}
+		name = {
+			trigger = { global_var:lv_world_valyria_rehabilitation_status ?= flag:attempted }
+			text = lv_great_project.0001.a.attempted
+		}
+		name = {
+			trigger = { NOT = { exists = global_var:lv_world_valyria_rehabilitation_status } }
+			text = lv_great_project.0001.a
+		}
+	}
+
+	after = {
+		if = {
+			limit = { NOT = { exists = global_var:lv_world_valyria_rehabilitation_status } }
+			set_global_variable = {
+				name = lv_world_valyria_rehabilitation_status
+				value = flag:attempted
+			}
+		}
+		set_variable = {
+			name = lv_world_valyria_attempted_rehabilitation
+			value = yes
+		}
+	}
+}
+
+# Notification: Success
+lv_great_project.0003 = {
+	type = character_event
+	title = lv_great_project.0003.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded }
+				desc = lv_great_project.0003.desc.subsequent
+			}
+			desc = lv_great_project.0003.desc
+		}
+	}
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = ecstasy
+	}
+
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+
+	override_effect_2d = {
+		trigger = { scope:province = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	option = {
+		name = lv_great_project.0003.a
+		lv_rehabilitate_valyria_reward_effect = yes
+	}
+
+	after = {
+		if = {
+			limit = { NOT = { global_var:lv_world_valyria_rehabilitation_status ?= flag:succeeded } }
+			set_global_variable = {
+				name = lv_world_valyria_rehabilitation_status
+				value = flag:succeeded
+			}
+			# Send global notification to everyone
+			every_player = { trigger_event = lv_great_project.0004 }
+		}
+	}
+}
+
+lv_great_project.0004 = {
+	type = character_event
+	window = fullscreen_event
+	title = lv_great_project.0004.t
+	desc = lv_great_project.0004.desc
+	theme = dragon
+	
+	override_background = { reference = lv_valyria_surface_restored }
+
+	option = {
+		name = {
+			trigger = { this = scope:owner }
+			text = lv_great_project.0004.a
+		}
+		name = {
+			trigger = { NOT = { this = scope:owner } }
+			text = lv_great_project.0004.a.other
+		}
+	}
+}
+
+# Optional Contribution: Found artifact
+lv_great_project.0006 = {
+	type = character_event
+	title = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:province = { lv_valyria_major_city = yes } }
+				desc = lv_great_project.0006.t.major
+			}
+			desc = lv_great_project.0006.t
+		}
+	}
+	desc = lv_great_project.0006.desc
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = happiness
+	}
+
+	override_background = { reference = ce1_catacombs }
+
+	immediate = {
+		lv_valyria_retrieve_subregion_effect = yes
+
+		# Roll for gold
+		# Guaranteed gold + additional roll per province
+		if = { # Guaranteed VS + high chances for additional
+			limit = { scope:province = { lv_valyria_major_city = yes } }
+			add_gold = monumental_gold_max_value
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 10
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							add_gold = monumental_gold_max_value
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = { scope:province = { lv_valyria_minor_city = yes } }
+			add_gold = massive_gold_max_value
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 10
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							add_gold = massive_gold_max_value
+						}
+					}
+				}
+			}
+		}
+		else = { add_gold = major_gold_max_value }
+
+		# Roll for Valyrian Steel
+		if = { # Guaranteed VS + high chances for additional
+			limit = { scope:province = { lv_valyria_major_city = yes } }
+			random_list = {
+				1 = { agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = root CREATOR = root } }
+				1 = { agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = root CREATOR = root } }
+				1 = { agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root CREATOR = root } }
+				1 = { agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root CREATOR = root } }
+			}
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 25
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							random_list = {
+								1 = { agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root CREATOR = root } }
+							}
+						}
+					}
+				}
+			}
+		}
+		else_if = { # Guaranteed VS
+			limit = { scope:province = { lv_valyria_minor_city = yes } }
+			random_list = {
+				1 = { agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = root CREATOR = root } }
+				1 = { agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = root CREATOR = root } }
+				1 = { agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root CREATOR = root } }
+				1 = { agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root CREATOR = root } }
+			}
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 20
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							random_list = {
+								1 = { agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root CREATOR = root } }
+							}
+						}
+					}
+				}
+			}
+		}
+		else = {
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 15
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							random_list = {
+								1 = { agot_create_artifact_vs_valyrian_armingsword_gold_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_armingsword_silver_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_longsword_gold_effect = { OWNER = root CREATOR = root } }
+								1 = { agot_create_artifact_vs_valyrian_longsword_silver_effect = { OWNER = root CREATOR = root } }
+							}
+						}
+					}
+				}
+			}
+		}
+
+		# Roll for Dragon Egg
+		if = { # Guaranteed egg
+			limit = { scope:province = { lv_valyria_major_city = yes } }
+			agot_create_random_dragon_egg_artifact = { OWNER = root }
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 20
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							agot_create_random_dragon_egg_artifact = { OWNER = root }
+						}
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = { scope:province = { lv_valyria_minor_city = yes } }
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 15
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							agot_create_random_dragon_egg_artifact = { OWNER = root }
+						}
+					}
+				}
+			}
+		}
+		else = {
+			scope:province = { # For every province in the region you get a roll. Neat, huh?
+				every_county_in_region = {
+					region = scope:sub_region
+					root = {
+						random = {
+							chance = {
+								value = 5
+								multiply = lv_rehabilitate_valyria_artifact_reward_multiplier_value
+							}
+							agot_create_random_dragon_egg_artifact = { OWNER = root }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	option = { name = lv_great_project.0006.a }
+}
