@@ -1,5 +1,78 @@
 ﻿# Legacy of Valyria Settlement Character Interactions
 
+lv_begin_expedition = {
+	category = interaction_category_uncategorized
+	hidden = yes
+
+	desc = lv_begin_expedition_desc
+
+	target_type = title
+	target_filter = recipient_realm_titles
+
+	auto_accept = yes
+
+	redirect = {
+		if = {
+			limit = { scope:target.holder ?= { this = title:c_ruins.holder } }
+			title:c_ruins.holder = { save_scope_as = recipient }
+		}
+		else_if = {
+			limit = { scope:target.holder ?= { this = title:c_wilderness.holder } }
+			title:c_wilderness.holder = { save_scope_as = recipient }
+		}
+	}
+
+	is_shown = { scope:recipient = { agot_is_dummy_character = yes } }
+
+	is_valid = {
+		scope:actor = {
+			gold >= lv_settlement_cost
+			NOT = { var:lv_settlement_state ?= flag:planning }
+		}
+	}
+
+	has_valid_target = {
+		scope:target = {
+			tier = tier_county
+			NOT = { this = title:c_ruins }
+			NOT = { this = title:c_wilderness }
+			scope:actor = {
+				NOT = {
+					any_owned_story = {
+						story_type = lv_settlement_story_cycle
+						is_target_in_variable_list = {
+							name = lv_settlement_expeditions
+							target = scope:target.title_province
+						}
+					}
+				}
+			}
+		}
+	}
+
+	on_accept = {
+		scope:target.title_province = { save_scope_as = ruin }
+		scope:actor = {
+			custom_tooltip = {
+				text = lv_begin_expedition_effect_tooltip
+				if = {
+					limit = { # You ain't slick
+						var:lv_restore_ruins_tooltip ?= scope:ruin
+						gold >= lv_settlement_cost
+					}
+					save_scope_value_as = {
+						name = lv_settlement_cost
+						value = lv_settlement_cost
+					}
+					trigger_event = lv_settlement_event.0001
+				}
+			}
+		}
+	}
+
+	ai_will_do = { base = 150 }
+}
+
 lv_abandon_settlement = {
 	category = interaction_category_uncategorized
 	hidden = yes
