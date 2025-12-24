@@ -639,7 +639,17 @@ lv_dummy_lobotomizer_effect = {
 		}
 	}
 	if = { # Immediate nuke if any title greater than county
-		limit = { highest_held_title_tier > tier_county }
+		limit = {
+			highest_held_title_tier > tier_county
+			trigger_if = {
+				limit = { has_trait = ruin }
+				any_held_title = {
+					tier > tier_county
+					NOT = { this = title:d_ruins }
+				}
+			}
+			trigger_else = { always = yes }
+		}
 		if = { # Regain control if already given county titles
 			limit = { any_vassal = { highest_held_title_tier = tier_county } }
 			every_vassal_or_below = {
@@ -649,7 +659,10 @@ lv_dummy_lobotomizer_effect = {
 			}
 		}
 		every_held_title = {
-			limit = { tier > tier_county }
+			limit = {
+				tier > tier_county
+				NOT = { this = title:d_ruins }
+			}
 			scope:dummy = { destroy_title = prev }
 		}
 		if = {
