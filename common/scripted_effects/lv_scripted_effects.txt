@@ -626,6 +626,21 @@ lv_dummy_lobotomizer_effect = {
 		multiply = -1
 	}
 	every_claim = { scope:dummy = { remove_claim = prev } }
+	if = {
+		limit = { any_held_title = { tier = tier_barony } }
+		every_held_title = {
+			limit = { tier = tier_barony }
+			title_province = {
+				if = {
+					limit = {
+						is_county_capital = no
+						has_holding = yes
+					}
+					remove_holding = yes
+				}
+			}
+		}
+	}
 	if = { # Execute Order 66
 		limit = { any_vassal = {} }
 		every_realm_province = {
