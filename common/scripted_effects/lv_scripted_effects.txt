@@ -614,6 +614,93 @@ lv_handle_free_city_attached_titles_succession_effect = {
 	}
 }
 
+lv_dummy_lobotomizer_effect = {
+	save_scope_as = dummy
+	remove_short_term_gold = current_gold_value
+	add_prestige = {
+		value = prestige
+		multiply = -1
+	}
+	add_piety = {
+		value = piety
+		multiply = -1
+	}
+	every_claim = { scope:dummy = { remove_claim = prev } }
+	if = { # Execute Order 66
+		limit = { any_vassal = {} }
+		every_realm_province = {
+			limit = {
+				is_county_capital = no
+				has_holding = yes
+			}
+			province_owner = { death = natural }
+			scope:dummy = { get_title = prev.barony }
+			remove_holding = yes
+		}
+	}
+	if = { # Immediate nuke if any title greater than county
+		limit = { highest_held_title_tier > tier_county }
+		if = { # Regain control if already given county titles
+			limit = { any_vassal = { highest_held_title_tier = tier_county } }
+			every_vassal_or_below = {
+				limit = { highest_held_title_tier = tier_county }
+				every_held_title = { scope:dummy = { get_title = prev } }
+				death = natural
+			}
+		}
+		every_held_title = {
+			limit = { tier > tier_county }
+			scope:dummy = { destroy_title = prev }
+		}
+		if = {
+			limit = { has_trait = wilderness }
+			character:Wilderness_Empress ?= {
+				if = {
+					limit = {
+						is_alive = yes
+						this = scope:dummy
+					}
+					if = {
+						limit = { NOT = { has_title = title:c_wilderness } }
+						get_title = title:c_wilderness
+					}
+					set_primary_title_to = title:c_wilderness
+				}
+			}
+			every_realm_province = {
+				limit = { is_county_capital = no }
+				set_holding_type = wilderness_holding
+			}
+			change_government = wilderness_government
+		}
+		else_if = {
+			limit = { has_trait = ruin }
+			character:Ruin_Empress ?= {
+				if = {
+					limit = {
+						is_alive = yes
+						this = scope:dummy
+					}
+					if = {
+						limit = { NOT = { has_title = title:c_ruins } }
+						get_title = title:c_ruins
+					}
+					set_primary_title_to = title:c_ruins
+				}
+			}
+			every_realm_province = {
+				limit = { is_county_capital = no }
+				set_holding_type = ruin_holding
+			}
+			change_government = ruins_government
+		}
+	}
+	if = { # Execute Order 66 (Part 2)
+		limit = { any_courtier = {} }
+		every_courtier = { death = natural }
+	}
+}
+
 # Savi's effect
 lv_adventurer_colonize = {
 	primary_title = {
