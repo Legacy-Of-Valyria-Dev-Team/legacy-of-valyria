@@ -19,7 +19,6 @@ lv_settlement_story_cycle = {
 					save_temporary_scope_as = heir
 				}
 			}
-			make_story_owner = scope:heir
 			story_owner = {
 				every_vassal = {
 					limit = { has_variable = lv_settlement_expedition_liege }
@@ -36,6 +35,7 @@ lv_settlement_story_cycle = {
 					}
 				}
 			}
+			make_story_owner = scope:heir
 		}
 		else = { end_story = yes }
 	}
@@ -115,6 +115,7 @@ lv_settlement_story_cycle = {
 										variable = lv_settlement_purge_list
 										remove_variable = lv_settlement_expedition_liege
 										remove_variable = lv_settlement_expedition_destination
+										remove_variable = lv_settlement_cost
 										if = {
 											limit = { is_travelling = yes }
 											cancel_travel_plan = yes
@@ -126,27 +127,26 @@ lv_settlement_story_cycle = {
 						}
 						if = {
 							limit = {
-								NOT = {
+								NAND = {
 									var:lv_settlement_expedition_destination ?= scope:destination
 									var:lv_settlement_expedition_liege ?= scope:liege
-									is_travelling = yes
+									current_travel_plan ?= { any_future_path_location = { this = scope:destination } }
 								}
 								NOT = {
 									any_vassal = {
 										var:lv_settlement_expedition_destination ?= scope:destination
 										var:lv_settlement_expedition_liege ?= scope:liege
-										is_travelling = yes
+										current_travel_plan ?= { any_future_path_location = { this = scope:destination } }
 									}
 								}
 								NOT = {
 									any_courtier = {
 										var:lv_settlement_expedition_destination ?= scope:destination
 										var:lv_settlement_expedition_liege ?= scope:liege
-										is_travelling = yes
+										current_travel_plan ?= { any_future_path_location = { this = scope:destination } }
 									}
 								}
 							}
-							
 							scope:story = {
 								remove_list_variable = {
 									name = lv_settlement_expeditions

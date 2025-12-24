@@ -614,6 +614,211 @@ lv_handle_free_city_attached_titles_succession_effect = {
 	}
 }
 
+lv_dummy_lobotomizer_effect = {
+	save_scope_as = dummy
+	remove_short_term_gold = current_gold_value
+	add_prestige = {
+		value = prestige
+		multiply = -1
+	}
+	add_piety = {
+		value = piety
+		multiply = -1
+	}
+	every_claim = { scope:dummy = { remove_claim = prev } }
+	if = {
+		limit = { any_held_title = { tier = tier_barony } }
+		every_held_title = {
+			limit = { tier = tier_barony }
+			title_province = {
+				if = {
+					limit = {
+						is_county_capital = no
+						has_holding = yes
+					}
+					remove_holding = yes
+				}
+			}
+		}
+	}
+	if = { # Execute Order 66
+		limit = { any_vassal = {} }
+		every_realm_province = {
+			limit = {
+				is_county_capital = no
+				has_holding = yes
+			}
+			province_owner = { death = natural }
+			scope:dummy = { get_title = prev.barony }
+			remove_holding = yes
+		}
+	}
+	if = { # Immediate nuke if any title greater than county
+		limit = {
+			highest_held_title_tier > tier_county
+			trigger_if = {
+				limit = { has_trait = ruin }
+				any_held_title = {
+					tier > tier_county
+					NOT = { this = title:d_ruins }
+				}
+			}
+			trigger_else = { always = yes }
+		}
+		if = { # Regain control if already given county titles
+			limit = { any_vassal = { highest_held_title_tier = tier_county } }
+			every_vassal_or_below = {
+				limit = { highest_held_title_tier = tier_county }
+				every_held_title = { scope:dummy = { get_title = prev } }
+				death = natural
+			}
+		}
+		every_held_title = {
+			limit = {
+				tier > tier_county
+				NOT = { this = title:d_ruins }
+			}
+			scope:dummy = { destroy_title = prev }
+		}
+		if = {
+			limit = { has_trait = wilderness }
+			character:Wilderness_Empress ?= {
+				if = {
+					limit = {
+						is_alive = yes
+						this = scope:dummy
+					}
+					if = {
+						limit = { NOT = { has_title = title:c_wilderness } }
+						get_title = title:c_wilderness
+					}
+					set_primary_title_to = title:c_wilderness
+				}
+			}
+			every_realm_province = {
+				limit = { is_county_capital = no }
+				set_holding_type = wilderness_holding
+			}
+			change_government = wilderness_government
+		}
+		else_if = {
+			limit = { has_trait = ruin }
+			character:Ruin_Empress ?= {
+				if = {
+					limit = {
+						is_alive = yes
+						this = scope:dummy
+					}
+					if = {
+						limit = { NOT = { has_title = title:c_ruins } }
+						get_title = title:c_ruins
+					}
+					set_primary_title_to = title:c_ruins
+				}
+			}
+			every_realm_province = {
+				limit = { is_county_capital = no }
+				set_holding_type = ruin_holding
+			}
+			change_government = ruins_government
+		}
+	}
+	if = { # Execute Order 66 (Part 2)
+		limit = { any_courtier = {} }
+		every_courtier = { death = natural }
+	}
+	# If, somehow, a rogue ruin character owns a fully-built holding, give away
+	if = {
+		limit = {
+			any_held_title = {
+				title_province = {
+					is_county_capital = yes
+					NOR = {
+						has_holding_type = wilderness_holding
+						has_holding_type = ruin_holding
+					}
+				}
+			}
+		}
+		every_held_county = {
+			limit = {
+				title_province = {
+					is_county_capital = yes
+					NOR = {
+						has_holding_type = wilderness_holding
+						has_holding_type = ruin_holding
+					}
+					save_temporary_scope_as = dummy_distribution_province
+				}
+			}
+			save_scope_as = dummy_distribution_title
+			if = {
+				limit = { faith = faith:fg_unknown }
+				if = {
+					limit = {
+						any_neighboring_and_across_water_top_liege_realm = {
+							NOT = { faith = faith:fg_unknown }
+							save_temporary_scope_as = neighbor_faith
+						}
+					}
+					set_county_faith = scope:neighbor_faith
+				}
+			}
+			if = {
+				limit = { culture = culture:unknown_culture }
+				if = {
+					limit = {
+						any_neighboring_and_across_water_top_liege_realm = {
+							NOT = { culture = culture:unknown_culture }
+							save_temporary_scope_as = neighbor_culture
+						}
+					}
+					set_county_culture = scope:neighbor_culture
+				}
+			}
+			if = {
+				limit = { scope:dummy_distribution_province.culture = culture:lakefolk }
+				create_character = {
+					location = scope:dummy_distribution_province
+					random_traits = yes
+					culture = scope:dummy_distribution_province.culture
+					faith = scope:dummy_distribution_province.faith
+					age = { 16 55 }
+					gender = female
+					dynasty = generate
+					after_creation = {
+						get_title = scope:dummy_distribution_title
+						add_gold = { minor_gold_value_check medium_gold_value_check }
+						add_prestige = { minor_prestige_gain medium_prestige_gain }
+						add_piety = { minor_piety_gain medium_piety_gain }
+					}
+				}
+			}
+			else = {
+				create_character = {
+					location = scope:dummy_distribution_province
+					random_traits = yes
+					culture = scope:dummy_distribution_province.culture
+					faith = scope:dummy_distribution_province.faith
+					age = { 16 55 }
+					gender = male
+					dynasty = generate
+					after_creation = {
+						get_title = scope:dummy_distribution_title
+						add_gold = { minor_gold_value_check medium_gold_value_check }
+						add_prestige = { minor_prestige_gain medium_prestige_gain }
+						add_piety = { minor_piety_gain medium_piety_gain }
+					}
+				}
+			}
+		}
+		if = {
+			limit = { is_landed = no }
+			death = natural
+		}
+	}
+}
+
 # Savi's effect
 lv_adventurer_colonize = {
 	primary_title = {
