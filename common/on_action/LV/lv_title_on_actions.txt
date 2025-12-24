@@ -1,13 +1,33 @@
-﻿on_title_gain = { on_actions = { lv_on_title_gain_free_city_attached_titles } }
+﻿on_title_gain = {
+	on_actions = {
+		lv_on_title_gain_dummy_lobotomizer
+		lv_on_title_gain_free_city_attached_titles
+	}
+}
+
+lv_on_title_gain_dummy_lobotomizer = {
+	trigger = {
+		agot_is_dummy_character = yes
+		scope:title = { tier > tier_county }
+	}
+	effect = { lv_dummy_lobotomizer_effect = yes }
+}
 
 lv_on_title_gain_free_city_attached_titles = {
 	trigger = {
-		government_has_flag = government_is_free_city
+		OR = {
+			government_has_flag = government_is_free_city
+			government_has_flag = government_is_oligarchic
+		}
 		scope:title = {
 			OR = {
 				this = title:k_volantis
 				this = title:k_the_basilisk_isles
 				this = title:k_gogossos
+
+				this = title:k_meereen
+				this = title:k_yunkai
+				this = title:k_astapor
 			}
 		}
 	}
