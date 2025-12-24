@@ -727,6 +727,96 @@ lv_dummy_lobotomizer_effect = {
 		limit = { any_courtier = {} }
 		every_courtier = { death = natural }
 	}
+	# If, somehow, a rogue ruin character owns a fully-built holding, give away
+	if = {
+		limit = {
+			any_held_title = {
+				title_province = {
+					is_county_capital = yes
+					NOR = {
+						has_holding_type = wilderness_holding
+						has_holding_type = ruin_holding
+					}
+				}
+			}
+		}
+		every_held_county = {
+			limit = {
+				title_province = {
+					is_county_capital = yes
+					NOR = {
+						has_holding_type = wilderness_holding
+						has_holding_type = ruin_holding
+					}
+					save_temporary_scope_as = dummy_distribution_province
+				}
+			}
+			save_scope_as = dummy_distribution_title
+			if = {
+				limit = { faith = faith:fg_unknown }
+				if = {
+					limit = {
+						any_neighboring_and_across_water_top_liege_realm = {
+							NOT = { faith = faith:fg_unknown }
+							save_temporary_scope_as = neighbor_faith
+						}
+					}
+					set_county_faith = scope:neighbor_faith
+				}
+			}
+			if = {
+				limit = { culture = culture:unknown_culture }
+				if = {
+					limit = {
+						any_neighboring_and_across_water_top_liege_realm = {
+							NOT = { culture = culture:unknown_culture }
+							save_temporary_scope_as = neighbor_culture
+						}
+					}
+					set_county_culture = scope:neighbor_culture
+				}
+			}
+			if = {
+				limit = { scope:dummy_distribution_province.culture = culture:lakefolk }
+				create_character = {
+					location = scope:dummy_distribution_province
+					random_traits = yes
+					culture = scope:dummy_distribution_province.culture
+					faith = scope:dummy_distribution_province.faith
+					age = { 16 55 }
+					gender = female
+					dynasty = generate
+					after_creation = {
+						get_title = scope:dummy_distribution_title
+						add_gold = { minor_gold_value_check medium_gold_value_check }
+						add_prestige = { minor_prestige_gain medium_prestige_gain }
+						add_piety = { minor_piety_gain medium_piety_gain }
+					}
+				}
+			}
+			else = {
+				create_character = {
+					location = scope:dummy_distribution_province
+					random_traits = yes
+					culture = scope:dummy_distribution_province.culture
+					faith = scope:dummy_distribution_province.faith
+					age = { 16 55 }
+					gender = male
+					dynasty = generate
+					after_creation = {
+						get_title = scope:dummy_distribution_title
+						add_gold = { minor_gold_value_check medium_gold_value_check }
+						add_prestige = { minor_prestige_gain medium_prestige_gain }
+						add_piety = { minor_piety_gain medium_piety_gain }
+					}
+				}
+			}
+		}
+		if = {
+			limit = { is_landed = no }
+			death = natural
+		}
+	}
 }
 
 # Savi's effect
