@@ -13,6 +13,12 @@ on_game_start = {
 	}
 }
 
+quarterly_playable_pulse = {
+	on_actions = {
+		dragonstone_republic
+	}
+}
+
 on_game_start_after_lobby = {
 	on_actions = {
 		cob_on_game_start_after_lobby
@@ -59,7 +65,7 @@ on_travel_plan_arrival = {
 	on_actions = {
 		restore_valyria_cob_event_on_actions
 		aurion_armor_event_on_actions
-		#tommen_travel_events_on_action
+		tommen_travel_events_on_action
 	}
 }
 
@@ -226,58 +232,67 @@ aurion_armor_event_on_actions = {
 	}
 }
 
-# tommen_travel_events_on_action = {
-# 	trigger = {
-# 		has_character_flag = cob_tommen_travel
-# 	}
-# 	effect = {
-# 		if = { #Lannisport Event
-# 			limit = {
-# 				character:Lannister_62 ?= {
-# 					has_character_flag = cob_tommen_travel
-# 					location = province:2868
-# 				}
-# 			}
-# 			trigger_event = cob_7899_scenerio.0400
-# 		}
-# 		if = { #Oldtown Event
-# 			limit = {
-# 				character:Lannister_62 ?= {
-# 					has_character_flag = cob_tommen_travel
-# 					location = province:3497
-# 				}
-# 			}
-# 			trigger_event = cob_7899_scenerio.0401
-# 		}
-# 		if = { #Plankytown Event
-# 			limit = {
-# 				character:Lannister_62 ?= {
-# 					has_character_flag = cob_tommen_travel
-# 					location = province:4948
-# 				}
-# 			}
-# 			trigger_event = cob_7899_scenerio.0402
-# 		}
-# 		if = { #Lys Event
-# 			limit = {
-# 				character:Lannister_62 ?= {
-# 					has_character_flag = cob_tommen_travel
-# 					location = province:7391
-# 				}
-# 			}
-# 			trigger_event = cob_7899_scenerio.0403
-# 		}
-# 		if = { #Volantis Event
-# 			limit = {
-# 				character:Lannister_62 ?= {
-# 					has_character_flag = cob_tommen_travel
-# 					location = province:8232
-# 				}
-# 			}
-# 			trigger_event = cob_7899_scenerio.0404
-# 		}
-# 	}
-# }
+tommen_travel_events_on_action = {
+	trigger = {
+		has_character_flag = cob_tommen_travel
+	}
+	effect = {
+		if = { #Lannisport Event
+			limit = {
+				character:Lannister_62 ?= {
+					has_character_flag = cob_tommen_travel
+					location = province:2865
+				}
+			}
+			trigger_event = cob_7899_scenerio.0400
+		}
+		if = { #Oldtown Event
+			limit = {
+				character:Lannister_62 ?= {
+					has_character_flag = cob_tommen_travel
+					location = province:3494
+				}
+			}
+			trigger_event = cob_7899_scenerio.0401
+		}
+		if = { #Plankytown Event
+			limit = {
+				character:Lannister_62 ?= {
+					has_character_flag = cob_tommen_travel
+					location = province:4945
+				}
+			}
+			trigger_event = cob_7899_scenerio.0402
+		}
+		if = { #Lys Event
+			limit = {
+				character:Lannister_62 ?= {
+					has_character_flag = cob_tommen_travel
+					location = province:7388
+				}
+			}
+			trigger_event = cob_7899_scenerio.0403
+		}
+		if = { #Volantis Event
+			limit = {
+				character:Lannister_62 ?= {
+					has_character_flag = cob_tommen_travel
+					location = province:8232
+				}
+			}
+			trigger_event = cob_7899_scenerio.0404
+		}
+		if = { #Lokiria Event
+			limit = {
+				character:Lannister_62 ?= {
+					has_character_flag = cob_tommen_travel
+					location = province:9447
+				}
+			}
+			trigger_event = cob_7899_scenerio.0490
+		}
+	}
+}
 
 cob_set_dragonstone_faiths = {
 	effect = {
@@ -434,6 +449,209 @@ cob_set_birthplaces = {
                     agot_set_birthplace = { LOCATION = c_oreos }
                 }
             }
+		}
+	}
+}
+
+dragonstone_republic = {
+	effect = {
+		if = {
+			limit = {
+				title:k_dragonstone.holder = {
+					has_government = republic_government
+					liege = { is_ai = yes }
+				}
+			}
+			trigger_event = {
+				id = cob_7899_scenerio.0999
+			}
+		}
+	}
+}
+
+cob_set_contracts = {
+	effect = {
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_riverrun.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_the_crossing.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_lakeleaf_highlands.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_willow_wood.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_tridents_mouth.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_harrenhal.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_lakehaven.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_atranta.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_knellstone.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_southstone.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_pinkmaiden.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_wayfarers_rest.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_three_forks.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
+		}
+		if = {
+			limit = { game_start_date < 7900.1.1 }
+			title:d_the_moonbrooks.holder = {
+				set_variable = mw_obl_feudal_tax_high
+				set_variable = mw_obl_feudal_levies_exempt
+				set_variable = mw_obl_title_revocation_rights_protected
+				add_character_flag = {
+					flag = startup_contracts
+					days = 1
+				}
+				agot_mw_reset_vassal_contract = yes
+			}
 		}
 	}
 }
