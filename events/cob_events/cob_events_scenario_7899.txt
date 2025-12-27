@@ -1121,7 +1121,7 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 
 	right_portrait = {
 		character = scope:guardian_of_lokiria
-		animation = aggressive_sword
+		animation = aggressive_spear
 		camera = cob_camera_event_right
 	}
 
@@ -1144,7 +1144,8 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		character:Lannister_62 = {
 			save_scope_as = tommen
 		}
-		root = { add_character_flag = need_military_outfit }
+		root = { add_character_flag = wear_armor }
+		current_travel_plan = { pause_travel_plan = yes }
 	}
 
 	option = { #face it
@@ -1162,12 +1163,12 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 			SC_DEFENDER = root
 			FATALITY = always
 			FIXED = no
-			LOCALE = lov_event_lokiria
+			LOCALE = terrain_scope
 			OUTPUT_EVENT = single_combat.0001
 			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
 		}
 		character:Lannister_62 = {
-			remove_character_flag = need_military_outfit
+			remove_character_flag = wear_armor
 		}
 	}
 	option = { #attempt to convince them to join us
@@ -1184,7 +1185,7 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 						right_icon = scope:guardian_of_lokiria
 					}
 					character:Lannister_62 = {
-						remove_character_flag = need_military_outfit
+						remove_character_flag = wear_armor
 					}
 				}
 				90 = { #duel anyway
@@ -1195,7 +1196,7 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 						SC_DEFENDER = root
 						FATALITY = always
 						FIXED = no
-						LOCALE = lov_event_lokiria
+						LOCALE = terrain_scope
 						OUTPUT_EVENT = single_combat.0001
 						INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
 					}
@@ -1218,13 +1219,19 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 				30 = { #unscathed
 					custom_tooltip = cob_7899_scenerio.0490.c_tt
 					character:Lannister_62 = {
-						remove_character_flag = need_military_outfit
+						remove_character_flag = wear_armor
 					}
 				}
 			}
 		}
 	}
 	after = {
+		character:Lannister_62 = {
+			trigger_event = {
+				id = cob_7899_scenerio.0498
+				days = 25
+			}
+		}
 	}
 }
 
@@ -1357,6 +1364,42 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 # 		}
 # 	}
 # }
+cob_7899_scenerio.0498 = { #Post Duel test event
+	hidden = yes
+
+	immediate = {
+		character:Lannister_62 = {
+			remove_character_flag = wear_armor
+			current_travel_plan = { resume_travel_plan = yes }
+		}
+		scope:guardian_of_lokiria = {
+			if = {
+				limit = {
+					is_alive = no
+				}
+				random_artifact = { 
+					limit = {
+						has_artifact_modifier = valyrian_steel_armor_modifier
+					} 
+					save_scope_as = armor_of_lokiria
+				}
+				destroy_artifact = scope:armor_of_lokiria
+			}
+			if = {
+				limit = {
+					is_alive = no
+				}
+				random_artifact = { 
+					limit = {
+						has_artifact_modifier = vs_dragon_halberd_modifier 
+					} 
+					save_scope_as = weapon_of_lokiria
+				}
+				destroy_artifact = scope:weapon_of_lokiria
+			}
+		}
+	}
+}
 
 cob_7899_scenerio.0499 = { #Tommen's Final Boss
 	type = character_event
