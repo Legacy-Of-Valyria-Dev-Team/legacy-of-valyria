@@ -1,0 +1,567 @@
+﻿tame_dragon_interaction = {
+	icon = icon_scheme_dragon
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:actor = {
+						has_relation_agot_dragon = scope:recipient
+					}
+				}
+				desc = tame_dragon_interaction_desc
+			}
+			desc = tame_dragon_interaction_desc_warning
+		}
+	}
+	category = interaction_category_diplomacy
+	interface_priority = 999 # Should always be top
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+	cooldown = { years = 1 }
+	cooldown_against_recipient = { years = 10 }
+	is_shown = {
+		scope:actor = {
+			is_human = yes
+			NOT = { has_trait = dragonrider }
+			trigger_if = {
+				limit = {
+					NOT = { has_game_rule = dragons_anyone }
+				}
+				OR = {
+					agot_has_dragonblood_heritage = yes
+					AND = {
+						any_equipped_character_artifact = {
+							artifact_type = dragon_horn
+						}
+						is_landed = yes
+						OR = {
+							any_prisoner = {
+								is_available_prisoner_for_sacrifice = yes
+							}
+							any_courtier = {
+								is_available_ai_adult = yes
+							}
+						}
+					}
+				}
+			}
+			trigger_if = {
+				limit = {
+					any_relation = {
+						type = agot_dragon
+					}
+				}
+				any_relation = {
+					type = agot_dragon
+					this = scope:recipient
+				}
+			}
+		}
+		scope:recipient = {
+			has_trait = dragon
+			NOR = {
+				has_variable = current_rider
+				any_relation = {
+					type = agot_dragon
+					NOT = { this = scope:actor } # They can't be bonded to someone else
+				}
+			}
+
+			#LEGACY OF VALYRIA ADDED
+			lv_is_firewyrm = no
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			is_imprisoned = no
+			age >= 10
+			custom_tooltip = {
+				text = tame_dragon_no_active_bond_schemes
+				NOT = {
+					any_scheme = {
+						scheme_type = bond_with_dragon_scheme
+					}
+				}
+			}
+			custom_tooltip = {
+				text = dragon_beyond_the_wall
+				NOR = {
+					capital_county.title_province ?= {
+						geographical_region = world_westeros_beyond_the_wall
+					}
+					AND = {
+						exists = liege_or_court_owner
+						liege.capital_county.title_province ?= {
+							geographical_region = world_westeros_beyond_the_wall
+						}
+					}
+				}
+			}
+			NOT = { has_trait = dragonwidowed }
+			NOT = { has_character_modifier = agot_dragon_disinterest }
+		}
+
+		scope:recipient = {
+			has_trait = dragon
+			custom_tooltip = {
+				text = recipient_dragon_size_at_least_30
+				dragon_size >= dragon_taming_minimum_size
+			}
+			custom_tooltip = {
+				text = dragon_is_in_combat
+				NOT = { has_character_flag = in_dragon_combat }
+			}
+		}
+
+		agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+			DRAGON = scope:recipient ACTOR = scope:actor
+		}
+	}
+	ai_will_do = {
+		base = 100
+	}
+	ai_frequency = 12
+	ai_targets = {
+		ai_recipients = scripted_relations
+	}
+	on_accept = {
+		hidden_effect = {
+			scope:actor = {
+				save_scope_as = tamer
+				scope:recipient = { save_scope_as = dragon }
+				if = {
+					limit = {
+						NOT = { has_relation_agot_dragon = scope:recipient }
+					}
+					trigger_event = {
+						id = dragon_taming_events.0100	# Handler for unbonded dragons
+					}
+				}
+				else = {
+					trigger_event = {
+						id = dragon_taming_events.0200 # Handler for bonded dragons
+					}
+				}
+				debug_log = "AI Tried to Tame Dragon"
+				debug_log_scopes = yes
+			}
+		}
+		scope:actor = {
+			custom_tooltip = tame_dragon_interaction_tt1
+		}
+		if = {
+			limit = {
+				NOT = {
+					scope:actor = {
+						has_relation_agot_dragon = scope:recipient
+					}
+				}
+			}
+			custom_tooltip = tame_dragon_interaction_tt2
+		}
+	}
+}
+
+bond_with_dragon_interaction = {
+	icon = icon_scheme_dragon
+	category = interaction_category_diplomacy
+	desc = bond_with_dragon_interaction_desc
+	interface_priority = 90
+	scheme = bond_with_dragon_scheme
+	send_name = START_SCHEME
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+	is_shown = {
+		scope:actor = {
+			can_use_bond_with_dragon_scheme = { TARGET = scope:recipient }
+		}
+		#LEGACY OF VALYRIA ADDED
+		scope:recipient = { lv_is_firewyrm = no }
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			can_start_scheme = {
+				type = bond_with_dragon_scheme
+				target_character = scope:recipient
+			}
+			custom_tooltip = {
+				text = dragon_beyond_the_wall
+				NOR = {
+					capital_county.title_province ?= {
+						geographical_region = world_westeros_beyond_the_wall
+					}
+					AND = {
+						exists = liege_or_court_owner
+						liege.capital_county.title_province ?= {
+							geographical_region = world_westeros_beyond_the_wall
+						}
+					}
+				}
+			}
+		}
+		scope:recipient = {
+			custom_tooltip = {
+				text = dragon_is_in_combat
+				NOT = { has_character_flag = in_dragon_combat }
+			}
+		}
+		agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+			DRAGON = scope:recipient ACTOR = scope:actor
+		}
+	}
+	ai_potential = {
+		is_human = yes
+		NOR = {
+			has_trait = incapable
+			has_trait = dragonrider
+			scheme_generic_ai_blocker_trigger = yes
+		}
+	}
+	ai_will_do = {
+		base = 0
+		modifier = {
+			OR = { # AI can do it if
+				scope:recipient = { # It is their dragon
+					is_courtier_of = scope:actor
+				}
+				scope:actor = { # Or they have a dragonrider in their family
+					any_close_or_extended_family_member = {
+						has_trait = dragonrider
+					}
+				}
+			}
+			add = 20
+		}
+	}
+	ai_targets = {
+		ai_recipients = courtiers
+	}
+	ai_targets = {
+		ai_recipients = sub_realm_characters
+		max = 200
+	}
+	ai_frequency = 12
+	on_accept = {
+		hidden_effect = {
+			scope:actor = {
+				send_interface_toast = {
+					title = bond_dragon_notification
+					left_icon = scope:actor
+					right_icon = scope:recipient
+					start_scheme = {
+						type = bond_with_dragon_scheme
+						target_character = scope:recipient
+					}
+				}
+				debug_log = "AI Started Bond Scheme"
+				debug_log_scopes = yes
+			}
+		}
+	}
+}
+
+deepen_bond_with_dragon_interaction = {
+	icon = icon_scheme_dragon
+	category = interaction_category_friendly
+	interface_priority = 90
+	scheme = deepen_bond_with_dragon_scheme
+	send_name = START_SCHEME
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+	is_shown = {
+		scope:actor = {
+			can_use_deepen_bond_with_dragon_scheme = { TARGET = scope:recipient }
+		}
+		#LEGACY OF VALYRIA ADDED
+		scope:recipient = { lv_is_firewyrm = no }
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			can_start_scheme = {
+				type = deepen_bond_with_dragon_scheme
+				target_character = scope:recipient
+			}
+		}
+	}
+	ai_potential = {
+		has_trait = dragonrider
+		NOR = {
+			scheme_generic_ai_blocker_trigger = yes
+		}
+	}
+	ai_will_do = {
+		base = 20
+		modifier = {
+			has_owned_scheme = yes
+			add = -10000
+		}
+	}
+	ai_targets = {
+		ai_recipients = scripted_relations
+	}
+	ai_frequency = 12
+	on_accept = {
+		hidden_effect = {
+			scope:actor = {
+				send_interface_toast = {
+					title = deepen_bond_dragon_notification
+					left_icon = scope:actor
+					right_icon = scope:recipient
+					start_scheme = {
+						type = deepen_bond_with_dragon_scheme
+						target_character = scope:recipient
+					}
+				}
+			}
+		}
+	}
+}
+
+blow_dragon_horn_interaction = {
+	# You have a tamed or owned dragon ill gained by blowing a horn
+	# Now you must retame it by blowing the horn again
+	icon = icon_scheme_dragon
+	category = interaction_category_diplomacy
+	interface_priority = 999 # Should always be top
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+	desc = blow_dragon_horn_interaction_desc
+	cooldown = { years = 1 }
+	is_shown = {
+		scope:recipient = {
+			has_trait = dragon
+			var:horn_binder ?= scope:actor
+
+			#LEGACY OF VALYRIA ADDED
+			lv_is_firewyrm = no
+		}
+		scope:actor = {
+			is_landed = yes
+		}
+	}
+
+	is_valid = {
+		scope:actor = {
+			is_imprisoned = no
+			custom_tooltip = {
+				text = must_equip_dragon_horn
+				any_equipped_character_artifact = {
+					artifact_type = dragon_horn
+				}
+			}
+			custom_tooltip = {
+				text = binding_is_unstable
+				is_target_in_variable_list = {
+					name = imminent_release
+					target = scope:recipient
+				}
+			}
+			custom_tooltip = {
+				text = has_available_horn_blower
+				OR = {
+					any_prisoner = {
+						is_available_prisoner_for_sacrifice = yes
+					}
+					any_courtier = {
+						is_available_ai_adult = yes
+					}
+				}
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = scripted_relations
+	}
+	ai_frequency = 12
+	ai_will_do = {
+		base = 100
+	}
+
+	on_accept = {
+		scope:actor = { save_scope_as = rider }
+		scope:recipient = {
+			save_scope_as = dragon
+		}
+
+		scope:rider = { trigger_event = dragon_taming_events.0304 }
+	}
+}
+
+visit_dragonpit_with_child_interaction = {
+	icon = icon_scheme_dragon
+	desc = visit_dragonpit_with_child_interaction_desc
+	category = interaction_category_friendly
+	common_interaction = yes
+	interface_priority = 75
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+	cooldown = { years = 1 }
+	cooldown_against_recipient = { years = 2 }
+	is_shown = {
+		scope:actor = {
+			is_adult = yes
+			is_ai = no
+			OR = {
+				agot_has_an_active_dragonpit = yes
+				AND = {
+					title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+					title:c_dragonstone.holder = {
+						house ?= scope:actor.house
+					}
+				}
+			}
+		}
+		scope:recipient = {
+			is_human = yes
+			is_ai = yes
+			age >= 10
+			is_adult = no
+			OR = {
+				is_child_of = scope:actor
+				AND = {
+					is_courtier_of = scope:actor
+					exists = house
+					exists = scope:actor.house
+					house = scope:actor.house
+				}
+			}
+			NOT = { has_trait = dragonrider }
+			NOT = { has_trait = dragonwidowed }
+			NOT = { has_character_modifier = agot_dragon_disinterest }
+			NOT = {
+				any_relation = {
+					type = agot_dragon
+				}
+			}
+			NOT = {
+				any_scheme = {
+					scheme_type = bond_with_dragon_scheme
+				}
+			}
+			trigger_if = {
+				limit = {
+					NOT = { has_game_rule = dragons_anyone }
+				}
+				agot_has_dragonblood_heritage = yes
+			}
+		}
+		OR = {
+			scope:actor = {
+				any_courtier = {
+					has_character_flag = in_dragonpit
+					has_trait = dragon
+					NOT = {
+						any_relation = {
+							type = agot_dragon
+						}
+					}
+					save_temporary_scope_as = dragon
+					agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+						DRAGON = scope:dragon ACTOR = scope:recipient
+					}
+				}
+			}
+			AND = {
+				title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+				title:c_dragonstone.holder = {
+					house ?= scope:actor.house
+					any_courtier = {
+						has_character_flag = in_dragonpit
+						has_trait = dragon
+						NOT = {
+							any_relation = {
+								type = agot_dragon
+							}
+						}
+						save_temporary_scope_as = dragon
+						agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+							DRAGON = scope:dragon ACTOR = scope:recipient
+						}
+					}
+				}
+			}
+		}
+	}
+	is_valid_showing_failures_only = {
+	}
+	on_accept = {
+		hidden_effect = {
+			scope:actor = {
+				if = {
+					limit = {
+						NOT = { title:c_dragonstone.holder = scope:actor }
+						scope:actor = {
+							any_courtier = {
+								has_character_flag = in_dragonpit
+								has_trait = dragon
+								NOT = {
+									any_relation = {
+										type = agot_dragon
+									}
+								}
+								save_temporary_scope_as = dragon
+								agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+									DRAGON = scope:dragon ACTOR = scope:recipient
+								}
+							}
+						}
+						AND = {
+							title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+							title:c_dragonstone.holder = {
+								house ?= scope:actor.house
+								any_courtier = {
+									has_character_flag = in_dragonpit
+									has_trait = dragon
+									NOT = {
+										any_relation = {
+											type = agot_dragon
+										}
+									}
+									save_temporary_scope_as = dragon
+									agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+										DRAGON = scope:dragon ACTOR = scope:recipient
+									}
+								}
+							}
+						}
+					}
+					trigger_event = agot_dragon_pits.3000
+				}
+				else_if = {
+					limit = {
+						title:c_dragonstone = { has_variable = has_dragonkeeper_order }
+						title:c_dragonstone.holder = {
+							house ?= scope:actor.house
+							any_courtier = {
+								has_character_flag = in_dragonpit
+								has_trait = dragon
+								NOT = {
+									any_relation = {
+										type = agot_dragon
+									}
+								}
+								save_temporary_scope_as = dragon
+								agot_can_tame_or_bond_or_etc_with_pitted_dragons = {
+									DRAGON = scope:dragon ACTOR = scope:recipient
+								}
+							}
+						}
+					}
+					title:c_dragonstone = { save_scope_as = dp_county }
+					trigger_event = agot_dragon_pits.3001
+				}
+				else = {
+					random_held_county = {
+						limit = { agot_title_is_an_active_dragonpit = yes }
+						save_scope_as = dp_county
+					}
+					trigger_event = agot_dragon_pits.3001
+				}
+			}
+		}
+		scope:recipient = {
+			custom_tooltip = visit_dragonpit_interaction_tt
+		}
+	}
+}
