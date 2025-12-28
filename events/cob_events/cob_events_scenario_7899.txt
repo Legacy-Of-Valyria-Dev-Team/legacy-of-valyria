@@ -1212,8 +1212,7 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 			random_list = {
 				70 = { #dead
 					death = {
-						death_reason = death_shot_arrow_murder
-						killer = scope:guardian_of_lokiria
+						death_reason = death_shot_arrow
 					}
 				}
 				30 = { #unscathed
@@ -1229,141 +1228,153 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		character:Lannister_62 = {
 			trigger_event = {
 				id = cob_7899_scenerio.0498
-				days = 25
+				days = 15
 			}
 		}
 	}
 }
 
-# cob_7899_scenerio.0491 = { #Greyscale encounter
-# 	type = character_event
-# 	title = cob_7899_scenerio.0491.t
-# 	desc = cob_7899_scenerio.0491.desc
-# 	window = cob_dragon_character_event
+cob_7899_scenerio.0491 = { #Greyscale encounter
+	type = character_event
+	title = cob_7899_scenerio.0491.t
+	desc = cob_7899_scenerio.0491.desc
+	window = cob_dragon_character_event
 
-# 	override_background = {
-# 	}
+	override_background = {
+		reference = lv_valyria_surface
+	}
 
-# 	theme = travel_danger
+	theme = travel_danger
 
-# 	left_portrait = {
-# 		character = root
-# 		animation = fear
-# 		camera = cob_camera_event_left
-# 	}
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = cob_camera_event_left
+	}
 
-# 	right_portrait = {
-# 		character = scope:guardian_of_lokiria
-# 		animation = aggressive_sword
-# 		camera = cob_camera_event_right
-# 	}
+	right_portrait = {
+		character = scope:greyscale_valyrian
+		animation = aggressive_sword
+		camera = cob_camera_event_right
+	}
 
-# 	override_effect_2d = {
-# 		reference = smoke
-# 	}
+	override_effect_2d = {
+		reference = smoke
+	}
 
-# 	trigger = {
-# 	}
+	trigger = {
+	}
 
-# 	immediate = {
-# 		location = {
-# 			save_scope_as = location
-# 		}
-# 		create_character = {
-# 			template = guardian_of_lokiria_template
-# 			location = root.location
-# 			save_scope_as = guardian_of_lokiria
-# 		}
-# 		character:Lannister_62 = {
-# 			save_scope_as = tommen
-# 		}
-# 		root = { add_character_flag = need_military_outfit }
-# 	}
+	immediate = {
+		location = {
+			save_scope_as = location
+		}
+		create_character = {
+			template = greyscale_valyrian_template
+			location = root.location
+			save_scope_as = greyscale_valyrian
+		}
+		character:Lannister_62 = {
+			save_scope_as = tommen
+		}
+		current_travel_plan = { pause_travel_plan = yes }
+	}
 
-# 	option = { #face it
-# 		name = cob_7899_scenerio.0491.a
-# 		custom_tooltip = cob_7899_scenerio.0491.a_tt
+	option = { #face it
+		name = cob_7899_scenerio.0491.a
+		custom_tooltip = cob_7899_scenerio.0491.a_tt
 
-# 		stress_impact = {
-# 			brave = medium_stress_loss
-# 			craven = major_stress_gain
-# 			knight = minor_stress_loss
-# 		}
-# 		configure_start_single_combat_effect = {
-# 			SC_INITIATOR = scope:guardian_of_lokiria
-# 			SC_ATTACKER = scope:guardian_of_lokiria
-# 			SC_DEFENDER = root
-# 			FATALITY = always
-# 			FIXED = no
-# 			LOCALE = lov_event_lokiria
-# 			OUTPUT_EVENT = single_combat.0001
-# 			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
-# 		}
-# 	}
-# 	option = { #attempt to convince them to join us
-# 		name = cob_7899_scenerio.0491.b
-# 		stress_impact = { base = minor_stress_gain }
-# 		add_prestige = minor_prestige_gain
-# 		hidden_effect = {
-# 			random_list = {
-# 				10 = { #joins
-# 					add_courtier = scope:guardian_of_lokiria
-# 					send_interface_toast = {
-# 						title = cob_7899_scenerio.0491.b.joined
-# 						left_icon = root
-# 						right_icon = scope:guardian_of_lokiria
-# 					}
-# 				}
-# 				90 = { #duel anyway
-# 					custom_tooltip = cob_7899_scenerio.0491.b_tt
-# 					configure_start_single_combat_effect = {
-# 						SC_INITIATOR = scope:guardian_of_lokiria
-# 						SC_ATTACKER = scope:guardian_of_lokiria
-# 						SC_DEFENDER = root
-# 						FATALITY = always
-# 						FIXED = no
-# 						LOCALE = lov_event_lokiria
-# 						OUTPUT_EVENT = single_combat.0001
-# 						INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
-# 					}
-# 				}
-# 			}
-# 		}
-# 	}
-# 	option = { #run away
-# 		name = cob_7899_scenerio.0491.c
-# 		stress_impact = { base = major_stress_gain }
-# 		add_prestige = major_prestige_loss
-# 		hidden_effect = {
-# 			random_list = {
-# 				70 = { #dead
-# 					death = {
-# 						death_reason = death_shot_arrow_murder
-# 						killer = scope:guardian_of_lokiria
-# 					}
-# 				}
-# 				30 = { #unscathed
-# 					custom_tooltip = cob_7899_scenerio.0491.c_tt
-# 					stress_impact = {
-# 						base = medium_stress_impact_gain
-# 					}
-# 				}
-# 			}
-# 		}
-# 	}
-# 	after = {
-# 		effect = {
-# 			if = {
-# 				limit = {
-# 					character:Lannister_62 = {
-# 						is_alive = yes
-# 					}
-# 				}
-# 				remove_character_flag = need_military_outfit
-# 			}
-# 		}
-# 	}
-# }
+		stress_impact = {
+			brave = medium_stress_loss
+			craven = major_stress_gain
+			knight = minor_stress_loss
+		}
+		configure_start_single_combat_effect = {
+			SC_INITIATOR = scope:greyscale_valyrian
+			SC_ATTACKER = scope:greyscale_valyrian
+			SC_DEFENDER = root
+			FATALITY = always
+			FIXED = no
+			LOCALE = lov_event_lokiria
+			OUTPUT_EVENT = single_combat.0001
+			INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+		}
+	}
+	option = { #attempt to convince them to let us go
+		name = cob_7899_scenerio.0491.b
+		stress_impact = { base = minor_stress_gain }
+		add_prestige = minor_prestige_gain
+		hidden_effect = {
+			random_list = {
+				10 = { #leaves
+					add_courtier = scope:greyscale_valyrian
+					send_interface_toast = {
+						title = cob_7899_scenerio.0491.b.left
+						left_icon = root
+						right_icon = scope:greyscale_valyrian
+					}
+				}
+				90 = { #duel anyway
+					custom_tooltip = cob_7899_scenerio.0491.b_tt
+					configure_start_single_combat_effect = {
+						SC_INITIATOR = scope:greyscale_valyrian
+						SC_ATTACKER = scope:greyscale_valyrian
+						SC_DEFENDER = root
+						FATALITY = always
+						FIXED = no
+						LOCALE = lov_event_lokiria
+						OUTPUT_EVENT = single_combat.0001
+						INVALIDATION_EVENT = single_combat.0001	#In a real event, this would obviously be a different even to the output.
+					}
+				}
+			}
+		}
+	}
+	option = { #run away
+		name = cob_7899_scenerio.0491.c
+		stress_impact = { base = major_stress_gain }
+		add_prestige = major_prestige_loss
+		hidden_effect = {
+			random_list = {
+				50 = { #dead
+					death = {
+						death_reason = death_shot_arrow
+					}
+				}
+				50 = { #unscathed
+					custom_tooltip = cob_7899_scenerio.0491.c_tt
+					stress_impact = {
+						base = medium_stress_impact_gain
+					}
+				}
+			}
+		}
+	}
+	after = {
+		character:Lannister_62 = {
+			trigger_event = {
+				id = cob_7899_scenerio.0497
+				days = 15
+			}
+			hidden_effect = {
+				random_list = {
+					30 = { add_trait = greyscale }
+					70 = { }
+				}
+			}
+		}
+	}
+}
+cob_7899_scenerio.0497 = { #Aurion Resume Event
+	hidden = yes
+
+	immediate = {
+		character:Lannister_62 = {
+			current_travel_plan = { resume_travel_plan = yes }
+		}
+	}
+}
+
 cob_7899_scenerio.0498 = { #Post Duel test event
 	hidden = yes
 
@@ -1509,7 +1520,7 @@ cob_7899_scenerio.0499 = { #Tommen's Final Boss
 	}
 
 	immediate = {
-		root = { add_character_flag = need_military_outfit }
+		root = { add_character_flag = wear_armor }
 		create_character = {
 			location = location
 			template = cob_final_boss_dragon_template
@@ -1599,6 +1610,7 @@ cob_7899_scenerio.0499 = { #Tommen's Final Boss
 				stress_impact = {
 					base = major_stress_loss
 				}
+				remove_character_flag = wear_armor
 			}
 		}
 	}
@@ -2779,8 +2791,7 @@ cob_7899_scenerio.0522 = { #Aurion encounters a former Valyrian Freeholder tryin
 				1 = {
 					root = {
 						death = {
-							death_reason = death_shot_arrow_murder
-							killer = scope:freeholder_looter
+							death_reason = death_shot_arrow
 						}
 					}
 				}
@@ -3193,8 +3204,7 @@ cob_7899_scenerio.0523 = { #Aurion encounters a freehold soldier
 		random_list = {
 			60 = { #dead
 				death = {
-					death_reason = death_shot_arrow_murder
-					killer = scope:freeholder_survivor
+					death_reason = death_shot_arrow
 				}
 			}
 			40 = { #unscathed
@@ -3308,8 +3318,7 @@ cob_7899_scenerio.0524 = { #Aurion encounters a great freehold soldier
 		random_list = {
 			60 = { # dead
 				death = {
-					death_reason = death_shot_arrow_murder
-					killer = scope:freeholder_survivor
+					death_reason = death_shot_arrow
 				}
 			}
 			40 = { #unscathed
@@ -3459,8 +3468,7 @@ cob_7899_scenerio.0525 = { #Aurion encounters a retired freehold soldier
 		random_list = {
 			60 = { #dead
 				death = {
-					death_reason = death_shot_arrow_murder
-					killer = scope:freeholder_survivor
+					death_reason = death_shot_arrow
 				}
 			}
 			40 = { #unscathed
