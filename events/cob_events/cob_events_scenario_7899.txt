@@ -1148,7 +1148,7 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		current_travel_plan = { pause_travel_plan = yes }
 	}
 
-	option = { #face it
+	option = { # face it
 		name = cob_7899_scenerio.0490.a
 		custom_tooltip = cob_7899_scenerio.0490.a_tt
 
@@ -1171,14 +1171,23 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 			remove_character_flag = wear_armor
 		}
 	}
-	option = { #attempt to convince them to join us
+	option = { #attempt to convince them let us leave
 		name = cob_7899_scenerio.0490.b
 		stress_impact = { base = minor_stress_gain }
 		add_prestige = minor_prestige_gain
 		hidden_effect = {
 			random_list = {
-				10 = { #joins
-					add_courtier = scope:guardian_of_lokiria
+				10 = { # allows you to leave
+					scope:guardian_of_lokiria = {
+							death = { death_reason = death_vanished }
+						}
+					}
+					every_artifact = {
+						limit = {
+							has_variable = lokiria_guardian_artifact
+						}
+						destroy_artifact = this
+					}
 					send_interface_toast = {
 						title = cob_7899_scenerio.0490.b.joined
 						left_icon = root
@@ -1210,7 +1219,7 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 		add_prestige = major_prestige_loss
 		hidden_effect = {
 			random_list = {
-				70 = { #dead
+				70 = { # dead
 					death = {
 						death_reason = death_shot_arrow
 					}
@@ -1231,6 +1240,12 @@ cob_7899_scenerio.0490 = { #The Guardian of Lokiria
 				days = 15
 			}
 		}
+		# scope:guardian_of_lokiria = {
+		# 	trigger_event = {
+		# 		id = cob_7899_scenerio.0498
+		# 		days = 20
+		# 	}
+		# }
 	}
 }
 
@@ -1280,7 +1295,7 @@ cob_7899_scenerio.0491 = { #Greyscale encounter
 		current_travel_plan = { pause_travel_plan = yes }
 	}
 
-	option = { #face it
+	option = { # face it
 		name = cob_7899_scenerio.0491.a
 		custom_tooltip = cob_7899_scenerio.0491.a_tt
 
@@ -1383,31 +1398,17 @@ cob_7899_scenerio.0498 = { #Post Duel test event
 			remove_character_flag = wear_armor
 			current_travel_plan = { resume_travel_plan = yes }
 		}
-		scope:guardian_of_lokiria = {
-			if = {
-				limit = {
-					is_alive = no
-				}
-				random_artifact = { 
-					limit = {
-						has_artifact_modifier = valyrian_steel_armor_modifier
-					} 
-					save_scope_as = armor_of_lokiria
-				}
-				destroy_artifact = scope:armor_of_lokiria
+		every_living_character = {
+			limit = {
+				has_character_flag = lokiria_guardian
 			}
-			if = {
-				limit = {
-					is_alive = no
-				}
-				random_artifact = { 
-					limit = {
-						has_artifact_modifier = vs_dragon_halberd_modifier 
-					} 
-					save_scope_as = weapon_of_lokiria
-				}
-				destroy_artifact = scope:weapon_of_lokiria
+			death = { death_reason = death_vanished }
+		}
+		every_artifact = {
+			limit = {
+				has_variable = lokiria_guardian_artifact
 			}
+			destroy_artifact = this
 		}
 	}
 }

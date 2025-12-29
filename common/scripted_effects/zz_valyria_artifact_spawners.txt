@@ -86,32 +86,32 @@ lv_agot_create_artifact_the_dragons_book_effect = {
 	}
 }
 
-#lv_agot_create_artifact_dragonknight_armour_effect = {
-#	# Get the character the artifact is being made for.
-#	$OWNER$ = { save_scope_as = owner }
-#	set_artifact_rarity_illustrious = yes
-#	create_artifact = {
-#		name = dragonknight_armour_name
-#		description = dragonknight_armour_description
-#		type = armor_plate
-#		visuals = valyrian_steel_armor_visuals
-#		wealth = scope:wealth
-#		quality = scope:quality
-#		template = valyrian_steel_armor_template
-#		modifier = valyrian_steel_armor_modifier
-#		save_scope_as = newly_created_artifact
-#		decaying = no
-#	}
-#
-#	scope:newly_created_artifact ?= {
-#		save_scope_as = epic #for loc
-#		set_variable = { name = historical_unique_artifact value = yes }
-#		set_variable = { name = valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
-#		set_variable = { name = valyrian_steel value = yes }
-#		set_variable = { name = dragonknight_artifact value = yes }
-#		equip_artifact_to_owner_replace = yes
-#	}
-#}
+# lv_agot_create_artifact_dragonknight_armour_effect = {
+# 	# Get the character the artifact is being made for.
+# 	$OWNER$ = { save_scope_as = owner }
+# 	set_artifact_rarity_illustrious = yes
+# 	create_artifact = {
+# 		name = dragonknight_armour_name
+# 		description = dragonknight_armour_description
+# 		type = armor_plate
+# 		visuals = valyrian_steel_armor_visuals
+# 		wealth = scope:wealth
+# 		quality = scope:quality
+# 		template = dragonknight_armour_template
+# 		modifier = valyrian_steel_armor_modifier
+# 		save_scope_as = newly_created_artifact
+# 		decaying = no
+# 	}
+
+# 	scope:newly_created_artifact ?= {
+# 		save_scope_as = epic #for loc
+# 		set_variable = { name = historical_unique_artifact value = yes }
+# 		set_variable = { name = valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
+# 		set_variable = { name = valyrian_steel value = yes }
+# 		set_variable = { name = dragonknight_artifact value = yes }
+# 		equip_artifact_to_owner_replace = yes
+# 	}
+# }
 
 #lv_agot_create_artifact_dragonknight_sword_effect = {
 #	$OWNER$ = {
@@ -737,6 +737,83 @@ lv_create_artifact_aurion_valyrian_steel_armor_effect = {
 				RECIPIENT = character:Varezys_1
 			}
 			set_variable = { name = valyrian_steel value = yes }
+			equip_artifact_to_owner_replace = yes
+		}
+	}
+	else = {
+		root = {
+			trigger_event = cob_7899_scenerio.9999
+		}
+	}
+}
+
+lv_create_artifact_lokiria_guardian_armor_effect = {
+	if = {
+		limit = {
+			has_character_flag = lokiria_guardian
+		}
+		# Get the character the artifact is being made for.
+		$OWNER$ = { save_scope_as = owner }
+		set_artifact_rarity_illustrious = yes
+		create_artifact = {
+			name = lokiria_guardian_armor_name
+			description = lokiria_guardian_armor_description
+			type = armor_plate
+			visuals = valyrian_steel_armor_visuals
+			wealth = scope:wealth
+			quality = scope:quality
+			template = lokiria_guardian_template
+			history = {
+				type = created_before_history
+				date = 7300.1.1
+			}
+			modifier = lokiria_guardian_armor_modifier
+			save_scope_as = newly_created_artifact
+			decaying = no
+		}
+
+		scope:newly_created_artifact ?= {
+			save_scope_as = epic #for loc
+			set_variable = { name = historical_unique_artifact value = yes }
+			set_variable = { name = valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
+			set_variable = { name = valyrian_steel value = yes }
+			set_variable = { name = lokiria_guardian_artifact value = yes }
+			equip_artifact_to_owner_replace = yes
+		}
+	}
+	else = {
+		root = {
+			trigger_event = cob_7899_scenerio.9999
+		}
+	}
+}
+lv_create_artifact_vs_lokiria_halberd_effect = {
+	if = {
+		limit = {
+			has_character_flag = lokiria_guardian
+		}
+		$OWNER$ = { save_scope_as = owner }
+		set_artifact_rarity_illustrious = yes
+		create_artifact = {
+			name = vs_lokiria_halberd_name
+			description = vs_lokiria_halberd_description
+			visuals = vs_dragon_halberd_visuals
+			type = spear
+			wealth = scope:wealth
+			quality = scope:quality
+			template = lokiria_guardian_template
+			history = {
+				type = created_before_history
+				date = 7300.1.1
+			}
+			modifier = vs_lokiria_halberd_modifier
+			save_scope_as = newly_created_artifact
+			decaying = no
+		}
+		scope:newly_created_artifact ?= {
+			set_variable = { name = historical_unique_artifact value = yes }
+			set_variable = { name = valyrian_steel value = yes }
+			set_variable = { name = lokiria_guardian_artifact value = yes }
 			equip_artifact_to_owner_replace = yes
 		}
 	}
