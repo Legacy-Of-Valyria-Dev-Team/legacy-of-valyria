@@ -1,8 +1,27 @@
 ﻿on_building_completed = {
-	on_actions = { zz_agot_dragon_pits_on_actions }
+	on_actions = {
+		lv_on_building_completed_maintenance
+		lv_dragon_pits_on_actions
+	}
 }
 
-zz_agot_dragon_pits_on_actions = {
+lv_on_building_completed_maintenance = {
+	effect = {
+		# Blocker clearance
+		if = { # Execute only for ruins and settlements to save performance (I love unnecessary premature optimizations)
+			limit = {
+				OR = {
+					has_holding_type = ruin_holding
+					has_holding_type = settlement_holding
+				}
+			}
+			# Failsafe for if, somehow, blockers that should be cleared are left over
+			lv_remove_all_cleared_blockers_effect = yes
+		}
+	}
+}
+
+lv_dragon_pits_on_actions = {
 	trigger = {
 		NOT = { zz_has_natural_dragon_pit_barony = yes }
 		county = { can_this_dragonpit_be_destroyed_when_dragonpit_building_is_replaced = yes }
