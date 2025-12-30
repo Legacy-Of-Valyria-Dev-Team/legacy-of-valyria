@@ -140,3 +140,64 @@
         }
     }
 }
+
+cob_lokiria_guardian_murder_effect = {
+    every_living_character = {
+        limit = {
+            has_character_flag = lokiria_guardian
+        }
+        death = { death_reason = death_vanished }
+        }
+    every_artifact = {
+        limit = {
+            has_variable = lokiria_guardian_artifact
+        }
+        destroy_artifact = this
+    }
+}
+
+cob_aurion_firewyrm_murder_effect = {
+    every_living_character = {
+        limit = {
+            has_character_flag = aurion_firewyrm
+        }
+        death = { death_reason = death_vanished }
+    }
+}
+
+cob_aurion_artifact_yeet_effect = {
+    if = { #Aurion Armor Lost
+		limit = {
+			character:Varezys_1 = {
+				var:cob_restore_valyria = flag:positive
+			}
+			any_artifact = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+		}
+		random_artifact = {
+			limit = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+			save_scope_as = aurion_armor
+		}
+		add_to_global_variable_list = {
+			name = lv_unavailable_unique_items
+			target = flag:aurion_armor_lost
+		}
+		destroy_artifact = scope:aurion_armor
+	}
+	if = { #Aurion Sword Lost
+		limit = {
+			character:Varezys_1 = {
+				var:cob_restore_valyria = flag:positive
+			}
+			any_artifact = { has_artifact_modifier = vs_stormbringer_modifier }
+		}
+		random_artifact = {
+			limit = { has_artifact_modifier = vs_stormbringer_modifier }
+			save_scope_as = aurion_sword
+		}
+		add_to_global_variable_list = {
+			name = lv_unavailable_unique_items
+			target = flag:aurion_sword_lost
+		}
+		destroy_artifact = scope:aurion_sword
+	}
+}
