@@ -10,6 +10,7 @@
 	datacontext = "[EventWindow.AccessEventWindowData]"
 
 	using = Event_Window_Debug_OptionTooltips
+	using = Event_Window_Debug_EventTools
 
 	state = {
 		name = show
@@ -61,7 +62,6 @@
 		}
 
 		state = {
-			#TODO[WL]: TIT-53953 Add a trigger
 			name = background_shake_loop
 			next = background_shake_loop_1
 			duration = 0.0
@@ -124,6 +124,34 @@
 			duration = 0.5
 		}
 
+		state = {
+			name = character_shake_loop
+			next = character_shake_loop_1
+			duration = 0.0
+			alpha = 1.0
+		}
+
+		state = {
+			name = character_shake_loop_1
+			next = character_shake_loop_2
+			position = { -35 -15 }
+			duration = 0.2
+		}
+
+		state = {
+			name = character_shake_loop_2
+			next = character_shake_loop_3
+			position = { -27 -15 }
+			duration = 0.12
+		}
+
+		state = {
+			name = character_shake_loop_3
+			next = character_shake_loop_1
+			position = { -25 -17 }
+			duration = 0.12
+		}
+
 		### RIGHT CHARACTER ###
 		widget = {
 			parentanchor = bottom|right
@@ -178,7 +206,7 @@
 
 					modify_texture = {
 						name = "mask"
-						texture =  "gfx/portraits/portrait_mask_event.dds"
+						texture = "gfx/portraits/portrait_mask_event.dds"
 						spriteType = Corneredstretched
 						blend_mode = alphamultiply
 					}
@@ -210,6 +238,7 @@
 				blockoverride "highlight_visible"
 				{
 					visible = "[Or(Character.IsHovered, EventWindowData.IsCharacterHighlighted( EventWindowData.GetPortraitCharacter('right_portrait') ))]"
+					visible_at_creation = no
 					position = { 80 0 }
 				}
 
@@ -291,7 +320,7 @@
 
 					modify_texture = {
 						name = "mask"
-						texture =  "gfx/portraits/portrait_mask_event.dds"
+						texture = "gfx/portraits/portrait_mask_event.dds"
 						spriteType = Corneredstretched
 						blend_mode = alphamultiply
 					}
@@ -303,6 +332,7 @@
 				name = "portrait_left"
 				datacontext = "[EventWindowData.GetPortraitCharacter('left_portrait')]"
 				using = left_portrait_no_dragon
+				visible_at_creation = no
 				parentanchor = bottom|hcenter
 				position = { -50 -2 }
 				size = { 500 558 }
@@ -323,6 +353,7 @@
 				blockoverride "highlight_visible"
 				{
 					visible = "[Or(Character.IsHovered, EventWindowData.IsCharacterHighlighted( EventWindowData.GetPortraitCharacter('left_portrait') ))]"
+					visible_at_creation = no
 					position = { -40 0 }
 				}
 
@@ -391,7 +422,7 @@
 
 				modify_texture = {
 					name = "mask"
-					texture =  "gfx/portraits/portrait_mask_event.dds"
+					texture = "gfx/portraits/portrait_mask_event.dds"
 					spriteType = Corneredstretched
 					blend_mode = alphamultiply
 				}
@@ -403,6 +434,7 @@
 		portrait_event = {
 			name = "portrait_center"
 			using = center_portrait_no_dragon
+			visible_at_creation = no
 			datacontext = "[EventWindowData.GetPortraitCharacter('left_portrait')]"
 			# size = { 500 558 }
 			size = { 764 558 }
@@ -583,6 +615,7 @@
 							vbox = {
 								name = "travel_event_info"
 								visible = "[And(EventWindowData.ThemeKeyStartsWith('travel'), GetPlayer.GetTravelPlan.IsValid)]"
+								visible_at_creation = no
 								layoutpolicy_horizontal = expanding
 								margin = { 20 0 }
 
@@ -759,6 +792,7 @@
 				dragon_event_portrait_status_icons_left = {
 					datacontext = "[EventWindowData.GetPortraitCharacter('left_portrait')]"
 					visible = "[EventWindowData.ShouldShowPortraitInfo('left_portrait')]"
+					visible_at_creation = no
 				}
 
 				spacer = {
@@ -768,6 +802,7 @@
 				flowcontainer = {
 					datacontext = "[EventWindowData.GetArtifact('lower_left_portrait')]"
 					visible = "[EventWindowData.HasArtifact('lower_left_portrait')]"
+					visible_at_creation = no
 					direction = vertical
 					spacing =-5
 
@@ -777,6 +812,7 @@
 				widget = {
 					datacontext = "[EventWindowData.GetPortraitCharacter('lower_left_portrait')]"
 					visible = "[EventWindowData.HasPortraitCharacter('lower_left_portrait')]"
+					visible_at_creation = no
 					size = { 140 150 }
 
 					portrait_event_small = {
@@ -810,7 +846,7 @@
 							}
 						}
 
-						text_label_center = {
+						agot_text_label_center = {
 							parentanchor = bottom|hcenter
 							position = { 20 -5 }
 							alwaystransparent = yes
@@ -836,6 +872,7 @@
 				flowcontainer = {
 					datacontext = "[EventWindowData.GetArtifact('lower_center_portrait')]"
 					visible = "[EventWindowData.HasArtifact('lower_center_portrait')]"
+					visible_at_creation = no
 					direction = vertical
 					spacing =-5
 
@@ -845,6 +882,7 @@
 				widget = {
 					datacontext = "[EventWindowData.GetPortraitCharacter('lower_center_portrait')]"
 					visible = "[EventWindowData.HasPortraitCharacter('lower_center_portrait')]"
+					visible_at_creation = no
 					size = { 140 150 }
 
 					portrait_event_small = {
@@ -879,7 +917,7 @@
 						}
 
 
-						text_label_center = {
+						agot_text_label_center = {
 							parentanchor = bottom|hcenter
 							position = { 20 -5 }
 							alwaystransparent = yes
@@ -901,6 +939,7 @@
 				dragon_event_portrait_status_icons_right = {
 					datacontext = "[EventWindowData.GetPortraitCharacter('right_portrait')]"
 					visible = "[EventWindowData.ShouldShowPortraitInfo('right_portrait')]"
+					visible_at_creation = no
 					parentanchor = right
 				}
 
@@ -911,6 +950,7 @@
 				flowcontainer = {
 					datacontext = "[EventWindowData.GetArtifact('lower_right_portrait')]"
 					visible = "[EventWindowData.HasArtifact('lower_right_portrait')]"
+					visible_at_creation = no
 					direction = vertical
 					spacing =-5
 
@@ -920,6 +960,7 @@
 				widget = {
 					datacontext = "[EventWindowData.GetPortraitCharacter('lower_right_portrait')]"
 					visible = "[EventWindowData.HasPortraitCharacter('lower_right_portrait')]"
+					visible_at_creation = no
 					size = { 140 150 }
 
 					portrait_event_small = {
@@ -959,7 +1000,7 @@
 							}
 						}
 
-						text_label_center = {
+						agot_text_label_center = {
 							parentanchor = bottom|hcenter
 							position = { 20 -5 }
 							alwaystransparent = yes
@@ -1143,6 +1184,7 @@
 	flowcontainer = {
 		name = "debug_stuff"
 		visible = "[InDebugMode]"
+		visible_at_creation = no
 		parentanchor = top|right
 		position = { -100 25 }
 		ignoreinvisible = yes
@@ -1694,25 +1736,25 @@ types Events
 }
 
 template left_portrait_no_dragon {
-	visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), EventWindowData.HasPortraitCharacter('right_portrait')), Not(Character.HasTrait(GetTrait('dragon').Self)))]"
+	visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), EventWindowData.HasPortraitCharacter('right_portrait')), Not(IsCharacterDragon))]"
 }
 
 template left_portrait_dragon {
-    visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), EventWindowData.HasPortraitCharacter('right_portrait')), Character.HasTrait(GetTrait('dragon').Self))]"
+    visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), EventWindowData.HasPortraitCharacter('right_portrait')), IsCharacterDragon)]"
 }
 
 template right_portrait_no_dragon {
-   visible = "[And(EventWindowData.HasPortraitCharacter('right_portrait'), Not(Character.HasTrait(GetTrait('dragon').Self)))]"
+    visible = "[And(EventWindowData.HasPortraitCharacter('right_portrait'), Not(IsCharacterDragon))]"
 }
 
 template right_portrait_dragon {
-    visible = "[And(EventWindowData.HasPortraitCharacter('right_portrait'), Character.HasTrait(GetTrait('dragon').Self))]"
+    visible = "[And(EventWindowData.HasPortraitCharacter('right_portrait'), IsCharacterDragon)]"
 }
 
 template center_portrait_no_dragon {
-    visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), Not(EventWindowData.HasPortraitCharacter('right_portrait'))), Not(Character.HasTrait(GetTrait('dragon').Self)))]"
+    visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), Not(EventWindowData.HasPortraitCharacter('right_portrait'))), Not(IsCharacterDragon))]"
 }
 
 template center_portrait_dragon {
-    visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), Not(EventWindowData.HasPortraitCharacter('right_portrait'))), Character.HasTrait(GetTrait('dragon').Self))]"
+    visible = "[And(And(EventWindowData.HasPortraitCharacter('left_portrait'), Not(EventWindowData.HasPortraitCharacter('right_portrait'))), IsCharacterDragon)]"
 }
