@@ -56,49 +56,132 @@
 				add_special_building = aurions_lost_expedition
 			}
 		}
-		if = { #Aurion Armor Lost
-			limit = {
-				character:Varezys_1 = {
-					var:cob_restore_valyria = flag:positive
-				}
-				any_artifact = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
-			}
-			random_artifact = {
-				limit = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
-				save_scope_as = aurion_armor
-			}
-			add_to_global_variable_list = {
-				name = lv_unavailable_unique_items
-				target = flag:aurion_armor_lost
-			}
-			destroy_artifact = scope:aurion_armor
-		}
-		if = { #Aurion Sword Lost
-			limit = {
-				character:Varezys_1 = {
-					var:cob_restore_valyria = flag:positive
-				}
-				any_artifact = { has_artifact_modifier = vs_stormbringer_modifier }
-			}
-			random_artifact = {
-				limit = { has_artifact_modifier = vs_stormbringer_modifier }
-				save_scope_as = aurion_sword
-			}
-			add_to_global_variable_list = {
-				name = lv_unavailable_unique_items
-				target = flag:aurion_sword_lost
-			}
-			destroy_artifact = scope:aurion_sword
-		}
-		end_story = yes
+		cob_aurion_artifact_yeet_effect = yes
+		end_story = yes 
 	}
 
 
-	# General daily checks
-	#effect_group = {
-	#	days = 1
-	#}
+	# # General daily checks
+	# effect_group = {
+	# 	days = 15
+
+	# 	triggered_effect = {
+	# 		cob_aurion_event_character_murder_effect = yes
+	# 	}
+	# }
 }
+
+# story_cob_tommen = {
+
+# 	on_setup = {
+# 		debug_log = "Tommen II Lannister Journey to Valyria Initialized"
+# 		##################################
+# 		#Initialise Events
+# 	}
+
+# 	on_owner_death = {
+# 		if = {
+# 			limit = {
+# 				character:Lannister_62 = {
+# 					var:cob_tommens_quest = flag:positive
+# 				}
+# 			}
+# 			if = {
+# 				limit = { any_artifact = { has_artifact_modifier = vs_brightroar_modifier } }
+# 					random_artifact = {
+# 						limit = { has_artifact_modifier = vs_brightroar_modifier }
+# 						save_scope_as = brightroar
+# 					}
+# 				destroy_artifact = scope:brightroar
+# 				remove_list_global_variable = {
+# 					name = unavailable_unique_decisions
+# 					target = flag:recovered_brightroar
+# 				}
+# 			}
+# 			if = {
+# 				limit = { any_artifact = { has_artifact_modifier = westerlands2_crown_modifier } }
+# 					random_artifact = {
+# 						limit = { has_artifact_modifier = westerlands2_crown_modifier }
+# 						save_scope_as = lion_crown
+# 					}
+# 				destroy_artifact = scope:lion_crown
+# 			}
+# 			if = {
+# 				limit = {
+# 					any_artifact = {
+# 						NOT = {
+# 							has_artifact_modifier = westerlands2_crown_modifier
+# 							has_artifact_modifier = vs_brightroar_modifier
+# 						}
+# 					}
+# 				}
+# 				destroy_artifact = this
+# 			}
+# 		}
+# 		end_story = yes
+# 	}
+
+	# General daily checks
+	# effect_group = {
+	# 	days = 1
+	# }
+# }
+
+# story_cob_hoare = {
+
+# 	on_setup = {
+# 		debug_log = "House Hoare Story Initialized"
+# 		##################################
+# 		#Initialise Events
+# 		set_variable = {
+# 			name = cob_harrenhal_built
+# 			value = flag:negative
+# 		}
+# 	}
+
+# 	on_owner_death = {
+# 		if = {
+# 			limit = {
+# 				exists = story_owner.player_heir
+# 				story_owner.player_heir.house = story_owner.house
+# 			}
+# 			make_story_owner = story_owner.player_heir
+# 		}
+# 		else = { end_story = yes }
+# 	}
+
+# 	# General daily checks
+# 	effect_group = {
+# 		days = 1
+
+# 		# The Field of Fire
+# 		triggered_effect = {
+# 			trigger = {
+# 				var:cob_harrenhal_built = flag:negative
+# 				character:Hoare_25.house.house_head = {
+# 					has_title = title:e_the_riverlands
+# 				}
+# 				title:c_harrenhal = {
+# 					NOT = { has_special_building = harrenhal_01 }
+# 				}
+# 			}
+# 			effect = {
+# 				set_variable = {
+# 					name = cob_harrenhal_built
+# 					value = flag:positive
+# 				}
+# 				if = {
+# 					character:Hoare_25.house.house_head = {
+# 						trigger_event = {
+# 							id = cob_7899_scenerio.0396
+# 							days = 30
+# 						}
+# 					}
+# 				}
+# 			}
+# 		}
+# 	}
+# }
 
 # story_cob_urnebar = {
 # 	on_owner_death = {
@@ -151,41 +234,3 @@
 # 		else = { end_story = yes }
 # 	}
 # }
-
-# story_cob_tommen = {
-
-# 	on_setup = {
-# 		debug_log = "Tommen II Lannister Journey to Valyria Initialized"
-# 		##################################
-# 		#Initialise Events
-# 	}
-
-# 	on_owner_death = {
-# 		if = {
-# 			limit = {
-# 				character:Lannister_62 = {
-# 					var:cob_tommens_quest = flag:positive
-# 				}
-# 			}
-# 			if = {
-# 				limit = { any_artifact = { has_artifact_modifier = vs_brightroar_modifier } }
-# 					random_artifact = {
-# 						limit = { has_artifact_modifier = vs_brightroar_modifier }
-# 						save_scope_as = brightroar
-# 					}
-# 				destroy_artifact = scope:brightroar
-# 				remove_list_global_variable = {
-# 					name = unavailable_unique_decisions
-# 					target = flag:recovered_brightroar
-# 				}
-# 			}
-# 		}
-# 		end_story = yes
-# 	}
-
-
-	# General daily checks
-	#effect_group = {
-	#	days = 1
-	#}
-#}
