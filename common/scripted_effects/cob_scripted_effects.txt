@@ -147,7 +147,7 @@ cob_lokiria_guardian_murder_effect = {
             has_character_flag = lokiria_guardian
         }
         death = { death_reason = death_vanished }
-        }
+    }
     every_artifact = {
         limit = {
             has_variable = lokiria_guardian_artifact
@@ -160,7 +160,7 @@ cob_tommen_event_character_murder_effect = {
         limit = {
             has_character_flag = tommen_final_boss_dragon
         }
-        death = { death_reason = death_vanished } 
+        death = { death_reason = death_vanished }
     }
 }
 cob_aurion_event_character_murder_effect = {
@@ -184,37 +184,122 @@ cob_aurion_event_character_murder_effect = {
 
 cob_aurion_artifact_yeet_effect = {
     if = { #Aurion Armor Lost
-		limit = {
-			character:Varezys_1 = {
-				var:cob_restore_valyria = flag:positive
-			}
-			any_artifact = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
-		}
-		random_artifact = {
-			limit = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
-			save_scope_as = aurion_armor
-		}
-		add_to_global_variable_list = {
-			name = lv_unavailable_unique_items
-			target = flag:aurion_armor_lost
-		}
-		destroy_artifact = scope:aurion_armor
-	}
-	if = { #Aurion Sword Lost
-		limit = {
-			character:Varezys_1 = {
-				var:cob_restore_valyria = flag:positive
-			}
-			any_artifact = { has_artifact_modifier = vs_stormbringer_modifier }
-		}
-		random_artifact = {
-			limit = { has_artifact_modifier = vs_stormbringer_modifier }
-			save_scope_as = aurion_sword
-		}
-		add_to_global_variable_list = {
-			name = lv_unavailable_unique_items
-			target = flag:aurion_sword_lost
-		}
-		destroy_artifact = scope:aurion_sword
-	}
+        limit = {
+            character:Varezys_1 = {
+                var:cob_restore_valyria = flag:positive
+            }
+            any_artifact = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+        }
+        random_artifact = {
+            limit = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+            save_scope_as = aurion_armor
+        }
+        add_to_global_variable_list = {
+            name = lv_unavailable_unique_items
+            target = flag:aurion_armor_lost
+        }
+        destroy_artifact = scope:aurion_armor
+    }
+    if = { #Aurion Sword Lost
+        limit = {
+            character:Varezys_1 = {
+                var:cob_restore_valyria = flag:positive
+            }
+            any_artifact = { has_artifact_modifier = vs_stormbringer_modifier }
+        }
+        random_artifact = {
+            limit = { has_artifact_modifier = vs_stormbringer_modifier }
+            save_scope_as = aurion_sword
+        }
+        add_to_global_variable_list = {
+            name = lv_unavailable_unique_items
+            target = flag:aurion_sword_lost
+        }
+        destroy_artifact = scope:aurion_sword
+    }
+}
+
+cob_aurion_artifact_yeet_effect = {
+    if = { #Aurion Armor Lost
+        limit = {
+            character:Varezys_1 = {
+                var:cob_restore_valyria = flag:positive
+            }
+            any_artifact = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+        }
+        random_artifact = {
+            limit = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+            save_scope_as = aurion_armor
+        }
+        add_to_global_variable_list = {
+            name = lv_unavailable_unique_items
+            target = flag:aurion_armor_lost
+        }
+        destroy_artifact = scope:aurion_armor
+    }
+    if = { #Aurion Sword Lost
+        limit = {
+            character:Varezys_1 = {
+                var:cob_restore_valyria = flag:positive
+            }
+            any_artifact = { has_artifact_modifier = vs_stormbringer_modifier }
+        }
+        random_artifact = {
+            limit = { has_artifact_modifier = vs_stormbringer_modifier }
+            save_scope_as = aurion_sword
+        }
+        add_to_global_variable_list = {
+            name = lv_unavailable_unique_items
+            target = flag:aurion_sword_lost
+        }
+        destroy_artifact = scope:aurion_sword
+    }
+}
+
+cob_tommen_artifact_yeet_effect = {
+    if = {
+        limit = { any_artifact = { has_artifact_modifier = vs_brightroar_modifier } }
+        random_artifact = {
+            limit = { has_artifact_modifier = vs_brightroar_modifier }
+            save_scope_as = brightroar
+        }
+        destroy_artifact = scope:brightroar
+        remove_list_global_variable = {
+            name = unavailable_unique_decisions
+            target = flag:recovered_brightroar
+        }
+    }
+    if = {
+        limit = { any_artifact = { has_artifact_modifier = westerlands2_crown_modifier } }
+        random_artifact = {
+            limit = { has_artifact_modifier = westerlands2_crown_modifier }
+            save_scope_as = lion_crown
+        }
+        destroy_artifact = scope:lion_crown
+    }
+    if = {
+        limit = {
+            any_artifact = {
+                NOT = {
+                    has_artifact_modifier = westerlands2_crown_modifier
+                    has_artifact_modifier = vs_brightroar_modifier
+                }
+            }
+        }
+        destroy_artifact = this
+    }
+}
+
+aurion_remove_special_troops_effect = {
+    scope:army = {
+        hidden_effect = {
+            random_list = {
+                20 = { deplete_army_by_percentage = 0.95 }
+                20 = { deplete_army_by_percentage = 0.85 }
+                20 = { deplete_army_by_percentage = 0.75 }
+                20 = { deplete_army_by_percentage = 0.65 }
+                20 = { deplete_army_by_percentage = 0.55 }
+            }
+        }
+    }
 }
