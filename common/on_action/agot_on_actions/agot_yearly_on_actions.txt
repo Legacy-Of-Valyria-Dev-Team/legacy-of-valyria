@@ -9,6 +9,7 @@
 		agot_faegon_invasion
 		agot_banking
 		agot_dragonrider_forced_duel_list_yearly
+		agot_grant_kingdom_titles
 	}
 }
 
@@ -926,6 +927,171 @@ agot_dragonrider_forced_duel_list_yearly = {
 				id = agot_dragon_combat.1012
 				months = 6
 			}
+		}
+	}
+}
+# Titles to be converted for Hegemonies Branch
+agot_grant_kingdom_titles = {
+	trigger = {
+		OR = {
+			NOT = { exists = title:k_dorne.holder }
+			NOT = { exists = title:k_the_stormlands.holder }
+			NOT = { exists = title:k_the_reach.holder }
+			NOT = { exists = title:k_the_westerlands.holder }
+			NOT = { exists = title:k_the_riverlands.holder }
+			NOT = { exists = title:k_the_vale.holder }
+			NOT = { exists = title:k_the_iron_islands.holder }
+			NOT = { exists = title:k_the_north.holder }
+		}
+		title:e_the_iron_throne.holder ?= {
+			OR = {
+				has_government = feudal_government
+				has_government = lp_feudal_government
+			}
+			is_ai = yes
+			is_at_war = no
+		}
+	}
+	effect = {
+		title:e_the_iron_throne.holder = { save_scope_as = king }
+		if = {
+			limit = { title:k_dorne = { agot_can_form_lord_paramountcy = yes } }
+			title:k_dorne = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_stormlands = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_stormlands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_reach = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_reach = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_westerlands = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_westerlands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_riverlands = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_riverlands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_vale = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_vale = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_iron_islands = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_iron_islands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:k_the_north = { agot_can_form_lord_paramountcy = yes } }
+			title:k_the_north = { add_to_list = lord_paramouncies }
+		}
+		every_in_list = {
+			list = lord_paramouncies
+			save_scope_as = kingdom_title_to_grant
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			scope:kingdom_title_to_grant = {
+				change_title_holder = {
+					holder = scope:king
+					change = scope:change
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+			if = {
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:king = scope:kingdom_title_to_grant.var:legitimate_house.house_head }
+					scope:kingdom_title_to_grant.var:legitimate_house.house_head = {
+						is_vassal_or_below_of = scope:king
+						is_landed = yes
+					}
+				}
+				scope:kingdom_title_to_grant.var:legitimate_house.house_head = { save_scope_as = new_holder }
+			}
+			else_if = {
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:kingdom_title_to_grant.var:legitimate_house.house_head = { is_vassal_or_below_of = scope:king } }
+					scope:kingdom_title_to_grant.title_capital_county.holder = {
+						liege = scope:king
+					}
+				}
+				scope:kingdom_title_to_grant.title_capital_county.holder = { save_scope_as = new_holder }
+			}
+			else_if = {
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:kingdom_title_to_grant.var:legitimate_house.house_head = { is_vassal_or_below_of = scope:king } }
+					scope:kingdom_title_to_grant.title_capital_county.holder = {
+						top_liege = scope:king
+						NOT = { liege = scope:king }
+					}
+				}
+				scope:kingdom_title_to_grant.title_capital_county.holder.liege = { save_scope_as = new_holder }
+			}
+			else_if = { # Not needed on current branch, but leaving for Hegemony Branch
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:kingdom_title_to_grant.var:legitimate_house.house_head = { is_vassal_or_below_of = scope:king } }
+					scope:kingdom_title_to_grant.title_capital_county.holder = {
+						top_liege = scope:king
+						NOR = {
+							liege = scope:king
+							liege.liege = scope:king
+						}
+					}
+				}
+				scope:kingdom_title_to_grant.title_capital_county.holder.liege = { save_scope_as = new_holder }
+			}
+			if = {
+				limit = { exists = scope:new_holder }
+				create_title_and_vassal_change = {
+					type = granted
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				scope:kingdom_title_to_grant = {
+					change_title_holder = {
+						holder = scope:new_holder
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+
+				scope:kingdom_title_to_grant = {
+					every_direct_de_jure_vassal_title = {
+						limit = {
+							holder ?= {
+								is_vassal_of = scope:king
+								NOT = { this = scope:new_holder }
+							}
+						}
+						holder = { save_scope_as = vassal }
+						create_title_and_vassal_change = {
+							type = swear_fealty
+							save_scope_as = change
+						}
+						scope:vassal = {
+							change_liege = {
+								liege = scope:new_holder
+								change = scope:change
+							}
+						}
+						resolve_title_and_vassal_change = scope:change
+					}
+				}
+			}
+			scope:new_holder = {
+				trigger_event = agot_proclamation_events.1000
+			}
+		}
+		every_in_list = {
+			list = lord_paramouncies
+			remove_from_list = lord_paramouncies
 		}
 	}
 }

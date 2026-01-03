@@ -631,6 +631,16 @@ agot_on_game_start = {
 				}
 				house = { add_house_modifier = agot_historical_loyalty_targaryen }
 			}
+
+			# Distribute clergy traits to court chaplains
+			if = {
+				limit = {
+					exists = cp:councillor_court_chaplain
+				}
+				cp:councillor_court_chaplain = {
+					agot_got_council_position_clergy_effect = yes
+				}
+			}
 		}
 
 		every_barony = {
@@ -765,15 +775,23 @@ agot_on_game_start = {
 					every_ruler = {
 						limit = {
 							NOT = { has_title = title:c_axe_camp }
-							THIS.culture = title:c_axe_camp.holder.culture
+							culture = title:c_axe_camp.holder.culture
 						}
 						save_scope_as = lakefolk_confederation_member
 						scope:new_confederation = { add_confederation_member = scope:lakefolk_confederation_member }
 						if = {
-							limit = { THIS.faith = faith:cold_gods_wildling }
+							limit = {
+								faith = faith:cold_gods_wildling
+								NOT = { has_realm_law = female_only_law }
+							}
 							add_realm_law = female_only_law
 						}
-						else = { add_realm_law = female_preference_law }
+						else_if = {
+							limit = {
+								NOT = { has_realm_law = female_preference_law }
+							}
+							add_realm_law = female_preference_law
+						}
 					}
 				}
 			}
@@ -1399,6 +1417,18 @@ agot_on_game_start = {
 
 		##### Basic setup end #####
 
+		if = {
+			limit = {
+				title:c_crasters_keep.holder != character:Craster_1
+			}
+			title:c_crasters_keep = {
+				set_title_name = c_crasters_keep_alt
+			}
+			title:b_crasters_keep = {
+				set_title_name = c_crasters_keep_alt
+			}
+		}
+
 		### Scenario setup
 		title:k_the_wall.holder ?= {
 			if = {
@@ -1485,6 +1515,10 @@ agot_on_game_start = {
 		agot_dragons_on_start_effect = yes
 		### Run effects on dead characters
 		agot_apply_posthistory_effect = yes
+
+		### Artifacts setup
+		agot_historical_artifacts_setup = yes
+
 	}
 }
 
@@ -2416,8 +2450,6 @@ agot_on_game_start_after_lobby = {
 
 		##### Scenario setup start #####
 		agot_historical_dragons_setup = yes
-		agot_historical_artifacts_setup = yes
-
 		if = {
 			limit = {
 				NOR = {
