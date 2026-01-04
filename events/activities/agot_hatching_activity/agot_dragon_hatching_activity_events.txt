@@ -24,6 +24,10 @@ scripted_effect end_sacrifice_choice_effect = {
 	trigger_event = agot_dragon_hatching.0014
 }
 
+scripted_trigger valid_hatching_sacrifice = {
+	is_ai = yes # Maybe players later but for now just AI
+}
+
 agot_dragon_hatching.0001 = { #knowledge activity hatch start
 	type = activity_event
 	title = agot_dragon_hatching.0001.t
@@ -793,8 +797,6 @@ agot_dragon_hatching.0009 = { # host sacrifice choice event, blood
 		random_prisoner = {
 			limit = {
 				is_ai = yes # Maybe players later but for now just AI
-				age > 4 # No babies - bit dark
-				is_lowborn = no # No peasants, not important enough
 			}
 			save_scope_as = prisoner_blood_sacrifice
 		}
@@ -1115,9 +1117,7 @@ agot_dragon_hatching.0011 = { # host sacrifice choice event, life
 		}
 		random_prisoner = {
 			limit = {
-				is_ai = yes # Maybe players later but for now just AI
-				age > 4 # No babies - bit dark
-				is_lowborn = no # No peasants, not important enough
+				valid_hatching_sacrifice = yes
 			}
 			save_scope_as = prisoner_life_sacrifice # This is just to check there are valid candidates
 		}
@@ -1400,6 +1400,9 @@ agot_dragon_hatching.0012 = { # host sacrifice choice event, life, prisoner sele
 				is_ai = no
 			}
 			every_prisoner = {
+				limit = {
+					valid_hatching_sacrifice = yes
+				}
 				root = {
 					add_to_variable_list = {
 						name = possible_characters
@@ -1415,6 +1418,9 @@ agot_dragon_hatching.0012 = { # host sacrifice choice event, life, prisoner sele
 		}
 		else = {
 			random_prisoner = {
+				limit = {
+					valid_hatching_sacrifice = yes
+				}
 				root = { set_variable = { name = si_selected_character value = prev } }
 			}
 		}

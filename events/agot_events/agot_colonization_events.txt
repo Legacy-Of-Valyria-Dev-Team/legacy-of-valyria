@@ -4579,6 +4579,7 @@ agot_colonization_events.1206 = { # The Cunning Brigand
 				else = {
 					scope:obstacle_province = {
 						set_holding_type = castle_holding
+						county = { agot_remove_permafrost_modifiers = yes }
 					}
 				}
 
@@ -4640,8 +4641,19 @@ agot_colonization_events.1206 = { # The Cunning Brigand
 
 				hidden_effect = {
 					scope:obstacle_province = { remove_building = bandits_cleared }
-					scope:obstacle_province = {
-						set_holding_type = castle_holding
+					if = {
+						limit = {
+							has_government = tribal_government
+						}
+						scope:obstacle_province = {
+							set_holding_type = tribal_holding
+						}
+					}
+					else = {
+						scope:obstacle_province = {
+							set_holding_type = castle_holding
+							county = { agot_remove_permafrost_modifiers = yes }
+						}
 					}
 					scope:obstacle_province.county = {
 						set_county_faith = scope:brigand.faith
@@ -4668,8 +4680,26 @@ agot_colonization_events.1206 = { # The Cunning Brigand
 
 					resolve_title_and_vassal_change = scope:title_change
 
-					scope:brigand = {
-						change_government = feudal_government
+					if = {
+						limit = {
+							has_government = tribal_government
+						}
+						scope:brigand = {
+							change_government = tribal_government
+						}
+					}
+					else_if = {
+						limit = {
+							has_government = clan_government
+						}
+						scope:brigand = {
+							change_government = clan_government
+						}
+					}
+					else = {
+						scope:brigand = {
+							change_government = feudal_government
+						}
 					}
 				}
 			}
@@ -4705,8 +4735,19 @@ agot_colonization_events.1206 = { # The Cunning Brigand
 		custom_tooltip = agot_colonization_events.1206.d.tt
 		hidden_effect = {
 			scope:obstacle_province = { remove_building = bandits_cleared }
-			scope:obstacle_province = {
-				set_holding_type = castle_holding
+			if = {
+				limit = {
+					has_government = tribal_government
+				}
+				scope:obstacle_province = {
+					set_holding_type = tribal_holding
+				}
+			}
+			else = {
+				scope:obstacle_province = {
+					set_holding_type = castle_holding
+					county = { agot_remove_permafrost_modifiers = yes }
+				}
 			}
 			scope:obstacle_province.county = {
 				set_county_faith = scope:brigand.faith
@@ -4733,8 +4774,26 @@ agot_colonization_events.1206 = { # The Cunning Brigand
 
 			resolve_title_and_vassal_change = scope:title_change
 
-			scope:brigand = {
-				change_government = feudal_government
+			if = {
+				limit = {
+					has_government = tribal_government
+				}
+				scope:brigand = {
+					change_government = tribal_government
+				}
+			}
+			else_if = {
+				limit = {
+					has_government = clan_government
+				}
+				scope:brigand = {
+					change_government = clan_government
+				}
+			}
+			else = {
+				scope:brigand = {
+					change_government = feudal_government
+				}
 			}
 		}
 		if = {
