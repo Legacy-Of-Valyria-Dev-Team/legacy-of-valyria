@@ -1,0 +1,33 @@
+﻿# Legacy of Valyria debug decisions
+
+# Dummy lobotomizer
+lv_debug_lobotomize_dummy_decision = {
+	picture = { reference = "gfx/interface/illustrations/event_scenes/lv_valyria_prospering.dds" }
+	desc = lv_debug_lobotomize_dummy_decision_desc
+	selection_tooltip = lv_debug_lobotomize_dummy_decision_tooltip
+	decision_group_type = debug
+
+	ai_check_interval = 0
+
+	is_shown = { debug_only = yes }
+
+	effect = {
+		title:c_wilderness.holder = { lv_dummy_lobotomizer_effect = yes }
+		title:c_ruins.holder = { lv_dummy_lobotomizer_effect = yes }
+		# Failsafe for if they somehow gave away their respective counties
+		every_independent_ruler = {
+			limit = {
+				NOR = {
+					this = title:c_wilderness.holder
+					this = title:c_ruins.holder
+				}
+				agot_is_dummy_character = yes
+				NOR = {
+					has_trait = unknown
+					has_character_flag = supersiren_flag
+				}
+			}
+			lv_dummy_lobotomizer_effect = yes
+		}
+	}
+}
