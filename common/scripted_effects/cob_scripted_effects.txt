@@ -253,6 +253,58 @@ cob_tommen_artifact_yeet_effect = {
     }
 }
 
+cob_dragonlord_government_setup_effect = {
+    every_in_de_jure_hierarchy = {
+        set_variable = historical_slavery
+        holder ?= {
+            if = {
+                limit = { NOT = { has_realm_law = slavery_allowed_law } }
+                add_realm_law_skip_effects = slavery_allowed_law
+            }
+            if = {
+                limit = {
+                    has_realm_law = equal_law
+                }
+                remove_realm_law = equal_law
+                add_realm_law = male_preference_law
+            }
+        }
+    }
+}
+
+cob_dynasty_banner_effect = {
+    root = { 
+        set_variable = banner_from_dynasty
+        create_artifact_wall_banner_effect = {
+            OWNER = root
+            CREATOR = root
+            TARGET = root.dynasty
+        }	
+    }
+    scope:newly_created_artifact = {
+		set_variable = { # Tracks house
+			name = banner_dynasty
+			value = scope:target
+		}
+	}
+}
+cob_house_banner_effect = {
+    root = { 
+        set_variable = banner_from_house
+        create_artifact_wall_banner_effect = {
+            OWNER = root
+            CREATOR = root
+            TARGET = root.house
+        }	
+    }
+    scope:newly_created_artifact = {
+		set_variable = { # Tracks house
+			name = banner_house
+			value = scope:target
+		}
+	}
+}
+
 aurion_remove_special_troops_effect = {
     scope:army = {
         hidden_effect = {
