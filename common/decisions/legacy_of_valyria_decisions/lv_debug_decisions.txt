@@ -29,5 +29,26 @@ lv_debug_lobotomize_dummy_decision = {
 			}
 			lv_dummy_lobotomizer_effect = yes
 		}
+		# If anyone holds a wilderness county, give away
+		every_ruler = {
+			limit = { any_held_county = { title_province = { has_holding_type = wilderness_holding } } }
+			every_held_county = {
+				if = {
+					limit = { title_province = { has_holding_type = wilderness_holding } }
+					save_scope_as = wilderness_title
+					if = {
+						limit = { character:Wilderness_Empress ?= { is_alive = yes } }
+						character:Wilderness_Empress = { get_title = scope:wilderness_title }
+					}
+					else_if = {
+						limit = { any_independent_ruler = { has_trait = wilderness } }
+						random_independent_ruler = {
+							limit = { has_trait = wilderness }
+							get_title = scope:wilderness_title
+						}
+					}
+				}
+			}
+		}
 	}
 }
