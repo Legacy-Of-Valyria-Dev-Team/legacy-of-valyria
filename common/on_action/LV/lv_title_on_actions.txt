@@ -24,3 +24,25 @@ lv_on_title_gain_free_city_attached_titles = {
 	}
 	effect = { lv_handle_free_city_attached_titles_succession_effect = yes }
 }
+
+on_vassal_change = {
+	on_actions = {
+		lv_on_vassal_change
+	}
+}
+
+lv_on_vassal_change = {
+	trigger = { agot_is_dummy_character = yes }
+	effect = {
+		if = {
+			limit = { is_independent_ruler = no }
+			create_title_and_vassal_change = {
+				type = independency
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			becomes_independent = { change = scope:change }
+			resolve_title_and_vassal_change = scope:change
+		}
+	}
+}
