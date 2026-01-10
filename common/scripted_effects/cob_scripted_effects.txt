@@ -279,14 +279,14 @@ cob_dynasty_banner_effect = {
             OWNER = root
             CREATOR = root
             TARGET = root.dynasty
-        }	
+        }
     }
     scope:newly_created_artifact = {
-		set_variable = { # Tracks house
-			name = banner_dynasty
-			value = scope:target
-		}
-	}
+        set_variable = { # Tracks house
+            name = banner_dynasty
+            value = scope:target
+        }
+    }
 }
 cob_house_banner_effect = {
     root = {
@@ -315,6 +315,56 @@ aurion_remove_special_troops_effect = {
                 20 = { deplete_army_by_percentage = 0.65 }
                 20 = { deplete_army_by_percentage = 0.55 }
             }
+        }
+    }
+}
+
+cob_riverlands_tributary_effect = {
+    if = {
+        limit = {
+            game_start_date = 7899.6.17
+        }
+        title:e_the_riverlands.holder = {
+            save_scope_as = suzerain
+            title:e_the_riverlands = {
+                every_dejure_vassal_title_holder = {
+                    limit = {
+                        is_vassal_of = scope:suzerain
+                    }
+                    break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+                }
+            }
+            title:e_the_reach = {
+                every_dejure_vassal_title_holder = {
+                    limit = {
+                        is_vassal_of = scope:suzerain
+                    }
+                    break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+                }
+            }
+        }
+        title:c_ramsford.holder = {
+            get_title = title:d_fairmarket
+            get_title = title:c_fairmarket
+            title:d_fairmarket = {
+                every_dejure_vassal_title_holder = {
+                    save_scope_as = vassal_to_be
+                    create_title_and_vassal_change = {
+                        type = swear_fealty
+                        save_scope_as = change_fealty
+                    }
+                    scope:vassal_to_be = {
+                        change_liege = {
+                            liege = title:d_fairmarket.holder
+                            change = scope:change_fealty
+                        }
+                    }
+                    resolve_title_and_vassal_change = scope:change_fealty
+                }
+            }
+        }
+        title:e_the_riverlands.holder = {
+            destroy_title = title:e_the_riverlands
         }
     }
 }
