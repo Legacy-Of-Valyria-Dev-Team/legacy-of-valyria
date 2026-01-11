@@ -1,74 +1,85 @@
 ﻿story_cob_aurion = {
 
-	#The Dragonlords
-	#Aurion - Varezys_1
-	#Sonaryen - Sonaryen_1
-	#Urnebar - Urnebar_1
-	#Mataeryon - Mataeryon_1
-	#Belaerys - Belaerys_cob_1
+    #The Dragonlords
+    #Aurion - Varezys_1
+    #Sonaryen - Sonaryen_1
+    #Urnebar - Urnebar_1
+    #Mataeryon - Mataeryon_1
+    #Belaerys - Belaerys_cob_1
 
 
-	on_setup = {
-		debug_log = "Aurion Century of Blood Initialized"
-		##################################
-		#Initialise Events
+    on_setup = {
+        debug_log = "Aurion Century of Blood Initialized"
+        ##################################
+        #Initialise Events
 
-		#Gather the Dragonlords!
-		# add_to_variable_list = {
-		# 	name = emperor_of_valyria
-		# 	target = character:Varezys_1 #Aurion
-		# }
-		# add_to_variable_list = {
-		# 	name = dragonlord_of_valyria
-		# 	target = character:Mataeryon_1 #Mataeryon
-		# }
-		# add_to_variable_list = {
-		# 	name = dragonlord_of_valyria
-		# 	target = character:Urnebar_1 #Urnebar
-		# }
-		# add_to_variable_list = {
-		# 	name = dragonlord_of_valyria
-		# 	target = character:Sonaryen_1 #Sonaryen
-		# }
-		# add_to_variable_list = {
-		# 	name = dragonlord_of_valyria
-		# 	target = character:Belaerys_cob_1 #Belaerys
-		# }
-		#New Valyria Conquest counter
-		set_variable = {
-			name = new_valyria_conquest
-			value = 0
-		}
-		# add_to_variable_list = {
-		# 	name = restore_valyria
-		# 	target = character:Varezys_1 #Aurion
-		# }
-	}
+        #Gather the Dragonlords!
+        # add_to_variable_list = {
+        # 	name = emperor_of_valyria
+        # 	target = character:Varezys_1 #Aurion
+        # }
+        # add_to_variable_list = {
+        # 	name = dragonlord_of_valyria
+        # 	target = character:Mataeryon_1 #Mataeryon
+        # }
+        # add_to_variable_list = {
+        # 	name = dragonlord_of_valyria
+        # 	target = character:Urnebar_1 #Urnebar
+        # }
+        # add_to_variable_list = {
+        # 	name = dragonlord_of_valyria
+        # 	target = character:Sonaryen_1 #Sonaryen
+        # }
+        # add_to_variable_list = {
+        # 	name = dragonlord_of_valyria
+        # 	target = character:Belaerys_cob_1 #Belaerys
+        # }
+        #New Valyria Conquest counter
+        set_variable = {
+            name = new_valyria_conquest
+            value = 0
+        }
+        # add_to_variable_list = {
+        # 	name = restore_valyria
+        # 	target = character:Varezys_1 #Aurion
+        # }
+    }
 
-	on_owner_death = {
-		if = {
-			limit = {
-				character:Varezys_1 = {
-					var:cob_restore_valyria = flag:positive
+    on_owner_death = {
+        if = {
+            limit = {
+                character:Varezys_1 = {
+                    var:cob_restore_valyria = flag:positive
+                }
+            }
+            character:Varezys_1.location.barony.title_province = {
+                add_special_building = aurions_lost_expedition
+            }
+        }
+        character:Varezys_1 = {
+            destroy_all_event_troops = yes
+        }
+        character:dragon_vassarion = {
+			if = {
+				limit = {
+					is_alive = yes
 				}
+				death = { death_reason = death_vanished }
 			}
-			character:Varezys_1.location.barony.title_province = {
-				add_special_building = aurions_lost_expedition
-			}
-		}
-		cob_aurion_artifact_yeet_effect = yes
-		end_story = yes 
-	}
+        }
+        cob_aurion_artifact_yeet_effect = yes
+        end_story = yes
+    }
 
 
-	# # General daily checks
-	# effect_group = {
-	# 	days = 15
+    # # General daily checks
+    # effect_group = {
+    # 	days = 15
 
-	# 	triggered_effect = {
-	# 		cob_aurion_event_character_murder_effect = yes
-	# 	}
-	# }
+    # 	triggered_effect = {
+    # 		cob_aurion_event_character_murder_effect = yes
+    # 	}
+    # }
 }
 
 # story_cob_tommen = {
@@ -121,10 +132,10 @@
 # 		end_story = yes
 # 	}
 
-	# General daily checks
-	# effect_group = {
-	# 	days = 1
-	# }
+# General daily checks
+# effect_group = {
+# 	days = 1
+# }
 # }
 
 # story_cob_hoare = {
