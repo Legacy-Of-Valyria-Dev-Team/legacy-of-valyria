@@ -1,0 +1,72 @@
+widget = {
+	allow_outside = yes
+	name = "lv_find_dragonblood"
+	size = { 440 340 }
+
+	vbox = {
+		allow_outside = yes
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+		position = { 0 4 } # Pushes the box around
+		datacontext = "[GetPlayer.MakeScope]" # Needs player scope to reference stored values
+
+		scrollbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			blockoverride "scrollbox_content" {
+				vbox = {
+					datamodel = "[Scope.GetList('dragonblood_dynasty')]"
+
+					item = {
+						button_standard = {
+							size = { 400 108 } # Size of the button frame borders; needs to fit within the widget size
+							datacontext = "[Scope.GetCharacter]"
+							hbox = {
+								vbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									spacing = -10
+									margin_top = -5
+
+									text_single = {
+										layoutpolicy_horizontal = expanding
+										text = lv_find_dragonblood_title
+										max_width = 240
+										using = Font_Size_Medium
+										align = center
+										margin = { 15 0 }
+										autoresize = yes
+									}
+								}
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									spacing = -2
+									margin_right = 1
+									expand = {}
+									hbox = {
+										layoutpolicy_vertical = expanding
+										portrait_head_small = {
+											datacontext = "[Scope.GetCharacter]"
+											#blockoverride "coa" {}
+											blockoverride "opinion_box" {}
+											# The normal COA is blockoverride'd since it disappears if the character becomes landless, so it's forced fetched with the coa_house_tiny block
+											coa_house_tiny = {
+												datacontext = "[Scope.GetCharacter.GetHouse]"
+												parentanchor = bottom|left
+												position = { 0 10 }
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}
+				}
+				spacer = { size = { 0 20 } }
+			}
+		}
+	}
+}
