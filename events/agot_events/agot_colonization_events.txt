@@ -137,6 +137,24 @@ agot_colonization_events.0006 = {
 							}
 						}
 					}
+					#Pirate AI Blocks
+					trigger_if = {
+						limit = {
+							title_province ?= {
+								geographical_region = historical_pirate_region
+							}
+						}
+						root = {
+							OR = {
+								government_has_flag = government_is_pirate
+								has_trait = ambitious
+								AND = {
+									ai_boldness >= very_high_positive_ai_value
+									ai_rationality >= high_positive_ai_value
+								}
+							}
+						}
+					}
 
 					# LEGACY OF VALYRIA ADDED
 					trigger_if = {
@@ -5825,6 +5843,10 @@ agot_colonization_events.1501 = {
 		make_settlement_county_wilderness = {
 			COUNTY = scope:obstacle_province.county
 		}
+		hidden_effect = {
+			scope:obstacle_province = { remove_building = pirate_remnants_cleared }
+			scope:obstacle_province = { add_building = pirate_remnants }
+		}
 
 		stress_impact = {
 			lazy = medium_stress_impact_loss
@@ -5976,6 +5998,10 @@ agot_colonization_events.1502 = {
 		name = agot_colonization_events.1502.c
 		make_settlement_county_wilderness = {
 			COUNTY = scope:obstacle_province.county
+		}
+		hidden_effect = {
+			scope:obstacle_province = { remove_building = pirate_remnants_cleared }
+			scope:obstacle_province = { add_building = pirate_remnants }
 		}
 
 		stress_impact = {
@@ -6304,6 +6330,15 @@ agot_colonization_events.1504 = {
 		ai_chance = {
 			base = 100
 		}
+	}
+}
+
+agot_colonization_events.1580 = {
+	hidden = yes
+
+	immediate = {
+		scope:obstacle_province = { remove_building = pirate_remnants_cleared }
+		scope:obstacle_province = { add_building = pirate_remnants }
 	}
 }
 

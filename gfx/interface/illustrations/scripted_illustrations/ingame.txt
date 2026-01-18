@@ -7401,30 +7401,10 @@ character_view_bg = {
 		}
 	}
 
-	environment = {
-		reference = "environment_event_mountains"
-
-		trigger = {
-			exists = location
-			OR = {
-				agot_is_graphical_travelling_trigger = yes
-				is_in_army = yes
-			}
-			trigger_if = {
-				limit = {
-					exists = involved_activity
-				}
-				NOT = { location = involved_activity.activity_location }
-			}
-			location = {
-				agot_is_glacier_terrain = yes
-			}
-			is_character_window_main_character = yes
-		}
-	}
+	
 
 	environment = {
-		reference = "environment_event_mountains"
+		reference = "agot_frozen_flats"
 
 		trigger = {
 			OR = {
@@ -7624,7 +7604,7 @@ character_view_bg = {
 	}
 
 	environment = {
-		reference = "environment_event_steppe"
+		reference = "agot_cloud_forest"
 
 		trigger = {
 			exists = location
@@ -7646,7 +7626,7 @@ character_view_bg = {
 	}
 
 	environment = {
-		reference = "environment_event_steppe"
+		reference = "agot_cloud_forest"
 
 		trigger = {
 			OR = {
@@ -12310,6 +12290,7 @@ character_view_bg = {
 						capital_county = title:c_kings_landing
 						has_title = title:c_kings_landing
 					}
+					location.county ?= title:c_kings_landing
 				}
 				AND = {
 					exists = betrothed
@@ -12318,6 +12299,7 @@ character_view_bg = {
 						capital_county = title:c_kings_landing
 						has_title = title:c_kings_landing
 					}
+					location.county ?= title:c_kings_landing
 				}
 				AND = {
 					#AGOT Modified
@@ -12360,6 +12342,7 @@ character_view_bg = {
 					exists = capital_county
 					capital_county = title:c_kings_landing
 					has_title = title:c_kings_landing
+					location.county ?= title:c_kings_landing
 				}
 				AND = {
 					exists = primary_spouse
@@ -12369,6 +12352,7 @@ character_view_bg = {
 						capital_county = title:c_kings_landing
 						has_title = title:c_kings_landing
 					}
+					location.county ?= title:c_kings_landing
 				}
 				AND = {
 					exists = betrothed
@@ -12377,6 +12361,7 @@ character_view_bg = {
 						capital_county = title:c_kings_landing
 						has_title = title:c_kings_landing
 					}
+					location.county ?= title:c_kings_landing
 				}
 				AND = {
 					#AGOT Modified
@@ -12449,13 +12434,13 @@ character_view_bg = {
 					government_has_flag = government_is_landless_adventurer
 					location.county ?= title:c_dragonstone
 				}
-				AND = {
-					exists = primary_spouse
-					NOT = { is_ruler = yes }
-					primary_spouse = {
-						location.county ?= title:c_dragonstone
-					}
-				}
+				# AND = {
+				# 	exists = primary_spouse
+				# 	NOT = { is_ruler = yes }
+				# 	primary_spouse = {
+				# 		location.county ?= title:c_dragonstone
+				# 	}
+				# }
 			}
 		}
 	}
@@ -12502,13 +12487,13 @@ character_view_bg = {
 					government_has_flag = government_is_landless_adventurer
 					location.county ?= title:c_dragonstone
 				}
-				AND = {
-					exists = primary_spouse
-					NOT = { is_ruler = yes }
-					primary_spouse = {
-						location.county ?= title:c_dragonstone
-					}
-				}
+				# AND = {
+				# 	exists = primary_spouse
+				# 	NOT = { is_ruler = yes }
+				# 	primary_spouse = {
+				# 		location.county ?= title:c_dragonstone
+				# 	}
+				# }
 			}
 		}
 	}
@@ -12517,96 +12502,262 @@ character_view_bg = {
 	### Summerhall THRONEROOM ###
 	##############################
 
-	# Summerhall
-	# texture = {
-	# 	reference = "event_scenes/agot_summerhall.dds"
+	#Summerhall Restored
+	texture = {
+		reference = "event_scenes/agot_summerhall.dds"
 
-	# 	trigger = {
-	# 		OR = {
-	# 			AND = {
-	# 				exists = capital_county
-	# 				capital_county = title:c_summerfield
-	# 				has_title = title:c_summerfield
-	# 			}
-	# 			AND = {
-	# 				exists = primary_spouse
-	# 				primary_spouse = {
-	# 					NOT = { is_ruler = yes }
-	# 					exists = capital_county
-	# 					capital_county = title:c_summerfield
-	# 					has_title = title:c_summerfield
-	# 				}
-	# 			}
-	# 			AND = {
-	# 				exists = betrothed
-	# 				betrothed = {
-	# 					exists = capital_county
-	# 					capital_county = title:c_summerfield
-	# 					has_title = title:c_summerfield
-	# 				}
-	# 			}
-	# 			AND = {
-	# 				#AGOT Modified
-	# 				#exists = host
-	# 				#host = {
-	# 				agot_get_graphical_host_trigger = yes
-	# 				scope:graphical_host ?= {
-	# 					exists = capital_county
-	# 					capital_county = title:c_summerfield
-	# 					has_title = title:c_summerfield
-	# 				}
-	# 			}
-	# 		}
-	# 	}
-	# }
+		trigger = {
+			OR = {
+				AND = {
+					exists = capital_county
+					capital_county = title:c_summerfield
+					has_title = title:c_summerfield
+					has_title = title:b_summerhall
+					any_directly_owned_province = {
+						OR = {
+							has_building = agot_summerhall_01
+							has_building = agot_summerhall_ruins_02
+						}
+					}
+				}
+				AND = {
+					exists = primary_spouse
+					primary_spouse = {
+						NOT = { is_ruler = yes }
+						exists = capital_county
+						capital_county = title:c_summerfield
+						has_title = title:c_summerfield
+						has_title = title:b_summerhall
+						any_directly_owned_province = {
+							OR = {
+								has_building = agot_summerhall_01
+								has_building = agot_summerhall_ruins_02
+							}
+						}
+					}
+				}
+				AND = {
+					exists = betrothed
+					betrothed = {
+						exists = capital_county
+						capital_county = title:c_summerfield
+						has_title = title:c_summerfield
+						has_title = title:b_summerhall
+						any_directly_owned_province = {
+							OR = {
+								has_building = agot_summerhall_01
+								has_building = agot_summerhall_ruins_02
+							}
+						}
+					}
+				}
+				AND = {
+					#AGOT Modified
+					#exists = host
+					#host = {
+					agot_get_graphical_host_trigger = yes
+					scope:graphical_host ?= {
+						exists = capital_county
+						capital_county = title:c_summerfield
+						has_title = title:c_summerfield
+						has_title = title:b_summerhall
+						any_directly_owned_province = {
+							OR = {
+								has_building = agot_summerhall_01
+								has_building = agot_summerhall_ruins_02
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	
-	# environment = {
-	# 	reference = "environment_throneroom_summerhall"
+	environment = {
+		reference = "environment_throneroom_summerhall"
 
-	# 	trigger = {
-	# 		OR = {
-	# 			AND = {
-	# 				exists = capital_county
-	# 				capital_county = title:c_summerfield
-	# 				has_title = title:c_summerfield
-	# 			}
-	# 			AND = {
-	# 				exists = primary_spouse
-	# 				primary_spouse = {
-	# 					NOT = { is_ruler = yes }
-	# 					exists = capital_county
-	# 					capital_county = title:c_summerfield
-	# 					has_title = title:c_summerfield
-	# 				}
-	# 			}
-	# 			AND = {
-	# 				exists = betrothed
-	# 				betrothed = {
-	# 					exists = capital_county
-	# 					capital_county = title:c_summerfield
-	# 					has_title = title:c_summerfield
-	# 				}
-	# 			}
-	# 			AND = {
-	# 				#AGOT Modified
-	# 				#exists = host
-	# 				#host = {
-	# 				agot_get_graphical_host_trigger = yes
-	# 				scope:graphical_host ?= {
-	# 					exists = capital_county
-	# 					capital_county = title:c_summerfield
-	# 					has_title = title:c_summerfield
-	# 				}
-	# 			}
-	# 		}
-	# 	}
-	# }
+		trigger = {
+			OR = {
+				AND = {
+					exists = capital_county
+					capital_county = title:c_summerfield
+					has_title = title:c_summerfield
+					has_title = title:b_summerhall
+					any_directly_owned_province = {
+						OR = {
+							has_building = agot_summerhall_01
+							has_building = agot_summerhall_ruins_02
+						}
+					}
+				}
+				AND = {
+					exists = primary_spouse
+					primary_spouse = {
+						NOT = { is_ruler = yes }
+						exists = capital_county
+						capital_county = title:c_summerfield
+						has_title = title:c_summerfield
+						has_title = title:b_summerhall
+						any_directly_owned_province = {
+							OR = {
+								has_building = agot_summerhall_01
+								has_building = agot_summerhall_ruins_02
+							}
+						}
+					}
+				}
+				AND = {
+					exists = betrothed
+					betrothed = {
+						exists = capital_county
+						capital_county = title:c_summerfield
+						has_title = title:c_summerfield
+						has_title = title:b_summerhall
+						any_directly_owned_province = {
+							OR = {
+								has_building = agot_summerhall_01
+								has_building = agot_summerhall_ruins_02
+							}
+						}
+					}
+				}
+				AND = {
+					#AGOT Modified
+					#exists = host
+					#host = {
+					agot_get_graphical_host_trigger = yes
+					scope:graphical_host ?= {
+						exists = capital_county
+						capital_county = title:c_summerfield
+						has_title = title:c_summerfield
+						has_title = title:b_summerhall
+						any_directly_owned_province = {
+							OR = {
+								has_building = agot_summerhall_01
+								has_building = agot_summerhall_ruins_02
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	##############################
 	### Harrenhall THRONEROOM ###
 	##############################
 
 	# Harrenhall
+	texture = {
+		reference = "event_scenes/agot_harrenhall_original.dds"
+
+		trigger = {
+			OR = {
+				AND = {
+					exists = capital_county
+					capital_county = title:c_harrenhal
+					has_title = title:c_harrenhal
+					capital_province = {
+						has_building = harrenhal_01
+					}
+				}
+				AND = {
+					exists = primary_spouse
+					primary_spouse = {
+						NOT = { is_ruler = yes }
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							has_building = harrenhal_01
+						}
+					}
+				}
+				AND = {
+					exists = betrothed
+					betrothed = {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							has_building = harrenhal_01
+						}
+					}
+				}
+				AND = {
+					#AGOT Modified
+					#exists = host
+					#host = {
+					agot_get_graphical_host_trigger = yes
+					scope:graphical_host ?= {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							has_building = harrenhal_01
+						}						
+					}
+				}
+			}
+		}
+	}
+
+	# Harrenhall
+	environment = {
+		reference = "environment_throneroom_harrenhall_original"
+
+		trigger = {
+			OR = {
+				AND = {
+					exists = capital_county
+					capital_county = title:c_harrenhal
+					has_title = title:c_harrenhal
+					capital_province = {
+						has_building = harrenhal_01
+					}
+				}
+				AND = {
+					exists = primary_spouse
+					primary_spouse = {
+						NOT = { is_ruler = yes }
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							has_building = harrenhal_01
+						}
+					}
+				}
+				AND = {
+					exists = betrothed
+					betrothed = {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							has_building = harrenhal_01
+						}
+					}
+				}
+				AND = {
+					#AGOT Modified
+					#exists = host
+					#host = {
+					agot_get_graphical_host_trigger = yes
+					scope:graphical_host ?= {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							has_building = harrenhal_01
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Harrenhall Ruins
 	texture = {
 		reference = "event_scenes/agot_harrenhall.dds"
 
@@ -12616,6 +12767,16 @@ character_view_bg = {
 					exists = capital_county
 					capital_county = title:c_harrenhal
 					has_title = title:c_harrenhal
+					capital_province = {
+						OR = {
+							has_building = ruins_harrenhal_01
+							has_building = ruins_harrenhal_02
+							has_building = ruins_harrenhal_03
+							has_building = ruins_harrenhal_04
+							has_building = ruins_harrenhal_05
+							has_building = ruins_harrenhal_06
+						}
+					}
 				}
 				AND = {
 					exists = primary_spouse
@@ -12624,6 +12785,16 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_harrenhal
 						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = ruins_harrenhal_01
+								has_building = ruins_harrenhal_02
+								has_building = ruins_harrenhal_03
+								has_building = ruins_harrenhal_04
+								has_building = ruins_harrenhal_05
+								has_building = ruins_harrenhal_06
+							}
+						}
 					}
 				}
 				AND = {
@@ -12632,6 +12803,16 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_harrenhal
 						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = ruins_harrenhal_01
+								has_building = ruins_harrenhal_02
+								has_building = ruins_harrenhal_03
+								has_building = ruins_harrenhal_04
+								has_building = ruins_harrenhal_05
+								has_building = ruins_harrenhal_06
+							}
+						}
 					}
 				}
 				AND = {
@@ -12643,12 +12824,23 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_harrenhal
 						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = ruins_harrenhal_01
+								has_building = ruins_harrenhal_02
+								has_building = ruins_harrenhal_03
+								has_building = ruins_harrenhal_04
+								has_building = ruins_harrenhal_05
+								has_building = ruins_harrenhal_06
+							}
+						}					
 					}
 				}
 			}
 		}
 	}
-	
+
+	# Harrenhall Ruins
 	environment = {
 		reference = "environment_throneroom_harrenhall"
 
@@ -12658,6 +12850,16 @@ character_view_bg = {
 					exists = capital_county
 					capital_county = title:c_harrenhal
 					has_title = title:c_harrenhal
+					capital_province = {
+						OR = {
+							has_building = ruins_harrenhal_01
+							has_building = ruins_harrenhal_02
+							has_building = ruins_harrenhal_03
+							has_building = ruins_harrenhal_04
+							has_building = ruins_harrenhal_05
+							has_building = ruins_harrenhal_06
+						}
+					}
 				}
 				AND = {
 					exists = primary_spouse
@@ -12666,6 +12868,16 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_harrenhal
 						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = ruins_harrenhal_01
+								has_building = ruins_harrenhal_02
+								has_building = ruins_harrenhal_03
+								has_building = ruins_harrenhal_04
+								has_building = ruins_harrenhal_05
+								has_building = ruins_harrenhal_06
+							}
+						}
 					}
 				}
 				AND = {
@@ -12674,6 +12886,16 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_harrenhal
 						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = ruins_harrenhal_01
+								has_building = ruins_harrenhal_02
+								has_building = ruins_harrenhal_03
+								has_building = ruins_harrenhal_04
+								has_building = ruins_harrenhal_05
+								has_building = ruins_harrenhal_06
+							}
+						}
 					}
 				}
 				AND = {
@@ -12685,6 +12907,150 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_harrenhal
 						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = ruins_harrenhal_01
+								has_building = ruins_harrenhal_02
+								has_building = ruins_harrenhal_03
+								has_building = ruins_harrenhal_04
+								has_building = ruins_harrenhal_05
+								has_building = ruins_harrenhal_06
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Harrenhall Restored
+	texture = {
+		reference = "event_scenes/agot_harrenhall_rebuilt.dds"
+
+		trigger = {
+			OR = {
+				AND = {
+					exists = capital_county
+					capital_county = title:c_harrenhal
+					has_title = title:c_harrenhal
+					capital_province = {
+						OR = {
+							has_building = generic_harrenhal_01
+							has_building = ruins_harrenhal_07
+						}
+					}
+				}
+				AND = {
+					exists = primary_spouse
+					primary_spouse = {
+						NOT = { is_ruler = yes }
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = generic_harrenhal_01
+								has_building = ruins_harrenhal_07
+							}
+						}
+					}
+				}
+				AND = {
+					exists = betrothed
+					betrothed = {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = generic_harrenhal_01
+								has_building = ruins_harrenhal_07
+							}
+						}
+					}
+				}
+				AND = {
+					#AGOT Modified
+					#exists = host
+					#host = {
+					agot_get_graphical_host_trigger = yes
+					scope:graphical_host ?= {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = generic_harrenhal_01
+								has_building = ruins_harrenhal_07
+							}
+						}					
+					}
+				}
+			}
+		}
+	}
+
+	# Harrenhall Restored
+	environment = {
+		reference = "environment_throneroom_harrenhall_rebuilt"
+
+		trigger = {
+			OR = {
+				AND = {
+					exists = capital_county
+					capital_county = title:c_harrenhal
+					has_title = title:c_harrenhal
+					capital_province = {
+						OR = {
+							has_building = generic_harrenhal_01
+							has_building = ruins_harrenhal_07
+						}
+					}
+				}
+				AND = {
+					exists = primary_spouse
+					primary_spouse = {
+						NOT = { is_ruler = yes }
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = generic_harrenhal_01
+								has_building = ruins_harrenhal_07
+							}
+						}
+					}
+				}
+				AND = {
+					exists = betrothed
+					betrothed = {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = generic_harrenhal_01
+								has_building = ruins_harrenhal_07
+							}
+						}
+					}
+				}
+				AND = {
+					#AGOT Modified
+					#exists = host
+					#host = {
+					agot_get_graphical_host_trigger = yes
+					scope:graphical_host ?= {
+						exists = capital_county
+						capital_county = title:c_harrenhal
+						has_title = title:c_harrenhal
+						capital_province = {
+							OR = {
+								has_building = generic_harrenhal_01
+								has_building = ruins_harrenhal_07
+							}
+						}
 					}
 				}
 			}
@@ -12925,6 +13291,7 @@ character_view_bg = {
 					exists = capital_county
 					capital_county = title:c_high_tide
 					has_title = title:c_high_tide
+					location.county ?= title:c_high_tide
 				}
 				AND = {
 					exists = primary_spouse
@@ -12933,6 +13300,7 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_high_tide
 						has_title = title:c_high_tide
+						location.county ?= title:c_high_tide
 					}
 				}
 				AND = {
@@ -12941,6 +13309,7 @@ character_view_bg = {
 						exists = capital_county
 						capital_county = title:c_high_tide
 						has_title = title:c_high_tide
+						location.county ?= title:c_high_tide
 					}
 				}
 				AND = {
