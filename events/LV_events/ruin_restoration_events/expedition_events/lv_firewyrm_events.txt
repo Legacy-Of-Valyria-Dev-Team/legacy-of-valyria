@@ -5,6 +5,15 @@
 # lv_firewyrm_event.0001 - Firewyrm encounter
 # lv_firewyrm_event.0100 - Firewyrm gone
 # lv_firewyrm_event.0200 - Attempt to place firewyrm in dragonpit
+# lv_firewyrm_event.1000 - Enrage
+# lv_firewyrm_event.1010 - Firewyrm Agitated Warning
+# lv_firewyrm_event.1011 - Placate Firewyrm
+# lv_firewyrm_event.1012 - Placate Firewyrm: Critical Success
+# lv_firewyrm_event.1013 - Placate Firewyrm: Success
+# lv_firewyrm_event.1014 - Placate Firewyrm: Failure
+# lv_firewyrm_event.1015 - Placate Firewyrm: Critical Failure
+
+# lv_firewyrm_event.1020 - Rampage Warning
 
 # Firewyrm encounter
 lv_firewyrm_event.0001 = {
@@ -113,18 +122,10 @@ lv_firewyrm_event.0001 = {
 		if = {
 			limit = { NOT = { exists = scope:firewyrm } }
 			if = {
-				limit = { exists = scope:firewyrm_source }
-				lv_spawn_firewyrm_effect = {
-					LOCATION = scope:firewyrm_source
-					GENERATE_BLOCKER = yes
-				}
+				limit = { NOT = { exists = scope:firewyrm_source } }
+				location = { save_scope_as = firewyrm_source }
 			}
-			else = {
-				lv_spawn_firewyrm_effect = {
-					LOCATION = location
-					GENERATE_BLOCKER = no
-				}
-			}
+			lv_spawn_firewyrm_effect = { LOCATION = scope:firewyrm_source }
 		}
 		if = {
 			limit = {
@@ -344,6 +345,1020 @@ lv_firewyrm_event.0100 = {
 #
 #	option = { name = lv_firewyrm_event.0200.a }
 #}
+
+lv_firewyrm_event.1000 = {
+	type = character_event
+	title = lv_firewyrm_event.1000.t
+	desc = lv_firewyrm_event.1000.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		#widget = {
+		#	gui = event_window_widget_vfx_heavy_smoke
+		#	container = foreground_shader_vfx_container
+		#}
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	immediate = {
+		scope:firewyrm_location = {
+			if = {
+				limit = { NOT = { has_holding_type = wilderness_holding } }
+				county = { agot_dragon_damage_county_effect = yes }
+				if = {
+					limit = { has_holding_type = settlement_holding }
+					random_list = {
+						80 = { lv_downgrade_settlement_progress_effect = yes }
+						20 = { # Decimate
+							county = {
+								if = {
+									limit = { development_level >= 1 }
+									change_development_level = -1
+								}
+								else = { make_settlement_county_wilderness = { COUNTY = this } }
+							}
+						}
+					}
+				}
+				else_if = {
+					limit = { has_holding_type = ruin_holding }
+					if = {
+						limit = { has_building_or_higher = small_ruin_01 }
+						if = {
+							limit = { has_building = small_ruin_04 }
+							remove_building = small_ruin_04
+							hidden_effect = { add_building = small_ruin_03 }
+						}
+						else_if = {
+							limit = { has_building = small_ruin_03 }
+							remove_building = small_ruin_03
+							hidden_effect = { add_building = small_ruin_02 }
+						}
+						else_if = {
+							limit = { has_building = small_ruin_02 }
+							remove_building = small_ruin_02
+							hidden_effect = { add_building = small_ruin_01 }
+						}
+					}
+					else_if = {
+						limit = { has_building_or_higher = medium_ruin_01 }
+						if = {
+							limit = { has_building = medium_ruin_04 }
+							remove_building = medium_ruin_04
+							hidden_effect = { add_building = medium_ruin_03 }
+						}
+						else_if = {
+							limit = { has_building = medium_ruin_03 }
+							remove_building = medium_ruin_03
+							hidden_effect = { add_building = medium_ruin_02 }
+						}
+						else_if = {
+							limit = { has_building = medium_ruin_02 }
+							remove_building = medium_ruin_02
+							hidden_effect = { add_building = medium_ruin_01 }
+						}
+					}
+					else_if = {
+						limit = { has_building_or_higher = large_ruin_01 }
+						if = {
+							limit = { has_building = large_ruin_04 }
+							remove_building = large_ruin_04
+							hidden_effect = { add_building = large_ruin_03 }
+						}
+						else_if = {
+							limit = { has_building = large_ruin_03 }
+							remove_building = large_ruin_03
+							hidden_effect = { add_building = large_ruin_02 }
+						}
+						else_if = {
+							limit = { has_building = large_ruin_02 }
+							remove_building = large_ruin_02
+							hidden_effect = { add_building = large_ruin_01 }
+						}
+					}
+				}
+				else = {
+					county = {
+						if = {
+							limit = { development_level >= 1 }
+							change_development_level = -1
+						}
+						else = { agot_ruin_county_effect = yes }
+					}
+				}
+			}
+		}
+	}
+
+	option = { name = lv_firewyrm_event.1000.a }
+}
+
+# Firewyrm Agitated Warning
+lv_firewyrm_event.1010 = {
+	type = character_event
+	title = lv_firewyrm_event.1010.t
+	desc = lv_firewyrm_event.1010.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_event.1010.a
+		custom_tooltip = lv_firewyrm_event.1010.a.tt
+		custom_tooltip = lv_firewyrm_event.1010.a.tt.interaction
+	}
+}
+
+# Placate Firewyrm
+lv_firewyrm_event.1011 = {
+	type = character_event
+	title = lv_firewyrm_event.1011.t
+	desc = lv_firewyrm_event.1011.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	# Sacrifice
+	option = {
+		name = lv_firewyrm_event.1011.sacrifice
+		custom_tooltip = lv_firewyrm_event.1011.sacrifice.tt
+	}
+
+	# Precious Metals
+	option = {
+		name = lv_firewyrm_event.1011.precious_metals
+		custom_tooltip = lv_firewyrm_event.1011.precious_metals.tt
+	}
+
+	# Livestock
+	option = {
+		name = lv_firewyrm_event.1011.livestock
+		custom_tooltip = lv_firewyrm_event.1011.livestock.tt
+		scope:firewyrm_location.county = {
+			add_county_modifier = agot_wild_dragon_killed_livestock
+			random_list = {
+				50 = { # Success
+					modifier = {
+						add = {
+							value = development_level
+							divide = medium_development_level
+							multiply = 100
+							divide = 2
+						}
+					}
+					custom_tooltip = {
+						text = lv_firewyrm_event.1011.tt.success
+						root = { trigger_event = lv_firewyrm_event.1013 }
+					}
+				}
+				50 = { # Failure
+					modifier = {
+						add = {
+							value = medium_development_level
+							divide = development_level
+							multiply = 100
+							divide = 2
+						}
+					}
+					random_list = {
+						90 = { # Standard Failure
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.failure
+								root = { trigger_event = lv_firewyrm_event.1014 }
+							}
+						}
+						10 = { # Critical Failure
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.critical_failure
+								root = { trigger_event = lv_firewyrm_event.1015 }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Nevermind
+	option = { name = lv_firewyrm_event.1011.nevermind }
+}
+
+# Placate Firewyrm: Critical Success
+lv_firewyrm_event.1012 = {
+	type = character_event
+	title = lv_firewyrm_event.1012.t
+	desc = lv_firewyrm_event.1012.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	option = { name = lv_firewyrm_event.1012.a }
+}
+
+# Placate Firewyrm: Success
+lv_firewyrm_event.1013 = {
+	type = character_event
+	title = lv_firewyrm_event.1013.t
+	desc = lv_firewyrm_event.1013.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	option = { name = lv_firewyrm_event.1013.a }
+
+	after = { scope:firewyrm = { lv_firewyrm_change_mood_effect = { MOOD = dormant } } }
+}
+
+# Placate Firewyrm: Failure
+lv_firewyrm_event.1014 = {
+	type = character_event
+	title = lv_firewyrm_event.1014.t
+	desc = lv_firewyrm_event.1014.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	option = { name = lv_firewyrm_event.1014.a }
+}
+
+# Placate Firewyrm: Critical Failure
+lv_firewyrm_event.1015 = {
+	type = character_event
+	title = lv_firewyrm_event.1015.t
+	desc = lv_firewyrm_event.1015.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	option = { name = lv_firewyrm_event.1015.a }
+
+	after = { scope:firewyrm = { lv_firewyrm_change_mood_effect = { MOOD = enraged } } }
+}
+
+# Rampage Warning
+lv_firewyrm_event.1020 = {
+	type = character_event
+	title = lv_firewyrm_event.1020.t
+	desc = lv_firewyrm_event.1020.desc
+
+	window = agot_dragon_character_event
+	theme = dragon
+
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_desert_terrain = yes
+					agot_is_desert_mountains_terrain = yes
+				}
+			}
+		}
+		reference = ep2_travel_settlement_ruin_desert
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_drylands_terrain = yes
+					agot_is_oasis_terrain = yes
+					agot_is_canyon_terrain = yes
+				}
+			}
+		}
+		reference = drylands
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_steppe_terrain = yes
+				}
+			}
+		}
+		reference = mpo_steppe_evening
+	}
+	override_background = {
+		trigger = {
+			scope:firewyrm_location = {
+				lv_valyria_subregion_restored = yes
+				OR = {
+					agot_is_taiga_terrain = yes
+					agot_is_taiga_bog_terrain = yes
+					agot_is_glacier_terrain = yes
+					agot_is_frozen_flats_terrain = yes
+				}
+			}
+		}
+		reference = bp3_steppe_winter
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
+		reference = plains
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
+		reference = lv_valyria_surface_partial_rehabilitation
+	}
+	override_background = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = lv_valyria_surface
+	}
+	override_effect_2d = {
+		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
+		reference = smoke
+	}
+
+	left_portrait = {
+		character = root
+		animation = fear
+		camera = camera_human_back_to_camera
+	}
+
+	right_portrait = {
+        character = scope:firewyrm
+		animation = dragon_main
+		camera = lv_camera_firewyrm_event_right
+
+		triggered_outfit = {
+			outfit_tags = {
+				dynamic_camera_zoom_0.8
+				no_clothes
+				bald
+			}
+		}
+    }
+
+	widgets = {
+		widget = {
+			gui = "agot_event_shader_sparks"
+			container = "agot_shader_event_foreground"
+		}
+	}
+
+	option = {
+		name = lv_firewyrm_event.1020.a
+		custom_tooltip = lv_firewyrm_event.1020.a.tt
+	}
+}
 
 namespace = lv_firewyrm_duel
 

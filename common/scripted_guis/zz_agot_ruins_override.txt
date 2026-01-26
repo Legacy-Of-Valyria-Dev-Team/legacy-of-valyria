@@ -2,120 +2,98 @@
 	scope = province
 	is_valid = {
 		save_temporary_scope_as = ruin
-		trigger_if = { # Default AGOT ruin restoration
-			limit = { has_game_rule = lv_colonisation_agot }
-			OR = {
-				scope:actor = {
-					OR = {
-						any_character_to_title_neighboring_and_across_water_county = {
-							this = scope:ruin.county
-						}
-						# Ghozai
-						trigger_if = {
-							limit = {
-								title:d_velos = { is_de_jure_liege_or_above_target = scope:ruin.county }
-							}
-							any_sub_realm_county = {
-								is_coastal_county = yes
-								title_province = {
-									OR = {
-										geographical_region = world_essos_painted_mountains
-										geographical_region = world_essos_elyria
-										geographical_region = world_essos_slavers_bay
-									}
-								}
-							}
-						}
-						# Manticore Isles
-						trigger_if = {
-							limit = {
-								title:d_manticore_isles = { is_de_jure_liege_or_above_target = scope:ruin.county }
-							}
-							any_sub_realm_county = {
-								is_coastal_county = yes
-								title_province = {
-									OR = {
-										geographical_region = world_asshai
-										geographical_region = world_marahai # Formerly world_far_essos_volcanos
-									}
-								}
-							}
-						}
-					}
-				}
-				scope:actor = {
-					any_held_title = {
-						is_de_jure_liege_or_above_target = scope:ruin.county
-					}
-				}
-				scope:actor = {
+		OR = {
+			scope:actor = {
+				OR = {
+					any_character_to_title_neighboring_and_across_water_county = { this = scope:ruin.county }
+					# Ghozai
 					trigger_if = {
-						limit = {
-							is_ai = no
-							prestige_level >= 3
-							any_directly_owned_province = {
-								has_building_or_higher = common_tradeport_06
+						limit = { title:d_velos = { is_de_jure_liege_or_above_target = scope:ruin.county } }
+						any_sub_realm_county = {
+							is_coastal_county = yes
+							title_province = {
+								OR = {
+									geographical_region = world_essos_painted_mountains
+									geographical_region = world_essos_elyria
+									geographical_region = world_essos_slavers_bay
+								}
 							}
 						}
-						scope:ruin.county = {
+					}
+					# Manticore Isles
+					trigger_if = {
+						limit = { title:d_manticore_isles = { is_de_jure_liege_or_above_target = scope:ruin.county } }
+						any_sub_realm_county = {
 							is_coastal_county = yes
+							title_province = {
+								OR = {
+									geographical_region = world_asshai
+									geographical_region = world_marahai # Formerly world_far_essos_volcanos
+								}
+							}
 						}
 					}
-					trigger_else = { always = no }
 				}
 			}
+			scope:actor = { any_held_title = { is_de_jure_liege_or_above_target = scope:ruin.county } }
+			scope:actor = {
+				trigger_if = {
+					limit = {
+						is_ai = no
+						prestige_level >= 3
+						any_directly_owned_province = { has_building_or_higher = common_tradeport_06 }
+					}
+					scope:ruin.county = { is_coastal_county = yes }
+				}
+				trigger_else = { always = no }
+			}
+		}
+		trigger_if = {
+			limit = { has_building_or_higher = large_ruin_01 }
 			trigger_if = {
-				limit = { has_building_or_higher = large_ruin_01 }
-				trigger_if = {
-					limit = { has_building = large_ruin_03 }
-					scope:actor = { gold >= 1800 }
-				}
-				trigger_else_if = {
-					limit = { has_building = large_ruin_02 }
-					scope:actor = { gold >= 1200 }
-				}
-				trigger_else = { scope:actor = { gold >= 600 } }
+				limit = { has_building = large_ruin_03 }
+				scope:actor = { gold >= 1800 }
 			}
 			trigger_else_if = {
-				limit = { has_building_or_higher = medium_ruin_01 }
-				trigger_if = {
-					limit = { has_building = medium_ruin_03 }
-					scope:actor = { gold >= 1200 }
-				}
-				trigger_else_if = {
-					limit = { has_building = medium_ruin_02 }
-					scope:actor = { gold >= 800 }
-				}
-				trigger_else = { scope:actor = { gold >= 400 } }
+				limit = { has_building = large_ruin_02 }
+				scope:actor = { gold >= 1200 }
+			}
+			trigger_else = { scope:actor = { gold >= 600 } }
+		}
+		trigger_else_if = {
+			limit = { has_building_or_higher = medium_ruin_01 }
+			trigger_if = {
+				limit = { has_building = medium_ruin_03 }
+				scope:actor = { gold >= 1200 }
 			}
 			trigger_else_if = {
-				limit = { has_building_or_higher = small_ruin_01 }
-				trigger_if = {
-					limit = { has_building = small_ruin_03 }
-					scope:actor = { gold >= 600 }
-				}
-				trigger_else_if = {
-					limit = { has_building = small_ruin_02 }
-					scope:actor = { gold >= 400 }
-				}
-				trigger_else = { scope:actor = { gold >= 200 } }
+				limit = { has_building = medium_ruin_02 }
+				scope:actor = { gold >= 800 }
 			}
-			trigger_else = { always = no }
+			trigger_else = { scope:actor = { gold >= 400 } }
+		}
+		trigger_else_if = {
+			limit = { has_building_or_higher = small_ruin_01 }
+			trigger_if = {
+				limit = { has_building = small_ruin_03 }
+				scope:actor = { gold >= 600 }
+			}
+			trigger_else_if = {
+				limit = { has_building = small_ruin_02 }
+				scope:actor = { gold >= 400 }
+			}
+			trigger_else = { scope:actor = { gold >= 200 } }
 		}
 		trigger_else = {
-			scope:actor = {
-				gold >= lv_settlement_cost
-				NOR = {
-					var:lv_settlement_state ?= flag:planning
-					any_owned_story = {
-						story_type = lv_settlement_story_cycle
-						is_target_in_variable_list = {
-							name = lv_settlement_expeditions
-							target = scope:ruin
-						}
-					}
-				}
+			trigger_if = {
+				limit = { has_building = jungle_ruin_01 }
+				scope:actor = { gold >= 200 }
 			}
+			trigger_else_if = {
+				limit = { has_building = jungle_ruin_deep_01 }
+				scope:actor = { gold >= 400 }
+			}
+			trigger_else = { always = no }
 		}
 	}
 }
@@ -124,140 +102,23 @@
 reconstruct_ruin = {
 	scope = province
 	effect = {
-		save_scope_as = ruin
-		if = { # Default AGOT ruin restoration
-			limit = { has_game_rule = lv_colonisation_agot }
-			if = {
-				limit = { has_building = large_ruin_01 }
-				scope:actor = { remove_short_term_gold = 600 }
-			}
-			else_if = {
-				limit = { has_building = medium_ruin_01 }
-				scope:actor = { remove_short_term_gold = 400 }
-			}
-			else_if = {
-				limit = { has_building = jungle_ruin_01 }
-				scope:actor = { remove_short_term_gold = 200 }
-			}
-			else_if = {
-				limit = { has_building = jungle_ruin_deep_01 }
-				scope:actor = { remove_short_term_gold = 400 }
-			}
-			else = { scope:actor = { remove_short_term_gold = 200 } }
-			scope:actor = { get_title = prev.county }
+		if = {
+			limit = { has_building = large_ruin_01 }
+			scope:actor = { remove_short_term_gold = 600 }
 		}
-		else = {
-			# Trigger the event prompt
-			scope:actor = {
-				if = {
-					limit = { # You ain't slick
-						var:lv_restore_ruins_tooltip ?= scope:ruin
-						gold >= lv_settlement_cost
-					}
-					save_scope_value_as = {
-						name = lv_settlement_cost
-						value = lv_settlement_cost
-					}
-					trigger_event = lv_settlement_event.0001
-				}
-			}
+		else_if = {
+			limit = { has_building = medium_ruin_01 }
+			scope:actor = { remove_short_term_gold = 400 }
 		}
-	}
-}
-
-# WILDERNESS
-agot_can_colonize = {
-	scope = character
-
-	# Triggered at yearly_on_action.txt -> and then agot_colonization_events.0006 at agot_colonization_events.txt
-	ai_is_valid = { always = no }
-
-	is_valid = {
-		exists = root
-
-		NOT = { government_has_flag = government_is_nw }
-		NOT = { government_has_flag = government_is_uninteractable }
-
-		trigger_if = {
-			limit = { has_game_rule = lv_colonisation_agot }
-			gold >= colonize_cost_val
-			trigger_if = {
-				limit = {
-					scope:wilderness ?= { geographical_region = world_westeros_beyond_the_wall }
-					culture = { agot_is_wildling_culture = no }
-					NOT = {
-						any_sub_realm_county = {
-							any_neighboring_county = {
-								this = scope:wilderness.county
-							}
-						}
-					}
-				}
-				custom_tooltip = {
-					text = colonize_btw
-					always = no
-				}
-			}
-			trigger_else = {
-				custom_tooltip = {
-					text = colonize_border_county_trigger_tooltip
-					# Only surrounding lands
-					any_sub_realm_county = {
-						any_title_to_title_neighboring_and_across_water_county = {
-							this = scope:wilderness.county
-						}
-					}
-				}
-			}
-			any_sub_realm_county = {
-				any_title_to_title_neighboring_and_across_water_county = {
-					NOT = { has_county_modifier = block_settlement_ability }
-				}
-			}
-			custom_tooltip = {
-				text = colonization_cooldown
-				NOT = { has_variable = colonization_cooldown }
-			}
+		else_if = {
+			limit = { has_building = jungle_ruin_01 }
+			scope:actor = { remove_short_term_gold = 200 }
 		}
-		trigger_else = {
-			scope:wilderness = { save_temporary_scope_as = ruin }
-			gold >= lv_settlement_cost
-			NOR = {
-				var:lv_settlement_state ?= flag:planning
-				any_owned_story = {
-					story_type = lv_settlement_story_cycle
-					is_target_in_variable_list = {
-						name = lv_settlement_expeditions
-						target = scope:ruin
-					}
-				}
-			}
+		else_if = {
+			limit = { has_building = jungle_ruin_deep_01 }
+			scope:actor = { remove_short_term_gold = 400 }
 		}
-	}
-
-	## Check agot_colonization_effects.txt
-	effect = {
-		custom_tooltip = colonize_land_cost_desc
-		custom_tooltip = colonize_land_holding_desc
-		hidden_effect = {
-			if = {
-				limit = { has_game_rule = lv_colonisation_agot }
-				ai_colonization_effect = { WILDERNESS = scope:wilderness ROOT_SCOPE = root }
-			}
-			else = {
-				scope:wilderness = { save_scope_as = ruin }
-				if = {
-					limit = { # You ain't slick
-						var:lv_restore_ruins_tooltip ?= scope:ruin
-						gold >= lv_settlement_cost
-					}
-					save_scope_value_as = {
-						name = lv_settlement_cost
-						value = lv_settlement_cost
-					}
-					trigger_event = lv_settlement_event.0001
-				}
-			}
-		}
+		else = { scope:actor = { remove_short_term_gold = 200 } }
+		scope:actor = { get_title = prev.county }
 	}
 }

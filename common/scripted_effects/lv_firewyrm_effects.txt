@@ -6,18 +6,12 @@ lv_spawn_firewyrm_effect = {
 		template = lv_firewyrm_template
 		save_scope_as = firewyrm
 		location = $LOCATION$
-		after_creation = { add_character_flag = dragon_idle }
-	}
-	if = {
-		limit = { always = $GENERATE_BLOCKER$ }
-		scope:firewyrm = {
-			create_story = {
-				type = lv_firewyrm_story_cycle
-				save_scope_as = firewyrm_story
-			}
-			custom_tooltip = lv_firewyrm_spawned_tooltip
+		after_creation = {
+			create_story = lv_firewyrm_story_cycle
+			add_character_flag = dragon_idle
 		}
 	}
+	scope:firewyrm = { custom_tooltip = lv_firewyrm_spawned_tooltip }
 }
 
 lv_apply_firewyrm_aging_effect = {
@@ -127,17 +121,49 @@ lv_gen_firewyrm_color_effect = {
 	agot_assign_tertiary_color_effect = yes
 }
 
+
+lv_firewyrm_change_mood_effect = {
+	save_scope_as = firewyrm
+	random_owned_story = {
+		limit = { story_type = lv_firewyrm_story_cycle }
+		set_variable = {
+			name = lv_firewyrm_mood
+			value = flag:$MOOD$
+		}
+		if = { # Warn about firewyrm becoming agitated
+			limit = { var:lv_firewyrm_mood = flag:agitated }
+			scope:firewyrm.location = {
+				save_scope_as = firewyrm_location
+				county ?= { holder = { trigger_event = lv_firewyrm_event.1010 } }
+			}
+		}
+		else_if = { # Start rampage countdown if enraged
+			limit = { var:lv_firewyrm_mood = flag:enraged }
+			set_variable = {
+				name = lv_firewyrm_rampage_countdown
+				value = yes
+				days = 30
+			}
+			scope:firewyrm.location = {
+				save_scope_as = firewyrm_location
+				county ?= { holder = { trigger_event = lv_firewyrm_event.1020 } }
+			}
+		}
+	}
+}
+
 lv_firewyrm_cleared_tooltip_effect = {
 	scope:firewyrm = {
-		if = {
-			limit = {
-				any_owned_story = {
-					story_type = lv_firewyrm_story_cycle
-					var:lv_firewyrm_location ?= { save_temporary_scope_as = lair_location }
-				}
-			}
-			custom_tooltip = lv_firewyrm_cleared_tooltip
-		}
+		#if = {
+		#	limit = {
+		#		any_owned_story = {
+		#			story_type = lv_firewyrm_story_cycle
+		#			var:lv_firewyrm_location ?= { save_temporary_scope_as = lair_location }
+		#		}
+		#	}
+		#	
+		#}
+		custom_tooltip = lv_firewyrm_cleared_tooltip
 	}
 }
 

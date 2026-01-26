@@ -1,0 +1,63 @@
+﻿namespace = lv_wild_dragons_view
+
+# View
+lv_wild_dragons_view.0001 = {
+    type = character_event
+    title = lv_wild_dragons_view.0001.t
+    desc = lv_wild_dragons_view.0001.desc
+    theme = dragon
+
+    left_portrait = {
+        character = scope:advisor
+        animation = throne_room_writer
+    }
+
+    widget = {
+        is_shown = { is_ai = no }
+        gui = "lv_wild_dragons_view"
+        container = "custom_widgets_container"
+    }
+
+    immediate = {
+        if = {
+            limit = { employs_court_position = maester_court_position }
+            random_court_position_holder = {
+                type = maester_court_position
+                save_scope_as = advisor
+            }
+        }
+        else_if = {
+            limit = { any_councillor = {} }
+            random_councillor = { save_scope_as = advisor }
+        }
+        else = { save_scope_as = advisor }
+        scope:province = {
+            every_character_in_location = {
+                limit = {
+                    has_trait = dragon
+			        NOT = { has_character_flag = owned_dragon }
+                }
+                root = {
+                    add_to_variable_list = {
+                        name = wild_dragons
+                        target = prev
+                    }
+                }
+            }
+        }
+    }
+
+    option = { name = lv_wild_dragons_view.0001.a }
+
+    after = {
+        every_in_list = {
+            variable = wild_dragons
+            if = {
+                limit = { is_alive = yes }
+                remove_variable = si_selecting_character
+            }
+        }
+        clear_variable_list = wild_dragons
+        remove_variable = si_selected_character
+    }
+}

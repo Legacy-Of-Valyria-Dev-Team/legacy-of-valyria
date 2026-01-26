@@ -1,56 +1,44 @@
-﻿# This store cycle serves to facilitate variable storage
+﻿# This store cycle serves to facilitate firewyrm events
 lv_firewyrm_story_cycle = {
 	on_setup = {
 		story_owner = {
-			location = {
+			location.county ?= {
 				if = {
-					limit = { has_free_building_slot = yes }
-					scope:story = {
-						set_variable = {
-							name = lv_firewyrm_location
-							value = prev
-						}
-					}
-					set_variable = {
-						name = lv_firewyrm
-						value = prev
-					}
-					#lv_add_blocker_effect = {
-					#	FORCE = no
-					#	BLOCKER_BUILDING = firewyrm_lair
-					#}
-					add_building = firewyrm_lair
+					limit = { holder = { agot_is_dummy_character = yes } }
+					scope:story = { end_story = yes }
 				}
-				else_if = {
-					limit = {
-						county = {
-							any_neighboring_county = {
-								title_province = {
-									NAND = {
-										has_variable = lv_firewyrm
-										has_building = firewyrm_lair
-									}
-									has_free_building_slot = yes
-									save_temporary_scope_as = new_lair
-								}
-							}
-						}
-					}
-					scope:new_lair = {
+			}
+			# Apply mood if set
+			if = {
+				limit = { exists = var:lv_firewyrm_mood }
+				switch = {
+					trigger = var:lv_firewyrm_mood
+					flag:agitated = {
 						scope:story = {
 							set_variable = {
-								name = lv_firewyrm_location
-								value = prev
+								name = lv_firewyrm_mood
+								value = flag:agitated
 							}
 						}
-						set_variable = {
-							name = lv_firewyrm
-							value = scope:story.story_owner
+					}
+					flag:enraged = {
+						scope:story = {
+							set_variable = {
+								name = lv_firewyrm_mood
+								value = flag:enraged
+							}
 						}
-						add_building = firewyrm_lair
 					}
 				}
-				else = { scope:story = { end_story = yes } }
+				remove_variable = lv_firewyrm_mood
+			}
+			else = {
+				scope:story = {
+					set_variable = {
+						name = lv_firewyrm_mood
+						value = flag:dormant
+					}
+				}
 			}
 		}
 	}
@@ -59,65 +47,91 @@ lv_firewyrm_story_cycle = {
 
 	on_end = {
 		story_owner = { save_scope_as = firewyrm }
-		var:lv_firewyrm_location = {
+		scope:firewyrm = {
 			if = {
-				limit = { has_building = firewyrm_lair }
-				remove_building = firewyrm_lair
+				limit = { is_alive = yes }
+				death = { death_reason = death_vanished }
 			}
-			if = {
-				limit = { has_variable = lv_firewyrm }
-				remove_variable = lv_firewyrm
-			}
-			save_scope_as = former_lair
-			county = {
-				holder = {
-					# Send notification to county owner
-					trigger_event = lv_firewyrm_event.0100
-				}
-			}
-		}
-		remove_variable = lv_firewyrm_location
-	}
-
-	# Consider migrations and measures to keep them in the province if they have a lair if it ever becomes an issue eventually
-	#effect_group = {
-	#	days = 1
-	#	trigger = { story_owner = { NOT = { var:lv_firewyrm_location ?= location } } }
-	#	fallback = {
-	#
-	#	}
-	#}
-
-	# Stay at your lair bozo
-	effect_group = {
-		days = 1
-		trigger = { story_owner = { NOT = { location ?= scope:story.var:lv_firewyrm_location } } }
-		fallback = {
-			var:lv_firewyrm_location = {
-				save_scope_as = lair_location
-				if = {
-					limit = { NOT = { var:lv_firewyrm ?= scope:story.story_owner } }
-					set_variable = {
-						name = lv_firewyrm
-						value = scope:story.story_owner
+			location = {
+				save_scope_as = former_lair
+				county ?= {
+					holder = {
+						if = { # Send notification to county owner
+							limit = { agot_is_dummy_character = no }
+							trigger_event = lv_firewyrm_event.0100
+						}
 					}
 				}
 			}
-			scope:lair_location = { province_owner = { save_scope_as = lair_holder } }
-			if = {
-				limit = { NOT = { story_owner = { is_courtier_of = scope:lair_holder } } }
-				story_owner = {
-					set_employer = scope:lair_holder
-					return_to_court = yes
-				}
-			}
 		}
 	}
 
-	# If firewyrm gets tamed, end the story and send a special event to province owner
+	# Daily
 	effect_group = {
 		days = 1
-		trigger = { story_owner = { has_character_flag = owned_dragon } }
+		triggered_effect = {
+			trigger = { story_owner = { location.county ?= { holder = { agot_is_dummy_character = no } } } }
+			effect = {
+				# Rampage
+				if = {
+					limit = { NOT = { var:lv_firewyrm_mood ?= flag:dormant } }
+					if = { # Rampage
+						limit = {
+							var:lv_firewyrm_mood ?= flag:enraged
+							NOT = { has_variable = lv_firewyrm_rampage_countdown }
+						}
+						story_owner = {
+							random_list = {
+								90 = {}
+								10 = {
+									save_scope_as = firewyrm
+									location = {
+										save_scope_as = firewyrm_location
+										county.holder = { trigger_event = lv_firewyrm_event.1000 }
+									}
+									scope:story = {
+										set_variable = {
+											name = lv_firewyrm_mood
+											value = flag:dormant
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		fallback = { end_story = yes }
+	}
+
+	# Monthly
+	effect_group = {
+		days = 30
+		triggered_effect = {
+			trigger = { story_owner = { location.county ?= { holder = { agot_is_dummy_character = no } } } }
+			effect = {
+				# Update mood
+				scope:story = {
+					if = {
+						limit = { var:lv_firewyrm_mood ?= flag:dormant }
+						random_list = {
+							98 = {}
+							1 = { lv_firewyrm_change_mood_effect = { MOOD = agitated } } # Agitated
+							1 = { lv_firewyrm_change_mood_effect = { MOOD = enraged } } # Enraged
+						}
+					}
+					else_if = {
+						limit = { var:lv_firewyrm_mood ?= flag:agitated }
+						random_list = {
+							80 = {}
+							1 = { lv_firewyrm_change_mood_effect = { MOOD = dormant } } # Dormant
+							19 = { lv_firewyrm_change_mood_effect = { MOOD = enraged } } # Enraged
+						}
+					}
+				}
+			}
+		}
 		fallback = { end_story = yes }
 	}
 }

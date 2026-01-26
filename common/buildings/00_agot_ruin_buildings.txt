@@ -1,0 +1,578 @@
+﻿@holding_illustration_ruin = "gfx/interface/illustrations/holding_types/ruin_generic.dds"
+@holding_illustration_valyria_ruin = "gfx/interface/illustrations/holding_types/lv_valyria_ruin.dds"
+
+# Main Holding
+ruin_01 = {
+	construction_time = 1800
+
+	asset = {
+		type = pdxmesh
+		name = "agot_building_western_ruin_mesh"
+		illustration = @holding_illustration_ruin
+		graphical_regions = { graphical_western }
+	}
+	asset = {
+		type = pdxmesh
+		name = "agot_building_western_ruin_mesh"
+		illustration = @holding_illustration_ruin
+		graphical_regions = { graphical_mediterranean }
+	}
+	asset = {
+		type = pdxmesh
+		name = "agot_building_mena_ruin_mesh"
+		illustration = @holding_illustration_ruin
+		graphical_regions = { graphical_mena }
+	}
+	asset = {
+		type = pdxmesh
+		name = "agot_building_mena_ruin_mesh"
+		illustration = @holding_illustration_ruin
+		graphical_regions = { graphical_india }
+	}
+	asset = {
+		type = pdxmesh
+		name = "agot_building_western_ruin_mesh"
+		illustration = @holding_illustration_ruin
+		graphical_regions = { graphical_steppe }
+	}
+	asset = {
+		type = pdxmesh
+		name = "agot_building_western_ruin_mesh"
+		illustration = @holding_illustration_ruin
+		graphical_regions = { graphical_siberia }
+	}
+
+	### LEGACY OF VALYRIA ###
+	asset = {
+		type = pdxmesh
+		name = "agot_building_western_ruin_mesh"
+		illustration = @holding_illustration_valyria_ruin
+		graphical_regions = { graphical_valyria_1 graphical_valyria graphical_lokiria graphical_lyria graphical_summer_lands graphical_telyria graphical_martivia graphical_smoking_shores }
+	}
+
+	can_construct_potential = {
+		always = no
+	}
+
+	can_construct = {
+		always = no
+	}
+
+	cost_gold = 1000
+
+	province_terrain_modifier = {
+		build_speed = 0.3
+	}
+
+	character_modifier = {
+		domain_limit = 1
+	}
+
+	flag = ruin_building
+	type_icon = "icon_ruin.dds"
+
+}
+
+# Small Ruin
+small_ruin_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	type_icon = "icon_ruin.dds"
+	next_building = small_ruin_02
+}
+small_ruin_02 = {
+	construction_time = 2190
+
+	can_construct_potential = {
+		has_building = small_ruin_01
+		NOT = {
+			scope:holder = {
+				has_trait = ruin
+			}
+		}
+	}
+
+	cost_gold = 400
+
+	character_modifier = {
+		monthly_income = -1
+	}
+
+	levy = 100
+	max_garrison = 100
+	garrison_reinforcement_factor = 0.05
+
+	type_icon = "icon_ruin.dds"
+	next_building = small_ruin_03
+}
+small_ruin_03 = {
+	construction_time = 2190
+
+	can_construct_potential = {
+		has_building = small_ruin_02
+		NOT = {
+			scope:holder = {
+				has_trait = ruin
+			}
+		}
+	}
+
+	cost_gold = 500
+
+	character_modifier = {
+		monthly_income = -1.5
+	}
+
+	province_modifier = {
+		fort_level = 1
+	}
+
+	levy = 200
+	max_garrison = 200
+	garrison_reinforcement_factor = 0.08
+
+	type_icon = "icon_ruin.dds"
+	next_building = small_ruin_04
+}
+small_ruin_04 = {
+	construction_time = 2190
+
+	can_construct_potential = {
+		has_building = small_ruin_03
+		custom_tooltip = { #LEGACY OF VALYRIA ADDED
+			text = blockers_remain_in_settlement
+			NOT = { has_building_with_flag = obstacle }
+		}
+		scope:holder = {
+			NOT = {
+				has_trait = ruin
+			}
+		}
+	}
+
+	on_complete = {
+		save_scope_as = completed_ruin
+		county.holder = { trigger_event = agot_ruins.1000 }
+	}
+
+	cost_gold = 600
+
+	character_modifier = {
+		monthly_income = -2
+	}
+
+	province_modifier = {
+		fort_level = 2
+	}
+
+	levy = 300
+	max_garrison = 300
+	garrison_reinforcement_factor = 0.09
+
+	type_icon = "icon_ruin.dds"
+}
+
+# Medium Ruin
+medium_ruin_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	type_icon = "icon_ruin.dds"
+	next_building = medium_ruin_02
+}
+medium_ruin_02 = {
+	construction_time = 2920
+
+	can_construct_potential = {
+		has_building = medium_ruin_01
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 600
+
+	character_modifier = {
+		monthly_income = -2
+	}
+
+	levy = 200
+	max_garrison = 200
+	garrison_reinforcement_factor = 0.05
+
+	type_icon = "icon_ruin.dds"
+	next_building = medium_ruin_03
+}
+medium_ruin_03 = {
+	construction_time = 2920
+
+	can_construct_potential = {
+		has_building = medium_ruin_02
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 700
+
+	character_modifier = {
+		monthly_income = -3
+	}
+
+	province_modifier = {
+		fort_level = 2
+	}
+
+	levy = 300
+	max_garrison = 300
+	garrison_reinforcement_factor = 0.08
+
+	type_icon = "icon_ruin.dds"
+	next_building = medium_ruin_04
+}
+medium_ruin_04 = {
+	construction_time = 2920
+
+	can_construct_potential = {
+		has_building = medium_ruin_03
+		custom_tooltip = { #LEGACY OF VALYRIA ADDED
+			text = blockers_remain_in_settlement
+			NOT = { has_building_with_flag = obstacle }
+		}
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		save_scope_as = completed_ruin
+		county.holder = { trigger_event = agot_ruins.1000 }
+	}
+
+	cost_gold = 800
+
+	character_modifier = {
+		monthly_income = -4
+	}
+
+	province_modifier = {
+		fort_level = 3
+	}
+
+	levy = 400
+	max_garrison = 400
+	garrison_reinforcement_factor = 0.09
+
+	type_icon = "icon_ruin.dds"
+}
+
+# Large Ruin
+large_ruin_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	type_icon = "icon_ruin.dds"
+	next_building = large_ruin_02
+}
+large_ruin_02 = {
+	construction_time = 5475
+
+	can_construct_potential = {
+		has_building = large_ruin_01
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 600
+
+	character_modifier = {
+		monthly_income = -4
+	}
+
+	levy = 300
+	max_garrison = 300
+	garrison_reinforcement_factor = 0.05
+
+	type_icon = "icon_ruin.dds"
+	next_building = large_ruin_03
+}
+large_ruin_03 = {
+	construction_time = 5475
+
+	can_construct_potential = {
+		has_building = large_ruin_02
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 700
+
+	character_modifier = {
+		monthly_income = -5
+	}
+
+	province_modifier = {
+		fort_level = 3
+	}
+
+	levy = 400
+	max_garrison = 400
+	garrison_reinforcement_factor = 0.08
+
+	type_icon = "icon_ruin.dds"
+	next_building = large_ruin_04
+}
+large_ruin_04 = {
+	construction_time = 5475
+
+	can_construct_potential = {
+		has_building = large_ruin_03
+		custom_tooltip = { #LEGACY OF VALYRIA ADDED
+			text = blockers_remain_in_settlement
+			NOT = { has_building_with_flag = obstacle }
+		}
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		save_scope_as = completed_ruin
+		county.holder = { trigger_event = agot_ruins.1000 }
+	}
+
+	cost_gold = 800
+
+	character_modifier = {
+		monthly_income = -6
+	}
+
+	province_modifier = {
+		fort_level = 4
+	}
+
+	levy = 500
+	max_garrison = 500
+	garrison_reinforcement_factor = 0.09
+
+	type_icon = "icon_ruin.dds"
+}
+
+### Ruin Afflictions
+
+# Salted Earth
+ruin_salted_earth_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	character_modifier = {
+		monthly_income = -4
+	}
+
+	province_modifier = {
+		levy_size = -0.5
+		garrison_size = -0.5
+	}
+
+	type_icon = "icon_building_cereal_fields.dds"
+}
+
+# Desolate
+ruin_desolate_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	character_modifier = {
+		monthly_income = -2
+	}
+
+	province_modifier = {
+		fort_level = -1
+		levy_size = -0.25
+		garrison_size = -0.25
+		build_speed = 0.20
+	}
+
+	type_icon = "icon_building_pastures.dds"
+	next_building = ruin_desolate_02
+}
+ruin_desolate_02 = {
+	construction_time = 200
+	can_construct_potential = {
+		has_building = ruin_desolate_01
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 200
+
+
+	province_modifier = {
+		levy_size = -0.05
+		garrison_size = -0.05
+		build_speed = 0.05
+	}
+
+	type_icon = "icon_building_pastures.dds"
+}
+
+# Flooded
+ruin_flooded_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	province_modifier = {
+		fort_level = 2
+		build_speed = 0.6
+		levy_size = -0.1
+		garrison_size = -0.8
+	}
+	garrison_reinforcement_factor = -0.2
+
+	type_icon = "icon_building_peat_quarries.dds"
+	next_building = ruin_flooded_02
+}
+ruin_flooded_02 = {
+	construction_time = 300
+	can_construct_potential = {
+		has_building = ruin_flooded_01
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 400
+
+	province_modifier = {
+		levy_size = -0.05
+		garrison_size = -0.25
+	}
+	garrison_reinforcement_factor = -0.05
+
+	type_icon = "icon_building_peat_quarries.dds"
+}
+
+# Renowned Ruin
+ruin_renowned_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	province_modifier = {
+		build_speed = -0.25
+		levy_size = 0.25
+		garrison_size = 0.25
+	}
+
+	type_icon = "icon_building_library.dds"
+}
+
+# Infamous Ruin
+ruin_infamous_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	province_modifier = {
+		build_speed = 0.25
+		levy_size = -0.25
+		garrison_size = -0.25
+	}
+
+	type_icon = "icon_building_siege_works.dds"
+}
+
+# Wildfire Outbreak
+ruin_wildfire_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	character_modifier = {
+		monthly_income = -5
+	}
+
+	province_modifier = {
+		fort_level = -10
+		build_speed = 0.5
+		levy_size = -1
+		garrison_size = -1
+	}
+
+	type_icon = "icon_megalith.dds"
+	next_building = ruin_wildfire_02
+}
+ruin_wildfire_02 = {
+	construction_time = 1000
+	can_construct_potential = {
+		has_building = ruin_wildfire_01
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 1500
+
+	province_modifier = {
+		levy_size = -0.2
+		garrison_size = -0.2
+		build_speed = 0.1
+	}
+
+	type_icon = "icon_megalith.dds"
+}

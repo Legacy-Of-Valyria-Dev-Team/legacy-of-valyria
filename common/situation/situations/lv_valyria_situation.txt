@@ -114,19 +114,6 @@
 	##################################################
 	on_monthly = {
 		every_situation_sub_region = { # Do monthly events
-			# Background cleaning stuff
-			every_situation_sub_region_county = {
-				title_province = {
-					if = {
-						limit = {
-							has_variable = lv_firewyrm
-							NOT = { exists = var:lv_firewyrm }
-						}
-						remove_variable = lv_firewyrm
-					}
-				}
-			}
-
 			# Regular monthly pulse
 			every_situation_sub_region_county = {
 				limit = { holder = { agot_is_dummy_character = no } }
@@ -197,10 +184,11 @@
 					if = { # Firewyrm events for infested mines
 						limit = {
 							NOT = { has_variable = lv_mines_cooldown }
-							NAND = {
-								has_variable = lv_firewyrm
-								has_building = firewyrm_lair
-							}
+							# NOTE: REPLACE WITH CHECK FOR ANY DRAGON WITH FIREWYRM TRAIT IN THE PROVINCE
+							#NAND = {
+							#	has_variable = lv_firewyrm
+							#	has_building = firewyrm_lair
+							#}
 							has_building_or_higher = valyria_mines_01
 							NOT = { has_building = valyria_mines_03 }
 
@@ -208,11 +196,6 @@
 							lv_valyria_subregion_ruined = yes
 						}
 						save_scope_as = mines_province
-						set_variable = {
-							name = lv_mines_cooldown
-							value = yes
-							months = 12
-						}
 						province_owner = {
 							trigger_event = {
 								id = lv_mines_pulse.0001 # Call mine pulse event
@@ -226,13 +209,6 @@
 	}
 
 	on_start = {
-		# FOR DEBUGGING PURPOSES!!!
-		#every_situation_sub_region = {
-		#	every_situation_sub_region_county = {
-		#		change_development_level = 100
-		#	}
-		#}
-
 		# Bye
 		if = {
 			limit = { lv_realm_valyria_disabled = yes }
