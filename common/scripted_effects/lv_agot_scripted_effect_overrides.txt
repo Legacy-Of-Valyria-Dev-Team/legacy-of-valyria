@@ -561,13 +561,13 @@ agot_create_generic_dragonpit_scripted_effect = {
 		if = {
 			limit = {
 				any_held_county = {
-					any_county_province = { zz_has_dragon_pit_building = yes }
+					any_county_province = { lv_has_dragon_pit_building = yes }
 					NOT = { has_variable = has_dragonkeeper_order }
 				}
 			}
 			random_held_county = {
 				limit = {
-					any_county_province = { zz_has_dragon_pit_building = yes }
+					any_county_province = { lv_has_dragon_pit_building = yes }
 					NOT = { has_variable = has_dragonkeeper_order }
 				}
 				set_variable = { name = has_dragonkeeper_order }
@@ -584,32 +584,41 @@ agot_create_generic_dragonpit_scripted_effect = {
 
 # Overriden from 00_agot_dragonpit_effects.txt
 agot_change_dragonpit_status = {
+	save_scope_as = dragon
 	scope:owner = {
-		random_held_county = {
-			limit = {
-				OR = {
-					any_county_province = {
-						has_holding_type = castle_holding
-						has_building_or_higher = generic_dragon_pit_01
-					}
-					any_county_province = { zz_has_dragon_pit_building = yes }
-				}
-				has_variable = has_dragonkeeper_order
-			}
-			save_scope_as = dragon_pit_location
+		if = {
+			limit = { agot_has_multiple_active_dragonpits = yes }
+			trigger_event = agot_choose_dragonpit_event.0001
 		}
-	}
-	if = {
-		limit = { has_character_flag = in_dragonpit }
-		agot_remove_from_dragonpit = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
-	}
-	else_if = {
-		limit = { has_character_flag = owned_dragon }
-		agot_send_to_dragonpit = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
-	}
-	else_if = {
-		limit = { NOT = { has_character_flag = owned_dragon } }
-		agot_force_wild_dragon_into_dragonpit_effect = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+		else = { # If not, assume default AGOT logic
+			random_held_county = {
+				limit = {
+					OR = {
+						any_county_province = {
+							has_holding_type = castle_holding
+							has_building_or_higher = generic_dragon_pit_01
+						}
+						any_county_province = { lv_has_dragon_pit_building = yes }
+					}
+					has_variable = has_dragonkeeper_order
+				}
+				save_scope_as = dragon_pit_location
+			}
+			scope:dragon = {
+				if = {
+					limit = { has_character_flag = in_dragonpit }
+					agot_remove_from_dragonpit = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+				}
+				else_if = {
+					limit = { has_character_flag = owned_dragon }
+					agot_send_to_dragonpit = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+				}
+				else_if = {
+					limit = { NOT = { has_character_flag = owned_dragon } }
+					agot_force_wild_dragon_into_dragonpit_effect = { DRAGON = root DRAGONPIT_HOLDER = scope:owner DRAGONPIT_COUNTY = scope:dragon_pit_location }
+				}
+			}
+		}
 	}
 }
 
@@ -623,7 +632,7 @@ agot_change_dragonpit_status_ai = {
 						has_holding_type = castle_holding
 						has_building_or_higher = generic_dragon_pit_01
 					}
-					any_county_province = { zz_has_dragon_pit_building = yes }
+					any_county_province = { lv_has_dragon_pit_building = yes }
 				}
 				has_variable = has_dragonkeeper_order
 			}
