@@ -12,7 +12,8 @@
 # lv_firewyrm_event.1013 - Placate Firewyrm: Success
 # lv_firewyrm_event.1014 - Placate Firewyrm: Failure
 # lv_firewyrm_event.1015 - Placate Firewyrm: Critical Failure
-
+# lv_firewyrm_event.1016 - Placate Firewyrm: Choose Sacrifice
+# lv_firewyrm_event.1017 - Placate Firewyrm: Choose Sacrifice Selection
 # lv_firewyrm_event.1020 - Rampage Warning
 
 # Firewyrm encounter
@@ -660,114 +661,85 @@ lv_firewyrm_event.1011 = {
 	type = character_event
 	title = lv_firewyrm_event.1011.t
 	desc = lv_firewyrm_event.1011.desc
-
-	window = agot_dragon_character_event
 	theme = dragon
-
-	override_background = {
-		trigger = {
-			scope:firewyrm_location = {
-				lv_valyria_subregion_restored = yes
-				OR = {
-					agot_is_desert_terrain = yes
-					agot_is_desert_mountains_terrain = yes
-				}
-			}
-		}
-		reference = ep2_travel_settlement_ruin_desert
-	}
-	override_background = {
-		trigger = {
-			scope:firewyrm_location = {
-				lv_valyria_subregion_restored = yes
-				OR = {
-					agot_is_drylands_terrain = yes
-					agot_is_oasis_terrain = yes
-					agot_is_canyon_terrain = yes
-				}
-			}
-		}
-		reference = drylands
-	}
-	override_background = {
-		trigger = {
-			scope:firewyrm_location = {
-				lv_valyria_subregion_restored = yes
-				OR = {
-					agot_is_steppe_terrain = yes
-				}
-			}
-		}
-		reference = mpo_steppe_evening
-	}
-	override_background = {
-		trigger = {
-			scope:firewyrm_location = {
-				lv_valyria_subregion_restored = yes
-				OR = {
-					agot_is_taiga_terrain = yes
-					agot_is_taiga_bog_terrain = yes
-					agot_is_glacier_terrain = yes
-					agot_is_frozen_flats_terrain = yes
-				}
-			}
-		}
-		reference = bp3_steppe_winter
-	}
-	override_background = {
-		trigger = { scope:firewyrm_location = { lv_valyria_subregion_restored = yes } }
-		reference = plains
-	}
-	override_background = {
-		trigger = { scope:firewyrm_location = { lv_valyria_subregion_partially_restored = yes } }
-		reference = lv_valyria_surface_partial_rehabilitation
-	}
-	override_background = {
-		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
-		reference = lv_valyria_surface
-	}
-	override_effect_2d = {
-		trigger = { scope:firewyrm_location = { lv_valyria_subregion_ruined = yes } }
-		reference = smoke
-	}
 
 	left_portrait = {
 		character = root
-		animation = fear
-		camera = camera_human_back_to_camera
+		animation = worry
 	}
 
-	right_portrait = {
-        character = scope:firewyrm
-		animation = dragon_main
-		camera = lv_camera_firewyrm_event_right
-
-		triggered_outfit = {
-			outfit_tags = {
-				dynamic_camera_zoom_0.8
-				no_clothes
-				bald
-			}
-		}
-    }
-
-	widgets = {
-		widget = {
-			gui = "agot_event_shader_sparks"
-			container = "agot_shader_event_foreground"
-		}
-	}
+	lower_left_portrait = { character = scope:firewyrm }
 
 	# Sacrifice
 	option = {
 		name = lv_firewyrm_event.1011.sacrifice
-		custom_tooltip = lv_firewyrm_event.1011.sacrifice.tt
+		custom_tooltip = {
+			text = lv_firewyrm_event.1011.sacrifice.tt
+			trigger_event = lv_firewyrm_event.1016
+		}
 	}
 
 	# Precious Metals
 	option = {
 		name = lv_firewyrm_event.1011.precious_metals
 		custom_tooltip = lv_firewyrm_event.1011.precious_metals.tt
+		scope:firewyrm_location.county = {
+			add_county_modifier = {
+				modifier = lv_firewyrm_tribute_modifier
+				years = 1
+			}
+			random_list = {
+				50 = { # Success
+					modifier = {
+						add = {
+							every_county_province = { add = monthly_income }
+							divide = medium_gold_value_check
+							multiply = 100
+							divide = 2
+						}
+					}
+					custom_tooltip = {
+						text = lv_firewyrm_event.1011.tt.success
+						root = { trigger_event = lv_firewyrm_event.1013 }
+					}
+				}
+				50 = { # Failure
+					modifier = {
+						add = {
+							value = medium_gold_value_check
+							divide = {
+								every_county_province = {
+									if = {
+										limit = {
+											has_holding = yes
+											monthly_income = 0
+										}
+										add = 1
+									}
+									else = { add = monthly_income }
+								}
+							}
+							multiply = 100
+							divide = 2
+						}
+					}
+					random_list = {
+						90 = { # Standard Failure
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.failure
+								root = { trigger_event = lv_firewyrm_event.1014 }
+							}
+						}
+						10 = { # Critical Failure
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.critical_failure
+								root = { trigger_event = lv_firewyrm_event.1015 }
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	# Livestock
@@ -775,7 +747,10 @@ lv_firewyrm_event.1011 = {
 		name = lv_firewyrm_event.1011.livestock
 		custom_tooltip = lv_firewyrm_event.1011.livestock.tt
 		scope:firewyrm_location.county = {
-			add_county_modifier = agot_wild_dragon_killed_livestock
+			add_county_modifier = {
+				modifier = agot_wild_dragon_killed_livestock
+				years = 1
+			}
 			random_list = {
 				50 = { # Success
 					modifier = {
@@ -901,7 +876,7 @@ lv_firewyrm_event.1012 = {
 
 	left_portrait = {
 		character = root
-		animation = fear
+		animation = ecstasy
 		camera = camera_human_back_to_camera
 	}
 
@@ -926,7 +901,13 @@ lv_firewyrm_event.1012 = {
 		}
 	}
 
-	option = { name = lv_firewyrm_event.1012.a }
+	option = {
+		name = lv_firewyrm_event.1012.a
+		custom_tooltip = {
+			text = lv_firewyrm_event.1012.a.tt
+			scope:firewyrm = { every_owned_story = { end_story = yes } }
+		}
+	}
 }
 
 # Placate Firewyrm: Success
@@ -1007,7 +988,7 @@ lv_firewyrm_event.1013 = {
 
 	left_portrait = {
 		character = root
-		animation = fear
+		animation = happiness
 		camera = camera_human_back_to_camera
 	}
 
@@ -1032,9 +1013,13 @@ lv_firewyrm_event.1013 = {
 		}
 	}
 
-	option = { name = lv_firewyrm_event.1013.a }
-
-	after = { scope:firewyrm = { lv_firewyrm_change_mood_effect = { MOOD = dormant } } }
+	option = {
+		name = lv_firewyrm_event.1013.a
+		custom_tooltip = {
+			text = lv_firewyrm_event.1013.a.tt
+			scope:firewyrm = { lv_firewyrm_change_mood_effect = { MOOD = dormant } }
+		}
+	}
 }
 
 # Placate Firewyrm: Failure
@@ -1115,7 +1100,7 @@ lv_firewyrm_event.1014 = {
 
 	left_portrait = {
 		character = root
-		animation = fear
+		animation = stress
 		camera = camera_human_back_to_camera
 	}
 
@@ -1140,7 +1125,10 @@ lv_firewyrm_event.1014 = {
 		}
 	}
 
-	option = { name = lv_firewyrm_event.1014.a }
+	option = {
+		name = lv_firewyrm_event.1014.a
+		custom_tooltip = lv_firewyrm_event.1014.a.tt
+	}
 }
 
 # Placate Firewyrm: Critical Failure
@@ -1246,9 +1234,357 @@ lv_firewyrm_event.1015 = {
 		}
 	}
 
-	option = { name = lv_firewyrm_event.1015.a }
+	option = {
+		name = lv_firewyrm_event.1015.a
+		custom_tooltip = {
+			text = lv_firewyrm_event.1015.a.tt
+			scope:firewyrm = { lv_firewyrm_change_mood_effect = { MOOD = enraged } }
+		}
+	}
+}
 
-	after = { scope:firewyrm = { lv_firewyrm_change_mood_effect = { MOOD = enraged } } }
+# Placate Firewyrm: Choose Sacrifice
+lv_firewyrm_event.1016 = {
+	type = character_event
+	title = lv_firewyrm_event.1016.t
+	desc = lv_firewyrm_event.1016.desc
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	lower_left_portrait = { character = scope:firewyrm }
+
+	# Special: Sacrifice a dragon
+	option = {
+		name = lv_firewyrm_event.1016.dragon
+		trigger = {
+			any_courtier = {
+				has_trait = dragon
+				has_character_flag = owned_dragon
+			}
+		}
+		add_internal_flag = special
+		flavor = lv_firewyrm_event.1016.dragon.flavor
+		custom_tooltip = lv_firewyrm_event.1016.dragon.tt
+		set_variable = {
+			name = lv_sacrifice_filter
+			value = flag:dragon
+		}
+		trigger_event = lv_firewyrm_event.1017
+	}
+
+	# Sacrifice a county's populace
+	option = {
+		name = lv_firewyrm_event.1016.county
+		trigger = { scope:firewyrm_location.county = { development_level >= 1 } }
+		custom_tooltip = lv_firewyrm_event.1016.county.tt
+		scope:firewyrm_location.county = {
+			change_development_level = -1
+			add_county_modifier = {
+				modifier = agot_wild_dragon_killed_peasants
+				years = 1
+			}
+		}
+		random_list = {
+			95 = { # Success
+				random_list = {
+					90 = { # Success
+						custom_tooltip = {
+							text = lv_firewyrm_event.1011.tt.success
+							root = { trigger_event = lv_firewyrm_event.1013 }
+						}
+					}
+					10 = { # Critical Success
+						custom_tooltip = {
+							text = lv_firewyrm_event.1011.tt.critical_success
+							root = { trigger_event = lv_firewyrm_event.1012 }
+						}
+					}
+				}
+			}
+			5 = { # Failure
+				random_list = {
+					90 = { # Standard Failure
+						custom_tooltip = {
+							text = lv_firewyrm_event.1011.tt.failure
+							root = { trigger_event = lv_firewyrm_event.1014 }
+						}
+					}
+					10 = { # Critical Failure
+						custom_tooltip = {
+							text = lv_firewyrm_event.1011.tt.critical_failure
+							root = { trigger_event = lv_firewyrm_event.1015 }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Sacrifice a vassal
+	option = {
+		name = lv_firewyrm_event.1016.vassal
+		trigger = {
+			is_landless_adventurer = no
+			any_vassal = { count >= 1 }
+		}
+		custom_tooltip = lv_firewyrm_event.1016.vassal.tt
+		set_variable = {
+			name = lv_sacrifice_filter
+			value = flag:vassal
+		}
+		trigger_event = lv_firewyrm_event.1017
+	}
+
+	# Sacrifice a courtier
+	option = {
+		name = lv_firewyrm_event.1016.courtier
+		trigger = { any_courtier = { count >= 1 } }
+		custom_tooltip = lv_firewyrm_event.1016.courtier.tt
+		set_variable = {
+			name = lv_sacrifice_filter
+			value = flag:courtier
+		}
+		trigger_event = lv_firewyrm_event.1017
+	}
+
+	# Nevermind
+	option = {
+		name = lv_firewyrm_event.1016.nevermind
+		trigger_event = lv_firewyrm_event.1011
+	}
+}
+
+lv_firewyrm_event.1017 = {
+	type = character_event
+	title = lv_firewyrm_event.1017.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { var:lv_sacrifice_filter ?= flag:dragon }
+				desc = lv_firewyrm_event.1017.desc.dragon
+			}
+			triggered_desc = {
+				trigger = { var:lv_sacrifice_filter ?= flag:vassal }
+				desc = lv_firewyrm_event.1017.desc.vassal
+			}
+			triggered_desc = {
+				trigger = { var:lv_sacrifice_filter ?= flag:courtier }
+				desc = lv_firewyrm_event.1017.desc.courtier
+			}
+		}
+	}
+	theme = dragon
+
+	widget = {
+		is_shown = { is_ai = no }
+		gui = "agot_character_selection_three_options"
+		container = "custom_widgets_container"
+	}
+
+	left_portrait = {
+		character = root
+		animation = worry
+	}
+
+	lower_left_portrait = { character = scope:firewyrm }
+
+	immediate = {
+		switch = {
+			trigger = var:lv_sacrifice_filter
+			flag:dragon = {
+				every_courtier = {
+					limit = {
+						has_trait = dragon
+						has_character_flag = owned_dragon
+					}
+					root = {
+						add_to_variable_list = {
+							name = possible_characters
+							target = prev
+						}
+					}
+				}
+			}
+			flag:vassal = {
+				every_vassal = {
+					limit = {
+						is_available_adult = yes
+						is_human = yes
+					}
+					root = {
+						add_to_variable_list = {
+							name = possible_characters
+							target = prev
+						}
+					}
+				}
+			}
+			flag:courtier = {
+				every_courtier = {
+					limit = {
+						is_available_adult = yes
+						is_human = yes
+					}
+					root = {
+						add_to_variable_list = {
+							name = possible_characters
+							target = prev
+						}
+					}
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_characters
+			order_by = age
+			root = { set_variable = { name = si_selected_character value = prev } }
+			save_scope_as = selected_character
+		}
+	}
+
+	# Select person
+	option = {
+		name = lv_firewyrm_event.1017.a
+		trigger = { exists = var:si_selected_character }
+		custom_tooltip = lv_firewyrm_event.1017.a.tt
+		var:si_selected_character = {
+			death = {
+				death_reason = death_firewyrm_ate
+				killer = scope:firewyrm
+			}
+		}
+		if = {
+			limit = { var:si_selected_character = { has_trait = dragon } }
+			random_list = {
+				50 = { # Success
+					modifier = {
+						add = {
+							add = {
+								value = scope:firewyrm.dragon_size
+								divide = 2
+							}
+							divide = var:si_selected_character.dragon_size
+							multiply = 100
+							divide = 2
+						}
+					}
+
+					custom_tooltip = {
+						text = lv_firewyrm_event.1011.tt.success
+						root = { trigger_event = lv_firewyrm_event.1013 }
+					}
+				}
+				50 = { # Critical Success
+					modifier = {
+						add = {
+							add = var:si_selected_character.dragon_size
+							divide = {
+								value = scope:firewyrm.dragon_size
+								divide = 2
+							}
+							multiply = 100
+							divide = 2
+						}
+					}
+
+					custom_tooltip = {
+						text = lv_firewyrm_event.1011.tt.critical_success
+						root = { trigger_event = lv_firewyrm_event.1012 }
+					}
+				}
+			}
+		}
+		else = {
+			random_list = {
+				50 = { # Success
+					modifier = {
+						add = {
+							var:si_selected_character = {
+								add = { # Dragonblood
+									value = dragonblood_percent
+									divide = 2
+								}
+								if = { # Valyrian
+									limit = {
+										OR = {
+											culture = culture:high_valyrian
+											culture = culture:valyrian_original
+										}
+									}
+									add = 25
+								}
+								if = { # Dynasty
+									limit = { exists = dynasty }
+									dynasty = {
+										add = {
+											add = dynasty_prestige_level
+											divide = 10
+											multiply = 50
+										}
+									}
+								}
+								switch = { # Rank
+									trigger = highest_held_title_tier
+									tier_hegemony = { add = 50 }
+									tier_empire = { add = 25 }
+									tier_kingdom = { add = 10 }
+									tier_duchy = { add = 5 }
+								}
+							}
+						}
+					}
+
+					random_list = {
+						90 = { # Success
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.success
+								root = { trigger_event = lv_firewyrm_event.1013 }
+							}
+						}
+						10 = { # Critical Success
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.critical_success
+								root = { trigger_event = lv_firewyrm_event.1012 }
+							}
+						}
+					}
+				}
+				50 = { # Failure
+					random_list = {
+						90 = { # Standard Failure
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.failure
+								root = { trigger_event = lv_firewyrm_event.1014 }
+							}
+						}
+						10 = { # Critical Failure
+							custom_tooltip = {
+								text = lv_firewyrm_event.1011.tt.critical_failure
+								root = { trigger_event = lv_firewyrm_event.1015 }
+							}
+						}
+					}
+				}
+			}
+		}
+
+		clear_variable_list = possible_characters
+	}
+
+	# Nevermind
+	option = {
+		name = lv_firewyrm_event.1017.b
+		trigger_event = lv_firewyrm_event.1016
+
+		remove_variable = si_selected_character
+		clear_variable_list = possible_characters
+	}
+
+	after = { remove_variable = lv_sacrifice_filter }
 }
 
 # Rampage Warning
