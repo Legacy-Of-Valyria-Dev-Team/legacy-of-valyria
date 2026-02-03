@@ -1,0 +1,166 @@
+﻿namespace = agot_choose_dragonpit_event
+
+agot_choose_dragonpit_event.0001 = {
+	type = character_event
+	title = agot_choose_dragonpit_event.0001.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:rider }
+				desc = agot_choose_dragonpit_event.0001.desc_rider
+			}
+			desc = agot_choose_dragonpit_event.0001.desc
+		}
+	}
+	theme = dragon
+
+	widget = {
+		is_shown = { is_ai = no }
+		gui = "agot_dragonpit_selection_three_options"
+		container = "custom_widgets_container"
+	}
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = scope:head_dragonkeeper
+		animation = throne_room_writer
+	}
+
+	immediate = {
+		if = {
+			limit = { employs_court_position = head_dragonkeeper_court_position }
+			court_position:head_dragonkeeper_court_position = { save_scope_as = head_dragonkeeper }
+		}
+		if = {
+			limit = {
+				scope:dragon = { exists = var:current_rider }
+			}
+			scope:dragon = {
+				var:current_rider = { save_scope_as = rider }
+			}
+		}
+		every_held_county = {
+			limit = {
+				OR = {
+					any_county_province = {
+						has_holding_type = castle_holding
+						has_building_or_higher = generic_dragon_pit_01
+					}
+					any_county_province = { lv_has_dragon_pit_building = yes }
+				}
+				has_variable = has_dragonkeeper_order
+			}
+			root = {
+				add_to_variable_list = {
+					name = possible_titles
+					target = prev
+				}
+			}
+		}
+		ordered_in_list = {
+			variable = possible_titles
+			root = {
+				set_variable = {
+					name = selected_title
+					value = prev
+				}
+			}
+			save_scope_as = selected_title
+		}
+	}
+
+	# Choose where to house
+	option = {
+		name = agot_choose_dragonpit_event.0001.a
+		trigger = { exists = var:selected_title }
+		show_as_unavailable = {
+			custom_tooltip = {
+				text = CANT_SENT_TO_DRAGONPIT_TT
+				scope:dragon = { owns_story_of_type = story_dragon_at_war }
+			}
+			custom_tooltip = {
+				text = CANT_SENT_TO_DRAGONPIT_TRAVELING_TT
+				scope:dragon = {
+					trigger_if = {
+						limit = {
+							exists = var:current_rider
+							exists = var:current_rider.current_travel_plan
+						}
+						var:current_rider.current_travel_plan = {
+							has_travel_option = dragon_flight_option
+						}
+					}
+					exists = current_travel_plan
+				}
+			}
+		}
+		if = {
+			limit = { exists = var:selected_title }
+			var:selected_title = { save_scope_as = dragon_pit_location }
+			custom_tooltip = {
+				text = agot_choose_dragonpit_event.0001.a.tt
+				if = { # If owned, send to dragonpit as normal
+					limit = {
+						scope:dragon = {
+							has_character_flag = owned_dragon
+						}
+					}
+					agot_send_to_dragonpit = {
+						DRAGON = scope:dragon
+						DRAGONPIT_HOLDER = scope:dragon_pit_location.holder
+						DRAGONPIT_COUNTY = scope:dragon_pit_location
+					}
+				}
+				else = { # Else do the wild dragon event
+					agot_force_wild_dragon_into_dragonpit_effect = {
+						DRAGON = scope:dragon
+						DRAGONPIT_HOLDER = scope:dragon_pit_location.holder
+						DRAGONPIT_COUNTY = scope:dragon_pit_location
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { var:selected_title = capital_county } }
+				scope:dragon = { add_character_flag = dragon_put_in_different_pit }
+			}
+		}
+	}
+
+	# Release dragon
+	option = {
+		name = agot_choose_dragonpit_event.0001.b
+		trigger = {
+			scope:dragon = { has_character_flag = in_dragonpit }
+			scope:dragon = { exists = var:pitted_dragon_location }
+		}
+		scope:dragon.var:pitted_dragon_location = { save_scope_as = dragon_pit_location }
+		agot_remove_from_dragonpit = { DRAGON = scope:dragon DRAGONPIT_HOLDER = root DRAGONPIT_COUNTY = scope:dragon_pit_location }
+	}
+
+	# Nevermind, leave in dragonpit
+	option = {
+		name = agot_choose_dragonpit_event.0001.c
+		trigger = {
+			scope:dragon = { has_character_flag = in_dragonpit }
+		}
+	}
+
+	# Nevermind, don't put in dragonpit
+	option = {
+		name = agot_choose_dragonpit_event.0001.d
+		trigger = {
+			scope:dragon = {
+				NOT = { has_character_flag = in_dragonpit }
+			}
+		}
+	}
+
+	after = {
+		remove_variable = selected_title
+		clear_variable_list = possible_titles
+	}
+}
