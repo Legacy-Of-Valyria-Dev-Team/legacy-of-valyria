@@ -4,6 +4,25 @@ lv_settle_destination_effect = {
 	# Determine ruin level for converting to appropriate colony building
 	$PROVINCE$ = {
 		county = { save_scope_as = county }
+		# Determine ruin size to return to in case the colony becomes abandoned
+		if = {
+			limit = { has_building_or_higher = large_ruin_01 }
+			set_variable = { name = ruin_size value = flag:ruin_size_large }
+		}
+		else_if = {
+			limit = { has_building_or_higher = medium_ruin_01 }
+			set_variable = { name = ruin_size value = flag:ruin_size_medium }
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_building_or_higher = medium_ruin_01
+					has_building_or_higher = jungle_ruin_01
+					has_building_or_higher = jungle_ruin_deep_01
+				}
+			}
+			set_variable = { name = ruin_size value = flag:ruin_size_small }
+		}
 		# Uncomment if considering using AGOT's default ruins system
 		#if = {
 		#	limit = { has_holding_type = wilderness_holding }
