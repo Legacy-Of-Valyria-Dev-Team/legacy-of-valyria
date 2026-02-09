@@ -74,5 +74,28 @@ lv_expedition_cost_base = {
 			}
 			else = { value = 200 }
 		}
+		# Distance from realm/nearest colony
+		county = {
+			if = {
+				limit = { exists = scope:actor }
+				if = { # If target is not immediate neighbor, apply distance scaling to cost
+					limit = { NOT = { is_neighbor_to_realm = scope:actor } }
+					# Determine closest border county the realm has then use as base for distance scaling
+					scope:actor = {
+						ordered_realm_county = {
+							order_by = {
+								value = "title_province.squared_distance(scope:target)"
+								multiply = -1
+							}
+							position = 0
+							add = {
+								value = "title_province.squared_distance(scope:target)"
+								divide = 20 # Halve it then decrease by a factor of 10
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
