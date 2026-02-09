@@ -37,23 +37,28 @@ on_game_start_after_lobby = {
 }
 
 cob_on_game_start = {
-	effect = {
-		cv_add_camp_buildings_on_start = yes
-        cob_set_historical_characters_effect = yes
-		if = {
-			limit = {
-				game_start_date < 7902.1.1
-			}
-			agot_set_legitimate_house = {
-				TITLE = title:k_the_riverlands
-				HOUSE = character:Teague_1.house
-			}
-		}
+    effect = {
+        cv_add_camp_buildings_on_start = yes
+        if = {
+            limit = {
+                game_start_date < 7902.1.1
+            }
+            agot_set_legitimate_house = {
+                TITLE = title:e_the_riverlands
+                HOUSE = character:Teague_1.house
+            }
+        }
+        title:e_the_stormlands.holder ?= {
+            if = {
+                limit = { has_title = title:e_the_riverlands }
+                set_primary_title_to = title:e_the_stormlands
+            }
+        }
 		character:Varezys_1 = {
 			set_father = character:Varezys_cob_39
 			set_mother = character:Varezys_cob_40
 		}
-	}
+    }
 }
 
 cob_on_game_start_after_lobby = {
@@ -61,11 +66,10 @@ cob_on_game_start_after_lobby = {
         if = {
             limit = {
                 NOR = {
-                    has_game_rule = agot_shatter_duchies
-                    has_game_rule = agot_shatter_duchies_even
-                    has_game_rule = agot_shatter_petty_kingdoms
-                    has_game_rule = agot_shatter_kingdoms
-                    has_game_rule = agot_shatter_empires
+                    has_game_rule = agot_shatter_to_duchies
+                    has_game_rule = agot_shatter_to_petty_kingdoms
+                    has_game_rule = agot_shatter_to_kingdoms
+                    has_game_rule = agot_shatter_to_empires
                 }
             }
             if = { #LoV added - manage 7899.6.17 Century of Blood Scenerio
