@@ -68,6 +68,7 @@ lv_settlement_failsafe = {
 	}
 }
 
+# Why tf doesn't `start_travel_plan` trigger these smh my head now I've gotta trigger them here
 on_travel_plan_arrival = { on_actions = { lv_settlement_on_arrival } }
 
 # On actions associated with the travel plan
@@ -86,7 +87,8 @@ lv_settlement_on_start = {
 			}
 			if = {
 				limit = { exists = var:lv_settlement_cost }
-				scope:liege = { remove_short_term_gold = var:lv_settlement_cost }
+				scope:liege = { remove_short_term_gold = scope:settler.var:lv_settlement_cost }
+				remove_variable = lv_settlement_cost
 			}
 			if = {
 				limit = { NOT = { scope:liege ?= scope:settler } }
@@ -148,6 +150,7 @@ lv_settlement_on_arrival = {
 
 		remove_variable = lv_settlement_expedition_liege
 		remove_variable = lv_settlement_expedition_destination
+		remove_variable = lv_settlement_cost
 		scope:liege = {
 			random_owned_story = {
 				limit = { story_type = lv_settlement_story_cycle }
@@ -155,6 +158,23 @@ lv_settlement_on_arrival = {
 					name = lv_settlement_expeditions
 					target = scope:ruin
 				}
+			}
+		}
+	}
+}
+
+# Why doesn't this work smh my head
+lv_settlement_on_cancel = {
+	trigger = {
+		has_variable = lv_settlement_expedition_liege
+		has_variable = lv_settlement_expedition_destination
+	}
+	effect = {
+		if = {
+			limit = { exists = scope:liege }
+			scope:liege = {
+				remove_variable = lv_settlement_expedition_liege
+				remove_variable = lv_settlement_expedition_destination
 			}
 		}
 	}

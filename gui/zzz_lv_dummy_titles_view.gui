@@ -1,0 +1,454 @@
+types LVInfoTypes
+{
+	# Overridden from `custom_gui/agot_character_window.gui`
+	type agot_hidden_character_view = vbox
+	{
+		name = "main_content_hidden"
+		using = Window_Margins_Sidebar
+		visible = "[IsCharacterHidden]"
+
+		# Character box
+		widget = {
+			size = { 620 40 }
+
+			buttons_window_control = {
+				parentanchor = top|right
+
+				blockoverride "extra_buttons"
+				{
+					icon = {
+						visible = "[And( InDebugMode, Not( Character.AccessDenied ) )]"
+						size = { 30 30 }
+						texture = "gfx/interface/icons/icon_group_of_characters.dds"
+						tooltip = "CHARACTER_AI_VALUES_DEBUG_TOOLTIP"
+					}
+				}
+
+				blockoverride "button_close"
+				{
+					onclick = "[CharacterWindow.Close]"
+				}
+
+				blockoverride "button_back"
+				{
+					visible = "[HasViewHistory]"
+					onclick = "[OpenFromViewHistory]"
+					tooltip = "[GetViewHistoryTooltip]"
+				}
+
+				blockoverride "button_me"
+				{
+					visible = "[Not(Character.IsLocalPlayer)]"
+					onclick = "[DefaultOnCharacterClick(GetPlayer.GetID)]"
+				}
+			}
+
+			watch_window_button = {
+				parentanchor = top|hcenter
+				size = { 60 40 }
+				onclick = "[AddWatchWindow( CharacterWindow.GetCharacter.MakeScope )]"
+			}
+		}
+		expand = {}
+
+		background = {
+			visible = "[IsCharacterRuin]"
+			texture = "gfx/interface/illustrations/character_view/ruins.dds"
+			fittype = centercrop
+
+			modify_texture = {
+				texture = "gfx/interface/component_masks/mask_rough_edges_right.dds"
+				blend_mode = alphamultiply
+			}
+		}
+
+		background = {
+			visible = "[IsCharacterUnknown]"
+			texture = "gfx/interface/illustrations/character_view/unknown.dds"
+
+			modify_texture = {
+				texture = "gfx/interface/component_masks/mask_rough_edges_right.dds"
+				blend_mode = alphamultiply
+			}
+		}
+
+		background = {
+			visible = "[IsCharacterWilderness]"
+			texture = "gfx/interface/illustrations/character_view/wilderness.dds"
+			fittype = centercrop
+
+			modify_texture = {
+				texture = "gfx/interface/component_masks/mask_rough_edges_right.dds"
+				blend_mode = alphamultiply
+			}
+		}
+
+		## Name
+		hbox = {
+			layoutpolicy_horizontal = expanding
+
+			text_multi = {
+				visible = "[And( IsCharacterRuin, Not( GetScriptedGui('lv_hidden_character_titles_view_ruin_open').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End) ) )]" #LEGACY OF VALYRIA MODIFIED
+				margin = { 20 10 }
+				max_width = 560
+
+				background = {
+					texture = "gfx/interface/component_masks/mask_rough_edges.dds"
+					spriteType = Corneredtiled
+					spriteborder = { 20 20 }
+					color = { 0 0 0 0.25 }
+					texture_density = 2
+				}
+
+				text = "ruin_history_generic"
+				default_format = "#high;SIZE:20;glow_color:{0,0,0,1}"
+				autoresize = yes
+			}
+
+			text_multi = {
+				visible = "[IsCharacterUnknown]"
+				margin = { 20 10 }
+				max_width = 560
+
+				background = {
+					texture = "gfx/interface/component_masks/mask_rough_edges.dds"
+					spriteType = Corneredtiled
+					spriteborder = { 20 20 }
+					color = { 10 10 10 0.25 }
+					texture_density = 2
+				}
+
+				text = "unknown_generic"
+				default_format = "#light_background;SIZE:20"
+				autoresize = yes
+			}
+
+			text_multi = {
+				visible = "[And( IsCharacterWilderness, Not( GetScriptedGui('lv_hidden_character_titles_view_wilderness_open').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End) ) )]" #LEGACY OF VALYRIA MODIFIED
+				margin = { 20 10 }
+				max_width = 560
+
+				background = {
+					texture = "gfx/interface/component_masks/mask_rough_edges.dds"
+					spriteType = Corneredtiled
+					spriteborder = { 20 20 }
+					color = { 0 0 0 0.25 }
+					texture_density = 2
+				}
+
+				text = "wilderness_generic"
+				default_format = "#high;SIZE:20;glow_color:{0,0,0,1}"
+				autoresize = yes
+			}
+		}
+
+		#LEGACY OF VALYRIA ADDED
+		vbox = {
+			visible = "[Not( IsCharacterUnknown )]"
+			margin = { 0 10 }
+
+			lv_view_character_titles_buttons = {}
+		}
+
+		lv_ruin_character_titles_view = { name = lv_ruin_character_titles_view }
+		lv_wilderness_character_titles_view = { name = lv_wilderness_character_titles_view }
+
+		expand = {}
+	}
+
+	# View Hidden Character Titles Button
+	type lv_view_character_titles_buttons = vbox {
+		visible = "[Not(IsObserver)]"
+
+		lv_view_ruin_character_titles_button = {}
+		lv_view_wilderness_character_titles_button = {}
+	}
+
+	type lv_view_ruin_character_titles_button = lv_view_hidden_character_titles_button {
+		blockoverride "hidden_character_type_visibility" { visible = "[IsCharacterRuin]" }
+		blockoverride "hidden_character_type_text" { text = "[GetPlayer.Custom('LV_DummyTitlesView_Ruin_Toggle')]" }
+	}
+
+	type lv_view_wilderness_character_titles_button = lv_view_hidden_character_titles_button {
+		blockoverride "hidden_character_type_visibility" { visible = "[IsCharacterWilderness]" }
+		blockoverride "hidden_character_type_text" { text = "[GetPlayer.Custom('LV_DummyTitlesView_Wilderness_Toggle')]" }
+	}
+
+	type lv_view_hidden_character_titles_button = button_standard_big {
+		block "hidden_character_type_visibility" { visible = no }
+		size = { 300 50 }
+
+		block "hidden_character_type_text" { text = "[GetPlayer.Custom('LV_DummyTitlesView_Wilderness_Toggle')]" }
+
+		onclick = "[GetScriptedGui('lv_hidden_character_titles_view_toggle').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('dummy', CharacterWindow.GetCharacter.MakeScope ).End)]"
+		onclick = "[PdxGuiTriggerAllAnimations('lv_hidden_character_titles_view_fold')]"
+	}
+
+	# Hidden Character Titles View
+	type lv_ruin_character_titles_view = lv_hidden_character_titles_view {
+		blockoverride "hidden_character_type_visibility" { visible = "[And( IsCharacterRuin, GetScriptedGui('lv_hidden_character_titles_view_ruin_open').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End))]" }
+
+		blockoverride "hidden_character_type_datamodel" { datamodel = "[GetPlayer.MakeScope.GetList('lv_hidden_character_titles_view_ruin_regions')]" }
+		blockoverride "hidden_character_type_foldout_datamodel" { datamodel = "[Scope.GetList('lv_hidden_character_titles_view_ruin_counties')]" }
+	}
+
+	type lv_wilderness_character_titles_view = lv_hidden_character_titles_view {
+		blockoverride "hidden_character_type_visibility" { visible = "[And( IsCharacterWilderness, GetScriptedGui('lv_hidden_character_titles_view_wilderness_open').IsShown( GuiScope.SetRoot( GetPlayer.MakeScope ).End))]" }
+
+		blockoverride "hidden_character_type_datamodel" { datamodel = "[GetPlayer.MakeScope.GetList('lv_hidden_character_titles_view_wilderness_regions')]" }
+		blockoverride "hidden_character_type_foldout_datamodel" { datamodel = "[Scope.GetList('lv_hidden_character_titles_view_wilderness_counties')]" }
+	}
+
+	type lv_hidden_character_titles_view = vbox {
+		block "hidden_character_type_visibility" { visible = no }
+		layoutpolicy_vertical = expanding
+		layoutpolicy_horizontal = expanding
+
+		scrollbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			blockoverride "scrollbox_content" {
+				vbox = {
+					block "hidden_character_type_datamodel" { datamodel = "[Character.GetTitles]" }
+					datamodel_reuse_widgets = yes
+
+					layoutpolicy_horizontal = expanding
+					spacing = 20
+
+					item = {
+						vbox = {
+							block "hidden_character_type_visibility" { visible = no }
+
+							datacontext = "[Scope.Title]"
+							layoutpolicy_horizontal = expanding
+
+							oncreate = "[BindFoldOutContext]"
+							oncreate = "[PdxGuiFoldOut.Fold]"
+
+							state = {
+								name = lv_hidden_character_titles_view_fold
+								on_start = "[PdxGuiFoldOut.Fold]"
+							}
+
+							hbox = {
+								layoutpolicy_horizontal = expanding
+								min_height = 50
+
+								margin = { 25 0 }
+
+								button_expand_fold_out = {
+									onclick = "[GetScriptedGui('lv_hidden_character_titles_view_counties_toggle').Execute( GuiScope.SetRoot( Title.MakeScope ).AddScope('dummy', CharacterWindow.GetCharacter.MakeScope ).End)]"
+								}
+								header_text = {
+									alwaystransparent = yes
+									margin_left = 10
+									text = "[Title.GetNameNoTierNoTooltip]"
+									align = nobaseline
+									using = Font_Size_Medium
+								}
+								expand = {}
+								
+								using = Background_DropDown
+							}
+							vbox = {
+								visible = "[PdxGuiFoldOut.IsUnfolded]"
+								block "hidden_character_type_foldout_datamodel" { datamodel = "[Scope.GetList('lv_hidden_character_titles_view_wilderness_counties')]" }
+								datamodel_reuse_widgets = yes
+
+								layoutpolicy_horizontal = expanding
+								margin_top = 10
+
+								# Too clunky
+								#state = {
+								#	name = _hide
+								#	on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_hide').Execute( GuiScope.SetRoot( Title.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+								#}
+
+								item = {
+									vbox = {
+										datacontext = "[Scope.Title]"
+										layoutpolicy_horizontal = expanding
+										min_height = 200
+										margin_bottom = 15
+
+										hbox = {
+											layoutpolicy_horizontal = expanding
+											min_height = 50
+
+											margin = { 25 10 }
+
+											vbox = {
+												margin_top = 13
+												coa_title_tiny = {}
+											}
+											vbox = {
+												margin_bottom = 10
+												margin_left = 10
+
+												header_text = {
+													text = "[Title.GetNameNoTier]"
+													#align = nobaseline
+													using = Font_Size_Medium
+												}
+											}
+											
+											expand = {}
+
+											background = {
+												using = Background_Area_ExtraDark
+												alpha = 0.75
+											}
+										}
+
+										lv_hidden_character_titles_view_special_building = {}
+										lv_hidden_character_titles_view_duchy_building = {}
+
+										spacer = { size = { 0 10 } }
+										
+										lv_hidden_character_titles_view_claim_buttons = {}
+
+										expand = {}
+
+										state = {
+											name = _mouse_hierarchy_enter
+											on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_show').Execute( GuiScope.SetRoot( Title.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+										}
+
+										background = {
+											using = Background_Area_Holding
+											alpha = 0.75
+										}
+										background = { using = Background_Frame_Gold }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type lv_hidden_character_titles_view_claim_buttons = vbox {
+		visible = "[Not(IsObserver)]"
+
+		button_standard_big = {
+			visible = "[GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( Title.GetProvince.MakeScope ).End)]"
+
+			size = { 235 55 }
+			text = "[Title.Custom('LV_DummyTitlesView_Claim')]"
+
+			enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('lv_begin_expedition', Title.Self)]"
+			onclick = "[Character.OpenPlayerInteractionWithTargetTitle('lv_begin_expedition', Title.Self)]"
+
+			tooltipwidget = { lv_colonization_button_tooltip = {} }
+		}
+
+		# Default AGOT buttons
+		button_standard_big = {
+			name = "restore_ruins"
+			datacontext = "[Title.GetProvince]"
+			visible = "[And( GetScriptedGui('agot_is_ruin').IsShown( GuiScope.SetRoot( Title.GetProvince.MakeScope ).End), Not(GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( Title.GetProvince.MakeScope ).End)) )]"
+
+			#position = { 5 -5 }
+			size = { 235 55 }
+			text = "agot_ruin_begin_reconstruction"
+			tooltip = "[Province.Custom('RuinsReconstructTooltip')]"
+			enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot( Title.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+			onclick = "[GetVariableSystem.Toggle('window_ruins_confirm')]"
+		}
+
+		vbox = {
+			visible = "[And(GetScriptedGui('agot_county_holder_is_wilderness').IsShown( GuiScope.SetRoot( Title.GetProvince.MakeScope ).End), And(Not(GetScriptedGui('lv_use_custom_colonization').IsShown( GuiScope.SetRoot( Title.GetProvince.MakeScope ).End)), Title.GetProvince.GetTitle.IsCountyCapital) )]"
+			hbox = {
+				margin_bottom = 15
+				visible = "[Not(IsObserver)]"
+				button_standard_big = {
+					name = "construct_holding_wilderness"
+					datacontext = "[Title]"
+
+					size = { 300 50 }
+					text = "[Localize('COLONIZE')] [Title.GetProvince.GetCounty.GetTitle.GetNameNoTierNoTooltip]"
+					onclick = "[GetScriptedGui('agot_can_colonize').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', Title.GetProvince.MakeScope ).End)]"
+					tooltip = "[GetScriptedGui('agot_can_colonize').BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', Title.GetProvince.MakeScope ).End )]"
+					enabled = "[GetScriptedGui('agot_can_colonize').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', Title.GetProvince.MakeScope ).End)]"
+				}
+			}
+		}
+	}
+
+	type lv_hidden_character_titles_view_special_building = lv_hidden_character_titles_view_template_building {
+		blockoverride "dummy_title_view_building_visibility" { visible = "[GetScriptedGui('lv_hidden_character_titles_view_county_has_special_building').IsShown( GuiScope.SetRoot( Title.MakeScope ).End)]" }
+		blockoverride "dummy_title_view_building_datacontext" { datacontext = "[Title.GetProvince.GetHolding.GetSpecialBuildingType]" }
+	}
+
+	type lv_hidden_character_titles_view_duchy_building = lv_hidden_character_titles_view_template_building {
+		blockoverride "dummy_title_view_building_visibility" { visible = "[GetScriptedGui('lv_hidden_character_titles_view_county_has_duchy_building').IsShown( GuiScope.SetRoot( Title.MakeScope ).End)]" }
+		blockoverride "dummy_title_view_building_datacontext" { datacontext = "[Title.GetProvince.GetHolding.GetDuchyBuildingType]" }
+	}
+
+	type lv_hidden_character_titles_view_template_building = vbox {
+		block "dummy_title_view_building_visibility" { visible = no }
+		
+		layoutpolicy_horizontal = expanding
+		margin = { 25 0 }
+		margin_top = 10
+
+		hbox = {
+			block "dummy_title_view_building_datacontext" { datacontext = "[Title.GetProvince.GetHolding.GetSpecialBuildingType]" }
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			margin = { 15 15 }
+
+			vbox = {
+				layoutpolicy_vertical = expanding
+
+				icon_flat_standard_gold = {
+					size = { 64 64 }
+					texture = "[Building.GetTypeIcon]"
+				}
+				expand = {}
+			}
+			
+
+			vbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				
+				hbox = {
+					layoutpolicy_horizontal = expanding
+
+					header_text = {	
+						alwaystransparent = yes
+						margin_left = 10
+						text = "[Building.GetName]"
+						align = nobaseline
+						using = Font_Size_Medium
+					}
+					expand = {}
+				}
+				
+				divider_light = { layoutpolicy_horizontal = expanding }
+				text_multi = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+
+					alwaystransparent = yes
+					autoresize = yes
+					max_width = 430
+					text = "[Building.GetDescription]"
+					align = left
+				}
+				expand = {}
+			}
+			
+			expand = {}
+
+			background = {
+				using = Background_Area_ExtraDark
+				alpha = 1
+			}
+		}
+	}
+}

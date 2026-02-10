@@ -7,56 +7,80 @@ agot_EE_form_new_valyria_effect = {
 			quality = illustrious
 			chronicle = new_title
 			properties = {
-				title = title:e_new_valyria
+				title = title:h_new_valyria
 				founder = root
 			}
 		}
 	}
-
-	hidden_effect = {
-		every_held_title = { #Should shift all dejure of all Empires owned at the time.
-			limit = { tier = tier_empire }
-			every_in_de_jure_hierarchy = {
-				limit = { tier = tier_kingdom }
-				set_de_jure_liege_title = title:e_new_valyria
-
-			}
-		}
-		every_held_title = { #Completely Controlled Kingdoms as well.
+	hidden_effect = { # Shift de jure of all empire titles held
+		every_held_title = {
 			limit = {
-				tier = tier_kingdom
-				root = { completely_controls = prev }
+				tier = tier_empire
+				is_landless_type_title = no
 			}
-			set_de_jure_liege_title = title:e_new_valyria
+			set_de_jure_liege_title = title:h_new_valyria
+		}
+		every_empire = {
+			limit = {
+				NOT = { exists = hegemony }
+				any_de_jure_county = {
+					percent >= 0.6
+					holder = {
+						OR = {
+							this = root
+							any_liege_or_above = { this = root }
+						}
+					}
+				}
+			}
+			set_de_jure_liege_title = title:h_new_valyria
 		}
 	}
-
-	create_title_and_vassal_change = {
-		type = created
-		save_scope_as = change
-		add_claim_on_loss = no
+	if = { # Move your Title MaAs to your new title if you have any
+		limit = {
+			government_allows = administrative
+			primary_title = { any_title_maa_regiment = {} }
+		}
+		hidden_effect = { primary_title = { transfer_title_maa_ownership = title:h_new_valyria } }
 	}
-	title:e_new_valyria = {
+	hidden_effect = { set_primary_title_to = title:h_new_valyria }
+	if = { # Move capital to Old Volantis
+		limit = {
+			NOT = { capital_county = { this = title:c_old_volantis } }
+			exists = title:h_new_valyria.holder
+		}
+		hidden_effect = {
+			if = { #Usurp if not held personally.
+				limit = { NOT = { this = title:c_old_volantis.holder } }
+				create_title_and_vassal_change = {
+					type = returned
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				title:c_valyria = {
+					change_title_holder = {
+						holder = root
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+			}
+		}
+		root = { set_realm_capital = title:c_old_volantis }
+	}
+	title:h_new_valyria = { # Grant the title
+		create_title_and_vassal_change = {
+			type = created
+			save_scope_as = change
+			add_claim_on_loss = no
+		}
 		change_title_holder = {
 			holder = root
 			change = scope:change
 		}
+		resolve_title_and_vassal_change = scope:change
+		hidden_effect = { copy_title_history = root.primary_title }
 	}
-	resolve_title_and_vassal_change = scope:change
-	hidden_effect = { set_primary_title_to = title:e_new_valyria }
-	every_held_title = { #Should destroy all other Empires owned at the time.
-		limit = {
-			tier = tier_empire
-			NOT = { this = title:e_new_valyria }
-		}
-		root = { destroy_title = prev }
-	}
-	#hidden_effect = {
-	#	add_character_flag = flag_restorer_of_rome #used for Eulogy.
-	#	title:e_roman_empire = {
-	#		set_variable = rome_was_restored_by_byzantium
-	#	}
-	#}
 }
 
 agot_EE_form_ghiscar_effect = {
@@ -192,12 +216,19 @@ agot_EE_form_north_valyria_effect = {
 		}
 	}
 	resolve_title_and_vassal_change = scope:change
-	culture = {
-		if = {
+	if = {
+		limit = {
+			OR = {
+				culture = culture:mantaryan
+				culture = culture:tolosi
+				culture = culture:elyrian
+			}
+		}
+		every_culture_global = {
 			limit = { has_cultural_tradition = lv_tradition_north_valyrian_1 }
 			remove_culture_tradition = lv_tradition_north_valyrian_1
-			#add_culture_tradition = lv_tradition_north_valyrian_2
 		}
+		culture = { add_culture_tradition = lv_tradition_north_valyrian_2 }
 	}
 	hidden_effect = { set_primary_title_to = title:e_north_valyria }
 }

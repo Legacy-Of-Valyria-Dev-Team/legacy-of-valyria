@@ -26,8 +26,6 @@ widget = {
 		parentanchor = center
 		size = { 1920 1080 }
 		scale = "[ScaleToFitElementInside('(int32)1920', '(int32)1080')]"
-		#AGOT Added
-		using = Version_Detection # contains visible
 
 		state = {
 			name = "main_menu_continue"
@@ -270,6 +268,8 @@ widget = {
 		parentanchor = center
 		size = { 1920 1080 }
 		scale = "[ScaleToFitElementInside('(int32)1920', '(int32)1080')]"
+		#AGOT Added
+		using = Version_Detection # contains visible
 
 		icon = {
 			name = "left_panel"
@@ -510,7 +510,7 @@ widget = {
 				duration = 0.4
 				bezier = { 0.5 0 1 0.5 }
 
-				position_y = 0
+				position_y = -35
 				alpha = 1
 			}
 
@@ -520,7 +520,7 @@ widget = {
 				duration = 0.1
 				bezier = { 0 0.5 0.5 1 }
 
-				position_y = -20
+				position_y = -50
 			}
 
 			state = {
@@ -529,7 +529,7 @@ widget = {
 				duration = 0.1
 				bezier = { 0.5 0 1 0.5 }
 
-				position_y = 0
+				position_y = -30
 			}
 
 			state = {
@@ -538,7 +538,7 @@ widget = {
 				duration = 0.05
 				bezier = { 0 0.5 0.5 1 }
 
-				position_y = -5
+				position_y = -40
 			}
 
 			state = {
@@ -547,7 +547,7 @@ widget = {
 				duration = 0.05
 				bezier = { 0.5 0 1 0.5 }
 
-				position_y = 0
+				position_y = -35
 			}
 
 			# Main Glow Animation
@@ -758,7 +758,7 @@ widget = {
 											framesize = { 64 64 }
 											size = { 64 64 }
 										}
-										
+
 										coat_of_arms_icon = {
 											name = "realm_flag"
 											parentanchor = center
@@ -1124,6 +1124,241 @@ widget = {
 					}
 				}
 			}
+
+			### Subscription Button
+
+			widget = {
+				size = { 372 64 }
+				parentanchor = bottom|hcenter
+				position = { 2 -15 }
+				visible = "[FrontEndMainView.IsSteamAvailable]"
+
+				button_normal = {
+					onclick = "[PdxGuiTriggerAllAnimations('start_game_audio')]"
+					onclick = "[FrontEndMainView.OnSubscription]"
+
+					gfxtype = framedbuttongfx
+					effectname = "NoHighlight"
+					upframe = 1
+					downframe = 2
+					overframe = 1
+					disableframe = 1
+
+					size = { 100% 100% }
+					texture = "gfx/interface/component_decoration/subscribe_button.dds"
+
+					modify_texture = {
+						texture = "gfx/interface/buttons/button_fancy_overlay.dds"
+						blend_mode = overlay
+					}
+
+					modify_texture = {
+						name = "glow"
+						texture = "gfx/interface/buttons/button_fancy_glow.dds"
+						blend_mode = colordodge
+						alpha = 0
+
+						spriteborder = { 20 0 }
+						spritetype = corneredStretched
+					}
+
+					modify_texture = {
+						texture = "gfx/interface/component_masks/mask_center_shimmer.dds"
+						blend_mode = mask
+					}
+
+					modify_texture = {
+						name = "shimmer"
+						texture = "gfx/interface/component_masks/mask_clouds_solid.dds"
+						blend_mode = colordodge
+						spriteType = corneredTiled
+						rotate_uv = 0
+					}
+
+					modify_texture = {
+						name = "shimmer_2"
+						texture = "gfx/interface/component_masks/mask_clouds_solid.dds"
+						blend_mode = colordodge
+						spriteType = corneredTiled
+						rotate_uv = 0
+					}
+
+					modify_texture = {
+						name = "shimmer_3"
+						texture = "gfx/interface/component_masks/mask_clouds_solid.dds"
+						blend_mode = colordodge
+						spriteType = corneredTiled
+					}
+
+					modify_texture = {
+						name = "shimmer_4"
+						texture = "gfx/interface/component_masks/mask_clouds_solid.dds"
+						blend_mode = colordodge
+						spriteType = corneredTiled
+					}
+
+					state = {
+						trigger_on_create = yes
+						name = a
+						next = b
+						duration = 0
+
+						modify_texture = {
+							name = "shimmer"
+							translate_uv = { -0.1 0 }
+							alpha = 0.1
+							rotate_uv = 0
+						}
+
+						modify_texture = {
+							name = "shimmer_2"
+							translate_uv = { 0.1 0 }
+							alpha = 0.3
+							rotate_uv = 0
+						}
+
+						modify_texture = {
+							name = "shimmer_3"
+							translate_uv = { 1 0 }
+							alpha = 0.1
+						}
+
+						modify_texture = {
+							name = "shimmer_4"
+							translate_uv = { -1 0 }
+							alpha = 0.5
+						}
+					}
+
+					state = {
+						name = b
+						next = c
+						duration = 10
+
+						modify_texture = {
+							name = "shimmer"
+							translate_uv = { 0.1 0 }
+							alpha = 0.3
+							rotate_uv = 180
+						}
+
+						modify_texture = {
+							name = "shimmer_2"
+							translate_uv = { -0.1 0 }
+							alpha = 0.1
+							rotate_uv = -180
+						}
+
+						modify_texture = {
+							name = "shimmer_3"
+							translate_uv = { 0 0 }
+							alpha = 0.5
+						}
+
+						modify_texture = {
+							name = "shimmer_4"
+							translate_uv = { 0 0 }
+							alpha = 0.1
+						}
+					}
+
+					state = {
+						name = c
+						next = a
+						duration = 10
+
+						modify_texture = {
+							name = "shimmer"
+							translate_uv = { -0.1 0 }
+							alpha = 0.1
+							rotate_uv = 360
+						}
+
+						modify_texture = {
+							name = "shimmer_2"
+							translate_uv = { 0.1 0 }
+							alpha = 0.3
+							rotate_uv = -360
+						}
+
+						modify_texture = {
+							name = "shimmer_3"
+							translate_uv = { -1 0 }
+							alpha = 0.1
+						}
+
+						modify_texture = {
+							name = "shimmer_4"
+							translate_uv = { 1 0 }
+							alpha = 0.5
+						}
+					}
+
+					state = {
+						name = _mouse_hierarchy_enter
+
+						modify_texture = {
+							name = "glow"
+							alpha = 1
+						}
+					}
+
+					state = {
+						name = _mouse_hierarchy_leave
+						duration = 0.2
+						using = Animation_Curve_Default
+
+						modify_texture = {
+							name = "glow"
+							alpha = 0
+						}
+					}
+
+					state = {
+						name = _mouse_press
+						duration = 0
+						using = Animation_Curve_Default
+
+						modify_texture = {
+							name = "glow"
+							alpha = 0
+						}
+					}
+
+					state = {
+						name = start_game_audio
+						duration = 0.1
+
+						start_sound = {
+							soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_start_game"
+						}
+					}
+
+					text_single = {
+						parentanchor = center
+						text = "[FrontEndMainView.GetSubscriptionStatusText]"
+						max_width = 312
+						align = nobaseline
+						using = Font_Size_Small
+						default_format = "#clickable;glow_color:{0,0,0,1}"
+						background = {
+							texture ="gfx/interface/colors/black.dds"
+							alpha = 0.75
+							margin = { 100 20 }
+							modify_texture = {
+								texture = "gfx/interface/component_masks/mask_fade_circle.dds"
+								blend_mode = alphamultiply
+
+							}
+						}
+					}
+				}
+
+				icon = {
+					size = { 100% 100% }
+					texture = "gfx/interface/component_decoration/subscribe_button_frame.dds"
+				}
+			}
 		}
 	}
 
@@ -1255,7 +1490,7 @@ widget = {
 	widget = {
 		name = "challenge_character"
 		#AGOT Modified; added template
-		# visible = "[FrontEndMainView.ShouldShowChallengeCharacter]".
+		# visible = "[FrontEndMainView.ShouldShowChallengeCharacter]"
 		using = Version_Detection # contains visible
 		datacontext = "[FrontEndMainView.GetChallengeCharacter]"
 		datacontext = "[ChallengeCharacter.GetBookmarkCharacter]"
@@ -1473,6 +1708,7 @@ widget = {
 						}
 						expand = {layoutpolicy_vertical = expanding}
 					}
+
 					#AGOT Disabled
 					# expand = {layoutpolicy_horizontal = expanding}
 
@@ -1530,7 +1766,6 @@ widget = {
 								# }
 							# }
 						# }
-
 						agot_challenge_character_info = {}
 
 						text_single = {
@@ -1621,7 +1856,7 @@ widget = {
 						layoutpolicy_horizontal = expanding
 
 						expand = {}
-						
+
 
 						button_standard = {
 							size = { 160 40 }
@@ -1650,8 +1885,9 @@ widget = {
 									align = nobaseline
 									default_format = "#clickable"
 									alwaystransparent = yes
+									max_width = 90
 								}
-								
+
 								vbox = {
 									datacontext = "[GetGameRules]"
 									achievements_enabled_icon = {
@@ -1685,7 +1921,6 @@ widget = {
 			texture_density = 2
 		}
 	}
-
 	#AGOT Added
 	agot_version_mismatch_warning = {}
 

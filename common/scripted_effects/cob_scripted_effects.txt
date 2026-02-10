@@ -1,0 +1,238 @@
+﻿cob_summon_the_dragonlords_effect = {
+    if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 10000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 1
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 40000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 25
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 90000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 35
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 160000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 45
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 250000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 55
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 490000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 65
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 810000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 75
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 1440000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 85
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value < 2250000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 95
+        }
+    }
+    else_if = {
+        limit = {
+            location = {
+                squared_distance = {
+                    target = scope:actor_capital
+                    value > 2250000
+                }
+            }
+        }
+        trigger_event = {
+            id = cob_decisions.0001
+            days = 100
+        }
+    }
+}
+
+cob_aurion_event_character_murder_effect = {
+    every_living_character = {
+        limit = {
+            OR = {
+                has_character_flag = aurion_firewyrm
+                #has_character_flag = greyscale_valyrian_aurion
+                has_character_flag = freeholder_raider_aurion
+                has_character_flag = aurion_freeholder_soldier
+                has_character_flag = aurion_great_freeholder_soldier
+                has_character_flag = aurion_retired_freeholder_soldier
+                has_character_flag = aurion_freeholder_dragonrider
+                has_character_flag = aurion_monster_dragon
+                has_character_flag = aurion_cannibal_dragon
+            }
+        }
+        death = { death_reason = death_vanished }
+    }
+}
+
+cob_aurion_artifact_yeet_effect = {
+    if = { #Aurion Armor Lost
+        limit = {
+            character:Varezys_1 = {
+                var:cob_restore_valyria = flag:positive
+            }
+            any_artifact = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+        }
+        random_artifact = {
+            limit = { has_artifact_modifier = aurion_valyrian_steel_armor_modifier }
+            save_scope_as = aurion_armor
+        }
+        add_to_global_variable_list = {
+            name = lv_unavailable_unique_items
+            target = flag:aurion_armor_lost
+        }
+        destroy_artifact = scope:aurion_armor
+    }
+    if = { #Aurion Sword Lost
+        limit = {
+            character:Varezys_1 = {
+                var:cob_restore_valyria = flag:positive
+            }
+            any_artifact = { has_artifact_modifier = vs_stormbringer_modifier }
+        }
+        random_artifact = {
+            limit = { has_artifact_modifier = vs_stormbringer_modifier }
+            save_scope_as = aurion_sword
+        }
+        add_to_global_variable_list = {
+            name = lv_unavailable_unique_items
+            target = flag:aurion_sword_lost
+        }
+        destroy_artifact = scope:aurion_sword
+    }
+}
+
+cob_dynasty_banner_effect = {
+    root = {
+        set_variable = banner_from_dynasty
+        create_artifact_wall_banner_effect = {
+            OWNER = root
+            CREATOR = root
+            TARGET = root.dynasty
+        }
+    }
+    scope:newly_created_artifact = {
+        set_variable = { # Tracks house
+            name = banner_dynasty
+            value = scope:target
+        }
+    }
+}
+cob_house_banner_effect = {
+    root = {
+        set_variable = banner_from_house
+        create_artifact_wall_banner_effect = {
+            OWNER = root
+            CREATOR = root
+            TARGET = root.house
+        }
+    }
+    scope:newly_created_artifact = {
+        set_variable = { # Tracks house
+            name = banner_house
+            value = scope:target
+        }
+    }
+}
+
+cob_new_dnas_effect = {
+    if = {
+        character:Urnebar_1 ?= { copy_inheritable_appearance_from = character:agot_Urnebar_1 }
+        character:Mataeryon_1 ?= { copy_inheritable_appearance_from = character:agot_Mataeryon_1 }
+    }
+}

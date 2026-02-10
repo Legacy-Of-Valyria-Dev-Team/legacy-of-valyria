@@ -1,20 +1,43 @@
 ﻿lv_valyria_subregion_restored = {
-	AND = {
-		geographical_region = world_valyria_mainland
-		county = { any_county_situation_sub_region = { has_sub_region_phase_parameter = valyria_green } }
+	save_temporary_scope_as = valyria_province
+	exists = scope:valyria_province.county
+	situation:valyria_situation ?= {
+		any_situation_sub_region = {
+			situation_sub_region_has_county = scope:valyria_province.county
+			has_sub_region_phase_parameter = valyria_green
+		}
 	}
 }
 
 lv_valyria_subregion_partially_restored = {
-	AND = {
-		geographical_region = world_valyria_mainland
-		county = { any_county_situation_sub_region = { sub_region_current_phase = valyria_restored_01 } }
+	save_temporary_scope_as = valyria_province
+	exists = scope:valyria_province.county
+	situation:valyria_situation ?= {
+		any_situation_sub_region = {
+			situation_sub_region_has_county = scope:valyria_province.county
+			sub_region_current_phase = valyria_restored_01
+		}
 	}
 }
 
 lv_valyria_subregion_ruined = {
-	AND = {
-		geographical_region = world_valyria_mainland
-		county = { any_county_situation_sub_region = { sub_region_current_phase = valyria_ruined } }
+	save_temporary_scope_as = valyria_province
+	exists = scope:valyria_province.county
+	situation:valyria_situation ?= {
+		any_situation_sub_region = {
+			situation_sub_region_has_county = scope:valyria_province.county
+			sub_region_current_phase = valyria_ruined
+		}
+	}
+}
+
+lv_valyria_province_can_rehabilitate = {
+	save_temporary_scope_as = valyria_province
+	exists = scope:valyria_province.county
+	situation:valyria_situation ?= {
+		any_situation_sub_region = {
+			situation_sub_region_has_county = scope:valyria_province.county
+			NOT = { sub_region_current_phase = valyria_rehabilitated }
+		}
 	}
 }

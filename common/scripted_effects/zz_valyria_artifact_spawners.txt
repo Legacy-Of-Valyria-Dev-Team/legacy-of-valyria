@@ -1,89 +1,89 @@
 ﻿agot_create_artifact_book_of_dragonlore = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = book_of_dragonlore_name
-		visuals = book
-		description = book_dragonlore_desc
-		type = miscellaneous
-		wealth = scope:wealth
-		quality = scope:quality
-		template = marco_polo_book
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = dragonlore_book_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		set_variable = {
-			name = historical_unique_artifact
-			value = yes
-		}
-		set_variable = {
-			name = book_subject
-			value = flag:martial
-		}
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = book_of_dragonlore_name
+        visuals = book
+        description = book_dragonlore_desc
+        type = miscellaneous
+        wealth = scope:wealth
+        quality = scope:quality
+        template = marco_polo_book
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = dragonlore_book_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = {
+            name = historical_unique_artifact
+            value = yes
+        }
+        set_variable = {
+            name = book_subject
+            value = flag:martial
+        }
+    }
 }
 
 agot_create_artifact_book_of_life = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = book_of_life_name
-		visuals = book
-		description = book_life_desc
-		type = miscellaneous
-		wealth = scope:wealth
-		quality = scope:quality
-		template = marco_polo_book
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = valyrian_life_book_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		set_variable = {
-			name = historical_unique_artifact
-			value = yes
-		}
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = book_of_life_name
+        visuals = book
+        description = book_life_desc
+        type = miscellaneous
+        wealth = scope:wealth
+        quality = scope:quality
+        template = marco_polo_book
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = valyrian_life_book_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = {
+            name = historical_unique_artifact
+            value = yes
+        }
+    }
 }
 
 lv_agot_create_artifact_the_dragons_book_effect = {
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = the_dragons_book
-		visuals = book
-		description = the_dragons_book_desc
-		type = miscellaneous
-		wealth = scope:wealth
-		quality = scope:quality
-		template = marco_polo_book
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = the_dragons_book_modifier
-		save_scope_as = dragons_book_created
-		decaying = no
-	}
-	scope:dragons_book_created ?= {
-		set_variable = {
-			name = historical_unique_artifact
-			value = yes
-		}
-		#set_variable = {
-		#	name = dragons_book
-		#	value = yes
-		#}
-	}
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = the_dragons_book
+        visuals = book
+        description = the_dragons_book_desc
+        type = miscellaneous
+        wealth = scope:wealth
+        quality = scope:quality
+        template = marco_polo_book
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = the_dragons_book_modifier
+        save_scope_as = dragons_book_created
+        decaying = no
+    }
+    scope:dragons_book_created ?= {
+        set_variable = {
+            name = historical_unique_artifact
+            value = yes
+        }
+        #set_variable = {
+        #	name = dragons_book
+        #	value = yes
+        #}
+    }
 }
 
 #lv_agot_create_artifact_dragonknight_armour_effect = {
@@ -141,604 +141,638 @@ lv_agot_create_artifact_the_dragons_book_effect = {
 #}
 
 lv_create_artifact_vs_torment_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_torment_name
-		description = vs_torment_description
-		visuals = vs_torment_visuals
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_torment_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_torment_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		#set_variable = { name = vs_torment_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
-	set_global_variable = {
-		name = torment_created
-		value = yes
-	}
+    if = {
+        limit = {
+            NOT = {
+                is_target_in_global_variable_list = {
+                    name = lv_unavailable_unique_items
+                    target = flag:torment_sword_lost
+                }
+            }
+        }
+        $OWNER$ = { save_scope_as = owner }
+        set_artifact_rarity_illustrious = yes
+        create_artifact = {
+            name = vs_torment_name
+            description = vs_torment_description
+            visuals = vs_torment_visuals
+            type = sword
+            wealth = scope:wealth
+            quality = scope:quality
+            template = vs_torment_template
+            history = {
+                type = created_before_history
+                date = 7300.1.1
+            }
+            modifier = vs_torment_modifier
+            save_scope_as = newly_created_artifact
+            decaying = no
+        }
+        scope:newly_created_artifact ?= {
+            set_variable = { name = historical_unique_artifact value = yes }
+            set_variable = { name = valyrian_steel value = yes }
+            equip_artifact_to_owner_replace = yes
+        }
+        # set_global_variable = {
+        #     name = torment_created
+        #     value = yes
+        # }
+    }
+    else = {
+        root = {
+            trigger_event = cob_7899_scenerio.9999
+        }
+    }
 }
 
 lv_create_artifact_vs_dragon_halberd_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_dragon_halberd_name
-		description = vs_dragon_halberd_description
-		visuals = vs_dragon_halberd_visuals
-		type = spear
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_dragon_halberd_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_dragon_halberd_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		#set_variable = { name = vs_dragon_halberd_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		#set_variable = { name = dragonknight_artifact value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_dragon_halberd_name
+        description = vs_dragon_halberd_description
+        visuals = vs_dragon_halberd_visuals
+        type = spear
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_dragon_halberd_template
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = vs_dragon_halberd_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        equip_artifact_to_owner_replace = yes
+    }
 }
 
 lv_create_artifact_vs_abyss_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_abyss_name
-		description = vs_abyss_description
-		visuals = vs_abyss_visuals
-		type = axe
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_abyss_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_abyss_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		#set_variable = { name = vs_abyss_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		set_variable = {
-			name = traditional_house_owner
-			value = dynasty:dynn_Greyjoy.dynasty_founder.house
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = created
-			DATE = 3608.1.1
-			RECIPIENT = character:Greyjoy_21
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 3632.1.1
-			RECIPIENT = character:Greyjoy_22
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 3638.1.1
-			RECIPIENT = character:Greyjoy_23
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 3670.1.1
-			RECIPIENT = character:Greyjoy_24
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 4206.1.1
-			RECIPIENT = character:Greyjoy_25
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 4238.1.1
-			RECIPIENT = character:Greyjoy_26
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 4287.1.1
-			RECIPIENT = character:Greyjoy_27
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 4303.1.1
-			RECIPIENT = character:Greyjoy_28
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 4337.1.1
-			RECIPIENT = character:Greyjoy_29
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 4952.1.1
-			RECIPIENT = character:Greyjoy_30
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 5014.1.1
-			RECIPIENT = character:Greyjoy_31
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7822.1.1
-			RECIPIENT = character:Greyjoy_32
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7875.1.1
-			RECIPIENT = character:Greyjoy_33
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7914.1.1
-			RECIPIENT = character:Greyjoy_34
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7934.1.1
-			RECIPIENT = character:Greyjoy_38
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7960.1.1
-			RECIPIENT = character:Greyjoy_42
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7993.1.1
-			RECIPIENT = character:Greyjoy_40
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8033.1.1
-			RECIPIENT = character:Greyjoy_41
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8052.1.1
-			RECIPIENT = character:Greyjoy_100
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8062.1.1
-			RECIPIENT = character:Greyjoy_43
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8102.1.1
-			RECIPIENT = character:Greyjoy_44
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8124.3.7
-			RECIPIENT = character:Greyjoy_51
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8128.8.2
-			RECIPIENT = character:Greyjoy_59
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8128.8.2
-			RECIPIENT = character:Greyjoy_59
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8133.12.1
-			RECIPIENT = character:Greyjoy_63
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8172.1.1
-			RECIPIENT = character:Greyjoy_65
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8206.1.1
-			RECIPIENT = character:Greyjoy_66
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8216.1.1
-			RECIPIENT = character:Greyjoy_69
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8225.1.1
-			RECIPIENT = character:Greyjoy_71
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8250.1.1
-			RECIPIENT = character:Greyjoy_1
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8283.10.1
-			RECIPIENT = character:Greyjoy_5
-		}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 8299.11.15
-			RECIPIENT = character:Greyjoy_6
-		}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_abyss_name
+        description = vs_abyss_description
+        visuals = vs_abyss_visuals
+        type = axe
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_abyss_template
+        history = {
+            type = created_before_history
+            date = 3600.1.1
+        }
+        modifier = vs_abyss_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        set_variable = {
+            name = traditional_house_owner
+            value = dynasty:dynn_Greyjoy.dynasty_founder.house
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 3608.1.1
+            RECIPIENT = character:Greyjoy_21
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 3632.1.1
+            RECIPIENT = character:Greyjoy_22
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 3638.1.1
+            RECIPIENT = character:Greyjoy_23
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 3670.1.1
+            RECIPIENT = character:Greyjoy_24
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 4206.1.1
+            RECIPIENT = character:Greyjoy_25
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 4238.1.1
+            RECIPIENT = character:Greyjoy_26
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 4287.1.1
+            RECIPIENT = character:Greyjoy_27
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 4303.1.1
+            RECIPIENT = character:Greyjoy_28
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 4337.1.1
+            RECIPIENT = character:Greyjoy_29
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 4952.1.1
+            RECIPIENT = character:Greyjoy_30
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 5014.1.1
+            RECIPIENT = character:Greyjoy_31
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7822.1.1
+            RECIPIENT = character:Greyjoy_32
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7875.1.1
+            RECIPIENT = character:Greyjoy_33
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7914.1.1
+            RECIPIENT = character:Greyjoy_34
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7934.1.1
+            RECIPIENT = character:Greyjoy_38
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7960.1.1
+            RECIPIENT = character:Greyjoy_42
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7993.1.1
+            RECIPIENT = character:Greyjoy_40
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8033.1.1
+            RECIPIENT = character:Greyjoy_41
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8052.1.1
+            RECIPIENT = character:Greyjoy_100
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8062.1.1
+            RECIPIENT = character:Greyjoy_43
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8102.1.1
+            RECIPIENT = character:Greyjoy_44
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8124.3.7
+            RECIPIENT = character:Greyjoy_51
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8128.8.2
+            RECIPIENT = character:Greyjoy_59
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8128.8.2
+            RECIPIENT = character:Greyjoy_59
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8133.12.1
+            RECIPIENT = character:Greyjoy_63
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8172.1.1
+            RECIPIENT = character:Greyjoy_65
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8206.1.1
+            RECIPIENT = character:Greyjoy_66
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8216.1.1
+            RECIPIENT = character:Greyjoy_69
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8225.1.1
+            RECIPIENT = character:Greyjoy_71
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8250.1.1
+            RECIPIENT = character:Greyjoy_1
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8283.10.1
+            RECIPIENT = character:Greyjoy_5
+        }
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 8299.11.15
+            RECIPIENT = character:Greyjoy_6
+        }
 
-		equip_artifact_to_owner_replace = yes
-	}
+        equip_artifact_to_owner_replace = yes
+    }
 }
 
 lv_create_artifact_vs_stormbringer_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_stormbringer_name
-		visuals = vs_stormbringer_visuals
-		description = vs_stormbringer_description
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_stormbringer_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_stormbringer_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		equip_artifact_to_owner_replace = yes
-		set_variable = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		#set_variable = { name = vs_stormbringer_artifact value = yes }
-		set_variable = { name = traditional_house_owner value = dynasty:dynn_Varezys.dynasty_founder.house}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7895.1.1
-			RECIPIENT = character:Varezys_1
-		}
-		save_scope_value_as = { name = valyrian_steel value = yes }
-	}
+    if = {
+        limit = {
+            NOT = {
+                is_target_in_global_variable_list = {
+                    name = lv_unavailable_unique_items
+                    target = flag:aurion_sword_lost
+                }
+            }
+        }
+        $OWNER$ = { save_scope_as = owner }
+        set_artifact_rarity_illustrious = yes
+        create_artifact = {
+            name = vs_stormbringer_name
+            visuals = vs_stormbringer_visuals
+            description = vs_stormbringer_description
+            type = sword
+            wealth = scope:wealth
+            quality = scope:quality
+            template = vs_stormbringer_template
+            history = {
+                type = created_before_history
+                date = 7300.1.1
+            }
+            modifier = vs_stormbringer_modifier
+            save_scope_as = newly_created_artifact
+            decaying = no
+        }
+        scope:newly_created_artifact ?= {
+            equip_artifact_to_owner_replace = yes
+            set_variable = { name = valyrian_steel value = yes }
+            set_variable = { name = historical_unique_artifact value = yes }
+            set_variable = { name = traditional_house_owner value = dynasty:dynn_Varezys.dynasty_founder.house}
+            agot_add_artifact_history = {
+                ARTIFACT = this
+                TYPE = inherited
+                DATE = 7895.1.1
+                RECIPIENT = character:Varezys_1
+            }
+        }
+    }
+    else = {
+        root = {
+            trigger_event = cob_7899_scenerio.9999
+        }
+    }
 }
 
 lv_create_artifact_vs_frostbite_hammer_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_frostbite_hammer_name
-		description = vs_frostbite_hammer_description
-		visuals = vs_frostbite_hammer_visuals
-		type = hammer
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_frostbite_hammer_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_frostbite_hammer_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = vs_frostbite_hammer_artifact value = yes }
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_frostbite_hammer_name
+        description = vs_frostbite_hammer_description
+        visuals = vs_frostbite_hammer_visuals
+        type = hammer
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_frostbite_hammer_template
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = vs_frostbite_hammer_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        equip_artifact_to_owner_replace = yes
+    }
 }
 
 lv_create_artifact_vs_mages_fire_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_mages_fire_name
-		visuals = vs_mages_fire_visuals
-		description = vs_mages_fire_desc
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_mages_fire_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_blackfyre_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = mages_fire_artifact value = yes }
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
-	set_global_variable = {
-		name = mages_fire_created
-		value = yes
-	}
+    if = {
+        limit = {
+            NOT = {
+                is_target_in_global_variable_list = {
+                    name = lv_unavailable_unique_items
+                    target = flag:mages_fire_lost
+                }
+            }
+        }
+        $OWNER$ = { save_scope_as = owner }
+        set_artifact_rarity_illustrious = yes
+        create_artifact = {
+            name = vs_mages_fire_name
+            visuals = vs_mages_fire_visuals
+            description = vs_mages_fire_desc
+            type = sword
+            wealth = scope:wealth
+            quality = scope:quality
+            template = vs_mages_fire_template
+            history = {
+                type = created_before_history
+                date = 7300.1.1
+            }
+            modifier = vs_blackfyre_modifier
+            save_scope_as = newly_created_artifact
+            decaying = no
+        }
+        scope:newly_created_artifact ?= {
+            set_variable = { name = historical_unique_artifact value = yes }
+            set_variable = { name = valyrian_steel value = yes }
+            equip_artifact_to_owner_replace = yes
+        }
+        # set_global_variable = {
+        #     name = mages_fire_created
+        #     value = yes
+        # }
+    }
+    else = {
+        root = {
+            trigger_event = cob_7899_scenerio.9999
+        }
+    }
 }
 
 lv_create_artifact_vs_skullbasher_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_skullbasher_name
-		visuals = maekar_mace_visuals
-		description = vs_skullbasher_description
-		type = mace
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_skullbasher_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_skullbasher_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = vs_skullbasher_artifact value = yes }
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		set_variable = { name = traditional_house_owner value = dynasty:dynn_Belaerys.dynasty_founder.house}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7895.1.1
-			RECIPIENT = character:Belaerys_cob_1
-		}
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_skullbasher_name
+        visuals = maekar_mace_visuals
+        description = vs_skullbasher_description
+        type = mace
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_skullbasher_template
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = vs_skullbasher_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        set_variable = { name = traditional_house_owner value = dynasty:dynn_Belaerys.dynasty_founder.house}
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7895.1.1
+            RECIPIENT = character:Belaerys_cob_1
+        }
+        equip_artifact_to_owner_replace = yes
+    }
 }
 lv_create_artifact_vs_inferno_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_inferno_name
-		visuals = bobby_hammer_visuals
-		description = vs_inferno_description
-		type = hammer
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_inferno_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_inferno_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = vs_inferno_artifact value = yes }
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		set_variable = { name = traditional_house_owner value = dynasty:dynn_Urnebar.dynasty_founder.house}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7895.1.1
-			RECIPIENT = character:Urnebar_1
-		}
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_inferno_name
+        visuals = bobby_hammer_visuals
+        description = vs_inferno_description
+        type = hammer
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_inferno_template
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = vs_inferno_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        set_variable = { name = traditional_house_owner value = dynasty:dynn_Urnebar.dynasty_founder.house}
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7895.1.1
+            RECIPIENT = character:Urnebar_1
+        }
+        equip_artifact_to_owner_replace = yes
+    }
 }
 lv_create_artifact_vs_eclipse_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_eclipse_name
-		visuals = vs_andal_longsword_silver_visuals
-		description = vs_eclipse_description
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_eclipse_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_eclipse_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = vs_eclipse_artifact value = yes }
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		set_variable = { name = traditional_house_owner value = dynasty:dynn_Mataeryon.dynasty_founder.house}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7895.1.1
-			RECIPIENT = character:Mataeryon_1
-		}
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_eclipse_name
+        visuals = vs_andal_longsword_silver_visuals
+        description = vs_eclipse_description
+        type = sword
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_eclipse_template
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = vs_eclipse_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        set_variable = { name = traditional_house_owner value = dynasty:dynn_Mataeryon.dynasty_founder.house}
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7895.1.1
+            RECIPIENT = character:Mataeryon_1
+        }
+        equip_artifact_to_owner_replace = yes
+    }
 }
 lv_create_artifact_vs_ashbringer_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_illustrious = yes
-	create_artifact = {
-		name = vs_ashbringer_name
-		visuals = vs_firstman_armingsword_silver_visuals
-		description = vs_ashbringer_description
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = vs_ashbringer_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = vs_ashbringer_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = vs_ashbringer_artifact value = yes }
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = valyrian_steel value = yes }
-		set_variable = { name = traditional_house_owner value = dynasty:dynn_Sonaryen.dynasty_founder.house}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7895.1.1
-			RECIPIENT = character:Sonaryen_1
-		}
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_illustrious = yes
+    create_artifact = {
+        name = vs_ashbringer_name
+        visuals = vs_firstman_armingsword_silver_visuals
+        description = vs_ashbringer_description
+        type = sword
+        wealth = scope:wealth
+        quality = scope:quality
+        template = vs_ashbringer_template
+        history = {
+            type = created_before_history
+            date = 7300.1.1
+        }
+        modifier = vs_ashbringer_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        set_variable = { name = historical_unique_artifact value = yes }
+        set_variable = { name = valyrian_steel value = yes }
+        set_variable = { name = traditional_house_owner value = dynasty:dynn_Sonaryen.dynasty_founder.house}
+        agot_add_artifact_history = {
+            ARTIFACT = this
+            TYPE = inherited
+            DATE = 7895.1.1
+            RECIPIENT = character:Sonaryen_1
+        }
+        equip_artifact_to_owner_replace = yes
+    }
 }
 
 ##### NON VALYRIAN STEEL WEAPONS
 
 lv_create_artifact_dothraki_arakh_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_masterwork = yes
-	create_artifact = {
-		name = dothraki_arakh_name
-		description = dothraki_arakh_description
-		visuals = dothraki_arakh_visuals
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = dothraki_arakh_template
-		modifier = dothraki_arakh_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = dothraki_arakh_artifact value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_masterwork = yes
+    create_artifact = {
+        name = dothraki_arakh_name
+        description = dothraki_arakh_description
+        visuals = dothraki_arakh_visuals
+        type = sword
+        wealth = scope:wealth
+        quality = scope:quality
+        template = dothraki_arakh_template
+        modifier = dothraki_arakh_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        equip_artifact_to_owner_replace = yes
+    }
 }
 
 lv_create_artifact_dragon_tail_effect = {
-	$OWNER$ = { save_scope_as = owner }
-	set_artifact_rarity_masterwork = yes
-	create_artifact = {
-		name = dragon_tail_name
-		description = dragon_tail_description
-		visuals = dragon_tail_visuals
-		type = sword
-		wealth = scope:wealth
-		quality = scope:quality
-		template = dragon_tail_template
-		modifier = dragon_tail_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-	scope:newly_created_artifact ?= {
-		#set_variable = { name = dragon_tail_artifact value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
+    $OWNER$ = { save_scope_as = owner }
+    set_artifact_rarity_masterwork = yes
+    create_artifact = {
+        name = dragon_tail_name
+        description = dragon_tail_description
+        visuals = dragon_tail_visuals
+        type = sword
+        wealth = scope:wealth
+        quality = scope:quality
+        template = dragon_tail_template
+        modifier = dragon_tail_modifier
+        save_scope_as = newly_created_artifact
+        decaying = no
+    }
+    scope:newly_created_artifact ?= {
+        equip_artifact_to_owner_replace = yes
+    }
 }
 
 ### ARMOR
 lv_create_artifact_aurion_valyrian_steel_armor_effect = {
-	# Get the character the artifact is being made for.
-	$OWNER$ = { save_scope_as = owner }
+    if = {
+        limit = {
+            NOT = {
+                is_target_in_global_variable_list = {
+                    name = lv_unavailable_unique_items
+                    target = flag:aurion_armor_lost
+                }
+            }
+        }
+        $OWNER$ = { save_scope_as = owner }
+        set_artifact_rarity_illustrious = yes
+        # Create the artifact
+        create_artifact = {
+            name = aurion_valyrian_steel_armor_name
+            description = aurion_valyrian_steel_armor_description
+            type = armor_plate
+            visuals = aurion_valyrian_steel_armor_visuals
+            wealth = scope:wealth
+            quality = scope:quality
+            template = aurion_valyrian_steel_armor_template
+            history = {
+                type = created_before_history
+                date = 7300.1.1
+            }
+            modifier = aurion_valyrian_steel_armor_modifier
+            save_scope_as = newly_created_artifact
+            decaying = no
+        }
 
-	set_artifact_rarity_illustrious = yes
-
-	# Create the artifact
-	create_artifact = {
-		name = aurion_valyrian_steel_armor_name
-		description = aurion_valyrian_steel_armor_description
-		type = armor_plate
-		visuals = aurion_valyrian_steel_armor_visuals
-		wealth = scope:wealth
-		quality = scope:quality
-		template = aurion_valyrian_steel_armor_template
-		history = {
-			type = created_before_history
-			date = 7300.1.1
-		}
-		modifier = aurion_valyrian_steel_armor_modifier
-		save_scope_as = newly_created_artifact
-		decaying = no
-	}
-
-	scope:newly_created_artifact = {
-		save_scope_as = epic #for loc
-		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = { name = aurion_valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
-		set_variable = { name = traditional_house_owner value = dynasty:dynn_Varezys.dynasty_founder.house}
-		agot_add_artifact_history = {
-			ARTIFACT = this
-			TYPE = inherited
-			DATE = 7895.1.1
-			RECIPIENT = character:Varezys_1
-		}
-		save_scope_value_as = { name = valyrian_steel value = yes }
-		equip_artifact_to_owner_replace = yes
-	}
+        scope:newly_created_artifact = {
+            save_scope_as = epic #for loc
+            set_variable = { name = historical_unique_artifact value = yes }
+            set_variable = { name = aurion_valyrian_steel_armor_artifact value = yes } #this connects the artefact to the 3D model via the 01_clothes.txt file under gfx/portraits/portrait_modifiers/
+            set_variable = { name = traditional_house_owner value = dynasty:dynn_Varezys.dynasty_founder.house}
+            agot_add_artifact_history = {
+                ARTIFACT = this
+                TYPE = inherited
+                DATE = 7895.1.1
+                RECIPIENT = character:Varezys_1
+            }
+            set_variable = { name = valyrian_steel value = yes }
+            equip_artifact_to_owner_replace = yes
+        }
+    }
+    else = {
+        root = {
+            trigger_event = cob_7899_scenerio.9999
+        }
+    }
 }

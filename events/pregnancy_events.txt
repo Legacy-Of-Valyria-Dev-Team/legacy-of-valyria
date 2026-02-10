@@ -1232,6 +1232,26 @@ pregnancy.2002 = {
 				add = 100
 				accepts_adultery_without_penalty_trigger = yes
 			}
+			modifier = {
+				add = 50
+				accepts_adultery_without_penalty_trigger = yes
+				scope:father = { is_lowborn = yes }
+				scope:real_father = { is_lowborn = no }
+			}
+			modifier = {
+				accepts_adultery_without_penalty_trigger = yes
+				add = {
+					value = scope:real_father.highest_held_title_tier
+					multiply = 10
+				}
+			}
+			modifier = {
+				accepts_adultery_without_penalty_trigger = yes
+				add = {
+					value = scope:father.highest_held_title_tier
+					multiply = -10
+				}
+			}
 		}
 	}
 
@@ -1265,6 +1285,9 @@ pregnancy.2002 = {
 			days = 22
 		}
 		married_mother_pregnancy_effect = yes
+		stress_impact = {
+			honest = medium_stress_impact_gain
+		}
 		ai_chance = {
 			base = 100
 			ai_value_modifier = {
@@ -1272,8 +1295,25 @@ pregnancy.2002 = {
 				ai_compassion = 1
 				ai_rationality = 0.5
 			}
-			modifier = { # Never hide the truth in faiths with the Polyamory tenet.
-				factor = 0
+			modifier = {
+				add = 50
+				scope:father = { is_lowborn = no }
+				scope:real_father = { is_lowborn = yes }
+			}
+			modifier = {
+				add = {
+					value = scope:real_father.highest_held_title_tier
+					multiply = 10
+				}
+			}
+			modifier = {
+				add = {
+					value = scope:father.highest_held_title_tier
+					multiply = -10
+				}
+			}
+			modifier = { # Less likely to hide the truth in faiths with the Polyamory tenet.
+				add = 100
 				accepts_adultery_without_penalty_trigger = yes
 			}
 			#AGOT Added, force mother of bastard canon children to confess to real father if configured to do so
@@ -1281,9 +1321,6 @@ pregnancy.2002 = {
 				add = 20000
 				has_character_flag = planning_to_confess_to_real_father
 			}
-		}
-		stress_impact = {
-			honest = medium_stress_impact_gain
 		}
 	}
 
@@ -1303,8 +1340,25 @@ pregnancy.2002 = {
 			ai_value_modifier = {
 				ai_rationality = 0.5
 			}
-			modifier = { # Never hide the truth in faiths with the Polyamory tenet.
-				factor = 0
+			modifier = {
+				add = 50
+				scope:father = { is_lowborn = no }
+				scope:real_father = { is_lowborn = yes }
+			}
+			modifier = {
+				add = {
+					value = scope:father.highest_held_title_tier
+					multiply = 10
+				}
+			}
+			modifier = {
+				add = {
+					value = scope:real_father.highest_held_title_tier
+					multiply = -10
+				}
+			}
+			modifier = { # Less likely to hide the truth in faiths with the Polyamory tenet.
+				add = -100
 				accepts_adultery_without_penalty_trigger = yes
 			}
 			#AGOT Added, shouldn't trigger for fathers configured not to find out
@@ -2249,7 +2303,16 @@ pregnancy.6001 = {
 		character = scope:mother
 		animation = personality_callous
 	}
-	right_portrait = scope:real_father
+	right_portrait = {
+		character = scope:real_father
+		animation = war_over_win
+	}
+	lower_center_portrait = {
+		character = scope:father
+		trigger = {
+			NOT = { this = scope:real_father }
+		}
+	}
 
 	option = {
 		name = pregnancy.6001.a

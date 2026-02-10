@@ -1,248 +1,17 @@
 ﻿# Legacy of Valyria general scripted effects
 
-# For distributing owned inconsequential titles on game start or when necessary
-# - Requires character scope
-lv_distribute_titles_effect = {
-	save_scope_as = ruler
-	if = {
-		limit = {
-			always = $GRANT_DUCHY$
-			NOT = { exists = $DUCHY$.holder }
-		}
-		get_title = $DUCHY$
-	}
-	every_held_title = {
-		limit = {
-			tier = tier_county
-			trigger_if = {
-				limit = { NOT = { always = $GIVE_COUNTY_CAPITAL$ } }
-				NOR = {
-					this = $COUNTY_OF_HOLDER$
-					trigger_if = { # Exception for Volantis
-						limit = { $DUCHY$ = title:d_volantis }
-						this = title:c_volantis
-					}
-				}
-			}
-			duchy = $DUCHY$
-		}
-		create_character = {
-			location = this.title_province
-			culture = $VASSAL_CULTURE$
-			faith = $VASSAL_FAITH$
-			gender = male
-			gender_female_chance = $VASSAL_FEMALE_CHANCE$
-			save_scope_as = vassal
-		}
-		if = {
-			limit = { always = $GRANT_INDEPENDENCE$ }
-			create_title_and_vassal_change = {
-				type = independency
-				save_scope_as = change
-				add_claim_on_loss = yes
-			}
-			change_title_holder_include_vassals = {
-				holder = scope:vassal
-				change = scope:change
-			}
-			scope:vassal = { becomes_independent = { change = scope:change } }
-		}
-		else = {
-			create_title_and_vassal_change = {
-				type = granted
-				save_scope_as = change
-				add_claim_on_loss = no
-			}
-			change_title_holder_include_vassals = {
-				holder = scope:vassal
-				change = scope:change
-				government_base = scope:ruler
-			}
-		}
-		resolve_title_and_vassal_change = scope:change
-		scope:vassal = {
-			if = {
-				limit = { target_is_liege_or_above = scope:ruler }
-				if = {
-					limit = { always = $INHERIT_LIEGE_GOVERNMENT$ }
-					lv_distribute_titles_government_parser = { FALLBACK = $GOVERNMENT$ }
-				}
-				else = { change_government = $GOVERNMENT$ }
-			}
-		}
-	}
-}
-
-# Only used so far in the vassal generator
-# - Requires "ruler" and "vassal" scopes
-lv_distribute_titles_government_parser = {
-	scope:ruler = {
-		switch = {
-			trigger = has_government
-
-			# Vanilla Governments
-			feudal_government = { scope:vassal = { change_government = feudal_government } }
-			republic_government = { scope:vassal = { change_government = republic_government } }
-			theocracy_government = { scope:vassal = { change_government = theocracy_government } }
-			clan_government = { scope:vassal = { change_government = clan_government } }
-			tribal_government = { scope:vassal = { change_government = tribal_government } }
-			mercenary_government = { scope:vassal = { change_government = mercenary_government } }
-			holy_order_government = { scope:vassal = { change_government = holy_order_government } }
-			administrative_government = { scope:vassal = { change_government = administrative_government } }
-			landless_adventurer_government = { scope:vassal = { change_government = landless_adventurer_government } }
-
-			# AGOT Governments
-			lp_feudal_government = { scope:vassal = { change_government = lp_feudal_government } }
-			administrative_government = { scope:vassal = { change_government = administrative_government } }
-			silent_sisterhood_government = { scope:vassal = { change_government = silent_sisterhood_government } }
-			kingsguard_government = { scope:vassal = { change_government = kingsguard_government } }
-			nights_watch_government = { scope:vassal = { change_government = nights_watch_government } }
-			the_citadel_government = { scope:vassal = { change_government = the_citadel_government } }
-			ruins_government = { scope:vassal = { change_government = ruins_government } }
-			pirate_government = { scope:vassal = { change_government = pirate_government } }
-			host_government = { scope:vassal = { change_government = host_government } }
-			first_ranger_government = { scope:vassal = { change_government = first_ranger_government } }
-
-			fallback = {
-				scope:vassal = { change_government = $FALLBACK$ }
-				debug_log = "A randomly generated vassal was assigned to inherit liege's government did not match any of the pre-defined government types in lv_distribute_titles_government_parser. Defaulting to fallback."
-			}
-		}
-	}
-	# Wrong Holding/Government Corrector
-	# - If a randomly-generated vassal's main holding does not match the assigned government, convert to an appropriate analogue
-	scope:vassal = {
-		if = {
-			limit = {
-				any_held_title = {
-					has_wrong_holding_type = yes
-					title_province = { save_temporary_scope_as = capital_province }
-				}
-			}
-			#change_government = republic_government
-			scope:capital_province = {
-				switch = {
-					trigger = has_holding_type
-
-					castle_holding = {
-						scope:vassal = {
-							if = {
-								limit = { liege = { has_government = lp_feudal_government } }
-								change_government = lp_feudal_government
-							}
-							else = { change_government = feudal_government }
-						}
-					}
-					city_holding = {
-						scope:vassal = {
-							if = {
-								limit = {
-									liege = {
-										OR = {
-											has_government = administrative_government
-											has_government = oligarchic_government
-										}
-									}
-								}
-								if = {
-									limit = {
-										highest_held_title_tier >= tier_county
-										liege = { has_government = administrative_government }
-									}
-									change_government = administrative_government
-								}
-								else_if = {
-									limit = {
-										highest_held_title_tier >= tier_county
-										liege = { has_government = oligarchic_government }
-									}
-									change_government = oligarchic_government
-								}
-							}
-							else = {
-								if = {
-									limit = {
-										highest_held_title_tier > tier_county
-										any_liege_or_above = { has_government = administrative_government }
-									}
-									change_government = administrative_government
-								}
-								else_if = {
-									limit = {
-										highest_held_title_tier > tier_county
-										any_liege_or_above = { has_government = oligarchic_government }
-									}
-									change_government = oligarchic_government
-								}
-								else = { change_government = republic_government }
-							}
-						}
-					}
-					tribal_holding = { scope:vassal = { change_government = tribal_government } }
-				}
-			}
-		}
-	}
-}
-
-# For distributing singular counties
-# - Requires character scope
-lv_distribute_county_effect = {
-	save_scope_as = ruler
-	$COUNTY$ = {
-		create_character = {
-			location = this.title_province
-			culture = $VASSAL_CULTURE$
-			faith = $VASSAL_FAITH$
-			gender = male
-			gender_female_chance = $VASSAL_FEMALE_CHANCE$
-			save_scope_as = vassal
-		}
-		if = {
-			limit = { always = $GRANT_INDEPENDENCE$ }
-			create_title_and_vassal_change = {
-				type = independency
-				save_scope_as = change
-				add_claim_on_loss = yes
-			}
-			change_title_holder_include_vassals = {
-				holder = scope:vassal
-				change = scope:change
-			}
-			scope:vassal = { becomes_independent = { change = scope:change } }
-		}
-		else = {
-			create_title_and_vassal_change = {
-				type = granted
-				save_scope_as = change
-				add_claim_on_loss = no
-			}
-			change_title_holder_include_vassals = {
-				holder = scope:vassal
-				change = scope:change
-				government_base = scope:ruler
-			}
-		}
-		resolve_title_and_vassal_change = scope:change
-		scope:vassal = {
-			if = {
-				limit = { target_is_liege_or_above = scope:ruler }
-				if = {
-					limit = { always = $INHERIT_LIEGE_GOVERNMENT$ }
-					lv_distribute_titles_government_parser = { FALLBACK = $GOVERNMENT$ }
-				}
-				else = { change_government = $GOVERNMENT$ }
-			}
-		}
-	}
-}
-
 # Free City-fier effect
 lv_free_city_setup_effect = {
 	$KINGDOM_TITLE$ = {
 		if = {
 			limit = { exists = holder }
 			holder = {
+				save_scope_as = new_ruler
+				title:c_myr = { save_scope_as = capital }
+				trigger_event = {
+					id = free_city_events.9996
+					days = 1
+				}
 				every_vassal_or_below = {
 					limit = {
 						highest_held_title_tier >= tier_county
@@ -262,6 +31,589 @@ lv_free_city_setup_effect = {
 				name = years_since_election
 				value = title_held_years
 			}
+		}
+	}
+}
+
+lv_handle_free_city_attached_titles_succession_effect = {
+	save_scope_as = new_holder
+	if = {
+		limit = { scope:title = title:k_volantis }
+		if = {
+			limit = {
+				NOT = { has_title = title:d_volantis }
+				any_vassal_or_below = { has_title = title:d_volantis }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = duchy_title_change
+				add_claim_on_loss = no
+			}
+			title:d_volantis = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:duchy_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:duchy_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:d_volantis
+				title:d_volantis = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:d_volantis = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_old_volantis }
+				any_vassal_or_below = { has_title = title:c_old_volantis }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_old_volantis = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_old_volantis
+				title:c_old_volantis = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_old_volantis = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_volantis }
+				any_vassal_or_below = { has_title = title:c_volantis }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_volantis = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_volantis
+				title:c_volantis = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_volantis = { add_title_law = magisterial_attached_titles_law }
+		}
+	}
+	if = {
+		limit = { scope:title = title:k_the_basilisk_isles }
+		if = {
+			limit = {
+				NOT = { has_title = title:d_the_three_snakes }
+				any_vassal_or_below = { has_title = title:d_the_three_snakes }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = duchy_title_change
+				add_claim_on_loss = no
+			}
+			title:d_the_three_snakes = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:duchy_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:duchy_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:d_the_three_snakes
+				title:d_the_three_snakes = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:d_the_three_snakes = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_talon }
+				any_vassal_or_below = { has_title = title:c_talon }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_talon = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_talon
+				title:c_talon = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_talon = { add_title_law = magisterial_attached_titles_law }
+		}
+	}
+	if = {
+		limit = { scope:title = title:k_gogossos }
+		if = {
+			limit = {
+				NOT = { has_title = title:d_gogossos }
+				any_vassal_or_below = { has_title = title:d_gogossos }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = duchy_title_change
+				add_claim_on_loss = no
+			}
+			title:d_gogossos = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:duchy_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:duchy_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:d_gogossos
+				title:d_gogossos = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:d_gogossos = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_gogossos }
+				any_vassal_or_below = { has_title = title:c_gogossos }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_gogossos = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_gogossos
+				title:c_gogossos = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_gogossos = { add_title_law = magisterial_attached_titles_law }
+		}
+	}
+
+	if = {
+		limit = { scope:title = title:k_meereen }
+		if = {
+			limit = {
+				NOT = { has_title = title:d_meereen }
+				any_vassal_or_below = { has_title = title:d_meereen }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = duchy_title_change
+				add_claim_on_loss = no
+			}
+			title:d_meereen = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:duchy_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:duchy_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:d_meereen
+				title:d_meereen = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:d_meereen = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_meereen }
+				any_vassal_or_below = { has_title = title:c_meereen }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_meereen = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_meereen
+				title:c_meereen = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_meereen = { add_title_law = magisterial_attached_titles_law }
+		}
+	}
+	if = {
+		limit = { scope:title = title:k_yunkai }
+		if = {
+			limit = {
+				NOT = { has_title = title:d_yunkai }
+				any_vassal_or_below = { has_title = title:d_yunkai }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = duchy_title_change
+				add_claim_on_loss = no
+			}
+			title:d_yunkai = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:duchy_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:duchy_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:d_yunkai
+				title:d_yunkai = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:d_yunkai = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_yunkai }
+				any_vassal_or_below = { has_title = title:c_yunkai }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_yunkai = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_yunkai
+				title:c_yunkai = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_yunkai = { add_title_law = magisterial_attached_titles_law }
+		}
+	}
+	if = {
+		limit = { scope:title = title:k_astapor }
+		if = {
+			limit = {
+				NOT = { has_title = title:d_astapor }
+				any_vassal_or_below = { has_title = title:d_astapor }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = duchy_title_change
+				add_claim_on_loss = no
+			}
+			title:d_astapor = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:duchy_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:duchy_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:d_astapor
+				title:d_astapor = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:d_astapor = { add_title_law = magisterial_attached_titles_law }
+		}
+		if = {
+			limit = {
+				NOT = { has_title = title:c_astapor }
+				any_vassal_or_below = { has_title = title:c_astapor }
+			}
+			create_title_and_vassal_change = {
+				type = election
+				save_scope_as = county_title_change
+				add_claim_on_loss = no
+			}
+			title:c_astapor = {
+				change_title_holder = {
+					holder = scope:new_holder
+					change = scope:county_title_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:county_title_change
+		}
+		if = {
+			limit = {
+				has_title = title:c_astapor
+				title:c_astapor = { NOT = { has_title_law = magisterial_attached_titles_law } }
+			}
+			title:c_astapor = { add_title_law = magisterial_attached_titles_law }
+		}
+	}
+}
+
+lv_dummy_lobotomizer_effect = {
+	save_scope_as = dummy
+	remove_short_term_gold = current_gold_value
+	add_prestige = {
+		value = prestige
+		multiply = -1
+	}
+	add_piety = {
+		value = piety
+		multiply = -1
+	}
+	every_claim = { scope:dummy = { remove_claim = prev } }
+	if = {
+		limit = { any_held_title = { tier = tier_barony } }
+		every_held_title = {
+			limit = { tier = tier_barony }
+			title_province = {
+				if = {
+					limit = {
+						is_county_capital = no
+						has_holding_type = wilderness_holding
+					}
+					remove_holding = yes
+				}
+			}
+		}
+	}
+	if = { # Execute Order 66
+		limit = { any_vassal = {} }
+		every_realm_province = {
+			limit = {
+				is_county_capital = no
+				has_holding_type = wilderness_holding
+			}
+			province_owner = { death = natural }
+			scope:dummy = { get_title = prev.barony }
+			remove_holding = yes
+		}
+	}
+	if = { # Break free
+		limit = { is_independent_ruler = no }
+		create_title_and_vassal_change = {
+			type = independency
+			save_scope_as = change
+			add_claim_on_loss = no
+		}
+		becomes_independent = { change = scope:change }
+		resolve_title_and_vassal_change = scope:change
+	}
+	if = { # Immediate nuke if any title greater than county
+		limit = {
+			highest_held_title_tier > tier_county
+			trigger_if = {
+				limit = { has_trait = ruin }
+				any_held_title = {
+					tier > tier_county
+					NOT = { this = title:d_ruins }
+				}
+			}
+			trigger_else = { always = yes }
+		}
+		if = { # Regain control if already given county titles
+			limit = { any_vassal = { highest_held_title_tier = tier_county } }
+			every_vassal_or_below = {
+				limit = { highest_held_title_tier = tier_county }
+				every_held_title = { scope:dummy = { get_title = prev } }
+				death = natural
+			}
+		}
+		every_held_title = {
+			limit = {
+				tier > tier_county
+				NOT = { this = title:d_ruins }
+			}
+			scope:dummy = { destroy_title = prev }
+		}
+		if = {
+			limit = { has_trait = wilderness }
+			character:Wilderness_Empress ?= {
+				if = {
+					limit = {
+						is_alive = yes
+						this = scope:dummy
+					}
+					if = {
+						limit = { NOT = { has_title = title:c_wilderness } }
+						get_title = title:c_wilderness
+					}
+					set_primary_title_to = title:c_wilderness
+				}
+				else = {
+					scope:dummy = {
+						if = {
+							limit = { has_title = title:c_wilderness }
+							set_primary_title_to = title:c_wilderness
+						}
+					}
+				}
+			}
+			every_realm_province = {
+				limit = {
+					is_county_capital = no
+					has_holding_type = wilderness_holding
+				}
+				remove_holding = yes
+			}
+			change_government = wilderness_government
+		}
+		else_if = {
+			limit = { has_trait = ruin }
+			character:Ruin_Empress ?= {
+				if = {
+					limit = {
+						is_alive = yes
+						this = scope:dummy
+					}
+					if = {
+						limit = { NOT = { has_title = title:c_ruins } }
+						get_title = title:c_ruins
+					}
+					set_primary_title_to = title:c_ruins
+				}
+				else = {
+					scope:dummy = {
+						if = {
+							limit = { has_title = title:d_ruins }
+							set_primary_title_to = title:d_ruins
+						}
+						else_if = {
+							limit = { has_title = title:c_ruins }
+							set_primary_title_to = title:c_ruins
+						}
+					}
+				}
+			}
+			every_realm_province = {
+				limit = {
+					is_county_capital = no
+					has_holding = yes
+				}
+				set_holding_type = ruin_holding
+			}
+			change_government = ruins_government
+		}
+	}
+	if = { # Execute Order 66 (Part 2)
+		limit = { any_courtier = {} }
+		every_courtier = { death = natural }
+	}
+	# If, somehow, a rogue ruin character owns a fully-built holding, give away
+	if = {
+		limit = {
+			any_held_title = {
+				title_province = {
+					is_county_capital = yes
+					NOR = {
+						has_holding_type = wilderness_holding
+						has_holding_type = ruin_holding
+					}
+				}
+			}
+		}
+		every_held_county = {
+			limit = {
+				title_province = {
+					is_county_capital = yes
+					NOR = {
+						has_holding_type = wilderness_holding
+						has_holding_type = ruin_holding
+					}
+					save_temporary_scope_as = dummy_distribution_province
+				}
+			}
+			save_scope_as = dummy_distribution_title
+			scope:dummy = {
+				if = {
+					limit = { faith = faith:fg_unknown }
+					if = {
+						limit = { any_neighboring_and_across_water_top_liege_realm_owner = { NOT = { faith = faith:fg_unknown } } }
+						random_neighboring_and_across_water_top_liege_realm_owner = { faith = { save_scope_as = neighbor_faith } }
+						set_county_faith = scope:neighbor_faith
+					}
+				}
+				if = {
+					limit = { culture = culture:unknown_culture }
+					if = {
+						limit = { any_neighboring_and_across_water_top_liege_realm_owner = { NOT = { culture = culture:unknown_culture } } }
+						random_neighboring_and_across_water_top_liege_realm_owner = { culture = { save_scope_as = neighbor_culture } }
+						set_county_culture = scope:neighbor_culture
+					}
+				}
+			}
+			if = {
+				limit = { scope:dummy_distribution_province.culture = culture:lakefolk }
+				create_character = {
+					location = scope:dummy_distribution_province
+					random_traits = yes
+					culture = scope:dummy_distribution_province.culture
+					faith = scope:dummy_distribution_province.faith
+					age = { 16 55 }
+					gender = female
+					dynasty = generate
+					after_creation = {
+						get_title = scope:dummy_distribution_title
+						add_gold = { minor_gold_value_check medium_gold_value_check }
+						add_prestige = { minor_prestige_gain medium_prestige_gain }
+						add_piety = { minor_piety_gain medium_piety_gain }
+					}
+				}
+			}
+			else = {
+				create_character = {
+					location = scope:dummy_distribution_province
+					random_traits = yes
+					culture = scope:dummy_distribution_province.culture
+					faith = scope:dummy_distribution_province.faith
+					age = { 16 55 }
+					gender = male
+					dynasty = generate
+					after_creation = {
+						get_title = scope:dummy_distribution_title
+						add_gold = { minor_gold_value_check medium_gold_value_check }
+						add_prestige = { minor_prestige_gain medium_prestige_gain }
+						add_piety = { minor_piety_gain medium_piety_gain }
+					}
+				}
+			}
+		}
+		if = {
+			limit = { is_landed = no }
+			death = natural
 		}
 	}
 }

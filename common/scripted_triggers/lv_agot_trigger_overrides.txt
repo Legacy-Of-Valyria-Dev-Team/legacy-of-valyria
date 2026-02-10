@@ -10,6 +10,27 @@ agot_is_historical_free_city = {
 		has_title = title:k_volantis
 		has_title = title:k_the_basilisk_isles
 		has_title = title:k_gogossos
+
+		has_title = title:k_meereen
+		has_title = title:k_yunkai
+		has_title = title:k_astapor
+	}
+}
+
+# Overridden from 00_agot_government_triggers.txt
+agot_is_valid_free_city_government_target = {
+	is_landed = yes
+	NOT = { has_government = oligarchic_government }
+	NOR = {
+		has_government = theocracy_government
+		government_has_flag = government_is_uninteractable
+		has_government = kingsguard_government
+	}
+	capital_province ?= {
+		OR = {
+			has_holding_type = city_holding
+			has_holding_type = castle_holding
+		}
 	}
 }
 
@@ -109,5 +130,20 @@ is_historical_dragon = {
 
 		# LoV Dragons
 		this = character:dragon_Alduin
+		this = character:dragon_Paarthurnax
+	}
+}
+
+agot_has_multiple_active_dragonpits = {
+	any_held_county = {
+		OR = {
+			any_county_province = {
+				has_holding_type = castle_holding
+				has_building_or_higher = generic_dragon_pit_01
+			}
+			any_county_province = { lv_has_dragon_pit_building = yes }
+		}
+		has_variable = has_dragonkeeper_order
+		count > 1
 	}
 }

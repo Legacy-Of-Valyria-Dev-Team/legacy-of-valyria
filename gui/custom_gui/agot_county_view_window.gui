@@ -46,10 +46,11 @@ types CountyViewTypes
 			name = _show
 			on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_show').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
 		}
-		state = {
-			name = _hide
-			on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_hide').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
-		}
+		# Too clunky
+		#state = {
+		#	name = _hide
+		#	on_finish = "[GetScriptedGui('lv_restore_ruins_tooltip_hide').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+		#}
 
 		button_standard_big = {
 			name = "restore_ruins"
@@ -72,8 +73,11 @@ types CountyViewTypes
 			size = { 235 55 }
 			text = "agot_ruin_begin_reconstruction"
 			#tooltip = "[HoldingView.GetProvince.Custom('LV_RuinsReconstructTooltip')]"
-			enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
-			onclick = "[GetScriptedGui('reconstruct_ruin').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+			#enabled = "[GetScriptedGui('can_reconstruct_ruin').IsValid(GuiScope.SetRoot(HoldingView.GetProvince.MakeScope).AddScope('actor', GetPlayer.MakeScope ).End)]"
+			#onclick = "[GetScriptedGui('reconstruct_ruin').Execute( GuiScope.SetRoot( HoldingView.GetProvince.MakeScope ).AddScope('actor', GetPlayer.MakeScope ).End)]"
+
+			enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('lv_begin_expedition', Title.Self)]"
+			onclick = "[Character.OpenPlayerInteractionWithTargetTitle('lv_begin_expedition', Title.Self)]"
 
 			tooltipwidget = { lv_colonization_button_tooltip = {} }
 		}
@@ -306,9 +310,12 @@ types CountyViewTypes
 
 					size = { 300 50 }
 					text = "[Localize('COLONIZE')] [HoldingView.GetProvince.GetCounty.GetTitle.GetNameNoTierNoTooltip]"
-					onclick = "[GetScriptedGui('agot_can_colonize').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+					#onclick = "[GetScriptedGui('agot_can_colonize').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
 					#tooltip = "[GetScriptedGui('agot_can_colonize').BuildTooltip( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End )]"
-					enabled = "[GetScriptedGui('agot_can_colonize').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+					#enabled = "[GetScriptedGui('agot_can_colonize').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope('wilderness', HoldingView.GetProvince.MakeScope ).End)]"
+
+					enabled = "[Character.IsPlayerInteractionWithTargetTitleValid('lv_begin_expedition', Title.Self)]"
+					onclick = "[Character.OpenPlayerInteractionWithTargetTitle('lv_begin_expedition', Title.Self)]"
 
 					tooltipwidget = { lv_colonization_button_tooltip = {} }
 				}

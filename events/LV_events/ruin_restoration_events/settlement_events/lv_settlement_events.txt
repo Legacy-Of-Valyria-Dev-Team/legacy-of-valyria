@@ -15,47 +15,63 @@
 # - Currently, the event is set up so you only choose direct vassals and your courtiers, which have you as their liege by default
 # - However, there might be a potential use case for non-vassal/courtier options, which might be interesting to look into eventually
 scripted_effect lv_settlement_confirm_effect = {
-	save_scope_as = settler
-	set_variable = {
-		name = lv_settlement_expedition_liege
-		value = scope:liege
-	}
-	set_variable = {
-		name = lv_settlement_expedition_destination
-		value = scope:ruin
-	}
-	scope:liege = {
+	if = {
+		limit = { scope:liege = { is_alive = yes } }
+		save_scope_as = settler
+		set_variable = {
+			name = lv_settlement_expedition_liege
+			value = scope:liege
+		}
+		set_variable = {
+			name = lv_settlement_expedition_destination
+			value = scope:ruin
+		}
 		set_variable = {
 			name = lv_settlement_cost
 			value = scope:lv_settlement_cost
 		}
-		remove_variable = lv_settlement_state
-		if = {
-			limit = { owns_story_of_type = lv_settlement_story_cycle }
-			random_owned_story = {
-				limit = { story_type = lv_settlement_story_cycle }
-				add_to_variable_list = {
-					name = lv_settlement_expeditions
-					target = scope:ruin
+		remove_variable = si_selecting_character
+		scope:liege = {
+			remove_variable = si_selected_character
+			remove_variable = lv_settlement_state
+			remove_variable = lv_restore_ruins_tooltip
+			if = {
+				limit = { owns_story_of_type = lv_settlement_story_cycle }
+				random_owned_story = {
+					limit = { story_type = lv_settlement_story_cycle }
+					add_to_variable_list = {
+						name = lv_settlement_expeditions
+						target = scope:ruin
+					}
 				}
 			}
+			else = {
+				create_story = lv_settlement_story_cycle
+				random_owned_story = {
+					limit = { story_type = lv_settlement_story_cycle }
+					add_to_variable_list = {
+						name = lv_settlement_expeditions
+						target = scope:ruin
+					}
+				}
+			}
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = lv_settlement_accepted
+				left_icon = root
+				right_icon = scope:liege
+				custom_tooltip = lv_settlement_accepted_desc
+			}
 		}
-		else = { create_story = lv_settlement_story_cycle }
-		send_interface_toast = {
-			type = event_toast_effect_neutral
-			title = lv_settlement_accepted
-			left_icon = root
-			right_icon = scope:owner
-			custom_tooltip = lv_settlement_accepted_desc
+		start_travel_plan = {
+			destination = scope:ruin
+			players_use_planner = yes
+			return_trip = no
+			can_cancel_planning = yes
+			on_arrival_on_action = lv_settlement_on_arrival
+			on_start_on_action = lv_settlement_on_start
+			on_travel_planner_cancel_on_action = lv_settlement_on_cancel
 		}
-	}
-	start_travel_plan = {
-		destination = scope:ruin
-		players_use_planner = yes
-		return_trip = no
-		can_cancel_planning = yes
-		on_start_on_action = lv_settlement_on_start
-		on_arrival_on_action = lv_settlement_on_arrival
 	}
 }
 
@@ -191,7 +207,7 @@ lv_settlement_event.0002 = {
 	# Select person
 	option = {
 		name = lv_settlement_event.0002.a
-		trigger = { exists = scope:selected_character }
+		trigger = { exists = var:si_selected_character }
 		if = {
 			limit = { var:lv_settlement_filter = flag:vassals }
 			var:si_selected_character ?= { trigger_event = lv_settlement_event.0003 }

@@ -1,0 +1,97 @@
+﻿### COB DECISIONS ###
+cob_send_for_the_dragonlords_decision = {
+    picture = {
+        reference = "gfx/interface/illustrations/decisions/ep3_decision_roman_restoration.dds"
+    }
+    # ai_check_interval_by_tier = {
+    #     barony = 0
+    #     county = 0
+    #     duchy = 0
+    #     kingdom = 0
+    #     empire = 0
+    #     hegemony = 0
+    # }
+    desc = cob_send_for_the_dragonlords_decision_desc
+    selection_tooltip = cob_send_for_the_dragonlords_decision_tooltip
+    decision_group_type = valyria
+
+    ai_check_interval = 120
+
+    cooldown = {
+        days = 5478
+    }
+
+    is_shown = {
+        is_ruler = yes
+        is_human = yes
+        agot_dragon_population_alive = yes
+        agot_is_any_dragon_alive = yes
+        has_title = title:c_valyria
+        title:c_valyria.title_province = {
+            NOT = {
+                OR = {
+                    has_holding_type = ruin_holding
+                    has_holding_type = pirate_den_holding
+                    has_holding_type = unknown_holding
+                    has_holding_type = wilderness_holding
+                    has_holding_type = settlement_holding
+                }
+            }
+        }
+    }
+
+    is_valid = {
+        is_ruler = yes
+        has_title = title:c_valyria
+        title:c_valyria.title_province = {
+            NOT = {
+                OR = {
+                    has_holding_type = ruin_holding
+                    has_holding_type = pirate_den_holding
+                    has_holding_type = unknown_holding
+                    has_holding_type = wilderness_holding
+                    has_holding_type = settlement_holding
+                }
+            }
+        }
+    }
+
+    cost = {
+        prestige = 2000
+    }
+
+    confirm_text = cob_send_for_the_dragonlords_decision_confirm
+
+    effect = {
+        root = {
+            save_scope_as = actor
+            capital_province = {
+                save_scope_as = actor_capital
+            }
+        }
+        every_living_character = {
+            limit = {
+                AND = {
+                    is_current_dragonrider = yes
+                    is_ruler = no
+                    is_claimant = no
+                }
+                NOT = {
+                    is_courtier_of = root
+                }
+            }
+            add_to_list = recipient
+        }
+        every_in_list = {
+            list = recipient
+            cob_summon_the_dragonlords_effect = yes
+        }
+    }
+    ai_potential = {
+        always = yes
+    }
+
+    ai_will_do = {
+        base = 100
+    }
+}

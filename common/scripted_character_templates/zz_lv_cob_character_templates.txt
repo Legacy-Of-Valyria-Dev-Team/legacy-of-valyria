@@ -59,11 +59,10 @@
 	}
 	prowess = { 7 14 }
 
-	#after_creation = {
-	#	add_character_flag = {
-	#		flag = need_military_outfit
-	#	}
-	#}
+	after_creation = {
+		add_character_flag = wear_armor	
+		add_character_flag = freeholder_raider_aurion
+	}
 }
 
 
@@ -129,11 +128,10 @@ freeholder_soldier = {
 	}
 	prowess = { 7 15 }
 
-	#after_creation = {
-	#	add_character_flag = {
-	#		flag = need_military_outfit
-	#	}
-	#}
+	after_creation = {
+		add_character_flag = wear_armor	
+		add_character_flag = aurion_freeholder_soldier
+	}
 }
 
 great_freeholder_soldier = {
@@ -199,11 +197,10 @@ great_freeholder_soldier = {
 	}
 	prowess = { 10 17 }
 
-	#after_creation = {
-	#	add_character_flag = {
-	#		flag = need_military_outfit
-	#	}
-	#}
+	after_creation = {
+		add_character_flag = wear_armor	
+		add_character_flag = aurion_great_freeholder_soldier
+	}
 }
 
 retired_freeholder_soldier = {
@@ -266,11 +263,10 @@ retired_freeholder_soldier = {
 	}
 	prowess = { 18 25 }
 
-	#after_creation = {
-	#	add_character_flag = {
-	#		flag = need_military_outfit
-	#	}
-	#}
+	after_creation = {
+		add_character_flag = wear_armor	
+		add_character_flag = aurion_retired_freeholder_soldier
+	}
 }
 
 freeholder_dragonrider_character = {
@@ -329,16 +325,113 @@ freeholder_dragonrider_character = {
 		agot_spawn_monster_dragon_effect = yes
 		if = {
 			limit = { exists = scope:dragon }
-				agot_tame_dragon = {
-					TAMER = scope:freeholder_dragonlord
-					DRAGON = scope:dragon
-				}
+			agot_tame_dragon = {
+				TAMER = scope:freeholder_dragonlord
+				DRAGON = scope:dragon
+			}
+			scope:dragon = {
+				add_character_flag = aurion_monster_dragon
+			} 
 		}
+		add_character_flag = aurion_freeholder_dragonrider
 	}
-	#after_creation = {
-	#	add_character_flag = {
-	#		flag = need_military_outfit
-	#	}
-	#}
 }
 
+cob_cannibal_dragon_template = {
+	age = { 200 250 }
+	gender_female_chance = dragon_female_chance
+	dynasty = none
+	trait = dragon
+	#Education
+	random_traits_list = {
+		count = 1
+		education_dragon_3 = {}
+		education_dragon_4 = {}
+	}
+	#Misc
+	after_creation = {
+		#personality
+		while = {
+			limit = {
+				number_of_personality_traits < 3
+			}
+			agot_give_random_dragon_personality_trait = yes
+		}
+
+		#physical
+		agot_give_random_physical_traits = yes
+
+		# Cannibal trait
+		random_list = {
+			100 = {
+				add_trait = dragon_cannibal
+			}
+		}
+
+		save_scope_as = dragon
+		# Hide gender
+		set_variable = {
+			name = dragon_gender_hidden
+			value = 1
+		}
+
+		# Give story
+		create_story = story_dragon_alive
+
+		# Needed for visuals
+		set_variable = {
+			name = dragon_age
+			value = age
+		}
+		add_character_flag = aurion_cannibal_dragon
+		#Set dragon visual gene ranges here.
+		agot_back_apply_dragon_aging_effect = yes
+		agot_gen_appearance_variables = yes
+		agot_dragon_transfer_vars_to_story_cycle_effect = { DRAGON = scope:dragon }
+
+		agot_dragon_birth_magic_effect = yes
+	}
+
+	prowess = { min_template_decent_skill max_template_high_skill }
+
+	faith = faith:valyrian_pan_freehold
+	culture = culture:dragon_culture
+}
+
+cob_minor_firewyrm_template = {
+	age = { 100 150 }
+	gender_female_chance = 0
+	dynasty = none
+
+	random_traits = no
+	trait = dragon
+	trait = firewyrm
+	trait = dragon_aggressive
+	trait = dragon_bloodthirsty
+	trait = dragon_impulsive
+	trait = dragon_cannibal
+	trait = dragon_physique_good_3
+	trait = dragon_ugly
+
+	faith = faith:valyrian_pan_freehold
+	culture = culture:dragon_culture
+
+	after_creation = {
+		save_scope_as = firewyrm
+		set_variable = {
+			name = dragon_gender_hidden
+			value = 1
+		}
+		create_story = story_dragon_alive
+		set_variable = {
+			name = dragon_age
+			value = age
+		}
+		add_character_flag = aurion_firewyrm
+		lv_apply_firewyrm_aging_effect = yes
+		agot_gen_appearance_variables = yes # Note: Add own version of this effect soon
+		lv_gen_firewyrm_color_effect = yes
+		# Create and pass the variables to the story cycle
+		agot_dragon_transfer_vars_to_story_cycle_effect = { DRAGON = scope:firewyrm }
+	}
+}
