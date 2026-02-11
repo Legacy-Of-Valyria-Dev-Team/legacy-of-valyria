@@ -40,7 +40,7 @@ agot_on_game_start = {
 		##### General setup start #####
 
 		### Situational Hair
-		agot_set_up_situational_hair = yes
+		agot_init_character_setup  = yes
 
 		# House Customizer Dummies Spawn
 		agot_house_customizer_spawn_dummies_effect = yes
@@ -139,7 +139,7 @@ agot_on_game_start = {
 		dynasty:dynn_Targaryen = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Velaryon = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Celtigar = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
-		dynasty:dynn_Scales = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+		dynasty:dynn_Saerygan = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Qoherys = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Varezys = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Mataeryon = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
@@ -2340,15 +2340,11 @@ agot_on_game_start_after_lobby = {
 			agot_sandbox_scenario_setup = yes
 		}
 
+		#Non-canon children pregnancies at bookmark start, need to be done here in case canon children rule is changed after history is executed
 		if = {
 			limit = {
-				has_game_rule = agot_canon_children_enabled
+				agot_canon_children_enabled_trigger = no
 			}
-
-			agot_canon_children_setup_story_cycles_effect = yes
-		}
-		#Non-canon children pregnancies at bookmark start, need to be done here in case canon children rule is changed after history is executed
-		else = {
 			if = {
 				limit = {
 					game_start_date = 8082.1.1
@@ -2483,23 +2479,40 @@ agot_on_game_start_after_lobby = {
 			if = {
 				limit = {
 					age >= 10
-					OR = {
-						has_character_flag = sexuality_ensure_heterosexual
-						has_character_flag = sexuality_ensure_homosexual
-						has_character_flag = sexuality_ensure_bisexual
-						has_character_flag = sexuality_ensure_asexual
-						has_character_flag = sexuality_ensure_equal_chance
-						has_character_flag = sexuality_ensure_not_heterosexual
-						has_character_flag = sexuality_ensure_not_homosexual
-						has_character_flag = sexuality_ensure_not_bisexual
-						has_character_flag = sexuality_ensure_not_asexual
-						has_character_flag = sexuality_raise_chance_heterosexual
-						has_character_flag = sexuality_raise_chance_homosexual
-						has_character_flag = sexuality_raise_chance_bisexual
-						has_character_flag = sexuality_raise_chance_asexual
-					}
+					agot_has_any_sexuality_flags = yes
 				}
 				agot_advanced_sexuality_randomizer_history_effect = yes
+			}
+			if = {
+				limit = {
+					age < 10
+					NOT = { has_sexuality = none }
+				}
+				if = {
+					limit = {
+						has_sexuality = heterosexual
+					}
+					add_character_flag = sexuality_ensure_heterosexual
+				}
+				else_if = {
+					limit = {
+						has_sexuality = homosexual
+					}
+					add_character_flag = sexuality_ensure_homosexual
+				}
+				else_if = {
+					limit = {
+						has_sexuality = bisexual
+					}
+					add_character_flag = sexuality_ensure_bisexual
+				}
+				else_if = {
+					limit = {
+						has_sexuality = asexual
+					}
+					add_character_flag = sexuality_ensure_asexual
+				}
+				set_sexuality = none
 			}
 			## Move retired councillors back to their former courts
 			if = {
