@@ -153,6 +153,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 				#AGOT Added End
@@ -181,6 +183,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 
@@ -208,6 +212,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 
@@ -245,6 +251,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_child_will_be_stillborn
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 
@@ -277,6 +285,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 
@@ -310,6 +320,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_child_will_be_stillborn
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 
@@ -350,6 +362,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_child_will_be_stillborn
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = birth_will_be_scaly
 					}
 				}
 
@@ -406,11 +420,36 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
 					}
 				}
 
 				add_character_flag = {
 					flag = birth_will_be_scaly
+					days = 270
+				}
+			}
+			#AGOT Added - Twins, One Lives, One Stillborn
+			1 = {
+				trigger = {
+					has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+				}
+
+				modifier = {
+					factor = 0
+					OR = {
+						#preconfigured
+						has_character_flag = birth_will_go_smoothly
+						has_character_flag = agot_birth_child_will_be_stillborn
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = birth_child_will_become_sickly
+						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = birth_will_be_scaly
+					}
+				}
+
+				add_character_flag = {
+					flag = agot_birth_one_twin_lives_one_twin_stillborn
 					days = 270
 				}
 			}
@@ -939,6 +978,20 @@ pregnancy.2001 = {
 					ai_vengefulness > 0
 				}
 			}
+
+			#AGOT Added
+			modifier = {
+				add = 1000
+				has_character_flag = agot_will_make_bastard_public
+			}
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
+				OR = {
+					has_character_flag = planning_to_confess_to_real_father
+					has_character_flag = agot_will_keep_bastard_secret
+				}
+			}
 		}
 	}
 
@@ -1035,10 +1088,19 @@ pregnancy.2001 = {
 				factor = 0
 				accepts_adultery_without_penalty_trigger = yes
 			}
-			#AGOT Added, force mother of bastard canon children to confess to real father if configured to do so
+			
+			#AGOT Added
 			modifier = {
-				add = 20000
+				add = 1000
 				has_character_flag = planning_to_confess_to_real_father
+			}
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
+				OR = {
+					has_character_flag = agot_will_make_bastard_public
+					has_character_flag = agot_will_keep_bastard_secret
+				}
 			}
 		}
 	}
@@ -1064,11 +1126,18 @@ pregnancy.2001 = {
 				factor = 0
 				accepts_adultery_without_penalty_trigger = yes
 			}
-			#AGOT Added, don't trigger suspicion if father is configured to not find out
+
+			#AGOT Added
 			modifier = {
-				add = 10000
-				scope:real_father = {
-					has_character_flag = agot_father_will_not_suspect_pregnancy
+				add = 1000
+				has_character_flag = agot_will_keep_bastard_secret
+			}
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
+				OR = {
+					has_character_flag = agot_will_make_bastard_public
+					has_character_flag = planning_to_confess_to_real_father
 				}
 			}
 		}
@@ -1076,11 +1145,10 @@ pregnancy.2001 = {
 
 	option = { #Attempt to terminate the pregnancy
 		name = pregnancy.2001.d
-		#AGOT Added, shouldn't trigger for paramours or mothers of canon children
+		#AGOT Added, shouldn't trigger for paramours
 		trigger = {
 			NOT = {
 				has_relation_paramour = scope:real_father
-				has_character_flag = agot_is_pregnant
 			}
 		}
 
@@ -1096,6 +1164,12 @@ pregnancy.2001 = {
 			modifier = { # Never hide the truth in faiths with the Polyamory tenet.
 				factor = 0
 				accepts_adultery_without_penalty_trigger = yes
+			}
+
+			#AGOT Added
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
 			}
 		}
 	}
@@ -1252,17 +1326,37 @@ pregnancy.2002 = {
 					multiply = -10
 				}
 			}
+
+			#AGOT Added
+			modifier = {
+				add = 1000
+				has_character_flag = agot_will_make_bastard_public
+			}
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
+				OR = {
+					has_character_flag = planning_to_confess_to_real_father
+					has_character_flag = agot_will_keep_bastard_secret
+				}
+			}
 		}
 	}
 
 	option = { #Tell the real father
 		name = pregnancy.2002.b
 		trigger = {
-			NOT = {
-				exists = primary_partner
-				#AGOT Added, shouldn't trigger for paramours
-				has_relation_paramour = scope:real_father
+			#AGOT Modified
+			# NOT = {
+			# 	exists = primary_partner
+			# }
+			OR = {
+				has_character_flag = planning_to_confess_to_real_father
+				NOT = {
+					exists = primary_partner
+				}
 			}
+			NOT = { has_relation_paramour = scope:real_father }
 		}
 		if = {
 			limit = {
@@ -1316,10 +1410,19 @@ pregnancy.2002 = {
 				add = 100
 				accepts_adultery_without_penalty_trigger = yes
 			}
-			#AGOT Added, force mother of bastard canon children to confess to real father if configured to do so
+
+			#AGOT Added
 			modifier = {
-				add = 20000
+				add = 1000
 				has_character_flag = planning_to_confess_to_real_father
+			}
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
+				OR = {
+					has_character_flag = agot_will_make_bastard_public
+					has_character_flag = agot_will_keep_bastard_secret
+				}
 			}
 		}
 	}
@@ -1361,12 +1464,19 @@ pregnancy.2002 = {
 				add = -100
 				accepts_adultery_without_penalty_trigger = yes
 			}
-			#AGOT Added, shouldn't trigger for fathers configured not to find out
+
+			#AGOT Added
 			modifier = {
-				add = 10000
-				scope:mother.pregnancy_assumed_father = {
-					has_character_flag = agot_father_will_not_suspect_pregnancy
-				}	
+				add = 1000
+				has_character_flag = agot_will_keep_bastard_secret
+			}
+			modifier = {
+				factor = 0
+				has_character_flag = agot_is_pregnant
+				OR = {
+					has_character_flag = agot_will_make_bastard_public
+					has_character_flag = planning_to_confess_to_real_father
+				}
 			}
 		}
 	}
@@ -1884,9 +1994,9 @@ pregnancy.3002 = {
 		name = pregnancy.3002.c
 		trigger = {
 			is_married = no
-			#AGOT Added, force mother of bastard canon children to confess to real father if configured to do so
-			NOT = {
-				scope:mother.pregnancy_assumed_father = { has_character_flag = agot_father_will_not_suspect_pregnancy }
+			OR = {
+				is_ai = no
+				NOT = { has_character_flag = agot_father_will_not_suspect_pregnancy }
 			}
 		}
 		save_scope_value_as = {
@@ -1966,6 +2076,25 @@ pregnancy.3003 = {
 				scope:mother = { is_ai = yes }
 			}
 			min = 1
+
+			#AGOT Added
+			modifier = {
+				add = 1000
+				scope:mother = {
+					has_character_flag = agot_is_pregnant
+					OR = {
+						has_character_flag = agot_will_keep_bastard_secret
+						has_character_flag = planning_to_confess_to_real_father
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				scope:mother = {
+					has_character_flag = agot_is_pregnant
+					NOT = { has_character_flag = agot_will_make_bastard_public }
+				}
+			}
 		}
 	}
 
@@ -2007,6 +2136,25 @@ pregnancy.3003 = {
 						exists = liege
 						liege = { faith = { save_temporary_scope_as = check_faith } }
 						trait_is_criminal_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+					}
+				}
+			}
+
+			#AGOT Added
+			modifier = {
+				add = 1000
+				scope:mother = {
+					has_character_flag = agot_is_pregnant
+					has_character_flag = agot_will_make_bastard_public
+				}
+			}
+			modifier = {
+				factor = 0
+				scope:mother = {
+					has_character_flag = agot_is_pregnant
+					OR = {
+						has_character_flag = planning_to_confess_to_real_father
+						has_character_flag = agot_will_keep_bastard_secret
 					}
 				}
 			}
@@ -2090,6 +2238,18 @@ pregnancy.3003 = {
 			modifier = {
 				NOT = { has_relation_lover = scope:mother }
 				factor = 0.5
+			}
+
+			modifier = {
+				factor = 0
+				scope:mother = {
+					has_character_flag = agot_is_pregnant
+					OR = {
+						has_character_flag = agot_will_make_bastard_public
+						has_character_flag = planning_to_confess_to_real_father
+						has_character_flag = agot_will_keep_bastard_secret
+					}
+				}
 			}
 		}
 	}
@@ -2265,6 +2425,14 @@ pregnancy.5002 = {
 			EXPOSER = root
 		}
 		bastardy_pregnancy_announcement_effect = yes
+
+		#AGOT Added, only allow announcement through this event if father is NOT configured to not know
+		trigger = {
+			OR = {
+				is_ai = no
+				NOT = { has_character_flag = agot_father_will_not_suspect_pregnancy }
+			}
+		}
 	}
 }
 
