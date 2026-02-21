@@ -127,6 +127,25 @@ agot_choose_dragonpit_event.0001 = {
 				limit = { NOT = { var:selected_title = capital_county } }
 				scope:dragon = { add_character_flag = dragon_put_in_different_pit }
 			}
+			if = {
+				limit = {
+					exists = scope:dragon.var:current_rider
+					trigger_if = {
+						limit = { scope:dragon.var:current_rider = { is_landed = yes } }
+						NOT = { scope:dragon_pit_location = scope:dragon.var:current_rider.capital_county }
+					}
+					trigger_else = {
+						trigger_if = {
+							limit = {
+								exists = scope:dragon.var:current_rider.liege_or_court_owner
+								exists = scope:dragon.var:current_rider.liege_or_court_owner.capital_county
+							}
+							NOT = { scope:dragon_pit_location = scope:dragon.var:current_rider.liege_or_court_owner.capital_county }
+						}
+					}
+				}
+				custom_tooltip = agot_choose_dragonpit_event.0001.a.tt_2
+			}
 		}
 	}
 
