@@ -220,6 +220,12 @@ on_title_gain = {
 					scope:title = {
 						is_nomad_title = yes
 						exists = title_domicile
+						#AGOT ADDED
+						NOT = {
+							title_domicile = {
+								agot_domicile_is_non_nomad_county_tier_domicile_trigger = yes
+							}
+						}
 					}
 				}
 				scope:title = {
@@ -3273,6 +3279,10 @@ on_title_lost = {
 								is_domicile_type = estate
 								owner ?= {
 									top_liege != scope:new_holder.top_liege
+									#AGOT Added
+									NOT = {
+										has_character_flag = free_city_election_lost_titles
+									}
 								}
 							}
 						}
@@ -4758,6 +4768,17 @@ on_realm_capital_change = {
 						}
 					}
 				}
+			}
+			#AGOT Added
+			if = {
+				limit = {
+					is_at_war = no
+					exists = domicile
+					domicile.domicile_location != capital_province
+					government_has_flag = government_is_pirate
+					is_landed = yes
+				}
+				domicile = { move_domicile = prev.capital_province }
 			}
 		}
 	}

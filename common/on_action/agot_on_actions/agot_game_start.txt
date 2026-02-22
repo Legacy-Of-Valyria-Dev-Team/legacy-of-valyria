@@ -13,6 +13,7 @@ on_game_start = {
 		agot_dummy_rulers
 		agot_artifacts_sell
 		agot_qohorik_weaponsmith_pulse
+		agot_pirate_domiciles_setup
 	}
 }
 
@@ -168,6 +169,7 @@ agot_on_game_start = {
 		dynasty:dynn_Adarys = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Rohar = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 		dynasty:dynn_Basetys = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+		dynasty:dynn_Symbaxes = { add_dynasty_modifier = valyrian_heritage_dynasty_modifier }
 
 		#Dragonriders
 		dynasty:dynn_Targaryen.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
@@ -186,6 +188,7 @@ agot_on_game_start = {
 		dynasty:dynn_Arakys.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Undaryen.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Phassalmaar.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+		dynasty:dynn_Symbaxes.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 
 		# Thrall Houses Modifier
 		dynasty:dynn_Codd = { add_dynasty_modifier = thrall_house_dynasty_modifier }
@@ -497,7 +500,15 @@ agot_on_game_start = {
 				limit = {
 					agot_is_valid_pirate_government_target = yes
 				}
-				change_government = pirate_government
+				if = {
+					limit = {
+						agot_dlc_check_for_landless_pirates = yes
+					}
+					change_government = pirate_government
+				}
+				else = {
+					change_government = pirate_no_dlc_government
+				}
 			}
 			# LP Feudal Contract Setup
 			if = {
@@ -521,14 +532,9 @@ agot_on_game_start = {
 				}
 			}
 
-			if = { # Override default equal succession for Old Gods
-				limit = { faith = faith:old_gods_wnw }
-				add_realm_law = male_preference_law
-			}
-
 			if = {
 				limit = {
-					has_government = pirate_government
+					government_has_flag = government_is_pirate_trigger_check
 					primary_title.tier > tier_county
 				}
 				every_held_title = {
@@ -546,55 +552,6 @@ agot_on_game_start = {
 				trigger_event = agot_coa_events.0001
 			}
 			agot_set_laamp_coas = yes
-
-			if = {
-				limit = {
-					has_realm_law = free_city_election_succession_law
-				}
-				random_powerful_vassal = {
-					limit = { is_adult = yes }
-					if = {
-						limit = {
-							prev.primary_title = title:k_lys
-						}
-						prev = {
-							designate_diarch = prev
-							try_start_diarchy = second_magister
-							set_diarchy_swing = 40
-						}
-					}
-					else_if = {
-						limit = {
-							OR = {
-								prev.primary_title = title:k_tyrosh
-								prev.primary_title = title:k_pentos
-							}
-						}
-						prev = {
-							designate_diarch = prev
-							try_start_diarchy = high_councilor
-							set_diarchy_swing = 40
-						}
-					}
-					else_if = {
-						limit = {
-							prev.primary_title = title:k_myr
-						}
-						prev = {
-							designate_diarch = prev
-							try_start_diarchy = tyniate
-							set_diarchy_swing = 40
-						}
-					}
-					else = {
-						prev = {
-							designate_diarch = prev
-							try_start_diarchy = gonfaloniere
-							set_diarchy_swing = 40
-						}
-					}
-				}
-			}
 
 			# give Blackfyre loyalist modifiers
 			if = {
@@ -703,10 +660,6 @@ agot_on_game_start = {
 				}
 
 				holder = {
-					if = {
-						limit = { faith = faith:old_gods_wnw }
-						add_realm_law = male_preference_law
-					}
 					if = {
 						limit = {
 							culture = culture:high_valyrian
@@ -2154,6 +2107,56 @@ agot_on_game_start_after_lobby = {
 		### Shattered Realms related setup; needs to be below this line
 		agot_init_shattered_realms = yes
 
+		### Free City Diarchies
+		every_ruler = {
+			limit = {
+				has_realm_law = free_city_election_succession_law
+			}
+			random_powerful_vassal = {
+				limit = { is_adult = yes }
+				if = {
+					limit = {
+						prev.primary_title = title:k_lys
+					}
+					prev = {
+						designate_diarch = prev
+						try_start_diarchy = second_magister
+						set_diarchy_swing = 40
+					}
+				}
+				else_if = {
+					limit = {
+						OR = {
+							prev.primary_title = title:k_tyrosh
+							prev.primary_title = title:k_pentos
+						}
+					}
+					prev = {
+						designate_diarch = prev
+						try_start_diarchy = high_councilor
+						set_diarchy_swing = 40
+					}
+				}
+				else_if = {
+					limit = {
+						prev.primary_title = title:k_myr
+					}
+					prev = {
+						designate_diarch = prev
+						try_start_diarchy = tyniate
+						set_diarchy_swing = 40
+					}
+				}
+				else = {
+					prev = {
+						designate_diarch = prev
+						try_start_diarchy = gonfaloniere
+						set_diarchy_swing = 40
+					}
+				}
+			}
+		}
+
 		### Player Customizer related setup
 		if = {
 			limit = {
@@ -2274,6 +2277,54 @@ agot_on_game_start_after_lobby = {
 
 				trigger_event = agot_events_generic.0006
 			}
+			if = {
+				limit = {
+					has_realm_law = pirate_tax_rate_01
+				}
+				every_held_title = {
+					limit = {
+						tier = tier_county
+						title_province = { has_holding_type = pirate_den_holding }
+					}
+					add_county_modifier = pirate_tax_rate_01_displayer_modifier
+				}
+			}
+			else_if = {
+				limit = {
+					has_realm_law = pirate_tax_rate_02
+				}
+				every_held_title = {
+					limit = {
+						tier = tier_county
+						title_province = { has_holding_type = pirate_den_holding }
+					}
+					add_county_modifier = pirate_tax_rate_02_displayer_modifier
+				}
+			}
+			else_if = {
+				limit = {
+					has_realm_law = pirate_tax_rate_03
+				}
+				every_held_title = {
+					limit = {
+						tier = tier_county
+						title_province = { has_holding_type = pirate_den_holding }
+					}
+					add_county_modifier = pirate_tax_rate_03_displayer_modifier
+				}
+			}
+			else_if = {
+				limit = {
+					has_realm_law = pirate_tax_rate_04
+				}
+				every_held_title = {
+					limit = {
+						tier = tier_county
+						title_province = { has_holding_type = pirate_den_holding }
+					}
+					add_county_modifier = pirate_tax_rate_04_displayer_modifier
+				}
+			}
 		}
 
 		# Dragon related setup
@@ -2382,14 +2433,14 @@ agot_on_game_start_after_lobby = {
 
 		### Count Blackfyre Rebellions
 		if = {
-			limit = { game_start_date > 8252.11.11 }
+			limit = { game_start_date > 8259.10.31 }
 			set_global_variable = {
 				name = number_of_blackfyre_rebellions
 				value = 5
 			}
 		}
 		else_if = {
-			limit = { game_start_date > 8236.1.1 }
+			limit = { game_start_date > 8236.2.14 }
 			set_global_variable = {
 				name = number_of_blackfyre_rebellions
 				value = 4
@@ -2480,12 +2531,14 @@ agot_on_game_start_after_lobby = {
 				limit = {
 					age >= 10
 					agot_has_any_sexuality_flags = yes
+					is_from_ruler_designer = no
 				}
 				agot_advanced_sexuality_randomizer_history_effect = yes
 			}
 			if = {
 				limit = {
 					age < 10
+					is_from_ruler_designer = no
 					NOT = { has_sexuality = none }
 				}
 				if = {
@@ -2624,6 +2677,8 @@ agot_administrative_setup = {
 						# Braavos
 						owner.dynasty = dynasty:dynn_Antaryon
 						owner.dynasty = dynasty:dynn_Otherys
+						# Lys
+						owner.dynasty = dynasty:dynn_Sonaryen
 
 						# Volantis
 						owner.dynasty = dynasty:dynn_Maegyr
@@ -2804,6 +2859,7 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Gaergyn
 						owner.dynasty = dynasty:dynn_Zokan
 						owner.dynasty = dynasty:dynn_Tyraanis
+						owner.dynasty = dynasty:dynn_Urnebar
 						# Lys
 						owner.dynasty = dynasty:dynn_Haen
 						owner.dynasty = dynasty:dynn_Bazanne
@@ -2910,6 +2966,7 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Dagareon
 						owner.dynasty = dynasty:dynn_Lohar
 						owner.dynasty = dynasty:dynn_Eigares
+						owner.dynasty = dynasty:dynn_Saan
 						# Myr
 						owner.dynasty = dynasty:dynn_Devaeran
 						owner.dynasty = dynasty:dynn_Deorel
@@ -3404,6 +3461,278 @@ agot_silly_mode = {
 					id = agot_silly_mode.0500
 					days = 30
 				}
+			}
+		}
+	}
+}
+
+
+agot_pirate_domiciles_setup = {
+	trigger = {
+		agot_dlc_check_for_landless_pirates = yes
+	}
+	effect = {
+		every_ruler = {
+			limit = {
+				government_has_flag = government_is_pirate
+				NOT = {
+					any_held_title = {
+						agot_is_pirate_domicile_title_trigger = yes
+					}
+				}
+			}
+			agot_create_pirate_domicile_effect = { PIRATE = this }
+		}
+		if = {
+			limit = {
+				exists = dynasty:dynn_Placeholder_Pirate.dynasty_founder.house.house_head
+				dynasty:dynn_Placeholder_Pirate.dynasty_founder.house.house_head = { is_adult = yes }
+			}
+			dynasty:dynn_Placeholder_Pirate.dynasty_founder.house.house_head = {
+				agot_create_pirate_domicile_effect = { PIRATE = this }
+				add_gold = { 50 100 }
+				create_maa_regiment = {
+					type = pirate_skirmishers
+					check_can_recruit = no
+					size = 2
+				}
+				create_maa_regiment = {
+					type = pirate_archers
+					check_can_recruit = no
+					size = 2
+				}
+				domicile ?= {
+					move_domicile = title:b_striped_mask.title_province
+				}
+				set_location_to_default = yes
+				every_courtier_or_guest = {
+					limit = {
+						location != prev.location
+					}
+					set_location_to_default = yes
+				}
+				trigger_event = {id = agot_pirate_events.0003 days = 1 }
+				if = { limit = { has_realm_law = crown_authority_0 } remove_realm_law = crown_authority_0 }
+			}
+		}
+		set_local_variable = {
+			name = t1_pirate_count
+			value = 0
+		}
+		set_local_variable = {
+			name = t2_pirate_count
+			value = 0
+		}
+		set_local_variable = {
+			name = t3_pirate_count
+			value = 0
+		}
+		while = {
+			limit = {
+				local_var:t1_pirate_count <= 6
+			}
+			random_county_in_region = {
+				region = world_stepstones
+				limit = {
+					title_province = {
+						has_holding_type = pirate_den_holding
+						NOT = {
+							any_province_domicile = {
+								is_domicile_type = agot_pirate_ship
+								count >= 1
+								owner = {
+									is_landed = no
+								}
+							}
+						}
+					}
+				}
+				title_province = {
+					save_scope_as = pirate_spawn_location
+				}
+			}
+			create_character = {
+				location = scope:pirate_spawn_location
+				template = agot_pirate_character_leader_02
+				save_scope_as = pirate
+			}
+			agot_create_pirate_domicile_effect = { PIRATE = scope:pirate }
+			scope:pirate = {
+				set_character_faith = scope:pirate.location.faith
+				every_courtier = {
+					limit = {
+						faith != scope:pirate.faith
+					}
+					set_character_faith = scope:pirate.faith
+				}
+				add_gold = { 25 100 }
+				create_maa_regiment = {
+					type = pirate_skirmishers
+					check_can_recruit = no
+					size = 2
+				}
+				create_maa_regiment = {
+					type = pirate_archers
+					check_can_recruit = no
+					size = 2
+				}
+				trigger_event = {id = agot_pirate_events.0003 days = 1 }
+				if = { limit = { has_realm_law = crown_authority_0 } remove_realm_law = crown_authority_0 }
+				random_list = {
+					99 = {}
+					1 = {
+						add_character_modifier = {
+							modifier = agot_owns_pet_parrot
+							years = 35
+						}
+					}
+				}
+			}
+			change_local_variable = {
+				name = t1_pirate_count
+				add = 1
+			}
+		}
+		while = {
+			limit = {
+				local_var:t2_pirate_count <= 3
+			}
+			random_county_in_region = {
+				region = world_stepstones
+				limit = {
+					title_province = {
+						has_holding_type = pirate_den_holding
+						NOT = {
+							any_province_domicile = {
+								is_domicile_type = agot_pirate_ship
+								count >= 1
+								owner = {
+									is_landed = no
+								}
+							}
+						}
+					}
+				}
+				title_province = {
+					save_scope_as = pirate_spawn_location
+				}
+			}
+			create_character = {
+				location = scope:pirate_spawn_location
+				template = agot_pirate_character_leader_02
+				save_scope_as = pirate
+			}
+			agot_create_pirate_domicile_effect = { PIRATE = scope:pirate }
+			scope:pirate = {
+				set_character_faith = scope:pirate.location.faith
+				every_courtier = {
+					limit = {
+						faith != scope:pirate.faith
+					}
+					set_character_faith = scope:pirate.faith
+				}
+				add_gold = { 100 120 }
+				create_maa_regiment = {
+					type = pirate_skirmishers
+					check_can_recruit = no
+					size = 3
+				}
+				create_maa_regiment = {
+					type = pirate_archers
+					check_can_recruit = no
+					size = 3
+				}
+				domicile ?= {
+					add_domicile_building = agot_pirate_ship_main_02
+					add_domicile_building = agot_pirate_ship_main_03
+				}
+				if = { limit = { has_realm_law = crown_authority_0 } remove_realm_law = crown_authority_0 }
+				trigger_event = {id = agot_pirate_events.0003 days = 1 }
+				random_list = {
+					99 = {}
+					1 = {
+						add_character_modifier = {
+							modifier = agot_owns_pet_parrot
+							years = 35
+						}
+					}
+				}
+			}
+			change_local_variable = {
+				name = t2_pirate_count
+				add = 1
+			}
+		}
+		while = {
+			limit = {
+				local_var:t2_pirate_count <= 2
+			}
+			random_county_in_region = {
+				region = world_stepstones
+				limit = {
+					title_province = {
+						has_holding_type = pirate_den_holding
+						NOT = {
+							any_province_domicile = {
+								is_domicile_type = agot_pirate_ship
+								count >= 1
+								owner = {
+									is_landed = no
+								}
+							}
+						}
+					}
+				}
+				title_province = {
+					save_scope_as = pirate_spawn_location
+				}
+			}
+			create_character = {
+				location = scope:pirate_spawn_location
+				template = agot_pirate_character_leader_02
+				save_scope_as = pirate
+			}
+			agot_create_pirate_domicile_effect = { PIRATE = scope:pirate }
+			scope:pirate = {
+				set_character_faith = scope:pirate.location.faith
+				every_courtier = {
+					limit = {
+						faith != scope:pirate.faith
+					}
+					set_character_faith = scope:pirate.faith
+				}
+				add_gold = { 125 200 }
+				create_maa_regiment = {
+					type = pirate_skirmishers
+					check_can_recruit = no
+					size = 4
+				}
+				create_maa_regiment = {
+					type = pirate_archers
+					check_can_recruit = no
+					size = 4
+				}
+				domicile ?= {
+					add_domicile_building = agot_pirate_ship_main_02
+					add_domicile_building = agot_pirate_ship_main_03
+					add_domicile_building = agot_pirate_ship_main_04
+					add_domicile_building = agot_pirate_ship_main_05
+				}
+				if = { limit = { has_realm_law = crown_authority_0 } remove_realm_law = crown_authority_0 }
+				trigger_event = {id = agot_pirate_events.0003 days = 1 }
+				random_list = {
+					99 = {}
+					1 = {
+						add_character_modifier = {
+							modifier = agot_owns_pet_parrot
+							years = 35
+						}
+					}
+				}
+			}
+			change_local_variable = {
+				name = t3_pirate_count
+				add = 1
 			}
 		}
 	}
