@@ -509,6 +509,46 @@ agot_apply_dragon_aging_effect = {
 						}
 					}
 				}
+				if = {
+					limit = {
+						exists = var:current_rider
+						var:current_rider = {
+							has_trait_xp = {
+								trait = dragonrider
+								track = dragon_bond
+								value > 0
+							}
+						}
+						exists = var:pitted_dragon_location
+						trigger_if = {
+							limit = { var:current_rider = { is_landed = yes } }
+							NOT = { var:pitted_dragon_location = var:current_rider.capital_county }
+						}
+						trigger_else = {
+							trigger_if = {
+								limit = {
+									exists = var:current_rider.liege_or_court_owner
+									exists = var:current_rider.liege_or_court_owner.capital_county
+								}
+								NOT = { var:pitted_dragon_location = var:current_rider.liege_or_court_owner.capital_county }
+							}
+						}
+
+					}
+					var:current_rider ?= {
+						save_scope_as = rider
+						send_interface_toast = {
+							title = dragon_bond_weakening_toast
+							left_icon = scope:rider
+							right_icon = scope:dragon
+							add_trait_xp = {
+								trait = dragonrider
+								track = dragon_bond
+								value = -5
+							}
+						}
+					}
+				}
 			}
 			else_if = {
 				limit = { liege_or_court_owner.capital_province ?= { geographical_region = world_max_tier_dragon_growth } }
