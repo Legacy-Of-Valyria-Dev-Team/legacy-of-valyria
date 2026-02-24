@@ -19,6 +19,8 @@ on_death = {
 		nw_ranger_death
 		nw_ranger_history_on_lc_death
 		agot_mw_death_on_action
+		agot_landless_pirate_domicile_transfer
+		agot_landless_pirate_succession_variable_manager
 	}
 }
 
@@ -399,6 +401,283 @@ agot_mw_death_on_action = {
 					}
 					set_variable = { name = pre_war_liege value = root.var:pre_war_liege }
 				}
+			}
+		}
+	}
+}
+
+
+agot_landless_pirate_domicile_transfer = {
+	trigger = {
+		any_held_title = {
+			agot_is_pirate_domicile_title_trigger = yes
+		}
+	}
+	effect = {
+		if = {
+			limit = {
+				player_heir ?= {
+					agot_pirate_landless_succession_jank_courtier_checker = { DYING_PIRATE = ROOT }
+					trigger_if = {
+						limit = {
+							has_variable = pirate_jank_succession_variable
+						}
+						var:pirate_jank_succession_variable = root
+					}
+				}
+			}
+			player_heir = {
+				set_variable = pirate_jank_succession_variable
+				save_scope_as = chosen_successor
+			}
+		}
+		else_if = { # Any Designated Pirate Ship Heirs
+			limit = {
+				any_courtier = {
+					var:pirate_jank_succession_variable ?= root
+					agot_pirate_landless_succession_jank_courtier_checker = { DYING_PIRATE = root }
+				}
+			}
+			random_courtier = {
+				limit = {
+					var:pirate_jank_succession_variable ?= root
+					agot_pirate_landless_succession_jank_courtier_checker = { DYING_PIRATE = root }
+				}
+				save_scope_as = chosen_successor
+			}
+		}
+		else_if = {
+			limit = {
+				any_child = {
+					agot_pirate_landless_succession_jank_courtier_checker = { DYING_PIRATE = root }
+					is_alive = yes
+				}
+			}
+			ordered_child = {
+				limit = {
+					is_alive = yes
+					agot_pirate_landless_succession_jank_courtier_checker = { DYING_PIRATE = root }
+					is_adult = yes
+				}
+				alternative_limit = {
+					is_alive = yes
+					agot_pirate_landless_succession_jank_courtier_checker = { DYING_PIRATE = root }
+				}
+				position = 0
+				order_by = prowess
+				set_variable = pirate_jank_succession_variable
+				save_scope_as = chosen_successor
+			}
+		}
+		else_if = { # Prioritize Primary Heirs
+			limit = {
+				exists = primary_heir
+			}
+			primary_heir = {
+				set_variable = pirate_jank_succession_variable
+				save_scope_as = chosen_successor
+			}
+		}
+		else = {
+			ordered_courtier = {
+				position = 0
+				order_by = prowess
+				set_variable = pirate_jank_succession_variable
+				save_scope_as = chosen_successor
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:chosen_successor
+			}
+			# Maa Transfer
+			if = {
+				limit = {
+					is_landed = no
+					number_of_maa_regiments > 0
+				}
+				create_character = {
+					name = Aegon
+					gender = male
+					employer = title:c_ruins.holder
+					trait = agot_dummy_trait
+					random_traits = no
+					faith = faith:fots_seven
+					culture = culture:northman
+					dynasty = none
+					save_scope_as = pirate_dummy_to_transfer_maas
+				}
+				agot_create_pirate_domicile_effect = { PIRATE = scope:pirate_dummy_to_transfer_maas }
+				scope:pirate_dummy_to_transfer_maas = {
+					if = {
+						limit = {
+							number_of_maa_regiments > 0
+						}
+						every_maa_regiment = {
+							destroy_maa_regiment = yes
+						}
+					}
+				}
+				every_maa_regiment = {
+					save_scope_as = maa_regiment_to_transfer
+					save_scope_value_as = {
+						name = maa_size_scope_value
+						value = scope:maa_regiment_to_transfer.maa_size
+					}
+					scope:pirate_dummy_to_transfer_maas = {
+						create_maa_regiment = {
+							type_of = scope:maa_regiment_to_transfer
+							check_can_recruit = no
+							size = 1
+						}
+						scope:maa_regiment_to_transfer = {
+							destroy_maa_regiment = yes
+						}
+					}
+				}
+			}
+			# Maa Transfer End
+			random_held_title = {
+				limit = {
+					agot_is_pirate_domicile_title_trigger = yes
+				}
+				save_scope_as = domicile_being_passed_down
+				create_title_and_vassal_change = {
+					type = granted
+					save_scope_as = change
+				}
+				change_title_holder_include_vassals = {
+					holder = scope:chosen_successor
+					change = scope:change
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+			agot_create_pirate_domicile_effect = { PIRATE = scope:chosen_successor }
+			# Maa transfer 2
+			clear_saved_scope = maa_size_scope_value
+			clear_saved_scope = maa_regiment_to_transfer
+			scope:pirate_dummy_to_transfer_maas ?= {
+				every_maa_regiment = {
+					save_scope_as = maa_regiment_to_transfer
+					save_scope_value_as = {
+						name = maa_size_scope_value
+						value = scope:maa_regiment_to_transfer.maa_size
+					}
+					scope:chosen_successor = {
+						create_maa_regiment = {
+							type_of = scope:maa_regiment_to_transfer
+							check_can_recruit = no
+							size = 1
+						}
+						scope:maa_regiment_to_transfer = {
+							destroy_maa_regiment = yes
+						}
+						add_character_modifier = {
+							modifier = maa_recruitment_boon
+							years = 3
+						}
+					}
+				}
+				death = {
+					death_reason = death_raid
+				}
+			}
+			# Maa transfer 2 End
+			if = {
+				limit = {
+					is_landed = no
+				}
+				if = {
+					limit = {
+						gold > 0
+					}
+					pay_short_term_gold = { target = scope:chosen_successor gold = root.gold }
+				}
+				every_character_artifact = {
+					set_owner = scope:chosen_successor
+				}
+			}
+			save_scope_as = dying_pirate_predecessor
+			if = {
+				limit = {
+					is_ai = no
+				}
+				set_player_character = scope:chosen_successor
+			}
+			scope:chosen_successor = {
+				random_held_title = {
+					limit = {
+						has_variable = pirate_deletion
+					}
+					save_scope_as = DESTROY_THIS_PIRATE_SHIP
+					prev = {
+						destroy_title = scope:DESTROY_THIS_PIRATE_SHIP
+					}
+				}
+				remove_variable = pirate_jank_succession_variable
+				if = {
+					limit = {
+						any_held_title = {
+							this = scope:domicile_being_passed_down
+						}
+						scope:dying_pirate_predecessor = {
+							is_landed = no
+						}
+					}
+					trigger_event = agot_pirate_events.9000
+				}
+			}
+			# Law Transfer
+			if = {
+				limit = {
+					is_landed = yes
+				}
+				switch = {
+					trigger = has_realm_law
+					pirate_tax_rate_01 = {
+						scope:chosen_successor = {
+							add_realm_law = pirate_tax_rate_01
+						}
+					}
+					pirate_tax_rate_02 = {
+						scope:chosen_successor = {
+							add_realm_law = pirate_tax_rate_02
+						}
+					}
+					pirate_tax_rate_03 = {
+						scope:chosen_successor = {
+							add_realm_law = pirate_tax_rate_03
+						}
+					}
+					pirate_tax_rate_04 = {
+						scope:chosen_successor = {
+							add_realm_law = pirate_tax_rate_04
+						}
+					}
+				}
+			}
+			scope:chosen_successor = {
+				trigger_event = { id = agot_pirate_events.0003 days = 1 }
+			}
+		}
+	}
+}
+
+agot_landless_pirate_succession_variable_manager = {
+	trigger = {
+		var:pirate_jank_succession_variable ?= {
+			is_alive = yes
+		}
+	}
+	effect = {
+		save_scope_as = target
+		var:pirate_jank_succession_variable ?= {
+			remove_variable = appointed_pirate_jank_heir
+			send_interface_toast = {
+				type = event_toast_effect_neutral
+				title = pirate_ship_designated_heir_change
+				custom_tooltip = pirate_ship_designated_heir_is_no_longer_your_heir
+				right_icon = scope:target
 			}
 		}
 	}
