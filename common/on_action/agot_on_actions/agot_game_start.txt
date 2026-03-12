@@ -4,8 +4,6 @@ on_game_start = {
 	on_actions = {
 		agot_remove_realms
 		agot_on_game_start
-		agot_nf_estate_locations
-		agot_laamp_camp_locations
 		agot_house_dna
 		agot_set_legacies
 		agot_vassal_contracts
@@ -14,6 +12,7 @@ on_game_start = {
 		agot_artifacts_sell
 		agot_qohorik_weaponsmith_pulse
 		agot_pirate_domiciles_setup
+		agot_traditional_coronation_setup
 	}
 }
 
@@ -1166,22 +1165,14 @@ agot_on_game_start = {
 							culture = culture:barrowman
 							culture = culture:bearman
 							culture = culture:crannogman
-							culture = culture:fangman
 							culture = culture:first_man
-							culture = culture:forestman
-							culture = culture:frozen_shoreman
 							culture = culture:harborman
 							culture = culture:northern_clan
-							culture = culture:hornfoot
-							culture = culture:ice_riverman
 							culture = culture:krakenman
-							culture = culture:lakefolk
-							culture = culture:nightrunner
 							culture = culture:northman
-							culture = culture:sisterman
 							culture = culture:skagosi
-							culture = culture:thenn
 							culture = culture:wolfswood_clansman
+							culture = { agot_is_wildling_culture = yes }
 						}
 					}
 					make_trait_inactive = surname_snow
@@ -1524,6 +1515,7 @@ agot_nf_estate_locations = {
 						owner.dynasty = dynasty:dynn_Nestoris
 						owner.dynasty = dynasty:dynn_Peyrel
 						owner.dynasty = dynasty:dynn_Tavellen
+						owner.dynasty = dynasty:dynn_Prestayn
 					}
 				}
 				move_domicile = title:b_purple_harbor.title_province
@@ -1627,10 +1619,6 @@ agot_nf_estate_locations = {
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Lohar }
 				move_domicile = title:b_drakes_rest.title_province
-			}
-			else_if = {
-				limit = { owner.dynasty = dynasty:dynn_Erosenes }
-				move_domicile = title:b_street_of_tears.title_province
 			}
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Erosenes }
@@ -1757,7 +1745,7 @@ agot_nf_estate_locations = {
 				move_domicile = title:b_samaal.title_province
 			}
 			else_if = {
-				limit = { owner.dynasty = dynasty:dynn_Garvanis }
+				limit = { owner.dynasty = dynasty:dynn_Takapis }
 				move_domicile = title:b_mummer_lane.title_province
 			}
 			else_if = {
@@ -1971,8 +1959,11 @@ on_game_start_after_lobby = {
 		agot_barony_ruins
 		agot_north_holding_cost
 		agot_dornish_desert_malus
+		agot_province_modifiers
 		agot_starting_legitimacy
 		agot_silly_mode
+		agot_nf_estate_locations
+		agot_laamp_camp_locations
 	}
 }
 
@@ -3285,6 +3276,20 @@ agot_barony_ruins = {
 				set_coa = ruins_coa
 			}
 		}
+		# Tarbeck Hall
+		if = {
+			limit = {
+				game_start_date >= 8261.10.29
+			}
+			title:b_tarbeck_hall.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_infamous_01
+			}
+			title:b_tarbeck_hall = {
+				set_coa = ruins_coa
+			}
+		}
 		# Oldstones
 		if = {
 			limit = {
@@ -3394,6 +3399,19 @@ agot_barony_ruins = {
 				set_coa = ruins_coa
 			}
 		}
+		# Castle Hollard
+		if = {
+			limit = {
+				game_start_date >= 8277.10.1
+			}
+			title:b_castle_hollard.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+			}
+			title:b_castle_hollard = {
+				set_coa = ruins_coa
+			}
+		}
 	}
 }
 
@@ -3416,6 +3434,13 @@ agot_dornish_desert_malus = {
 			region = world_westeros_dornish_desert
 			add_county_modifier = agot_holding_logistics_dorne_desert
 		}
+	}
+}
+
+agot_province_modifiers = {
+	effect = {
+		agot_setup_gold_veins_modifiers = yes
+		agot_setup_silver_veins_modifiers = yes
 	}
 }
 
@@ -3474,6 +3499,7 @@ agot_pirate_domiciles_setup = {
 	effect = {
 		every_ruler = {
 			limit = {
+				highest_held_title_tier >= tier_county
 				government_has_flag = government_is_pirate
 				NOT = {
 					any_held_title = {
@@ -3733,6 +3759,243 @@ agot_pirate_domiciles_setup = {
 			change_local_variable = {
 				name = t3_pirate_count
 				add = 1
+			}
+		}
+	}
+}
+
+agot_traditional_coronation_setup = {
+	trigger = { has_dlc_feature = coronations }
+
+	effect = {
+		# Winterfell
+		province:77 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Highgarden
+		province:3237 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Starry Sept
+		province:3500 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# The Eyrie
+		province:2251 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Casterly Rock
+		province:2855 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Storm's End
+		province:4439 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Sunspear
+		province:4937 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Nagga's Hill
+		province:2795 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8037.9.9 } # Aenys I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8042.3.1 } # Maegor I
+			# Dragonstone
+			province:4415 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8048.3.7 } # Jaehaerys I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 2 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8103.10.3 } # Viserys I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 3 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8129.3.3 } # Rhaenyra
+			# Dragonstone
+			province:4415 = {
+				set_variable = { name = coronation_tradition_location value = 2 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8129.3.3 } # Aegon II
+			# Dragonpit
+			province:4152 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8131.1.14 } # Aegon III
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 4 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8157.1.13 } # Daeron I
+			# Starry Sept
+		}
+
+		if = {
+			limit = { game_start_date >= 8161.6.9 } # Baelor I
+			# Red Keep
+			province:4151 = {
+				add_province_modifier = coronation_tradition_modifier
+				set_variable = { name = coronation_tradition_location value = 5 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8171.1.20 } # Viserys II
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 6 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8172.3.28 } # Aegon IV
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 7 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8184.1.1 } # Daeron II
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8209.9.1 } # Aerys I
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 2 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8221.1.1 } # Maekar I
+			# Summerhall
+			province:4797 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8233.6.1 } # Aegon V
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 3 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8259.6.1 } # Jaehaerys II
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 8 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8262.1.1 } # Aerys II
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 4 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8283.9.1 } # Robert I
+			# Great Sept
+			province:4153 = {
+				add_province_modifier = coronation_tradition_modifier
+				set_variable = { name = coronation_tradition_location value = 5 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8298.10.24 } # Joffrey I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 9 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8300.1.1 } # Tommen I
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 6 }
 			}
 		}
 	}
