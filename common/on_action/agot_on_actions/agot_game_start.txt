@@ -277,6 +277,51 @@ agot_on_game_start = {
 			}
 		}
 
+		### Warden Title Setup
+		title:e_the_north.holder ?= { # Appoint Warden of the White Knife
+			if = {
+				limit = {
+					exists = title:d_white_harbor.holder
+					NOT = { has_title = title:d_white_harbor }
+					title:d_white_harbor.holder = { is_vassal_of = title:e_the_north.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_white_harbor.holder
+					court_position = white_knife_court_position
+				}
+			}
+		}
+		title:e_dorne.holder ?= { # Appoint Warden of the Stone Way
+			if = {
+				limit = {
+					exists = title:d_greenbelt.holder
+					NOT = {
+						has_title = title:d_greenbelt
+					}
+					title:d_greenbelt.holder = { is_vassal_of = title:e_dorne.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_greenbelt.holder
+					court_position = stone_way_court_position
+				}
+			}
+		}
+		title:e_dorne.holder ?= { # Appoint Warden of the Prince's Pass
+			if = {
+				limit = {
+					exists = title:d_the_princes_pass.holder
+					NOT = {
+						has_title = title:d_the_princes_pass
+					}
+					title:d_the_princes_pass.holder = { is_vassal_of = title:e_dorne.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_the_princes_pass.holder
+					court_position = princes_pass_court_position
+				}
+			}
+		}
+
 		#Kingsguard Stuff
 		title:d_dummy_kingsguard = {
 			copy_title_history = title:d_kingsguard
@@ -961,7 +1006,7 @@ agot_on_game_start = {
 				# bastards who retained their surname after legitimization
 				limit = {
 					has_trait = bastard
-					is_lowborn = no
+					can_have_bastard_surname = yes
 					NOR = {
 						has_inactive_trait = surname_flowers
 						has_inactive_trait = surname_sand
@@ -1341,6 +1386,8 @@ agot_on_game_start = {
 		agot_dragons_on_start_effect = yes
 		### Run effects on dead characters
 		agot_apply_posthistory_effect = yes
+		### Run effects on dead characters for title data
+		assign_posthistory_title_data_effect = yes
 		### Establish house relations
 		agot_apply_posthistory_house_relations_effect = yes
 
@@ -2482,6 +2529,15 @@ agot_on_game_start_after_lobby = {
 			}
 		}
 
+		#Thenn Management
+		if = {
+			limit = {
+				exists = title:k_thenn.holder
+				title:k_thenn.holder.primary_title = title:k_magnar_of_thenn
+			}
+			title:k_thenn.holder = { set_primary_title_to = title:k_thenn }
+		}
+
 		# Knight Trees
 		agot_knight_tree_on_start = yes
 	}
@@ -3131,6 +3187,9 @@ agot_barony_ruins = {
 			title:b_tarbeck_hall = {
 				set_coa = ruins_coa
 			}
+			title:c_seven_points.holder = {
+				set_realm_capital = title:b_beckyng
+			}
 		}
 		# Oldstones
 		if = {
@@ -3240,6 +3299,9 @@ agot_barony_ruins = {
 			title:b_vultures_roost = {
 				set_coa = ruins_coa
 			}
+			title:c_denmont.holder = {
+				set_realm_capital = title:b_denmont
+			}
 		}
 		# Castle Hollard
 		if = {
@@ -3252,6 +3314,9 @@ agot_barony_ruins = {
 			}
 			title:b_castle_hollard = {
 				set_coa = ruins_coa
+			}
+			title:c_crownback.holder = {
+				set_realm_capital = title:b_threecrowns
 			}
 		}
 	}
