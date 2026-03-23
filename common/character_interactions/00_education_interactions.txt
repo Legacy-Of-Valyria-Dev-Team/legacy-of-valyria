@@ -570,6 +570,23 @@ educate_child_interaction = {
 		show_as_tooltip = {
 			scope:guardian  = { set_relation_ward = scope:ward }
 		}
+
+		#AGOT Added
+		if = {
+			limit = {
+				exists = scope:guardian_liege.house
+			}
+			scope:ward.house ?= {
+				change_house_relation_effect = {
+					HOUSE = scope:guardian_liege.house
+					VALUE = house_relation_improve_minor_value
+					REASON = offered_ward
+					CHAR = scope:guardian_liege
+					TARGET_CHAR = scope:ward
+					TITLE = scope:dummy_gender
+				}
+			}
+		}
 	}
 
 	auto_accept = yes
@@ -1421,6 +1438,18 @@ offer_ward_interaction = {
 			VALUE = miniscule_unity_gain
 			DESC = clan_unity_ward_offerage.desc
 			REVERSE_NON_HOUSE_TARGET = yes
+		}
+
+		#AGOT Added
+		scope:recipient.house ?= {
+			change_house_relation_effect = {
+				HOUSE = scope:ward.house
+				VALUE = agot_house_relation_improve_small_value
+				REASON = offered_ward 
+				CHAR = scope:ward
+				TARGET_CHAR = scope:recipient
+				TITLE = scope:dummy_gender
+			}
 		}
 	}
 
@@ -2679,6 +2708,23 @@ offer_guardianship_interaction = {
 			DESC = clan_unity_guardianship.desc
 			REVERSE_NON_HOUSE_TARGET = yes
 		}
+
+		#AGOT Added
+		if = {
+			limit = {
+				exists = scope:ward.house
+			}
+			scope:guardian.house ?= {
+				change_house_relation_effect = {
+					HOUSE = scope:ward.house
+					VALUE = agot_house_relation_improve_small_value
+					REASON = offered_guardianship_yay 
+					CHAR = scope:ward
+					TARGET_CHAR = scope:recipient
+					TITLE = scope:dummy_gender
+				}
+			}
+		}
 	}
 
 	#AGOT Added
@@ -3845,6 +3891,28 @@ remove_guardian_interaction = {
 			add_character_flag = {
 				flag = guardian_unity_block
 				months = 3
+			}
+		}
+
+		#AGOT Added
+		if = {
+			limit = {
+				NOT = {
+					scope:actor.house = scope:recipient.house
+				}
+			}
+			custom_tooltip = {
+				text = agot_this_will_damage_relations_warning
+				scope:recipient.house ?= {
+					change_house_relation_effect = {
+						HOUSE = scope:actor.house
+						VALUE = agot_house_relation_damage_small_value
+						REASON = removed_guardianship 
+						CHAR = scope:recipient
+						TARGET_CHAR = scope:actor
+						TITLE = scope:dummy_gender
+					}
+				}
 			}
 		}
 	}
