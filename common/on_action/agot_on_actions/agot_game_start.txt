@@ -39,8 +39,8 @@ agot_on_game_start = {
 
 		##### General setup start #####
 
-		### Situational Hair
-		agot_init_character_setup  = yes
+		### Character Initialization Pre-Rules
+		agot_init_character_setup = yes
 
 		# House Customizer Dummies Spawn
 		agot_house_customizer_spawn_dummies_effect = yes
@@ -273,6 +273,51 @@ agot_on_game_start = {
 				appoint_court_position = {
 					recipient = title:b_goldguard_heights.holder
 					court_position = goldcloaks_court_position
+				}
+			}
+		}
+
+		### Warden Title Setup
+		title:e_the_north.holder ?= { # Appoint Warden of the White Knife
+			if = {
+				limit = {
+					exists = title:d_white_harbor.holder
+					NOT = { has_title = title:d_white_harbor }
+					title:d_white_harbor.holder = { is_vassal_of = title:e_the_north.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_white_harbor.holder
+					court_position = white_knife_court_position
+				}
+			}
+		}
+		title:e_dorne.holder ?= { # Appoint Warden of the Stone Way
+			if = {
+				limit = {
+					exists = title:d_greenbelt.holder
+					NOT = {
+						has_title = title:d_greenbelt
+					}
+					title:d_greenbelt.holder = { is_vassal_of = title:e_dorne.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_greenbelt.holder
+					court_position = stone_way_court_position
+				}
+			}
+		}
+		title:e_dorne.holder ?= { # Appoint Warden of the Prince's Pass
+			if = {
+				limit = {
+					exists = title:d_the_princes_pass.holder
+					NOT = {
+						has_title = title:d_the_princes_pass
+					}
+					title:d_the_princes_pass.holder = { is_vassal_of = title:e_dorne.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_the_princes_pass.holder
+					court_position = princes_pass_court_position
 				}
 			}
 		}
@@ -942,138 +987,6 @@ agot_on_game_start = {
 					remove_relation_ward = PREV
 				}
 			}
-			if = { # Apply blademaster effects
-				limit = { has_trait = lifestyle_blademaster_3_history }
-				remove_trait = lifestyle_blademaster_3_history
-				add_trait = lifestyle_blademaster
-				add_trait_xp = {
-					trait = lifestyle_blademaster
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_blademaster_2_history }
-				remove_trait = lifestyle_blademaster_2_history
-				add_trait = lifestyle_blademaster
-				add_trait_xp = {
-					trait = lifestyle_blademaster
-					value = 50
-				}
-			}
-			if = { # Apply burned effects
-				limit = { has_trait = burned_3_history }
-				remove_trait = burned_3_history
-				add_trait = burned
-				add_trait_xp = {
-					trait = burned
-					track = burned
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = burned_2_history }
-				remove_trait = burned_2_history
-				add_trait = burned
-				add_trait_xp = {
-					trait = burned
-					track = burned
-					value = 50
-				}
-			}
-			if = { # Apply mystic effects
-				limit = { has_trait = lifestyle_mystic_3_history }
-				remove_trait = lifestyle_mystic_3_history
-				add_trait = lifestyle_mystic
-				add_trait_xp = {
-					trait = lifestyle_mystic
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_mystic_2_history }
-				remove_trait = lifestyle_mystic_2_history
-				add_trait = lifestyle_mystic
-				add_trait_xp = {
-					trait = lifestyle_mystic
-					value = 50
-				}
-			}
-			if = { # Apply physician effects
-				limit = { has_trait = lifestyle_physician_3_history }
-				remove_trait = lifestyle_physician_3_history
-				add_trait = lifestyle_physician
-				add_trait_xp = {
-					trait = lifestyle_physician
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_physician_2_history }
-				remove_trait = lifestyle_physician_2_history
-				add_trait = lifestyle_physician
-				add_trait_xp = {
-					trait = lifestyle_physician
-					value = 50
-				}
-			}
-			if = { # Apply reveler effects
-				limit = { has_trait = lifestyle_reveler_3_history }
-				remove_trait = lifestyle_reveler_3_history
-				add_trait = lifestyle_reveler
-				add_trait_xp = {
-					trait = lifestyle_reveler
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_reveler_2_history }
-				remove_trait = lifestyle_reveler_2_history
-				add_trait = lifestyle_reveler
-				add_trait_xp = {
-					trait = lifestyle_reveler
-					value = 50
-				}
-			}
-			if = { # Apply hunter effects
-				limit = { has_trait = lifestyle_hunter_3_history }
-				remove_trait = lifestyle_hunter_3_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = hunter
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_hunter_2_history }
-				remove_trait = lifestyle_hunter_2_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = hunter
-					value = 50
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_falconer_3_history }
-				remove_trait = lifestyle_falconer_3_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = falconer
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_falconer_2_history }
-				remove_trait = lifestyle_falconer_2_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = falconer
-					value = 50
-				}
-			}
 			if = { # Apply knight effects
 				limit = { has_trait = knight }
 				remove_trait = knight
@@ -1081,26 +994,6 @@ agot_on_game_start = {
 				add_trait_xp = {
 					trait = squire
 					value = 100
-				}
-			}
-			if = { # Apply scarred effects
-				limit = { has_trait = scarred_3_history }
-				remove_trait = scarred_3_history
-				add_trait = scarred
-				add_trait_xp = {
-					trait = scarred
-					track = scarred
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = scarred_2_history }
-				remove_trait = scarred_2_history
-				add_trait = scarred
-				add_trait_xp = {
-					trait = scarred
-					track = scarred
-					value = 50
 				}
 			}
 
@@ -1113,7 +1006,7 @@ agot_on_game_start = {
 				# bastards who retained their surname after legitimization
 				limit = {
 					has_trait = bastard
-					is_lowborn = no
+					can_have_bastard_surname = yes
 					NOR = {
 						has_inactive_trait = surname_flowers
 						has_inactive_trait = surname_sand
@@ -1493,6 +1386,8 @@ agot_on_game_start = {
 		agot_dragons_on_start_effect = yes
 		### Run effects on dead characters
 		agot_apply_posthistory_effect = yes
+		### Run effects on dead characters for title data
+		assign_posthistory_title_data_effect = yes
 		### Establish house relations
 		agot_apply_posthistory_house_relations_effect = yes
 
@@ -1975,6 +1870,9 @@ agot_on_game_start_after_lobby = {
 		agot_add_camp_buildings_on_start = yes
 		agot_add_estate_buildings_on_start = yes
 		agot_add_wilderness_buildings_on_start = yes
+
+		### Character Initialization Post-Rules
+		agot_init_canon_child_setup = yes
 
 		##### General setup start #####
 		# Targaryen Exiles Scripted Invasion
@@ -2631,6 +2529,15 @@ agot_on_game_start_after_lobby = {
 			}
 		}
 
+		#Thenn Management
+		if = {
+			limit = {
+				exists = title:k_thenn.holder
+				title:k_thenn.holder.primary_title = title:k_magnar_of_thenn
+			}
+			title:k_thenn.holder = { set_primary_title_to = title:k_thenn }
+		}
+
 		# Knight Trees
 		agot_knight_tree_on_start = yes
 	}
@@ -3280,6 +3187,9 @@ agot_barony_ruins = {
 			title:b_tarbeck_hall = {
 				set_coa = ruins_coa
 			}
+			title:c_seven_points.holder = {
+				set_realm_capital = title:b_beckyng
+			}
 		}
 		# Oldstones
 		if = {
@@ -3389,6 +3299,9 @@ agot_barony_ruins = {
 			title:b_vultures_roost = {
 				set_coa = ruins_coa
 			}
+			title:c_denmont.holder = {
+				set_realm_capital = title:b_denmont
+			}
 		}
 		# Castle Hollard
 		if = {
@@ -3401,6 +3314,9 @@ agot_barony_ruins = {
 			}
 			title:b_castle_hollard = {
 				set_coa = ruins_coa
+			}
+			title:c_crownback.holder = {
+				set_realm_capital = title:b_threecrowns
 			}
 		}
 	}
