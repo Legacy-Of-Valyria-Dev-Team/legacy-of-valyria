@@ -477,10 +477,26 @@ agot_mw_death_on_action = {
 
 			every_ruler = { # every ruler that has the variable with root as value
 				limit = {
-					var:pre_war_liege ?= root
 					NOT = { this = root.primary_heir }
+					OR = {
+						var:pre_war_liege ?= root
+						var:agot_pwl_top ?= root
+					}
 				}
-				set_variable = { name = pre_war_liege value = root.primary_heir }
+				if = {
+					limit = {
+						var:pre_war_liege ?= root
+						NOT = { this = root.primary_heir }
+					}
+					set_variable = { name = pre_war_liege value = root.primary_heir }
+				}
+				if = { # set pre war top liege
+					limit = {
+						var:agot_pwl_top ?= root
+						NOT = { this = root.primary_heir }
+					}
+					set_variable = { name = agot_pwl_top value = root.primary_heir }
+				}
 			}
 		}
 		every_heir = {
@@ -490,10 +506,27 @@ agot_mw_death_on_action = {
 
 			if = { # we have a pre_war_liege set for dead char and may transfer it to heir
 				limit = {
-					exists = root.var:pre_war_liege
 					NOT = { has_variable = mw_pwl_update_exempt }
+					OR = {
+						exists = root.var:pre_war_liege
+						exists = root.var:agot_pwl_top
+					}
 				}
-				set_variable = { name = pre_war_liege value = root.var:pre_war_liege }
+
+				if = {
+					limit = {
+						exists = root.var:pre_war_liege
+						NOT = { has_variable = mw_pwl_update_exempt }
+					}
+					set_variable = { name = pre_war_liege value = root.var:pre_war_liege }
+				}
+				if = { # we have a pre_war_liege set for dead char and may transfer it to heir
+					limit = {
+						exists = root.var:agot_pwl_top
+						NOT = { has_variable = mw_pwl_update_exempt }
+					}
+					set_variable = { name = agot_pwl_top value = root.var:agot_pwl_top }
+				}
 			}
 			else_if = { # there is no pre_war_liege set or we had heir being extempt from variable transfer --> we need to make sure his current can still be vassalized by his set pre_war_liege
 				limit = {
@@ -506,6 +539,7 @@ agot_mw_death_on_action = {
 					}
 
 					set_variable = { name = pre_war_liege value = var:pre_war_liege.liege }
+					set_variable = { name = agot_pwl_top value = var:agot_pwl_top.liege }
 				}
 			}
 		}

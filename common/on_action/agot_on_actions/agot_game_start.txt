@@ -828,6 +828,47 @@ agot_on_game_start = {
 			}
 		}
 
+		### Silkhead League Setup
+		if = {
+			limit = {
+				game_start_date >= 8138.10.1
+				game_start_date < 8170.3.12
+			}
+			title:c_silkhead.holder ?= {
+				create_confederation = {
+					name = d_the_silkhead_league
+				}
+				scope:new_confederation = {
+					set_coa = d_the_silkhead_league
+					every_ruler = {
+						limit = {
+							highest_held_title_tier = tier_county
+							OR = {
+								primary_title = title:c_goldfuror
+								primary_title = title:c_restianys
+								primary_title = title:c_qygaeryr
+								primary_title = title:c_unmecaeros
+								primary_title = title:c_timbercut
+								primary_title = title:c_ozaonnos
+								primary_title = title:c_triarchs_fall
+								primary_title = title:c_drelyia
+								primary_title = title:c_devosh
+							}
+						}
+						save_scope_as = silkhead_confederation_member
+						scope:new_confederation = { add_confederation_member = scope:silkhead_confederation_member }
+						if = {
+							limit = {
+								game_start_date >= 8155.2.19
+								NOT = { has_realm_law = slavery_disallowed_law }
+							}
+							add_realm_law = slavery_disallowed_law
+						}
+					}
+				}
+			}
+		}
+
 		### Character Setup
 		every_living_character = {
 			limit = {
@@ -2002,6 +2043,10 @@ agot_on_game_start_after_lobby = {
 						designate_diarch = prev
 						try_start_diarchy = second_magister
 						set_diarchy_swing = 40
+						if = {
+							limit = { diarch = character:Rogare_9 } # Moredo Rogare
+							set_diarchy_swing = 100
+						}
 					}
 				}
 				else_if = {
