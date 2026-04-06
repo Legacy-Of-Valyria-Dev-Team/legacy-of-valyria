@@ -34,7 +34,10 @@ assign_character_parameter_effect = {
 
 		#2. Bastardy
 		if = {
-			limit = { agot_bastard_surname_trigger = yes }
+			limit = {
+				agot_bastard_surname_trigger = yes
+				can_have_bastard_surname = yes
+			}
 			save_temporary_scope_value_as = {
 				name = bastardy
 				value = yes
@@ -509,6 +512,14 @@ assign_posthistory_title_data_effect = {
 						SCOPE = scope:temp_ruler_scope
 					}
 				}
+				else_if = { #LOV ADDED
+					limit = { primary_title.holder ?= { agot_ruler_is_government_trigger = { GOV = oligarchic } } }
+					save_temporary_scope_as = temp_ruler_scope
+					assign_government_data_effect = {
+						GOV = oligarchic
+						SCOPE = scope:temp_ruler_scope
+					}
+				}
 				else_if = {
 					limit = { primary_title ?= title:k_the_stepstones }
 					save_temporary_scope_as = temp_ruler_scope
@@ -526,9 +537,18 @@ assign_posthistory_title_data_effect = {
 								}
 							}
 						}
-						assign_government_data_effect = {
-							GOV = pirate
-							SCOPE = scope:temp_ruler_scope
+						if = {
+							limit = { agot_dlc_check_for_landless_pirates = yes }
+							assign_government_data_effect = {
+								GOV = pirate
+								SCOPE = scope:temp_ruler_scope
+							}
+						}
+						else = {
+							assign_government_data_effect = {
+								GOV = pirate_no_dlc
+								SCOPE = scope:temp_ruler_scope
+							}
 						}
 					}
 					else = {
@@ -550,6 +570,14 @@ assign_posthistory_title_data_effect = {
 						SCOPE = scope:temp_ruler_scope
 					}
 				}
+				else_if = {
+					limit = { primary_title.holder ?= { agot_ruler_is_government_trigger = { GOV = pirate_no_dlc } } }
+					save_temporary_scope_as = temp_ruler_scope
+					assign_government_data_effect = {
+						GOV = pirate_no_dlc
+						SCOPE = scope:temp_ruler_scope
+					}
+				}
 				else = {
 					save_temporary_scope_as = temp_ruler_scope
 					assign_government_data_effect = {
@@ -564,9 +592,18 @@ assign_posthistory_title_data_effect = {
 					NOT = { agot_is_historical_government_trigger = { GOV = administrative } }
 				}
 				save_temporary_scope_as = temp_ruler_scope
-				assign_government_data_effect = {
-					GOV = pirate
-					SCOPE = scope:temp_ruler_scope
+				if = {
+					limit = { agot_dlc_check_for_landless_pirates = yes }
+					assign_government_data_effect = {
+						GOV = pirate
+						SCOPE = scope:temp_ruler_scope
+					}
+				}
+				else = {
+					assign_government_data_effect = {
+						GOV = pirate_no_dlc
+						SCOPE = scope:temp_ruler_scope
+					}
 				}
 			}
 			else_if = {
@@ -1236,6 +1273,10 @@ assign_government_data_effect = {
 		remove_list_global_variable = { name = pirate_government_list target = $SCOPE$ }
 	}
 	if = {
+		limit = { NOT = { flag:$GOV$ = flag:pirate_no_dlc } }
+		remove_list_global_variable = { name = pirate_no_dlc_government_list target = $SCOPE$ }
+	}
+	if = {
 		limit = { NOT = { flag:$GOV$ = flag:tribal } }
 		remove_list_global_variable = { name = tribal_government_list target = $SCOPE$ }
 	}
@@ -1255,7 +1296,7 @@ assign_government_data_effect = {
 		limit = { NOT = { flag:$GOV$ = flag:ruins } }
 		remove_list_global_variable = { name = ruins_government_list target = $SCOPE$ }
 	}
-	# LoV Added
+	#LOV Added
 	if = {
 		limit = { NOT = { flag:$GOV$ = flag:oligarchic } }
 		remove_list_global_variable = { name = oligarchic_government_list target = $SCOPE$ }
@@ -1285,6 +1326,7 @@ prune_government_data_effect = {
 	remove_list_global_variable = { name = the_citadel_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = theocracy_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = pirate_government_list target = $SCOPE$ }
+	remove_list_global_variable = { name = pirate_no_dlc_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = tribal_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = clan_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = landless_adventurer_government_list target = $SCOPE$ }
@@ -1310,12 +1352,13 @@ agot_on_change_government_data_effect = {
 			the_citadel_government = { assign_government_data_effect = { GOV = the_citadel SCOPE = $SCOPE$ } }
 			theocracy_government = { assign_government_data_effect = { GOV = theocracy SCOPE = $SCOPE$ } }
 			pirate_government = { assign_government_data_effect = { GOV = pirate SCOPE = $SCOPE$ } }
+			pirate_no_dlc_government = { assign_government_data_effect = { GOV = pirate_no_dlc SCOPE = $SCOPE$ } }
 			tribal_government = { assign_government_data_effect = { GOV = tribal SCOPE = $SCOPE$ } }
 			clan_government = { assign_government_data_effect = { GOV = clan SCOPE = $SCOPE$ } }
 			landless_adventurer_government = { assign_government_data_effect = { GOV = landless_adventurer SCOPE = $SCOPE$ } }
 			command_government = { assign_government_data_effect = { GOV = command SCOPE = $SCOPE$ } }
 			ruins_government = { assign_government_data_effect = { GOV = ruins SCOPE = $SCOPE$ } }
-			# LoV Added
+			#LOV Added
 			oligarchic_government = { assign_government_data_effect = { GOV = oligarchic SCOPE = $SCOPE$ } }
 			fallback = { prune_government_data_effect = { SCOPE = $SCOPE$ } }
 		}
@@ -1967,16 +2010,7 @@ apply_character_title_data = {
 					### LP_FEUDAL ###
 					else_if = {
 						limit = {
-							OR = {
-								agot_localization_government_trigger = { GOV = lp_feudal SPOUSE_SCOPE = scope:spouse_scope }
-								AND = {
-									agot_localization_government_trigger = { GOV = feudal SPOUSE_SCOPE = scope:spouse_scope }
-									OR = {
-										agot_is_part_of_paramountcy_realm = yes
-										scope:spouse_scope ?= { agot_is_part_of_paramountcy_realm = yes }
-									}
-								}
-							}
+							agot_localization_government_trigger = { GOV = lp_feudal SPOUSE_SCOPE = scope:spouse_scope }
 						}
 
 						### HEGEMONY ###
@@ -2423,6 +2457,43 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
 							}
+							else_if = { # Historical Lord/Lady
+								limit = {
+									trigger_if = {
+										limit = {
+											agot_flavour_is_lord_in_westeros_trigger = { CHAR = this }
+											NOT = { agot_flavour_is_historic_lord_trigger = { CHAR = this } }
+										}
+										scope:regent_status ?= yes
+									}
+									trigger_else = {
+										agot_flavour_is_lord_in_westeros_trigger = { CHAR = this }
+										agot_flavour_is_historic_lord_trigger = { CHAR = this }
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lord_non_paramount" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lady_non_paramount" GENDER = female }
+							}
+							else_if = { # Lord Paramount/Lady Paramount
+								limit = {
+									agot_flavour_is_lord_in_westeros_trigger = { CHAR = this }
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lord_paramount" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lady_paramount" GENDER = female }
+							}
+							else_if = { # Lord/Lady Spouse
+								limit = {
+									any_spouse = {
+										even_if_dead = yes
+										agot_flavour_is_lord_in_westeros_trigger = { CHAR = this }
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lord_non_paramount" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lady_non_paramount" GENDER = female }
+							}
 							else_if = { # Storm King/Storm Queen
 								limit = {
 									OR = {
@@ -2712,12 +2783,6 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_republic_female" GENDER = female }
 							}
 							else_if = {
-								limit = { agot_has_three_daughters_trigger = yes }
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "triarch_three_daughters_male" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "triarch_three_daughters_female" GENDER = female }
-							}
-							else_if = {
 								limit = { $SCOPED_TITLE$ ?= title:e_beyond_the_wall }
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_male_beyond_the_wall" GENDER = male }
@@ -2932,7 +2997,7 @@ apply_character_title_data = {
 							}
 						}
 					}
-					# LoV Added
+					#LOV Added
 					### oligarchic/ADMINISTRATIVE ###
 					else_if = {
 						limit = {
@@ -3529,7 +3594,10 @@ apply_character_title_data = {
 					### PIRATE ###
 					else_if = {
 						limit = {
-							agot_localization_government_trigger = { GOV = pirate SPOUSE_SCOPE = scope:spouse_scope }
+							OR = {
+								agot_localization_government_trigger = { GOV = pirate SPOUSE_SCOPE = scope:spouse_scope }
+								agot_localization_government_trigger = { GOV = pirate_no_dlc SPOUSE_SCOPE = scope:spouse_scope }
+							}
 						}
 
 						### HEGEMONY ###
@@ -3561,7 +3629,7 @@ apply_character_title_data = {
 								limit = {
 									$SCOPED_TITLE$ ?= title:k_the_stepstones
 									historical_independent_ruler = no
-									top_liege ?= { agot_has_three_daughters_trigger = yes }
+									top_liege ?= { agot_part_of_three_daughters_confederation_trigger = yes }
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince_admiral" GENDER = male }
@@ -4132,7 +4200,10 @@ apply_character_special_regent_title_data = {
 
 apply_character_surname_data = {
 	if = {
-		limit = { agot_bastard_surname_trigger = yes }
+		limit = {
+			agot_bastard_surname_trigger = yes
+			can_have_bastard_surname = yes
+		}
 		if = {
 			limit = { has_bastard_surname_flowers = yes }
 			custom_description_no_bullet = {
