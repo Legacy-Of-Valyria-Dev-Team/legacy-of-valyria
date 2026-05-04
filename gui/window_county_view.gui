@@ -221,6 +221,12 @@ window = {
 						onclick = "[OpenFromViewHistory]"
 						tooltip = "[GetViewHistoryTooltip]"
 					}
+					
+					blockoverride "button_next" {
+						onclick = "[HoldingView.GoToNextCounty]"
+						enabled = "[HoldingView.CanGoToNextCounty]"
+						tooltip = "YOUR_NEXT_HOLDING"
+					}
 
 					blockoverride "button_close"
 					{
@@ -874,25 +880,6 @@ window = {
 
 						using = tooltip_ne
 
-						tooltipwidget = {
-
-							faith_tooltip = {
-
-								blockoverride "extra_info" {
-									using = faith_tooltip_click_default_extra_info
-
-									text_single = {
-										margin = { 10 0 }
-										layoutpolicy_horizontal = expanding
-										fonttintcolor = "[TooltipInfo.GetTintColor]"
-										using = DefaultTooltipText
-										visible = "[Not( ObjectsEqual( Faith.Self, GetPlayer.GetFaith ) )]"
-										text = "COUNTY_NOT_YOUR_FAITH"
-									}
-								}
-							}
-						}
-
 						text_single = {
 							layoutpolicy_horizontal = expanding
 							text = "HOLDING_VIEW_FAITH_LABEL"
@@ -912,6 +899,29 @@ window = {
 
 						button_group = {
 							onclick = "[OpenGameViewData( 'faith', Faith.GetID )]"
+
+							tooltipwidget = {
+	
+								faith_tooltip = {
+	
+									blockoverride "extra_info" {
+										using = faith_tooltip_click_default_extra_info
+	
+										text_single = {
+											margin = { 10 0 }
+											layoutpolicy_horizontal = expanding
+											fonttintcolor = "[TooltipInfo.GetTintColor]"
+											using = DefaultTooltipText
+											visible = "[Not( ObjectsEqual( Faith.Self, GetPlayer.GetFaith ) )]"
+											text = "COUNTY_NOT_YOUR_FAITH"
+										}
+									}
+								}
+							}
+							
+							flowcontainer = {
+								ignoreinvisible = yes
+								resizeparent = yes
 
 							text_single = {
 								visible = "[EqualTo_uint32(Faith.GetID, GetPlayer.GetFaith.GetID)]"
@@ -934,6 +944,8 @@ window = {
 									using = Status_Bad
 								}
 							}
+							}
+
 						}
 					}
 				}
@@ -952,9 +964,11 @@ window = {
 					spacing = 5
 
 					item = {
-						button_tab_dark = {
+						button_tab_icon_only = {
 							datacontext = "[GUICountyHolding.GetHolding]"
 							size = { 45 45  }
+
+							using = TabShortcut
 
 							down = "[GUICountyHolding.IsSelected]"
 							alwaystransparent = "[GUICountyHolding.IsSelected]"
@@ -967,26 +981,44 @@ window = {
 							using = tooltip_ne
 							tooltipwidget = { holding_tooltip_click = {} }
 
-							icon_building_tab = {
+							widget = {
 								parentanchor = center
 								position = { 0 1 }
 								size = { 35 30 }
-								texture = "[GUICountyHolding.GetHolding.GetType.GetTabIcon]"
 								alwaystransparent = yes
 
+								button_icon_highlight = {
+									visible = "[Not(GUICountyHolding.GetHolding.CanConstructAnyBuilding(GetPlayer))]"
+									size = { 100% 100% }
+
 								down = "[GUICountyHolding.IsSelected]"
+									texture = "[GUICountyHolding.GetHolding.GetType.GetTabIcon]"					
 
-
+									alpha = "[Select_float(  GUICountyHolding.IsSelected, '(float)0.85', '(float)1' )]"				
 								blockoverride "button_frames"
 								{
 									gfxtype = togglepushbuttongfx
 									effectname = "NoHighlight"
-									upframe = 4
+
+										upframe = 7
 									uphoverframe = 5
 									uppressedframe = 6
 									downframe = 5
+										downhoverframe = 5
+										downpressedframe = 5
+										disableframe = 3
+									}
+								}
+
+								button_icon_highlight = {
+									visible = "[GUICountyHolding.GetHolding.CanConstructAnyBuilding(GetPlayer)]"
+									size = { 100% 100% }
+									
+									down = "[GUICountyHolding.IsSelected]"
+									texture = "[GUICountyHolding.GetHolding.GetType.GetTabIcon]"
 								}
 							}
+							
 
 							icon = {
 								name = "realm_capital_icon"
@@ -1023,7 +1055,6 @@ window = {
 				layoutpolicy_vertical = expanding
 				minimumsize = { 0 320 }
 				margin = { 5 5 }
-
 				#AGOT Added
 				agot_county_view_settlement_buttons = {}
 
@@ -1069,7 +1100,7 @@ window = {
 
 				background = {
 					#AGOT Modified
-					#visible = "[Not(HoldingView.HasHolding)]"
+					# visible = "[Not(HoldingView.HasHolding)]"
 					visible = "[Or(Not(HoldingView.HasHolding), Not(ProvinceIsNotWilderness))]"
 					texture = "[HoldingView.GetProvince.GetTerrain.GetIllustration]"
 					alpha = 0.7
@@ -1129,8 +1160,8 @@ window = {
 
 							coa_title_medium = {
 								datacontext = "[HoldingView.GetTitle]"
-								#AGOT Modified, Ruins
-								#visible = "[HoldingView.GetTitle.HasHolder]"
+								#AGOT Modified
+								# visible = "[HoldingView.GetTitle.HasHolder]"
 								visible = "[And(HoldingView.GetTitle.HasHolder, IsProvinceInfoShown)]"
 							}
 
@@ -1148,7 +1179,7 @@ window = {
 										default_format = "#high"
 										align = nobaseline
 										using = Font_Size_Big
-										max_width = 129
+										max_width = 129 #TODO check that it doesn't overlap
 										fontsize_min = 14
 										margin_left = 5
 
@@ -1164,6 +1195,31 @@ window = {
 
 										tooltip = "CUSTOMIZE_TITLE"
 									}
+									
+									widget = {
+										size = { 20 25 }
+										visible = "[HoldingView.HasHolding]"
+										datacontext = "[HoldingView.GetProvince]"
+										
+										button_pin = {
+											shortcut = "pin"
+											parentanchor = center
+											tooltip = "PROVINCE_PIN_TT"
+											position = { 0 2 }
+											onclick = "[Province.ToggleProvincePinned]"
+											visible = "[Not(Province.IsPinned)]"
+										}
+										
+										button_unpin = {
+											shortcut = "pin"
+											parentanchor = center
+											tooltip = "PROVINCE_PIN_TT"
+											position = { 0 2 }
+											onclick = "[Province.ToggleProvincePinned]"
+											visible = "[Province.IsPinned]"
+										}
+									}
+									
 
 									widget = {
 										size = { 30 30 }
@@ -1199,7 +1255,6 @@ window = {
 
 									widget = {
 										size = { 30 30 }
-										visible = "[Or(HoldingView.PotentialSetRealmCapital, HoldingView.CanSetCountyCapital)]" # LEGACY OF VALYRIA ADDED
 
 										button_move_capital = {
 											name = "set_realm_capital_button"
@@ -1907,17 +1962,7 @@ window = {
 								}
 							}
 							#AGOT Added
-							vbox = {
-								parentanchor = bottom|left
-								margin_left = -28
-								margin_bottom = 12
-								ignoreinvisible = yes
-								agot_county_view_restore_ruins_button = {}
-								#widget = {
-								#	visible = "[And(Or(HoldingView.HasDuchyCapitalBuildingSlot, HoldingView.HasSpecialBuildingSlot ), GreaterThan_int32(GetDataModelSize(HoldingView.GetBuildings), '(int32)4'))]"
-								#	size = { 0 59 }
-								#}
-							}
+							agot_county_view_restore_ruins_button = {}
 						}
 					}
 
@@ -2196,6 +2241,7 @@ window = {
 							}
 
 							flowcontainer = {
+
 								name = "holding_view_buildings_area"
 								widgetid = "holding_view_buildings_area"
 								# ra_merit_governor_holding_view uses this
@@ -2291,10 +2337,13 @@ window = {
 											datamodel = "[HoldingView.GetBuildings]"
 											ignoreinvisible = yes
 											spacing = 3
-											#margin_right = 3
 											righttoleft = yes
 
-											item = { widget_building_item = {} }
+									item = {
+										widget_building_item = {
+											blockoverride "shortcut" {
+												shortcut = "[Concatenate('sub_tab_', IntToString(Subtract_int32(GetDataModelSize(HoldingView.GetBuildings), PdxGuiWidget.AccessParent.GetIndexInDataModel)))]"
+											}
 										}
 									}
 								}
@@ -2310,6 +2359,10 @@ window = {
 										#AGOT Modified
 										# visible = "[HoldingView.HasDuchyCapitalBuildingSlot]"
 										visible = "[And(HoldingView.HasDuchyCapitalBuildingSlot, ProvinceIsNotWilderness)]"
+										
+										blockoverride "shortcut" {
+											shortcut = "duchy_building"
+										}
 
 										blockoverride "building_frame" {
 											icon = {
@@ -2338,6 +2391,10 @@ window = {
 										#AGOT Modified
 										# visible = "[HoldingView.HasSpecialBuildingSlot]"
 										visible = "[And(HoldingView.HasSpecialBuildingSlot, ProvinceIsNotWilderness)]"
+										
+										blockoverride "shortcut" {
+											shortcut = "special_building"
+										}
 
 										blockoverride "building_frame" {
 											icon = {
@@ -2362,6 +2419,10 @@ window = {
 										name = "great_building"
 										datacontext = "[HoldingView.GetGUIGreatBuilding]"
 										visible = "[HoldingView.HasGreatBuildingSlot]"
+										
+										blockoverride "shortcut" {
+											shortcut = "great_building"
+										}
 
 										blockoverride "building_frame" {
 											icon = {
@@ -2453,8 +2514,10 @@ window = {
 						visible = "[Not(HoldingView.IsSelectingBuildingToConstruct)]"
 						layoutpolicy_horizontal = expanding
 						alwaystransparent = no
+
 						margin = { 3 3 }
 						margin_bottom = 5
+
 						using = Window_Background_Subwindow
 
 						header_pattern = {
@@ -2476,6 +2539,7 @@ window = {
 						text_single = {
 							name = "prompt"
 							layoutpolicy_horizontal = shrinking
+
 							text = "[HoldingView.GetTracksViewPrompt]"
 							margin_bottom = 10
 						}
@@ -2484,6 +2548,7 @@ window = {
 							name = "no_potential_buildings_text"
 							visible = "[IsDataModelEmpty(HoldingView.GetPotentialBuildings)]"
 							layoutpolicy_horizontal = shrinking
+
 							text = "NO_POTENTIAL_BUILDINGS_WARNING"
 							margin_bottom = 10
 						}
@@ -2728,6 +2793,7 @@ window = {
 								name = "upgrade"
 								datacontext = "[HoldingView.GetTrack]"
 								layoutpolicy_horizontal = expanding
+
 								margin_bottom = 10
 
 								using = Window_Background_Subwindow
@@ -2760,6 +2826,7 @@ window = {
 											layoutpolicy_horizontal = expanding
 											text = "[GUITrackItem.GetBuildingTypeText]"
 										}
+
 
 									}
 
@@ -3106,6 +3173,7 @@ window = {
 												text_multi = {
 													layoutpolicy_horizontal = expanding
 													layoutpolicy_vertical = expanding
+
 													autoresize = yes
 													max_width = 300
 													min_width = 300
@@ -3118,6 +3186,7 @@ window = {
 													datacontext = "[GUITrackItem.GetSelectedBuilding]"
 													visible = "[InDebugMode]"
 													layoutpolicy_horizontal = expanding
+
 													text = "BUILDING_DEBUG_FULL"
 
 													margin = { 10 5 }
@@ -3140,6 +3209,7 @@ window = {
 												vbox = {
 													visible = "[And(And(GreaterThan_int32(GUITrackItem.GetSelectedBuilding.GetLevel,GUITrackItem.GetCurrentBuilding.GetLevel),GreaterThan_int32(GUITrackItem.GetSelectedBuilding.GetLevel,'(int32)1')), Not(GUITrackItem.IsNextBuildingSelected))]"
 													layoutpolicy_horizontal = expanding
+
 													margin_left = 10
 
 													text_label_left = {
@@ -3175,8 +3245,10 @@ window = {
 															text_single = {
 																datacontext = "[GUITrackItem.GetSelectedPrestigeCost]"
 																visible = "[GUITrackItem.HasSelectedPrestigeCost]"
+
 																text = "[ValueBreakdown.GetValue]"
 																align = nobaseline
+
 																tooltip_visible = "[ValueBreakdown.HasTooltip]"
 
 																tooltipwidget = {
@@ -3187,8 +3259,10 @@ window = {
 															text_single = {
 																datacontext = "[GUITrackItem.GetSelectedPietyCost]"
 																visible = "[GUITrackItem.HasSelectedPietyCost]"
+
 																text = "[ValueBreakdown.GetValue]"
 																align = nobaseline
+
 																tooltip_visible = "[ValueBreakdown.HasTooltip]"
 
 																tooltipwidget = {
@@ -3611,6 +3685,7 @@ types CountyViewTypes
 		size = { 55 55 }
 		#AGOT Disabled; This removes the ability to swap out disabled buildings
 		# enabled = "[GUIBuildingItem.IsBuildingButtonEnabled]"
+
 		tooltip = "[GUIBuildingItem.GetTooltip]"
 		using = tooltip_ne
 
@@ -3619,7 +3694,10 @@ types CountyViewTypes
 			size = { 100% 100% }
 			onclick = "[GUIBuildingItem.OnClick]"
 			down = "[GUIBuildingItem.IsHighlighted]"
+			tooltip = "[GUIBuildingItem.GetTooltip]"
+			using = tooltip_ne
 
+			block "shortcut" {}
 			block "building_frame" {}
 
 			button_icon = {
