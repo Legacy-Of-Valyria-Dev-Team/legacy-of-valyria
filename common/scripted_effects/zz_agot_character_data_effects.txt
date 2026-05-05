@@ -26,7 +26,7 @@ assign_character_parameter_effect = {
 		#1. Lowborn/Highborn
 		if = {
 			limit = { is_lowborn = yes }
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = lowborn
 				value = yes
 			}
@@ -38,7 +38,7 @@ assign_character_parameter_effect = {
 				agot_bastard_surname_trigger = yes
 				can_have_bastard_surname = yes
 			}
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = bastardy
 				value = yes
 			}
@@ -46,8 +46,21 @@ assign_character_parameter_effect = {
 
 		#3. Knighthood
 		if = {
-			limit = { is_agot_knight_trigger = yes }
-			save_temporary_scope_value_as = {
+			limit = {
+				NOR = {
+					trigger_if = {
+						limit = { exists = primary_title }
+						ruler_is_royal = yes
+					}
+					any_spouse = {
+						even_if_dead = yes
+						ruler_is_royal = yes
+					}
+					is_royal_scion = yes
+				}
+				is_agot_knight_trigger = yes
+			}
+			save_scope_value_as = {
 				name = knighthood
 				value = yes
 			}
@@ -60,11 +73,20 @@ assign_character_parameter_effect = {
 					has_trait = maester
 					has_trait = maester_historical
 				}
-				is_ruler = no
 			}
-			save_temporary_scope_value_as = {
-				name = maester
-				value = yes
+			if = {
+				limit = { NOT = { exists = primary_title } }
+				save_scope_value_as = {
+					name = maester
+					value = yes
+				}
+			}
+			if = {
+				limit = { exists = primary_title }
+				save_scope_value_as = {
+					name = landed_maester
+					value = yes
+				}
 			}
 		}
 
@@ -72,11 +94,20 @@ assign_character_parameter_effect = {
 		if = {
 			limit = {
 				has_trait = silent_sister
-				is_ruler = no
 			}
-			save_temporary_scope_value_as = {
-				name = silent_sister
-				value = yes
+			if = {
+				limit = { NOT = { exists = primary_title } }
+				save_scope_value_as = {
+					name = silent_sister
+					value = yes
+				}
+			}
+			if = {
+				limit = { exists = primary_title }
+				save_scope_value_as = {
+					name = landed_silent_sister
+					value = yes
+				}
 			}
 		}
 
@@ -86,7 +117,7 @@ assign_character_parameter_effect = {
 				has_trait = septon
 				NOT = { primary_title ?= title:k_the_most_devout }
 			}
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = septon
 				value = yes
 			}
@@ -96,10 +127,11 @@ assign_character_parameter_effect = {
 		if = {
 			limit = {
 				is_councillor = yes
+				NOT = { has_trait = kingsguard }
 				is_human = yes
 				liege.primary_title.tier ?= tier_hegemony
 			}
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = councillor
 				value = yes
 			}
@@ -108,7 +140,7 @@ assign_character_parameter_effect = {
 		#8. High Septon
 		if = {
 			limit = { primary_title ?= title:k_the_most_devout }
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = high_septon
 				value = yes
 			}
@@ -122,7 +154,7 @@ assign_character_parameter_effect = {
 					this = character:NightsQueen_1
 				}
 			}
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = name_is_title
 				value = yes
 			}
@@ -133,7 +165,10 @@ assign_character_parameter_effect = {
 			limit = {
 				is_independent_ruler = no
 				NOR = {
+					exists = scope:name_is_title
 					exists = scope:high_septon
+					exists = scope:maester
+					exists = scope:silent_sister
 					primary_title ?= title:d_kingsguard
 				}
 				liege ?= {
@@ -144,25 +179,118 @@ assign_character_parameter_effect = {
 				}
 				is_diarch_of_target = liege
 			}
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = regent_status
 				value = yes
 			}
 		}
 
 		### RULER/SPOUSE/SCION CHARACTER PARAMETERS ###
-		#1. Parental Ranks
+
+		#1. Determine Spouse Ranks
 		if = {
 			limit = {
+				NOR = {
+					exists = scope:maester
+					exists = scope:silent_sister
+					exists = scope:septon
+				}
+			}
+
+			assign_spouse_data = { SCOPE = $SCOPE$ }
+			if = {
+				limit = { spouse_is_royal = yes }
+				save_scope_value_as = {
+					name = spouse_status
+					value = flag:royal
+				}
+			}
+			else_if = {
+				limit = {
+					NOR = {
+						agot_localization_government_trigger = { GOV = command SPOUSE_SCOPE = scope:spouse_scope }
+					}
+					exists = scope:spouse_scope.primary_title
+				}
+				save_scope_value_as = {
+					name = spouse_status
+					value = flag:active
+				}
+			}
+		}
+
+		#2. Determine Personal Ranks
+		if = {
+			limit = {
+				NOR = {
+					exists = scope:maester
+					exists = scope:silent_sister
+					scope:spouse_status ?= flag:royal
+				}
+			}
+			if = {
+				limit = { ruler_is_royal = yes }
+				save_scope_value_as = {
+					name = ruler_status
+					value = flag:royal
+				}
+			}
+			else_if = {
+				limit = {
+					exists = primary_title
+					primary_title.tier >= tier_barony
+				}
+				save_scope_value_as = {
+					name = ruler_status
+					value = flag:active
+				}
+			}
+		}
+
+		#3. Bestowal Data
+		if = {
+			limit = {
+				NOR = {
+					ruler_is_royal = yes
+					scope:spouse_status ?= flag:royal
+					exists = scope:bastardy
+					exists = scope:maester
+					exists = scope:silent_sister
+				}
+				is_royal_scion = yes
+				is_bestowed_royal_scion = { SCOPE = $SCOPE$ }
+			}
+
+			assign_bestowal_data = { SCOPE = $SCOPE$ }
+			if = {
+				limit = {
+					exists = scope:scion_3_title
+				}
+				save_scope_value_as = {
+					name = scion_status
+					value = flag:royal
+				}
+			}
+		}
+
+		#4. Parental Ranks
+		else_if = {
+			limit = {
+				NOR = {
+					exists = scope:bastardy
+					exists = scope:maester
+					exists = scope:silent_sister
+				}
 				any_parent = {
 					even_if_dead = yes
 					parent_is_royal = { PARENT = this }
 				}
 			}
+
 			if = {
 				limit = { parent_is_royal = { PARENT = $SCOPE$.father } }
 				assign_parent_data = { PARENT = $SCOPE$.father }
-				save_temporary_scope_value_as = {
+				save_scope_value_as = {
 					name = scion_status
 					value = flag:royal
 				}
@@ -170,7 +298,7 @@ assign_character_parameter_effect = {
 			else_if = {
 				limit = { parent_is_royal = { PARENT = $SCOPE$.mother } }
 				assign_parent_data = { PARENT = $SCOPE$.mother }
-				save_temporary_scope_value_as = {
+				save_scope_value_as = {
 					name = scion_status
 					value = flag:royal
 				}
@@ -178,6 +306,11 @@ assign_character_parameter_effect = {
 		}
 		else_if = {
 			limit = {
+				NOR = {
+					exists = scope:bastardy
+					exists = scope:maester
+					exists = scope:silent_sister
+				}
 				any_parent = {
 					even_if_dead = yes
 					OR = {
@@ -191,79 +324,34 @@ assign_character_parameter_effect = {
 				is_female = yes
 				NOT = { exists = scope:bastardy }
 			}
-			save_temporary_scope_value_as = {
+			save_scope_value_as = {
 				name = scion_status
 				value = flag:active
 			}
 		}
 
-		#2. Grandparent Ranks
-		if = {
+		#5. Grandparent Ranks
+		else_if = {
 			limit = {
+				NOR = {
+					exists = scope:bastardy
+					exists = scope:maester
+					exists = scope:silent_sister
+				}
 				grandparent_is_royal = {
 					SCOPE = $SCOPE$
 				}
 			}
+
 			assign_grandparent_data = { SCOPE = $SCOPE$ }
 			if = {
 				limit = {
 					exists = scope:scion_2_title
 				}
-				save_temporary_scope_value_as = {
+				save_scope_value_as = {
 					name = scion_status
 					value = flag:royal
 				}
-			}
-		}
-
-		#3. Bestowal Data
-		if = {
-			limit = {
-				is_royal_scion = yes
-				is_bestowed_royal_scion = { SCOPE = $SCOPE$ }
-			}
-			assign_bestowal_data = { SCOPE = $SCOPE$ }
-			if = {
-				limit = {
-					exists = scope:scion_3_title
-				}
-				save_temporary_scope_value_as = {
-					name = scion_status
-					value = flag:royal
-				}
-			}
-		}
-
-		#6. Determine Spouse Ranks
-		assign_spouse_data = { SCOPE = $SCOPE$ }
-		if = {
-			limit = { spouse_is_royal = yes }
-			save_temporary_scope_value_as = {
-				name = spouse_status
-				value = flag:royal
-			}
-		}
-		else_if = {
-			limit = { exists = scope:spouse_scope.primary_title }
-			save_temporary_scope_value_as = {
-				name = spouse_status
-				value = flag:active
-			}
-		}
-
-		#7. Determine Personal Ranks
-		if = {
-			limit = { ruler_is_royal = yes }
-			save_temporary_scope_value_as = {
-				name = ruler_status
-				value = flag:royal
-			}
-		}
-		else_if = {
-			limit = { highest_held_title_tier >= tier_barony }
-			save_temporary_scope_value_as = {
-				name = ruler_status
-				value = flag:active
 			}
 		}
 	}
@@ -279,8 +367,8 @@ assign_parent_data = {
 				has_trait = bastard
 			}
 		}
-		$PARENT$ ?= { save_temporary_scope_as = parent_scope }
-		scope:parent_scope.primary_title ?= { save_temporary_scope_as = scion_1_title }
+		$PARENT$ ?= { save_scope_as = parent_scope }
+		scope:parent_scope.primary_title ?= { save_scope_as = scion_1_title }
 	}
 }
 
@@ -308,9 +396,9 @@ assign_grandparent_data = {
 				house ?= $SCOPE$.house
 			}
 			order_by = primary_title.tier
-			save_temporary_scope_as = grandparent_scope
+			save_scope_as = grandparent_scope
 		}
-		scope:grandparent_scope.primary_title ?= { save_temporary_scope_as = scion_2_title }
+		scope:grandparent_scope.primary_title ?= { save_scope_as = scion_2_title }
 	}
 }
 
@@ -324,8 +412,8 @@ assign_bestowal_data = {
 				is_target_in_variable_list = { name = scoped_scions_list target = $SCOPE$ }
 			}
 			order_by = var:scoped_title.tier
-			var:scoped_royal ?= { save_temporary_scope_as = relative_scope }
-			var:scoped_title ?= { save_temporary_scope_as = scion_3_title }
+			var:scoped_royal ?= { save_scope_as = relative_scope }
+			var:scoped_title ?= { save_scope_as = scion_3_title }
 		}
 	}
 }
@@ -337,9 +425,15 @@ assign_spouse_data = {
 			any_spouse = {
 				even_if_dead = yes
 				exists = primary_title
+				trigger_if = {
+					limit = { exists = $SCOPE$.primary_title }
+					historical_independent_ruler = yes
+					ruler_is_royal = yes
+					primary_title.tier = tier_hegemony
+				}
 			}
 		}
-		$SCOPE$ = {
+		$SCOPE$ ?= {
 			if = {
 				limit = {
 					any_spouse = {
@@ -347,8 +441,8 @@ assign_spouse_data = {
 						is_alive = yes
 					}
 				}
-				primary_spouse.primary_title ?= { save_temporary_scope_as = spouse_title }
-				primary_spouse ?= { save_temporary_scope_as = spouse_scope }
+				primary_spouse.primary_title ?= { save_scope_as = spouse_title }
+				primary_spouse ?= { save_scope_as = spouse_scope }
 			}
 			else = {
 				ordered_spouse = {
@@ -361,8 +455,8 @@ assign_spouse_data = {
 						value = days_since_death
 						multiply = -1
 					}
-					primary_title ?= { save_temporary_scope_as = spouse_title }
-					save_temporary_scope_as = spouse_scope
+					primary_title ?= { save_scope_as = spouse_title }
+					save_scope_as = spouse_scope
 				}
 				if = {
 					limit = {
@@ -373,14 +467,16 @@ assign_spouse_data = {
 							primary_title ?= scope:spouse_title
 							agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
 						}
+						NOT = { exists = scope:regent_status }
 					}
-					save_temporary_scope_value_as = {
+					save_scope_value_as = {
 						name = queen_mother
 						value = flag:active
 					}
 				}
 				else_if = {
 					limit = {
+						NOT = { exists = scope:regent_status }
 						is_female = yes
 						is_alive = yes
 						trigger_if = {
@@ -388,18 +484,18 @@ assign_spouse_data = {
 							scope:spouse_scope = { ruler_is_royal = yes }
 						}
 						trigger_else_if = {
-							limit = { scope:spouse_scope = { ruler_is_royal = yes } }
+							limit = { scope:spouse_scope ?= { ruler_is_royal = yes } }
 							always = yes
 						}
 						trigger_else = { always = no }
-						scope:spouse_scope = {
+						scope:spouse_scope ?= {
 							OR = {
 								agot_is_historical_government_trigger = { GOV = lp_feudal }
 								agot_is_historical_government_trigger = { GOV = feudal }
 							}
 						}
 					}
-					save_temporary_scope_value_as = {
+					save_scope_value_as = {
 						name = dowager_status
 						value = flag:active
 					}
@@ -410,6 +506,7 @@ assign_spouse_data = {
 }
 
 assign_posthistory_title_data_effect = {
+	transfer_title_name_data = yes
 	every_county = {
 		every_past_holder = {
 			limit = { is_alive = no }
@@ -530,10 +627,10 @@ assign_posthistory_title_data_effect = {
 									this = character:Drahar_8
 									this = character:Saan_13
 									this = character:Naelor_9
-									this = character:Daemon_Successor_1
-									this = character:Daemon_Successor_2
-									this = character:Daemon_Successor_3
-									this = character:Daemon_Successor_4
+									this = character:Hagaris_2
+									this = character:Westman_1
+									this = character:Vastaeryn_53
+									this = character:Longsword_1
 								}
 							}
 						}
@@ -548,6 +645,17 @@ assign_posthistory_title_data_effect = {
 							assign_government_data_effect = {
 								GOV = pirate_no_dlc
 								SCOPE = scope:temp_ruler_scope
+							}
+						}
+						if = {
+							limit = {
+								this = character:Drahar_8
+							}
+							title:k_the_stepstones ?= {
+								add_to_variable_list = {
+									name = historical_princes_admiral_list
+									target = scope:temp_ruler_scope
+								}
 							}
 						}
 					}
@@ -671,7 +779,25 @@ assign_posthistory_title_data_effect = {
 					NOT = { this = character:Tyrell_81 }
 				}
 			}
+			save_temporary_scope_as = temp_ruler_scope
 			make_trait_inactive = agot_was_prince
+			if = {
+				limit = { days_since_death >= days_since_dorne_joins_seven_kingdoms }
+				add_to_global_variable_list = {
+					name = historical_independent_ruler_list
+					target = scope:temp_ruler_scope
+				}
+				assign_government_data_effect = {
+					GOV = feudal
+					SCOPE = scope:temp_ruler_scope
+				}
+			}
+			else = {
+				assign_government_data_effect = {
+					GOV = lp_feudal
+					SCOPE = scope:temp_ruler_scope
+				}
+			}
 		}
 	}
 	title:e_beyond_the_wall ?= {
@@ -1028,7 +1154,7 @@ agot_bestow_scion_status_effect = {
 			}
 		}
 		if = {
-			limit = { $SCOPE$ = { is_alive = yes } }
+			limit = { $SCOPE$ ?= { is_alive = yes } }
 			$SCOPE$ ?= {
 				add_prestige = 300
 				if = {
@@ -1415,6 +1541,7 @@ agot_government_type_death_effect = {
 set_title_localization_effect = {
 	if = {
 		limit = {
+			exists = flag:$KEY$
 			switch = {
 				trigger = flag:$GENDER$
 				flag:male ?= { $SCOPE$ ?= { is_male = yes } }
@@ -1424,16 +1551,16 @@ set_title_localization_effect = {
 		}
 		if = {
 			limit = { $SCOPE$ ?= { is_male = yes } }
-			custom_description_no_bullet = {
-				text = $KEY$
-				subject = $SCOPE$
+			save_scope_value_as = {
+				name = get_title
+				value = flag:$KEY$
 			}
 		}
 		else_if = {
 			limit = { $SCOPE$ ?= { is_female = yes } }
-			custom_description_no_bullet = {
-				text = $KEY$
-				subject = $SCOPE$
+			save_scope_value_as = {
+				name = get_title
+				value = flag:$KEY$
 			}
 		}
 	}
@@ -1445,7 +1572,7 @@ set_title_localization_effect = {
 
 # Apply character name and format
 apply_character_name_data = {
-	$SCOPE$ = {
+	$SCOPE$ ?= {
 		if = {
 			limit = { scope:tooltip ?= yes }
 			if = {
@@ -1581,16 +1708,34 @@ apply_character_name_data = {
 					}
 					else = {
 						if = {
-							limit = { can_have_surname_trigger = yes }
-							custom_description_no_bullet = {
-								text = TITLE_CHARACTER_FIRSTNAME_SURNAME_TOOLTIP
-								subject = $SCOPE$
+							limit = { scope:possessive ?= yes }
+							if = {
+								limit = { can_have_surname_trigger = yes }
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_SURNAME_POSSESSIVE_TOOLTIP
+									subject = $SCOPE$
+								}
+							}
+							else = {
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_POSSESSIVE_TOOLTIP
+									subject = $SCOPE$
+								}
 							}
 						}
 						else = {
-							custom_description_no_bullet = {
-								text = TITLE_CHARACTER_FIRSTNAME_TOOLTIP
-								subject = $SCOPE$
+							if = {
+								limit = { can_have_surname_trigger = yes }
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_SURNAME_TOOLTIP
+									subject = $SCOPE$
+								}
+							}
+							else = {
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_TOOLTIP
+									subject = $SCOPE$
+								}
 							}
 						}
 					}
@@ -1598,16 +1743,34 @@ apply_character_name_data = {
 			}
 			else_if = {
 				limit = { scope:high_septon ?= yes }
-				custom_description_no_bullet = {
-					text = CHARACTER_HIGH_SEPTON
-					subject = $SCOPE$
+				if = {
+					limit = { scope:possessive ?= yes }
+					custom_description_no_bullet = {
+						text = CHARACTER_HIGH_SEPTON_POSSESSIVE
+						subject = $SCOPE$
+					}
+				}
+				else = {
+					custom_description_no_bullet = {
+						text = CHARACTER_HIGH_SEPTON
+						subject = $SCOPE$
+					}
 				}
 			}
 			else_if = {
 				limit = { scope:name_is_title ?= yes }
-				custom_description_no_bullet = {
-					text = CHARACTER_NAME_IS_TITLE
-					subject = $SCOPE$
+				if = {
+					limit = { scope:possessive ?= yes }
+					custom_description_no_bullet = {
+						text = CHARACTER_NAME_IS_TITLE_POSSESSIVE
+						subject = $SCOPE$
+					}
+				}
+				else = {
+					custom_description_no_bullet = {
+						text = CHARACTER_NAME_IS_TITLE
+						subject = $SCOPE$
+					}
 				}
 			}
 			else = {
@@ -1643,16 +1806,34 @@ apply_character_name_data = {
 				}
 				else = {
 					if = {
-						limit = { can_have_surname_trigger = yes }
-						custom_description_no_bullet = {
-							text = CHARACTER_FIRSTNAME_SURNAME_TOOLTIP
-							subject = $SCOPE$
+						limit = { scope:possessive ?= yes }
+						if = {
+							limit = { can_have_surname_trigger = yes }
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_SURNAME_POSSESSIVE_TOOLTIP
+								subject = $SCOPE$
+							}
+						}
+						else = {
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_POSSESSIVE_TOOLTIP
+								subject = $SCOPE$
+							}
 						}
 					}
 					else = {
-						custom_description_no_bullet = {
-							text = CHARACTER_FIRSTNAME_TOOLTIP
-							subject = $SCOPE$
+						if = {
+							limit = { can_have_surname_trigger = yes }
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_SURNAME_TOOLTIP
+								subject = $SCOPE$
+							}
+						}
+						else = {
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_TOOLTIP
+								subject = $SCOPE$
+							}
 						}
 					}
 				}
@@ -1792,16 +1973,34 @@ apply_character_name_data = {
 					}
 					else = {
 						if = {
-							limit = { can_have_surname_trigger = yes }
-							custom_description_no_bullet = {
-								text = TITLE_CHARACTER_FIRSTNAME_SURNAME
-								subject = $SCOPE$
+							limit = { scope:possessive ?= yes }
+							if = {
+								limit = { can_have_surname_trigger = yes }
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_SURNAME_POSSESSIVE
+									subject = $SCOPE$
+								}
+							}
+							else = {
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_POSSESSIVE
+									subject = $SCOPE$
+								}
 							}
 						}
 						else = {
-							custom_description_no_bullet = {
-								text = TITLE_CHARACTER_FIRSTNAME
-								subject = $SCOPE$
+							if = {
+								limit = { can_have_surname_trigger = yes }
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME_SURNAME
+									subject = $SCOPE$
+								}
+							}
+							else = {
+								custom_description_no_bullet = {
+									text = TITLE_CHARACTER_FIRSTNAME
+									subject = $SCOPE$
+								}
 							}
 						}
 					}
@@ -1809,16 +2008,34 @@ apply_character_name_data = {
 			}
 			else_if = {
 				limit = { scope:high_septon ?= yes }
-				custom_description_no_bullet = {
-					text = CHARACTER_HIGH_SEPTON
-					subject = $SCOPE$
+				if = {
+					limit = { scope:possessive ?= yes }
+					custom_description_no_bullet = {
+						text = CHARACTER_HIGH_SEPTON_POSSESSIVE
+						subject = $SCOPE$
+					}
+				}
+				else = {
+					custom_description_no_bullet = {
+						text = CHARACTER_HIGH_SEPTON
+						subject = $SCOPE$
+					}
 				}
 			}
 			else_if = {
 				limit = { scope:name_is_title ?= yes }
-				custom_description_no_bullet = {
-					text = CHARACTER_NAME_IS_TITLE
-					subject = $SCOPE$
+				if = {
+					limit = { scope:possessive ?= yes }
+					custom_description_no_bullet = {
+						text = CHARACTER_NAME_IS_TITLE_POSSESSIVE
+						subject = $SCOPE$
+					}
+				}
+				else = {
+					custom_description_no_bullet = {
+						text = CHARACTER_NAME_IS_TITLE
+						subject = $SCOPE$
+					}
 				}
 			}
 			else = {
@@ -1852,16 +2069,34 @@ apply_character_name_data = {
 				}
 				else = {
 					if = {
-						limit = { can_have_surname_trigger = yes }
-						custom_description_no_bullet = {
-							text = CHARACTER_FIRSTNAME_SURNAME
-							subject = $SCOPE$
+						limit = { scope:possessive ?= yes }
+						if = {
+							limit = { can_have_surname_trigger = yes }
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_SURNAME_POSSESSIVE
+								subject = $SCOPE$
+							}
+						}
+						else = {
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_POSSESSIVE
+								subject = $SCOPE$
+							}
 						}
 					}
 					else = {
-						custom_description_no_bullet = {
-							text = CHARACTER_FIRSTNAME
-							subject = $SCOPE$
+						if = {
+							limit = { can_have_surname_trigger = yes }
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME_SURNAME
+								subject = $SCOPE$
+							}
+						}
+						else = {
+							custom_description_no_bullet = {
+								text = CHARACTER_FIRSTNAME
+								subject = $SCOPE$
+							}
 						}
 					}
 				}
@@ -2432,7 +2667,49 @@ apply_character_title_data = {
 						### HEGEMONY ###
 						if = {
 							limit = { $SCOPED_TITLE$ ?= { tier = tier_hegemony } }
-							if = {
+
+							if = { # Queen Mother
+								limit = { scope:queen_mother ?= flag:active }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "QUEEN_MOTHER" GENDER = female }
+							}
+							else_if = { # 'Good Queen'
+								limit = {
+									$SCOPED_TITLE$ ?= title:h_the_iron_throne
+									has_inactive_trait = good_queen
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "good_queen" GENDER = female }
+							}
+							else_if = { # King/Queen
+								limit = {
+									OR = {
+										agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
+										any_spouse = {
+											even_if_dead = yes
+											agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
+										}
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen" GENDER = female }
+							}
+							else_if = { # Prince/Princess Dornish/Rhoynish
+								limit = {
+									OR = {
+										agot_flavour_is_prince_rhoynish_trigger = { CHAR = this }
+										any_spouse = {
+											even_if_dead = yes
+											agot_flavour_is_prince_rhoynish_trigger = { CHAR = this }
+										}
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+							}
+							else_if = {
 								limit = { always = yes }
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
@@ -3243,6 +3520,28 @@ apply_character_title_data = {
 						}
 					}
 
+					### SILENT SISTERHOOD ###
+					else_if = {
+						limit = {
+							agot_localization_government_trigger = { GOV = silent_sisterhood SPOUSE_SCOPE = scope:spouse_scope }
+						}
+
+						### DUCHY ###
+						if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_duchy } }
+							if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "silent_sisterhood_holder" GENDER = female }
+							}
+							else_if = {
+								limit = { $SCOPED_TITLE$ ?= title:d_the_silent_sisterhood }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "silent_sisterhood_holder" GENDER = male }
+							}
+						}
+					}
+
 					### NIGHT'S WATCH ###
 					else_if = {
 						limit = {
@@ -3255,8 +3554,8 @@ apply_character_title_data = {
 							if = {
 								limit = { always = yes }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon_female" GENDER = female }
 							}
 						}
 
@@ -3345,8 +3644,8 @@ apply_character_title_data = {
 							if = {
 								limit = { always = yes }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon_female" GENDER = female }
 							}
 
 							### FALLBACK WARNING ###
@@ -3529,8 +3828,19 @@ apply_character_title_data = {
 							agot_localization_government_trigger = { GOV = ruins SPOUSE_SCOPE = scope:spouse_scope }
 						}
 
-						### EMPIRE ###
+						### HEGEMONY ###
 						if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_hegemony } }
+							if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon_female" GENDER = female }
+							}
+						}
+
+						### EMPIRE ###
+						else_if = {
 							limit = { $SCOPED_TITLE$ ?= { tier = tier_empire } }
 							if = {
 								limit = { always = yes }
@@ -3606,8 +3916,8 @@ apply_character_title_data = {
 							if = {
 								limit = { always = yes }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon_female" GENDER = female }
 							}
 						}
 
@@ -3629,17 +3939,34 @@ apply_character_title_data = {
 								limit = {
 									$SCOPED_TITLE$ ?= title:k_the_stepstones
 									historical_independent_ruler = no
-									top_liege ?= { agot_part_of_three_daughters_confederation_trigger = yes }
+									trigger_if = {
+										limit = { is_alive = yes }
+										top_liege ?= { agot_part_of_three_daughters_confederation_trigger = yes }
+									}
+									trigger_else = {
+										$SCOPED_TITLE$ ?= {
+											is_target_in_variable_list = {
+												name = historical_princes_admiral_list
+												target = $SCOPE$
+											}
+										}
+									}
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince_admiral" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess_admiral" GENDER = female }
 							}
+							else_if = { # Corsair King/Corsair Queen
+								limit = { has_trait = viking }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_pirate_male_corsair" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_pirate_female_corsair" GENDER = female }
+							}
 							else_if = { # Fallback
 								limit = { always = yes }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_pirate_male" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_pirate_female" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_pirate_male_fallback" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_pirate_female_fallback" GENDER = female }
 							}
 						}
 
@@ -3701,8 +4028,8 @@ apply_character_title_data = {
 							if = {
 								limit = { always = yes }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon_female" GENDER = female }
 							}
 						}
 
@@ -3799,6 +4126,120 @@ apply_character_title_data = {
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "baron_tribal_male" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "baron_tribal_female" GENDER = female }
+							}
+						}
+					}
+
+					### CLAN ###
+					else_if = {
+						limit = {
+							agot_localization_government_trigger = { GOV = clan SPOUSE_SCOPE = scope:spouse_scope }
+						}
+
+						### HEGEMONY ###
+						if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_hegemony } }
+							if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "hegemon_female" GENDER = female }
+							}
+						}
+
+						### EMPIRE ###
+						else_if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_empire } }
+							if = { # Magnar
+								limit = { culture ?= { has_name_list = name_list_thenn } }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_emperor" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_emperor" GENDER = female }
+							}
+							else_if = {
+								limit = { $SCOPED_TITLE$ ?= title:e_beyond_the_wall }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_male_beyond_the_wall" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_female_beyond_the_wall" GENDER = female }
+							}
+							else_if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_clan_male" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_clan_female" GENDER = female }
+							}
+						}
+
+						### KINGDOM ###
+						else_if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_kingdom } }
+							if = { # Magnar
+								limit = {
+									OR = {
+										$SCOPED_TITLE$ ?= title:k_magnar_of_thenn
+										$SCOPED_TITLE$ ?= title:k_thenn
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_hof" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_hof" GENDER = female }
+							}
+							else_if = { # Magnar
+								limit = { culture ?= { has_name_list = name_list_thenn } }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_king" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_king" GENDER = female }
+							}
+							else_if = { # Fallback
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_clan_male" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_clan_female" GENDER = female }
+							}
+						}
+
+						### DUCHY ###
+						else_if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_duchy } }
+							if = { # Magnar
+								limit = { culture ?= { has_name_list = name_list_thenn } }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_duke" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_duke" GENDER = female }
+							}
+							else_if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "duke_clan_male" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "duke_clan_female" GENDER = female }
+							}
+						}
+
+						### COUNTY ###
+						else_if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_county } }
+							if = { # Magnar
+								limit = { culture ?= { has_name_list = name_list_thenn } }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_count" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "magnar_count" GENDER = female }
+							}
+							else_if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "count_clan_male" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "count_clan_female" GENDER = female }
+							}
+						}
+
+						### BARONY ###
+						else_if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_barony } }
+							if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "baron_clan_male" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "baron_clan_female" GENDER = female }
 							}
 						}
 					}
@@ -3938,7 +4379,7 @@ apply_character_title_data = {
 
 					### FALLBACK WARNING ###
 					else = {
-						$SCOPE$ = {
+						$SCOPE$ ?= {
 							set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = male }
 							set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = female }
 						}
@@ -4015,7 +4456,7 @@ apply_character_title_data = {
 
 			### FALLBACK WARNING ###
 			else = {
-				$SCOPE$ = {
+				$SCOPE$ ?= {
 					set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = male }
 					set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MISSING_TITLE_LOC" GENDER = female }
 				}
@@ -4023,12 +4464,7 @@ apply_character_title_data = {
 		}
 	}
 	else = {
-		if = { # Ser
-			limit = { scope:knighthood ?= yes }
-
-			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "SER" GENDER = ALL }
-		}
-		else_if = { # Septon/Septa
+		if = { # Septon/Septa
 			limit = { scope:septon ?= yes }
 
 			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "SEPTON" GENDER = male }
@@ -4037,12 +4473,67 @@ apply_character_title_data = {
 		else_if = { # Maester/Archmaester/Grandmaester
 			limit = { scope:maester ?= yes }
 
-			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MAESTER" GENDER = male }
+			if = {
+				limit = {
+					has_inactive_trait = grandmaester
+					NOT = {
+						has_trait = archmaester
+					}
+				}
+				set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "grand_maester" GENDER = male }
+			}
+			else_if = {
+				limit = {
+					has_trait = archmaester
+					NOT = {
+						has_inactive_trait = grandmaester
+					}
+				}
+				set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "ArchaesterTitle" GENDER = male }
+			}
+			else_if = {
+				limit = {
+					NOR = {
+						has_trait = archmaester
+						has_inactive_trait = grandmaester
+					}
+					OR = {
+						AND = {
+							has_trait = maester
+							has_trait_xp = {
+								trait = maester
+								value = 100
+							}
+						}
+						has_trait = maester_historical
+					}
+				}
+				set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MaesterTitle" GENDER = male }
+			}
+			else_if = {
+				limit = {
+					NOT = { has_trait = archmaester }
+					has_trait = maester
+					has_trait_xp = {
+						trait = maester
+						value = 0
+					}
+				}
+				set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "MaesterTitle" GENDER = male }
+			}
+			else = {
+				set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "AcolyteTitle" GENDER = male }
+			}
 		}
 		else_if = { # Silent Sister
 			limit = { scope:silent_sister ?= yes }
 
 			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "SILENT_SISTER" GENDER = female }
+		}
+		else_if = { # Ser
+			limit = { scope:knighthood ?= yes }
+
+			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "SER" GENDER = ALL }
 		}
 		else_if = { # Councillor
 			limit = { scope:councillor ?= yes }
@@ -4053,8 +4544,8 @@ apply_character_title_data = {
 		else_if = { # Lord/Lady (Scion Honorific)
 			limit = { scope:scion_status ?= flag:active }
 
-			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lord_non_paramount" GENDER = male }
-			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lady_non_paramount" GENDER = female }
+			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "LORD_SCION" GENDER = male }
+			set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "LADY_SCION" GENDER = female }
 		}
 
 		### FALLBACK WARNING ###
@@ -4084,9 +4575,9 @@ apply_character_special_title_data = {
 				historical_independent_ruler = yes
 			}
 		}
-		custom_description_no_bullet = {
-			text = DOWAGER
-			subject = $SCOPE$
+		save_scope_value_as = {
+			name = get_title_dowager
+			value = flag:DOWAGER
 		}
 	}
 }
@@ -4138,23 +4629,32 @@ apply_character_special_regent_title_data = {
 						scope:scion_status ?= flag:royal
 					}
 				}
-				custom_description_no_bullet = {
-					text = REGENT
-					subject = $SCOPE$
+				if = {
+					limit = { $SCOPE$ ?= { is_female = no } }
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_MALE
+					}
+				}
+				else = {
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_FEMALE
+					}
 				}
 			}
 			else = {
 				if = {
-					limit = { $SCOPE$ = { is_female = no } }
-					custom_description_no_bullet = {
-						text = REGENT_PROTECTOR
-						subject = $SCOPE$
+					limit = { $SCOPE$ ?= { is_female = no } }
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_PROTECTOR
 					}
 				}
 				else = {
-					custom_description_no_bullet = {
-						text = REGENT_PROTECTRESS
-						subject = $SCOPE$
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_PROTECTRESS
 					}
 				}
 			}
@@ -4175,23 +4675,32 @@ apply_character_special_regent_title_data = {
 					}
 				}
 				if = {
-					limit = { $SCOPE$ = { is_female = no } }
-					custom_description_no_bullet = {
-						text = REGENT_PROTECTOR
-						subject = $SCOPE$
+					limit = { $SCOPE$ ?= { is_female = no } }
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_PROTECTOR
 					}
 				}
 				else = {
-					custom_description_no_bullet = {
-						text = REGENT_PROTECTRESS
-						subject = $SCOPE$
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_PROTECTRESS
 					}
 				}
 			}
 			else = {
-				custom_description_no_bullet = {
-					text = REGENT
-					subject = $SCOPE$
+				if = {
+					limit = { $SCOPE$ ?= { is_female = no } }
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_MALE
+					}
+				}
+				else = {
+					save_scope_value_as = {
+						name = get_title_regent
+						value = flag:REGENT_FEMALE
+					}
 				}
 			}
 		}
@@ -4280,11 +4789,11 @@ apply_character_title_suffix_data = {
 	### SET SCOPED HOLDER ###
 	if = {
 		limit = { scope:ruler_status ?= flag:royal }
-		$SCOPE$ = { save_temporary_scope_as = scoped_title_holder }
+		$SCOPE$ ?= { save_scope_as = scoped_title_holder }
 	}
 	else_if = {
 		limit = { scope:spouse_status ?= flag:royal }
-		scope:spouse_scope ?= { save_temporary_scope_as = scoped_title_holder }
+		scope:spouse_scope ?= { save_scope_as = scoped_title_holder }
 	}
 	else_if = {
 		limit = {
@@ -4297,20 +4806,22 @@ apply_character_title_suffix_data = {
 					exists = scope:septon
 					agot_localization_government_trigger = { GOV = nights_watch SPOUSE_SCOPE = scope:spouse_scope }
 					agot_localization_government_trigger = { GOV = first_ranger SPOUSE_SCOPE = scope:spouse_scope }
+					agot_localization_government_trigger = { GOV = theocracy SPOUSE_SCOPE = scope:spouse_scope }
+					agot_localization_government_trigger = { GOV = the_citadel SPOUSE_SCOPE = scope:spouse_scope }
 				}
 			}
 		}
 		if = {
 			limit = { exists = scope:scion_1_title }
-			scope:parent_scope ?= { save_temporary_scope_as = scoped_title_holder }
+			scope:parent_scope ?= { save_scope_as = scoped_title_holder }
 		}
 		else_if = {
 			limit = { exists = scope:scion_2_title }
-			scope:grandparent_scope ?= { save_temporary_scope_as = scoped_title_holder }
+			scope:grandparent_scope ?= { save_scope_as = scoped_title_holder }
 		}
 		else_if = {
 			limit = { exists = scope:scion_3_title }
-			scope:relative_scope ?= { save_temporary_scope_as = scoped_title_holder }
+			scope:relative_scope ?= { save_scope_as = scoped_title_holder }
 		}
 	}
 	else = {
@@ -4346,15 +4857,15 @@ apply_character_title_suffix_data = {
 				}
 				exists = scope:regent_status
 			}
-			$SCOPE$.liege ?= { save_temporary_scope_as = scoped_title_holder }
+			$SCOPE$.liege ?= { save_scope_as = scoped_title_holder }
 		}
 		else_if = {
 			limit = { scope:ruler_status ?= flag:active }
-			$SCOPE$ = { save_temporary_scope_as = scoped_title_holder }
+			$SCOPE$ ?= { save_scope_as = scoped_title_holder }
 		}
 		else_if = {
 			limit = { scope:spouse_status ?= flag:active }
-			scope:spouse_scope ?= { save_temporary_scope_as = scoped_title_holder }
+			scope:spouse_scope ?= { save_scope_as = scoped_title_holder }
 		}
 	}
 
@@ -4366,62 +4877,239 @@ apply_character_title_suffix_data = {
 				has_variable_list = previous_title_names
 				any_in_list = {
 					variable = previous_title_names
-					days_since_title_name_change <= scope:scoped_title_holder.days_since_death
+					is_target_in_variable_list = { name = previous_title_holders_list target = scope:scoped_title_holder }
 				}
 			}
 		}
-		$SCOPED_TITLE$ = {
-			ordered_in_list = {
+		$SCOPED_TITLE$ ?= {
+			random_in_list = {
 				variable = previous_title_names
 				limit = {
-					days_since_title_name_change <= scope:scoped_title_holder.days_since_death
+					is_target_in_variable_list = { name = previous_title_holders_list target = scope:scoped_title_holder }
 				}
-				order_by = {
-					value = days_since_title_name_change
-					multiply = 1
-				}
-				save_temporary_scope_as = previous_title_name
-			}
-			if = {
-				limit = {
-					exists = scope:previous_title_name
-					exists = $SCOPED_TITLE$
-				}
-				if = {
-					limit = { scope:suffix_format = yes }
-					custom_description_no_bullet = {
-						text = PAST_TITLE_SUFFIX
-						subject = $SCOPE$
-						object = scope:previous_title_name
-					}
-				}
-				else = {
-					custom_description_no_bullet = {
-						text = PAST_TITLE_SUFFIX_NO_FORMAT
-						subject = $SCOPE$
-						object = scope:previous_title_name
-					}
-				}
+				save_scope_as = title_suffix_scope
 			}
 		}
 	}
 	else = {
-		if = {
-			limit = { exists = $SCOPED_TITLE$ }
-			if = {
-				limit = { scope:suffix_format = yes }
-				custom_description_no_bullet = {
-					text = TITLE_SUFFIX
-					subject = $SCOPE$
-					object = $SCOPED_TITLE$
+		$SCOPED_TITLE$ ?= { save_scope_as = title_suffix_scope }
+	}
+}
+
+transfer_title_name_data = {
+	if = {
+		limit = {
+			any_hegemony = {
+				has_variable_list = previous_title_names
+			}
+		}
+		every_hegemony = {
+			limit = { has_variable_list = previous_title_names }
+			save_temporary_scope_as = temp_hegemony
+			every_past_holder_reversed = {
+				limit = { is_alive = no }
+				save_temporary_scope_as = temp_title_holder
+				scope:temp_hegemony ?= {
+					ordered_in_list = {
+						variable = previous_title_names
+						limit = {
+							days_since_title_name_change <= scope:temp_title_holder.days_since_death
+						}
+						order_by = {
+							value = days_since_title_name_change
+							multiply = 1
+						}
+						add_to_variable_list = {
+							name = previous_title_holders_list
+							target = scope:temp_title_holder
+						}
+					}
 				}
 			}
-			else = {
-				custom_description_no_bullet = {
-					text = TITLE_SUFFIX_NO_FORMAT
-					subject = $SCOPE$
-					object = $SCOPED_TITLE$
+			every_in_list = {
+				variable = previous_title_names
+				set_coa = scope:temp_hegemony
+				remove_variable = title_name_change_date
+			}
+		}
+	}
+	if = {
+		limit = {
+			any_empire = {
+				has_variable_list = previous_title_names
+			}
+		}
+		every_empire = {
+			limit = { has_variable_list = previous_title_names }
+			save_temporary_scope_as = temp_empire
+			every_past_holder_reversed = {
+				limit = { is_alive = no }
+				save_temporary_scope_as = temp_title_holder
+				scope:temp_empire ?= {
+					ordered_in_list = {
+						variable = previous_title_names
+						limit = {
+							days_since_title_name_change <= scope:temp_title_holder.days_since_death
+						}
+						order_by = {
+							value = days_since_title_name_change
+							multiply = 1
+						}
+						add_to_variable_list = {
+							name = previous_title_holders_list
+							target = scope:temp_title_holder
+						}
+					}
 				}
+			}
+			every_in_list = {
+				variable = previous_title_names
+				set_coa = scope:temp_empire
+				remove_variable = title_name_change_date
+			}
+		}
+	}
+	if = {
+		limit = {
+			any_kingdom = {
+				has_variable_list = previous_title_names
+			}
+		}
+		every_kingdom = {
+			limit = { has_variable_list = previous_title_names }
+			save_temporary_scope_as = temp_kingdom
+			every_past_holder_reversed = {
+				limit = { is_alive = no }
+				save_temporary_scope_as = temp_title_holder
+				scope:temp_kingdom ?= {
+					ordered_in_list = {
+						variable = previous_title_names
+						limit = {
+							days_since_title_name_change <= scope:temp_title_holder.days_since_death
+						}
+						order_by = {
+							value = days_since_title_name_change
+							multiply = 1
+						}
+						add_to_variable_list = {
+							name = previous_title_holders_list
+							target = scope:temp_title_holder
+						}
+					}
+				}
+			}
+			every_in_list = {
+				variable = previous_title_names
+				set_coa = scope:temp_kingdom
+				remove_variable = title_name_change_date
+			}
+		}
+	}
+	if = {
+		limit = {
+			any_duchy = {
+				has_variable_list = previous_title_names
+			}
+		}
+		every_duchy = {
+			limit = { has_variable_list = previous_title_names }
+			save_temporary_scope_as = temp_duchy
+			every_past_holder_reversed = {
+				limit = { is_alive = no }
+				save_temporary_scope_as = temp_title_holder
+				scope:temp_duchy ?= {
+					ordered_in_list = {
+						variable = previous_title_names
+						limit = {
+							days_since_title_name_change <= scope:temp_title_holder.days_since_death
+						}
+						order_by = {
+							value = days_since_title_name_change
+							multiply = 1
+						}
+						add_to_variable_list = {
+							name = previous_title_holders_list
+							target = scope:temp_title_holder
+						}
+					}
+				}
+			}
+			every_in_list = {
+				variable = previous_title_names
+				set_coa = scope:temp_duchy
+				remove_variable = title_name_change_date
+			}
+		}
+	}
+	if = {
+		limit = {
+			any_county = {
+				has_variable_list = previous_title_names
+			}
+		}
+		every_county = {
+			limit = { has_variable_list = previous_title_names }
+			save_temporary_scope_as = temp_county
+			every_past_holder_reversed = {
+				limit = { is_alive = no }
+				save_temporary_scope_as = temp_title_holder
+				scope:temp_county ?= {
+					ordered_in_list = {
+						variable = previous_title_names
+						limit = {
+							days_since_title_name_change <= scope:temp_title_holder.days_since_death
+						}
+						order_by = {
+							value = days_since_title_name_change
+							multiply = 1
+						}
+						add_to_variable_list = {
+							name = previous_title_holders_list
+							target = scope:temp_title_holder
+						}
+					}
+				}
+			}
+			every_in_list = {
+				variable = previous_title_names
+				set_coa = scope:temp_county
+				remove_variable = title_name_change_date
+			}
+		}
+	}
+	if = {
+		limit = {
+			any_barony = {
+				has_variable_list = previous_title_names
+			}
+		}
+		every_barony = {
+			limit = { has_variable_list = previous_title_names }
+			save_temporary_scope_as = temp_barony
+			every_past_holder_reversed = {
+				limit = { is_alive = no }
+				save_temporary_scope_as = temp_title_holder
+				scope:temp_barony ?= {
+					ordered_in_list = {
+						variable = previous_title_names
+						limit = {
+							days_since_title_name_change <= scope:temp_title_holder.days_since_death
+						}
+						order_by = {
+							value = days_since_title_name_change
+							multiply = 1
+						}
+						add_to_variable_list = {
+							name = previous_title_holders_list
+							target = scope:temp_title_holder
+						}
+					}
+				}
+			}
+			every_in_list = {
+				variable = previous_title_names
+				set_coa = scope:temp_barony
+				remove_variable = title_name_change_date
 			}
 		}
 	}
@@ -4448,6 +5136,52 @@ save_title_name_change_data = {
 				target = prev
 			}
 		}
+
+		### POST-GAME START CHANGES
+		if = {
+			limit = { always = $TRANSFER_VAR$ }
+			scope:title_scope ?= {
+				every_past_holder_reversed = {
+					limit = { is_alive = no }
+					save_temporary_scope_as = temp_title_holder
+					scope:title_scope ?= {
+						if = {
+							limit = {
+								NOT = {
+									any_in_list = {
+										variable = previous_title_names
+										is_target_in_variable_list = {
+											name = previous_title_holders_list
+											target = scope:temp_title_holder
+										}
+									}
+								}
+							}
+							ordered_in_list = {
+								variable = previous_title_names
+								limit = {
+									has_variable = title_name_change_date
+									days_since_title_name_change <= scope:temp_title_holder.days_since_death
+								}
+								order_by = {
+									value = days_since_title_name_change
+									multiply = 1
+								}
+								add_to_variable_list = {
+									name = previous_title_holders_list
+									target = scope:temp_title_holder
+								}
+							}
+						}
+					}
+				}
+				every_in_list = {
+					variable = previous_title_names
+					set_coa = scope:title_scope
+					remove_variable = title_name_change_date
+				}
+			}
+		}
 	}
 }
 
@@ -4455,26 +5189,26 @@ assign_character_birth_order_parameter_effect = {
 	if = {
 		limit = { exists = $SCOPE$ }
 		$SCOPE$ ?= {
-			save_temporary_scope_as = scoped_char
+			save_scope_as = scoped_char
 
 			### Determine Parentage
 			if = {
 				limit = { exists = $SCOPE$.father }
 				$SCOPE$.father ?= {
-					save_temporary_scope_as = scoped_father
+					save_scope_as = scoped_father
 					if = {
 						limit = { exists = house }
-						house ?= { save_temporary_scope_as = scoped_father_house }
+						house ?= { save_scope_as = scoped_father_house }
 					}
 				}
 			}
 			if = {
 				limit = { exists = $SCOPE$.mother }
 				$SCOPE$.mother ?= {
-					save_temporary_scope_as = scoped_mother
+					save_scope_as = scoped_mother
 					if = {
 						limit = { exists = house }
-						house ?= { save_temporary_scope_as = scoped_mother_house }
+						house ?= { save_scope_as = scoped_mother_house }
 					}
 				}
 			}
