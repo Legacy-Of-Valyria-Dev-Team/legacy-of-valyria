@@ -1,4 +1,4 @@
-﻿######################################################
+######################################################
 ################### COUNTY VIEW ######################
 ######################################################
 
@@ -922,28 +922,28 @@ window = {
 							flowcontainer = {
 								ignoreinvisible = yes
 								resizeparent = yes
-								
-								text_single = {
-									visible = "[EqualTo_uint32(Faith.GetID, GetPlayer.GetFaith.GetID)]"
-									text = "WINDOW_COUNTY_FAITH_NAME"
-									default_format = "#high"
-									margin_right = 5
-									max_width = 160
-									
-								}
-								
-								text_single = {
-									visible = "[NotEqualTo_uint32(Faith.GetID, GetPlayer.GetFaith.GetID)]"
-									text = "WINDOW_COUNTY_FAITH_NAME"
-									default_format = "#high"
+
+							text_single = {
+								visible = "[EqualTo_uint32(Faith.GetID, GetPlayer.GetFaith.GetID)]"
+								text = "WINDOW_COUNTY_FAITH_NAME"
+								default_format = "#high"
+								margin_right = 5
+								max_width = 160
+
+							}
+
+							text_single = {
+								visible = "[NotEqualTo_uint32(Faith.GetID, GetPlayer.GetFaith.GetID)]"
+								text = "WINDOW_COUNTY_FAITH_NAME"
+								default_format = "#high"
+								margin = { 5 0 }
+								max_width = 160
+
+								background = {
 									margin = { 5 0 }
-									max_width = 160
-									
-									background = {
-										margin = { 5 0 }
-										using = Status_Bad
-									}
+									using = Status_Bad
 								}
+							}
 							}
 
 						}
@@ -985,25 +985,25 @@ window = {
 								parentanchor = center
 								position = { 0 1 }
 								size = { 35 30 }
-								alwaystransparent = yes								
+								alwaystransparent = yes
 
 								button_icon_highlight = {
 									visible = "[Not(GUICountyHolding.GetHolding.CanConstructAnyBuilding(GetPlayer))]"
 									size = { 100% 100% }
-									
-									down = "[GUICountyHolding.IsSelected]"
+
+								down = "[GUICountyHolding.IsSelected]"
 									texture = "[GUICountyHolding.GetHolding.GetType.GetTabIcon]"					
 
 									alpha = "[Select_float(  GUICountyHolding.IsSelected, '(float)0.85', '(float)1' )]"				
-									blockoverride "button_frames"
-									{
-										gfxtype = togglepushbuttongfx
-										effectname = "NoHighlight"
+								blockoverride "button_frames"
+								{
+									gfxtype = togglepushbuttongfx
+									effectname = "NoHighlight"
 
 										upframe = 7
-										uphoverframe = 5
-										uppressedframe = 6
-										downframe = 5
+									uphoverframe = 5
+									uppressedframe = 6
+									downframe = 5
 										downhoverframe = 5
 										downpressedframe = 5
 										disableframe = 3
@@ -2250,14 +2250,94 @@ window = {
 								ignoreinvisible = yes
 								parentanchor = right
 
-
+								# LEGACY OF VALYRIA MODIFIED
 								# Upgrade buildings
-								flowcontainer = {
-									name = "buildings_grid"
-									datamodel = "[HoldingView.GetBuildings]"
-									ignoreinvisible = yes
-									spacing = 3
-									righttoleft = yes
+								scrollarea = {
+									#ignoreinvisible = yes
+									maximumsize = { 424 58 }
+									autoresizescrollarea = yes
+
+									scrollbarpolicy_vertical = always_off
+									#righttoleft = yes
+
+									scrollbar_horizontal = {
+										scrollbar = {
+											name = "horizontal_scrollbar"
+											size = { 12 12 }
+											wheelstep = 60
+											direction = horizontal
+
+											alpha = 0.0
+
+											state = {
+												name = _mouse_hierarchy_enter
+												using = Animation_FadeIn_Quick
+											}
+											state = {
+												name = _mouse_hierarchy_leave
+												using = Animation_FadeOut_Quick
+											}
+
+											track = {
+												button = {
+													size = { 12 12 }
+													gfxtype = buttongfx
+
+													texture = "gfx/interface/scrollbars/scrollbar_track_horizontal.dds"
+													spriteType = Corneredtiled
+													spriteborder = { 3 0 }
+													effectname = "NoHighlight"
+													intersectionmask = yes
+												}
+											}
+
+											slider = {
+												button = {
+													gfxtype = framedbuttongfx
+													effectname = "NoHighlight"
+
+													texture = "gfx/interface/scrollbars/scrollbar_slider_horizontal.dds"
+													spriteType = Corneredtiled
+													spriteborder = { 3 0 }
+													framesize = { 40 12 }
+													minimumsize = { 15 -1 }
+
+													upframe = 1
+													overframe = 2
+													downframe = 2
+
+													intersectionmask = yes
+													oversound = "event:/SFX/UI/Generic/sfx_ui_generic_icon_pointer_over"
+
+													state = {
+														name = _mouse_press
+														start_sound = {
+															soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_icon_select"
+														}
+													}
+
+													state = {
+														name = _mouse_release
+														start_sound = {
+															soundeffect = "event:/SFX/UI/Generic/sfx_ui_generic_icon_select"
+														}
+													}
+												}
+											}
+
+											dec_button = { button = {} }
+											inc_button = { button = {} }
+										}
+									}
+
+									scrollwidget = {
+										# Upgrade buildings
+										flowcontainer = {
+											name = "buildings_grid"
+											datamodel = "[HoldingView.GetBuildings]"
+											ignoreinvisible = yes
+											spacing = 3
+											righttoleft = yes
 
 									item = {
 										widget_building_item = {
@@ -2283,7 +2363,7 @@ window = {
 										blockoverride "shortcut" {
 											shortcut = "duchy_building"
 										}
-										
+
 										blockoverride "building_frame" {
 											icon = {
 												size = { 100% 100% }
@@ -3249,7 +3329,7 @@ window = {
 										visible = "[GUITrackItem.IsConstructing]"
 										layoutpolicy_horizontal = expanding
 										margin = { 0 15 }
-
+										
 										building_in_vassal_warning_hbox = {
 										}
 
@@ -3261,7 +3341,7 @@ window = {
 										spacer = {
 											size = { 0 10 }
 										}
-										
+
 										hbox = {
 											spacing = 10
 
@@ -3909,7 +3989,7 @@ types CountyViewTypes
 
 						tooltip_visible = "[ValueBreakdown.HasTooltip]"
 						using = tooltip_se
-
+						
 						tooltipwidget = {
 							widget_value_breakdown_tooltip = {}
 						}
