@@ -199,22 +199,20 @@ assign_character_parameter_effect = {
 
 			assign_spouse_data = { SCOPE = $SCOPE$ }
 			if = {
-				limit = { spouse_is_royal = yes }
-				save_scope_value_as = {
-					name = spouse_status
-					value = flag:royal
-				}
-			}
-			else_if = {
-				limit = {
-					NOR = {
-						agot_localization_government_trigger = { GOV = command SPOUSE_SCOPE = scope:spouse_scope }
+				limit = { exists = scope:spouse_scope }
+				if = {
+					limit = { spouse_is_royal = yes }
+					save_scope_value_as = {
+						name = spouse_status
+						value = flag:royal
 					}
-					exists = scope:spouse_scope.primary_title
 				}
-				save_scope_value_as = {
-					name = spouse_status
-					value = flag:active
+				else_if = {
+					limit = { exists = scope:spouse_scope.primary_title }
+					save_scope_value_as = {
+						name = spouse_status
+						value = flag:active
+					}
 				}
 			}
 		}
@@ -317,8 +315,14 @@ assign_character_parameter_effect = {
 						any_parent = {
 							even_if_dead = yes
 							ruler_is_royal = yes
+							NOT = { agot_localization_government_trigger = { GOV = tribal SPOUSE_SCOPE = scope:spouse_scope } }
+							NOT = { culture = { has_cultural_pillar = heritage_wildling } }
 						}
-						exists = primary_title
+						AND = {
+							exists = primary_title
+							NOT = { agot_localization_government_trigger = { GOV = tribal SPOUSE_SCOPE = scope:spouse_scope } }
+							NOT = { culture = { has_cultural_pillar = heritage_wildling } }
+						}
 					}
 				}
 				is_female = yes
@@ -425,6 +429,7 @@ assign_spouse_data = {
 			any_spouse = {
 				even_if_dead = yes
 				exists = primary_title
+				agot_government_has_spousal_titles = yes
 				trigger_if = {
 					limit = { exists = $SCOPE$.primary_title }
 					historical_independent_ruler = yes
@@ -439,6 +444,7 @@ assign_spouse_data = {
 					any_spouse = {
 						exists = this.primary_title
 						is_alive = yes
+						agot_government_has_spousal_titles = yes
 					}
 				}
 				primary_spouse.primary_title ?= { save_scope_as = spouse_title }
@@ -450,6 +456,7 @@ assign_spouse_data = {
 					limit = {
 						exists = this.primary_title
 						is_alive = no
+						agot_government_has_spousal_titles = yes
 					}
 					order_by = {
 						value = days_since_death
@@ -618,6 +625,14 @@ assign_posthistory_title_data_effect = {
 					}
 				}
 				else_if = {
+					limit = { primary_title.holder ?= { agot_ruler_is_government_trigger = { GOV = republic } } }
+					save_temporary_scope_as = temp_ruler_scope
+					assign_government_data_effect = {
+						GOV = republic
+						SCOPE = scope:temp_ruler_scope
+					}
+				}
+				else_if = {
 					limit = { primary_title ?= title:k_the_stepstones }
 					save_temporary_scope_as = temp_ruler_scope
 					if = {
@@ -740,6 +755,50 @@ assign_posthistory_title_data_effect = {
 			}
 		}
 	}
+
+	every_empire = {
+		limit = {
+			NOT = { exists = holder }
+			title_capital_county.title_province ?= { geographical_region = world_westeros_beyond_the_wall }
+		}
+		every_past_holder = {
+			limit = { is_alive = no }
+			save_temporary_scope_as = temp_ruler_scope
+			assign_government_data_effect = {
+				GOV = tribal
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	every_kingdom = {
+		limit = {
+			NOT = { exists = holder }
+			title_capital_county.title_province ?= { geographical_region = world_westeros_beyond_the_wall }
+		}
+		every_past_holder = {
+			limit = { is_alive = no }
+			save_temporary_scope_as = temp_ruler_scope
+			assign_government_data_effect = {
+				GOV = tribal
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	every_duchy = {
+		limit = {
+			NOT = { exists = holder }
+			title_capital_county.title_province ?= { geographical_region = world_westeros_beyond_the_wall }
+		}
+		every_past_holder = {
+			limit = { is_alive = no }
+			save_temporary_scope_as = temp_ruler_scope
+			assign_government_data_effect = {
+				GOV = tribal
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+
 	title:h_the_iron_throne ?= {
 		every_past_holder = {
 			limit = {
@@ -1458,7 +1517,6 @@ prune_government_data_effect = {
 	remove_list_global_variable = { name = landless_adventurer_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = command_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = ruins_government_list target = $SCOPE$ }
-	remove_list_global_variable = { name = oligarchic_government_list target = $SCOPE$ }
 }
 
 agot_on_change_government_data_effect = {
@@ -1487,6 +1545,157 @@ agot_on_change_government_data_effect = {
 			#LOV Added
 			oligarchic_government = { assign_government_data_effect = { GOV = oligarchic SCOPE = $SCOPE$ } }
 			fallback = { prune_government_data_effect = { SCOPE = $SCOPE$ } }
+		}
+		if = {
+			limit = { has_variable = temp_government_type }
+			remove_variable = temp_government_type
+		}
+	}
+}
+
+agot_assign_fallback_government_data_effect = {
+	$SCOPE$ ?= {
+		if = {
+			limit = {
+				exists = primary_title
+				agot_is_in_historical_government_list = no
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = lp_feudal } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:lp_feudal
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = feudal } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:feudal
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = administrative } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:administrative
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = republic } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:republic
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = silent_sisterhood } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:silent_sisterhood
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = kingsguard } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:kingsguard
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = nights_watch } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:nights_watch
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = first_ranger } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:first_ranger
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = the_citadel } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:the_citadel
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = theocracy } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:theocracy
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = pirate } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:pirate
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = pirate_no_dlc } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:pirate_no_dlc
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = tribal } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:tribal
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = clan } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:clan
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = landless_adventurer } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:landless_adventurer
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = command } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:command
+					days = 1
+				}
+			}
+			if = {
+				limit = { $SCOPE$.primary_title.previous_holder ?= { agot_ruler_is_government_trigger = { GOV = ruins } } }
+				set_variable = {
+					name = temp_government_type
+					value = flag:ruins
+					days = 1
+				}
+			}
 		}
 	}
 }
@@ -3567,7 +3776,8 @@ apply_character_title_data = {
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_male_beyond_the_wall" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_female_beyond_the_wall" GENDER = female }
-							}else_if = {
+							}
+							else_if = {
 								limit = { always = yes }
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lc_nights_watch_male_empire" GENDER = ALL }
@@ -3664,6 +3874,44 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_theocracy_male_the_seven_religion" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_theocracy_female_the_seven_religion" GENDER = female }
 							}
+							else_if = { # Drowned Man
+								limit = { faith.religion = faith:drowned_god.religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = female }
+							}
+							else_if = { # Seer
+								limit = { religion = religion:the_pact_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = female }
+							}
+							else_if = { # Red Priest/Red Priestess
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_f_county" GENDER = female }
+							}
+							else_if = { # Son/Daughter
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_f_county" GENDER = female }
+							}
+							else_if = { # High Priest/High Priestess
+								limit = {
+									OR = {
+										religion = religion:the_cults_religion
+										religion = religion:the_cults_religion
+										religion = religion:the_flames_religion
+										religion = religion:the_others_religion
+										religion = religion:the_ways_religion
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_f_county" GENDER = female }
+							}
 							else_if = {
 								limit = { always = yes }
 
@@ -3686,11 +3934,49 @@ apply_character_title_data = {
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "HIGH_SEPTON" GENDER = male }
 							}
-							else_if = {
+							if = { # Septon/Septa
 								limit = { religion = religion:the_seven_religion }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_theocracy_male_the_seven_religion" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_theocracy_female_the_seven_religion" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "count_theocracy_male_the_seven_religion" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "count_theocracy_female_the_seven_religion" GENDER = female }
+							}
+							else_if = { # Drowned Man
+								limit = { faith.religion = faith:drowned_god.religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = female }
+							}
+							else_if = { # Seer
+								limit = { religion = religion:the_pact_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = female }
+							}
+							else_if = { # Red Priest/Red Priestess
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_f_county" GENDER = female }
+							}
+							else_if = { # Son/Daughter
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_f_county" GENDER = female }
+							}
+							else_if = { # High Priest/High Priestess
+								limit = {
+									OR = {
+										religion = religion:the_cults_religion
+										religion = religion:the_cults_religion
+										religion = religion:the_flames_religion
+										religion = religion:the_others_religion
+										religion = religion:the_ways_religion
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_f_county" GENDER = female }
 							}
 							else_if = {
 								limit = { always = yes }
@@ -3715,6 +4001,44 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "duke_theocracy_male_the_seven_religion" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "duke_theocracy_female_the_seven_religion" GENDER = female }
 							}
+							else_if = { # Drowned Man
+								limit = { faith.religion = faith:drowned_god.religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = female }
+							}
+							else_if = { # Seer
+								limit = { religion = religion:the_pact_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = female }
+							}
+							else_if = { # Red Priest/Red Priestess
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_f_county" GENDER = female }
+							}
+							else_if = { # Son/Daughter
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_f_county" GENDER = female }
+							}
+							else_if = { # High Priest/High Priestess
+								limit = {
+									OR = {
+										religion = religion:the_cults_religion
+										religion = religion:the_cults_religion
+										religion = religion:the_flames_religion
+										religion = religion:the_others_religion
+										religion = religion:the_ways_religion
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_f_county" GENDER = female }
+							}
 							else_if = {
 								limit = { always = yes }
 
@@ -3738,6 +4062,44 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "count_theocracy_male_the_seven_religion" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "count_theocracy_female_the_seven_religion" GENDER = female }
 							}
+							else_if = { # Drowned Man
+								limit = { faith.religion = faith:drowned_god.religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = female }
+							}
+							else_if = { # Seer
+								limit = { religion = religion:the_pact_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = female }
+							}
+							else_if = { # Red Priest/Red Priestess
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_f_county" GENDER = female }
+							}
+							else_if = { # Son/Daughter
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_f_county" GENDER = female }
+							}
+							else_if = { # High Priest/High Priestess
+								limit = {
+									OR = {
+										religion = religion:the_cults_religion
+										religion = religion:the_cults_religion
+										religion = religion:the_flames_religion
+										religion = religion:the_others_religion
+										religion = religion:the_ways_religion
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_f_county" GENDER = female }
+							}
 							else_if = {
 								limit = { always = yes }
 
@@ -3760,6 +4122,44 @@ apply_character_title_data = {
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "baron_theocracy_male_the_seven_religion" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "baron_theocracy_female_the_seven_religion" GENDER = female }
+							}
+							else_if = { # Drowned Man
+								limit = { faith.religion = faith:drowned_god.religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_drowned_god_county" GENDER = female }
+							}
+							else_if = { # Seer
+								limit = { religion = religion:the_pact_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_old_gods_county" GENDER = female }
+							}
+							else_if = { # Red Priest/Red Priestess
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhllor_fots_f_county" GENDER = female }
+							}
+							else_if = { # Son/Daughter
+								limit = { religion = religion:the_rhllor_religion }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_rhoyne_f_county" GENDER = female }
+							}
+							else_if = { # High Priest/High Priestess
+								limit = {
+									OR = {
+										religion = religion:the_cults_religion
+										religion = religion:the_cults_religion
+										religion = religion:the_flames_religion
+										religion = religion:the_others_religion
+										religion = religion:the_ways_religion
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_m_county" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_f_county" GENDER = female }
 							}
 							else_if = {
 								limit = { always = yes }
