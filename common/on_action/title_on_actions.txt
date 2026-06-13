@@ -1734,7 +1734,7 @@ on_title_gain = {
 				}
 				if = {
 					limit = { government_has_flag = government_is_landless_adventurer }
-				destroy_laamp_effect = { ADVENTURER = this }
+					destroy_laamp_effect = { ADVENTURER = this }
 				}
 				trigger_event = {
 					id = tgp_japan_general.9100
@@ -2018,14 +2018,14 @@ on_title_gain = {
 			# Note: anything that should be run after creation can go in on_noble_family_title_created
 			give_new_noble_family_title_effect = yes
 		}
-			if = {
-				limit = {
+		if = {
+			limit = {
 				government_allows = administrative
 				NOT = { has_variable = laamp_invasion_flag }
 			}
 			# EP3 - apply unique domicile building bonus if appropriate
 			if = {
-					limit = {
+				limit = {
 					top_liege = this
 				}
 				if = { # Get legitimacy from Reception Hall House Bonus
@@ -2106,8 +2106,8 @@ on_title_gain = {
 				# }
 				#AGOT Modified
 				# else_if = {
-					if = {
-						limit = {
+				if = {
+					limit = {
 						exists = house
 						exists = scope:previous_holder
 						is_alive = yes
@@ -2115,17 +2115,17 @@ on_title_gain = {
 						is_imprisoned = no
 						top_liege = this
 					}
-						every_vassal_or_below = {
-							limit = {
-								is_playable_character = yes
-								OR = {
-									highest_held_title_tier >= main_administrative_tier # All governors
-									liege = root
-								}
-							}
-						trigger_event = ep3_governor_yearly.3060
+					every_vassal_or_below = {
+						limit = {
+							is_playable_character = yes
+							OR = {
+								highest_held_title_tier >= main_administrative_tier # All governors
+								liege = root
 							}
 						}
+						trigger_event = ep3_governor_yearly.3060
+					}
+				}
 			}
 			#Admin event about rewarding person who helped you get title
 			if = {
@@ -4469,25 +4469,25 @@ on_vassal_change = {
 			if = {
 				limit = { 
 					liege = root # I.e. root is independent
-			}
-			# And is not of a high enough rank, change government
-			if = {
-				limit = {
-					administrative_tier_allows_independence = no
 				}
-				admin_change_government_effect = yes
-			}
-			# If they can be independent, make sure they have a noble family title
-			else_if = {
-				limit = {
-					NOT = {
-						any_held_title = {
-							is_noble_family_title = yes
+				# And is not of a high enough rank, change government
+				if = {
+					limit = {
+						administrative_tier_allows_independence = no
+					}
+					admin_change_government_effect = yes
+				}
+				# If they can be independent, make sure they have a noble family title
+				else_if = {
+					limit = {
+						NOT = {
+							any_held_title = {
+								is_noble_family_title = yes
+							}
 						}
 					}
-				}
-				create_noble_family_effect = { GOVERNMENT_GIVER = this }
-				domicile ?= { set_up_domicile_estate_effect = yes }
+					create_noble_family_effect = { GOVERNMENT_GIVER = this }
+					domicile ?= { set_up_domicile_estate_effect = yes }
 				}
 			}
 			# Byz admin landless NF should always be direct vassal of top liege

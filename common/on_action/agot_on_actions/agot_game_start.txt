@@ -819,15 +819,17 @@ agot_on_game_start = {
 					exists = title:d_shivering_shore.holder
 				}
 			}
-			title:c_axe_camp.holder ?= {
+			random_ruler = {
+				limit = { culture = culture:lakefolk }
+				save_scope_as = lakefolk_confederacy
 				create_confederation = {
 					name = d_the_lakefolk_confederacy
 				}
 				scope:new_confederation = {
 					every_ruler = {
 						limit = {
-							NOT = { has_title = title:c_axe_camp }
-							culture = title:c_axe_camp.holder.culture
+							NOT = { this = scope:lakefolk_confederacy }
+							culture = scope:lakefolk_confederacy.culture
 						}
 						save_scope_as = lakefolk_confederation_member
 						scope:new_confederation = { add_confederation_member = scope:lakefolk_confederation_member }
@@ -905,6 +907,22 @@ agot_on_game_start = {
 			#language setup
 			agot_learn_appropiate_languages = yes
 
+			#bastard claims killer
+			if = {
+				limit = {
+					has_trait = bastard
+					NOT = {
+						faith = {
+							has_doctrine_parameter = bastards_none
+						}
+					}
+				}
+				save_temporary_scope_as = claim_holder_bastard
+				every_claim = {
+					scope:claim_holder_bastard = { remove_claim = prev }
+				}
+			}
+
 			#canon dragons
 			if = {
 				limit = {
@@ -951,6 +969,8 @@ agot_on_game_start = {
 				agot_adjust_adult_traits_posthistory_effect = yes
 			}
 
+			agot_init_milk_name_effect = yes
+
 			# must be before maester setup to make sure Aemon is set properly
 			if = { # Yeet black brothers back to wall since they will ignore history files to join family
 				limit = {
@@ -963,7 +983,12 @@ agot_on_game_start = {
 						has_title = title:d_the_wall
 					}
 				}
-				move_to_pool_at = title:d_the_wall.holder.capital_province
+				if = {
+					limit = {
+						NOT = { is_in_pool_at = title:d_the_wall.holder.capital_province }
+					}
+					move_to_pool_at = title:d_the_wall.holder.capital_province
+				}
 				set_employer = title:d_the_wall.holder
 			}
 
@@ -1238,6 +1263,51 @@ agot_on_game_start = {
 					}
 				}
 			}
+			if = { # Weight traits
+				limit = {
+					OR = {
+						has_inactive_trait = historical_overweight_100
+						has_inactive_trait = historical_overweight_60
+						has_inactive_trait = historical_overweight_30
+						has_inactive_trait = historical_underweight_30
+						has_inactive_trait = historical_underweight_60
+						has_inactive_trait = historical_underweight_100
+					}
+				}
+				switch = {
+					trigger = has_inactive_trait
+					historical_overweight_100 = {
+						make_trait_active = historical_overweight_100
+						remove_trait = historical_overweight_100
+						change_current_weight = 100
+					}
+					historical_overweight_60 = {
+						make_trait_active = historical_overweight_60
+						remove_trait = historical_overweight_60
+						change_current_weight = 60
+					}
+					historical_overweight_30 = {
+						make_trait_active = historical_overweight_30
+						remove_trait = historical_overweight_30
+						change_current_weight = 30
+					}
+					historical_underweight_30 = {
+						make_trait_active = historical_underweight_30
+						remove_trait = historical_underweight_30
+						change_current_weight = -30
+					}
+					historical_underweight_60 = {
+						make_trait_active = historical_underweight_60
+						remove_trait = historical_underweight_60
+						change_current_weight = -60
+					}
+					historical_underweight_100 = {
+						make_trait_active = historical_underweight_100
+						remove_trait = historical_underweight_100
+						change_current_weight = -100
+					}
+				}
+			}
 
 			### DEBUG
 			if = {
@@ -1455,6 +1525,9 @@ agot_on_game_start = {
 
 		### Crowns setup, needs to be pre-lobby for portraits
 		agot_assign_starting_crowns_effect = yes
+
+		### COA setup
+		agot_scenario_coa_setup_effect = yes
 	}
 }
 
@@ -2619,6 +2692,9 @@ agot_on_game_start_after_lobby = {
 
 		# Knight Trees
 		agot_knight_tree_on_start = yes
+
+		# NW Ranger after lobby
+		agot_nw_ranger_on_creation = yes
 	}
 	events = {
 		agot_adventurers_events.0001
@@ -3044,7 +3120,7 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Unerelos
 						AND = {
 							game_start_date < 8228.1.1
-						owner.dynasty = dynasty:dynn_Breneyan
+							owner.dynasty = dynasty:dynn_Breneyan
 						}
 						owner.dynasty = dynasty:dynn_Berradho
 						owner.dynasty = dynasty:dynn_Lornel
@@ -3163,6 +3239,9 @@ agot_barony_ruins = {
 				add_building = small_ruin_01
 				add_building = ruin_desolate_01
 			}
+			title:b_skane = {
+				set_coa = ruins_coa
+			}
 			title:c_skane = {
 				set_coa = ruins_coa
 			}
@@ -3177,7 +3256,10 @@ agot_barony_ruins = {
 				add_building = small_ruin_01
 				add_building = ruin_desolate_01
 			}
-			title:c_skane = {
+			title:b_hardhome = {
+				set_coa = ruins_coa
+			}
+			title:c_hardhome = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3189,7 +3271,7 @@ agot_barony_ruins = {
 				set_holding_type = ruin_holding
 				add_building = small_ruin_01
 			}
-			title:c_skane = {
+			title:b_hardhome_2 = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3201,7 +3283,7 @@ agot_barony_ruins = {
 				set_holding_type = ruin_holding
 				add_building = small_ruin_01
 			}
-			title:c_skane = {
+			title:b_hardhome_3 = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3213,7 +3295,7 @@ agot_barony_ruins = {
 				set_holding_type = ruin_holding
 				add_building = small_ruin_01
 			}
-			title:c_skane = {
+			title:b_hardhome_4 = {
 				set_coa = ruins_coa
 			}
 		}
