@@ -313,34 +313,40 @@ is_titled_ruler_or_spouse = {
 }
 
 agot_localization_government_trigger = {
+	trigger_if = {
+		limit = { exists = $SPOUSE_SCOPE$ }
 		trigger_if = {
-			limit = { exists = $SPOUSE_SCOPE$ }
-			trigger_if = {
-				limit = {
+			limit = {
 				NOR = {
 					ruler_is_royal = yes
 					$SPOUSE_SCOPE$.primary_title ?= {
 						tier < prev.primary_title.tier
 					}
-					}
-				}
-				$SPOUSE_SCOPE$ ?= {
-					agot_ruler_is_government_trigger = { GOV = $GOV$ }
 				}
 			}
-			trigger_else = {
+			$SPOUSE_SCOPE$ ?= {
 				agot_ruler_is_government_trigger = { GOV = $GOV$ }
 			}
 		}
 		trigger_else = {
 			agot_ruler_is_government_trigger = { GOV = $GOV$ }
+		}
+	}
+	trigger_else = {
+		agot_ruler_is_government_trigger = { GOV = $GOV$ }
 	}
 }
 
 agot_ruler_is_government_trigger = {
 	trigger_if = {
 		limit = { is_alive = yes }
-		has_government = $GOV$_government
+		OR = {
+			has_government = $GOV$_government
+			trigger_if = {
+				limit = { has_variable = temp_government_type }
+				var:temp_government_type ?= flag:$GOV$
+			}
+		}
 	}
 	trigger_else = {
 		trigger_if = {
@@ -378,6 +384,17 @@ agot_is_in_historical_government_list = {
 		is_target_in_global_variable_list = { name = ruins_government_list target = scope:temp_scope }
 		# LoV Added
 		is_target_in_global_variable_list = { name = oligarchic_government_list target = scope:temp_scope }
+	}
+}
+
+agot_government_has_spousal_titles = {
+	NOR = {
+		agot_ruler_is_government_trigger = { GOV = kingsguard }
+		agot_ruler_is_government_trigger = { GOV = nights_watch }
+		agot_ruler_is_government_trigger = { GOV = first_ranger }
+		agot_ruler_is_government_trigger = { GOV = the_citadel }
+		agot_ruler_is_government_trigger = { GOV = command }
+		agot_ruler_is_government_trigger = { GOV = ruins }
 	}
 }
 
