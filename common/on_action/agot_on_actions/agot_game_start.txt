@@ -4,8 +4,6 @@ on_game_start = {
 	on_actions = {
 		agot_remove_realms
 		agot_on_game_start
-		agot_nf_estate_locations
-		agot_laamp_camp_locations
 		agot_house_dna
 		agot_set_legacies
 		agot_vassal_contracts
@@ -14,6 +12,7 @@ on_game_start = {
 		agot_artifacts_sell
 		agot_qohorik_weaponsmith_pulse
 		agot_pirate_domiciles_setup
+		agot_traditional_coronation_setup
 	}
 }
 
@@ -40,11 +39,14 @@ agot_on_game_start = {
 
 		##### General setup start #####
 
-		### Situational Hair
-		agot_init_character_setup  = yes
+		### Character Initialization Pre-Rules
+		agot_init_character_setup = yes
 
 		# House Customizer Dummies Spawn
 		agot_house_customizer_spawn_dummies_effect = yes
+
+		# Ledger cleanup
+		agot_apply_ledger_concealment_effect = yes
 
 		### Murder Jalabhar for historical character setup
 		if = { # Jalabhar Xho
@@ -274,6 +276,51 @@ agot_on_game_start = {
 				appoint_court_position = {
 					recipient = title:b_goldguard_heights.holder
 					court_position = goldcloaks_court_position
+				}
+			}
+		}
+
+		### Warden Title Setup
+		title:e_the_north.holder ?= { # Appoint Warden of the White Knife
+			if = {
+				limit = {
+					exists = title:d_white_harbor.holder
+					NOT = { has_title = title:d_white_harbor }
+					title:d_white_harbor.holder = { is_vassal_of = title:e_the_north.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_white_harbor.holder
+					court_position = white_knife_court_position
+				}
+			}
+		}
+		title:e_dorne.holder ?= { # Appoint Warden of the Stone Way
+			if = {
+				limit = {
+					exists = title:d_greenbelt.holder
+					NOT = {
+						has_title = title:d_greenbelt
+					}
+					title:d_greenbelt.holder = { is_vassal_of = title:e_dorne.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_greenbelt.holder
+					court_position = stone_way_court_position
+				}
+			}
+		}
+		title:e_dorne.holder ?= { # Appoint Warden of the Prince's Pass
+			if = {
+				limit = {
+					exists = title:d_the_princes_pass.holder
+					NOT = {
+						has_title = title:d_the_princes_pass
+					}
+					title:d_the_princes_pass.holder = { is_vassal_of = title:e_dorne.holder }
+				}
+				appoint_court_position = {
+					recipient = title:d_the_princes_pass.holder
+					court_position = princes_pass_court_position
 				}
 			}
 		}
@@ -508,6 +555,24 @@ agot_on_game_start = {
 				}
 				else = {
 					change_government = pirate_no_dlc_government
+				}
+			}
+			if = {
+				limit = {
+					has_character_flag = should_not_be_a_pirate
+				}
+				if = {
+					limit = {
+						OR = {
+							has_government = pirate_government
+							has_government = pirate_no_dlc_government
+						}
+					}
+					change_government = feudal_government
+				}
+				every_directly_owned_province = {
+					limit = { has_holding_type = pirate_den_holding }
+					set_holding_type = castle_holding
 				}
 			}
 			# LP Feudal Contract Setup
@@ -754,15 +819,17 @@ agot_on_game_start = {
 					exists = title:d_shivering_shore.holder
 				}
 			}
-			title:c_axe_camp.holder ?= {
+			random_ruler = {
+				limit = { culture = culture:lakefolk }
+				save_scope_as = lakefolk_confederacy
 				create_confederation = {
 					name = d_the_lakefolk_confederacy
 				}
 				scope:new_confederation = {
 					every_ruler = {
 						limit = {
-							NOT = { has_title = title:c_axe_camp }
-							culture = title:c_axe_camp.holder.culture
+							NOT = { this = scope:lakefolk_confederacy }
+							culture = scope:lakefolk_confederacy.culture
 						}
 						save_scope_as = lakefolk_confederation_member
 						scope:new_confederation = { add_confederation_member = scope:lakefolk_confederation_member }
@@ -784,6 +851,47 @@ agot_on_game_start = {
 			}
 		}
 
+		### Silkhead League Setup
+		if = {
+			limit = {
+				game_start_date >= 8138.10.1
+				game_start_date < 8170.3.12
+			}
+			title:c_silkhead.holder ?= {
+				create_confederation = {
+					name = d_the_silkhead_league
+				}
+				scope:new_confederation = {
+					set_coa = d_the_silkhead_league
+					every_ruler = {
+						limit = {
+							highest_held_title_tier = tier_county
+							OR = {
+								primary_title = title:c_goldfuror
+								primary_title = title:c_restianys
+								primary_title = title:c_qygaeryr
+								primary_title = title:c_unmecaeros
+								primary_title = title:c_timbercut
+								primary_title = title:c_ozaonnos
+								primary_title = title:c_triarchs_fall
+								primary_title = title:c_drelyia
+								primary_title = title:c_devosh
+							}
+						}
+						save_scope_as = silkhead_confederation_member
+						scope:new_confederation = { add_confederation_member = scope:silkhead_confederation_member }
+						if = {
+							limit = {
+								game_start_date >= 8155.2.19
+								NOT = { has_realm_law = slavery_disallowed_law }
+							}
+							add_realm_law = slavery_disallowed_law
+						}
+					}
+				}
+			}
+		}
+
 		### Character Setup
 		every_living_character = {
 			limit = {
@@ -798,6 +906,22 @@ agot_on_game_start = {
 
 			#language setup
 			agot_learn_appropiate_languages = yes
+
+			#bastard claims killer
+			if = {
+				limit = {
+					has_trait = bastard
+					NOT = {
+						faith = {
+							has_doctrine_parameter = bastards_none
+						}
+					}
+				}
+				save_temporary_scope_as = claim_holder_bastard
+				every_claim = {
+					scope:claim_holder_bastard = { remove_claim = prev }
+				}
+			}
 
 			#canon dragons
 			if = {
@@ -845,6 +969,8 @@ agot_on_game_start = {
 				agot_adjust_adult_traits_posthistory_effect = yes
 			}
 
+			agot_init_milk_name_effect = yes
+
 			# must be before maester setup to make sure Aemon is set properly
 			if = { # Yeet black brothers back to wall since they will ignore history files to join family
 				limit = {
@@ -857,7 +983,12 @@ agot_on_game_start = {
 						has_title = title:d_the_wall
 					}
 				}
-				move_to_pool_at = title:d_the_wall.holder.capital_province
+				if = {
+					limit = {
+						NOT = { is_in_pool_at = title:d_the_wall.holder.capital_province }
+					}
+					move_to_pool_at = title:d_the_wall.holder.capital_province
+				}
 				set_employer = title:d_the_wall.holder
 			}
 
@@ -943,138 +1074,6 @@ agot_on_game_start = {
 					remove_relation_ward = PREV
 				}
 			}
-			if = { # Apply blademaster effects
-				limit = { has_trait = lifestyle_blademaster_3_history }
-				remove_trait = lifestyle_blademaster_3_history
-				add_trait = lifestyle_blademaster
-				add_trait_xp = {
-					trait = lifestyle_blademaster
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_blademaster_2_history }
-				remove_trait = lifestyle_blademaster_2_history
-				add_trait = lifestyle_blademaster
-				add_trait_xp = {
-					trait = lifestyle_blademaster
-					value = 50
-				}
-			}
-			if = { # Apply burned effects
-				limit = { has_trait = burned_3_history }
-				remove_trait = burned_3_history
-				add_trait = burned
-				add_trait_xp = {
-					trait = burned
-					track = burned
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = burned_2_history }
-				remove_trait = burned_2_history
-				add_trait = burned
-				add_trait_xp = {
-					trait = burned
-					track = burned
-					value = 50
-				}
-			}
-			if = { # Apply mystic effects
-				limit = { has_trait = lifestyle_mystic_3_history }
-				remove_trait = lifestyle_mystic_3_history
-				add_trait = lifestyle_mystic
-				add_trait_xp = {
-					trait = lifestyle_mystic
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_mystic_2_history }
-				remove_trait = lifestyle_mystic_2_history
-				add_trait = lifestyle_mystic
-				add_trait_xp = {
-					trait = lifestyle_mystic
-					value = 50
-				}
-			}
-			if = { # Apply physician effects
-				limit = { has_trait = lifestyle_physician_3_history }
-				remove_trait = lifestyle_physician_3_history
-				add_trait = lifestyle_physician
-				add_trait_xp = {
-					trait = lifestyle_physician
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_physician_2_history }
-				remove_trait = lifestyle_physician_2_history
-				add_trait = lifestyle_physician
-				add_trait_xp = {
-					trait = lifestyle_physician
-					value = 50
-				}
-			}
-			if = { # Apply reveler effects
-				limit = { has_trait = lifestyle_reveler_3_history }
-				remove_trait = lifestyle_reveler_3_history
-				add_trait = lifestyle_reveler
-				add_trait_xp = {
-					trait = lifestyle_reveler
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_reveler_2_history }
-				remove_trait = lifestyle_reveler_2_history
-				add_trait = lifestyle_reveler
-				add_trait_xp = {
-					trait = lifestyle_reveler
-					value = 50
-				}
-			}
-			if = { # Apply hunter effects
-				limit = { has_trait = lifestyle_hunter_3_history }
-				remove_trait = lifestyle_hunter_3_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = hunter
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_hunter_2_history }
-				remove_trait = lifestyle_hunter_2_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = hunter
-					value = 50
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_falconer_3_history }
-				remove_trait = lifestyle_falconer_3_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = falconer
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = lifestyle_falconer_2_history }
-				remove_trait = lifestyle_falconer_2_history
-				add_trait = lifestyle_hunter
-				add_trait_xp = {
-					trait = lifestyle_hunter
-					track = falconer
-					value = 50
-				}
-			}
 			if = { # Apply knight effects
 				limit = { has_trait = knight }
 				remove_trait = knight
@@ -1082,26 +1081,6 @@ agot_on_game_start = {
 				add_trait_xp = {
 					trait = squire
 					value = 100
-				}
-			}
-			if = { # Apply scarred effects
-				limit = { has_trait = scarred_3_history }
-				remove_trait = scarred_3_history
-				add_trait = scarred
-				add_trait_xp = {
-					trait = scarred
-					track = scarred
-					value = 100
-				}
-			}
-			if = {
-				limit = { has_trait = scarred_2_history }
-				remove_trait = scarred_2_history
-				add_trait = scarred
-				add_trait_xp = {
-					trait = scarred
-					track = scarred
-					value = 50
 				}
 			}
 
@@ -1114,7 +1093,7 @@ agot_on_game_start = {
 				# bastards who retained their surname after legitimization
 				limit = {
 					has_trait = bastard
-					is_lowborn = no
+					can_have_bastard_surname = yes
 					NOR = {
 						has_inactive_trait = surname_flowers
 						has_inactive_trait = surname_sand
@@ -1166,22 +1145,14 @@ agot_on_game_start = {
 							culture = culture:barrowman
 							culture = culture:bearman
 							culture = culture:crannogman
-							culture = culture:fangman
 							culture = culture:first_man
-							culture = culture:forestman
-							culture = culture:frozen_shoreman
 							culture = culture:harborman
 							culture = culture:northern_clan
-							culture = culture:hornfoot
-							culture = culture:ice_riverman
 							culture = culture:krakenman
-							culture = culture:lakefolk
-							culture = culture:nightrunner
 							culture = culture:northman
-							culture = culture:sisterman
 							culture = culture:skagosi
-							culture = culture:thenn
 							culture = culture:wolfswood_clansman
+							culture = { agot_is_wildling_culture = yes }
 						}
 					}
 					make_trait_inactive = surname_snow
@@ -1289,6 +1260,51 @@ agot_on_game_start = {
 						}
 						save_scope_as = secret
 						reveal_to_without_events_effect = { CHARACTER = scope:bastard.real_father }
+					}
+				}
+			}
+			if = { # Weight traits
+				limit = {
+					OR = {
+						has_inactive_trait = historical_overweight_100
+						has_inactive_trait = historical_overweight_60
+						has_inactive_trait = historical_overweight_30
+						has_inactive_trait = historical_underweight_30
+						has_inactive_trait = historical_underweight_60
+						has_inactive_trait = historical_underweight_100
+					}
+				}
+				switch = {
+					trigger = has_inactive_trait
+					historical_overweight_100 = {
+						make_trait_active = historical_overweight_100
+						remove_trait = historical_overweight_100
+						change_current_weight = 100
+					}
+					historical_overweight_60 = {
+						make_trait_active = historical_overweight_60
+						remove_trait = historical_overweight_60
+						change_current_weight = 60
+					}
+					historical_overweight_30 = {
+						make_trait_active = historical_overweight_30
+						remove_trait = historical_overweight_30
+						change_current_weight = 30
+					}
+					historical_underweight_30 = {
+						make_trait_active = historical_underweight_30
+						remove_trait = historical_underweight_30
+						change_current_weight = -30
+					}
+					historical_underweight_60 = {
+						make_trait_active = historical_underweight_60
+						remove_trait = historical_underweight_60
+						change_current_weight = -60
+					}
+					historical_underweight_100 = {
+						make_trait_active = historical_underweight_100
+						remove_trait = historical_underweight_100
+						change_current_weight = -100
 					}
 				}
 			}
@@ -1502,11 +1518,16 @@ agot_on_game_start = {
 		agot_dragons_on_start_effect = yes
 		### Run effects on dead characters
 		agot_apply_posthistory_effect = yes
+		### Run effects on dead characters for title data
+		assign_posthistory_title_data_effect = yes
 		### Establish house relations
 		agot_apply_posthistory_house_relations_effect = yes
 
 		### Crowns setup, needs to be pre-lobby for portraits
 		agot_assign_starting_crowns_effect = yes
+
+		### COA setup
+		agot_scenario_coa_setup_effect = yes
 	}
 }
 
@@ -1524,6 +1545,7 @@ agot_nf_estate_locations = {
 						owner.dynasty = dynasty:dynn_Nestoris
 						owner.dynasty = dynasty:dynn_Peyrel
 						owner.dynasty = dynasty:dynn_Tavellen
+						owner.dynasty = dynasty:dynn_Prestayn
 					}
 				}
 				move_domicile = title:b_purple_harbor.title_province
@@ -1627,10 +1649,6 @@ agot_nf_estate_locations = {
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Lohar }
 				move_domicile = title:b_drakes_rest.title_province
-			}
-			else_if = {
-				limit = { owner.dynasty = dynasty:dynn_Erosenes }
-				move_domicile = title:b_street_of_tears.title_province
 			}
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Erosenes }
@@ -1757,7 +1775,7 @@ agot_nf_estate_locations = {
 				move_domicile = title:b_samaal.title_province
 			}
 			else_if = {
-				limit = { owner.dynasty = dynasty:dynn_Garvanis }
+				limit = { owner.dynasty = dynasty:dynn_Takapis }
 				move_domicile = title:b_mummer_lane.title_province
 			}
 			else_if = {
@@ -1795,6 +1813,18 @@ agot_nf_estate_locations = {
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Lyksanon }
 				move_domicile = title:b_nontelos.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Alkalon }
+				move_domicile = title:b_viigashos.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Moravis }
+				move_domicile = title:b_dhaen.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Zavalozaar }
+				move_domicile = title:b_rhinarios.title_province
 			}
 		}
 	}
@@ -1971,8 +2001,12 @@ on_game_start_after_lobby = {
 		agot_barony_ruins
 		agot_north_holding_cost
 		agot_dornish_desert_malus
+		agot_province_modifiers
+		agot_dynamic_duchy_capitals
 		agot_starting_legitimacy
 		agot_silly_mode
+		agot_nf_estate_locations
+		agot_laamp_camp_locations
 	}
 }
 
@@ -1985,19 +2019,10 @@ agot_on_game_start_after_lobby = {
 		agot_add_estate_buildings_on_start = yes
 		agot_add_wilderness_buildings_on_start = yes
 
+		### Character Initialization Post-Rules
+		agot_init_canon_child_setup = yes
+
 		##### General setup start #####
-		if = {
-			limit = {
-				game_start_date < 8132.1.1
-				game_start_date >= 8096.1.1
-				OR = {
-					exists = title:k_lys.holder
-					exists = title:k_myr.holder
-					exists = title:k_tyrosh.holder
-				}
-			}
-			setup_triarchy_disputed_land_tributaries_effect = yes
-		}
 		# Targaryen Exiles Scripted Invasion
 		if = {
 			limit = {
@@ -2104,6 +2129,9 @@ agot_on_game_start_after_lobby = {
 			}
 		}
 
+		# Kingsguard, this has to be post_lobby or pages are unreadable
+		agot_kingsguard_init_white_book = yes
+
 		### Shattered Realms related setup; needs to be below this line
 		agot_init_shattered_realms = yes
 
@@ -2122,6 +2150,10 @@ agot_on_game_start_after_lobby = {
 						designate_diarch = prev
 						try_start_diarchy = second_magister
 						set_diarchy_swing = 40
+						if = {
+							limit = { diarch = character:Rogare_9 } # Moredo Rogare
+							set_diarchy_swing = 100
+						}
 					}
 				}
 				else_if = {
@@ -2649,8 +2681,20 @@ agot_on_game_start_after_lobby = {
 			}
 		}
 
+		#Thenn Management
+		if = {
+			limit = {
+				exists = title:k_thenn.holder
+				title:k_thenn.holder.primary_title = title:k_magnar_of_thenn
+			}
+			title:k_thenn.holder = { set_primary_title_to = title:k_thenn }
+		}
+
 		# Knight Trees
 		agot_knight_tree_on_start = yes
+
+		# NW Ranger after lobby
+		agot_nw_ranger_on_creation = yes
 	}
 	events = {
 		agot_adventurers_events.0001
@@ -2976,6 +3020,10 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Myrahar
 						owner.dynasty = dynasty:dynn_Curaze
 						owner.dynasty = dynasty:dynn_Nericos
+						AND = {
+							game_start_date >= 8228.1.1
+							owner.dynasty = dynasty:dynn_Breneyan
+						}
 						#Pentos
 						owner.dynasty = dynasty:dynn_Takapis
 						owner.dynasty = dynasty:dynn_Elisys
@@ -2986,7 +3034,8 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Togaraz
 						owner.dynasty = dynasty:dynn_Ozelmaar
 						owner.dynasty = dynasty:dynn_Lyksanon
-
+						owner.dynasty = dynasty:dynn_Alkalon
+						owner.dynasty = dynasty:dynn_Talraen
 						# Yunkai
 						owner.dynasty = dynasty:dynn_Qaggaz
 						owner.dynasty = dynasty:dynn_Myraq
@@ -3069,7 +3118,10 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Orthys
 						# Myr
 						owner.dynasty = dynasty:dynn_Unerelos
-						owner.dynasty = dynasty:dynn_Breneyan
+						AND = {
+							game_start_date < 8228.1.1
+							owner.dynasty = dynasty:dynn_Breneyan
+						}
 						owner.dynasty = dynasty:dynn_Berradho
 						owner.dynasty = dynasty:dynn_Lornel
 						owner.dynasty = dynasty:dynn_Vaelos
@@ -3079,7 +3131,11 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Phassios
 						owner.dynasty = dynasty:dynn_Lyakis
 						owner.dynasty = dynasty:dynn_Paenaar
-
+						owner.dynasty = dynasty:dynn_Moravis
+						owner.dynasty = dynasty:dynn_Zavalozaar
+						owner.dynasty = dynasty:dynn_Turranion
+						owner.dynasty = dynasty:dynn_Sentikis
+						owner.dynasty = dynasty:dynn_Erygon
 						# Yunkai
 						owner.dynasty = dynasty:dynn_Eraz
 						owner.dynasty = dynasty:dynn_Rhaezn
@@ -3103,10 +3159,17 @@ agot_administrative_setup = {
 						# Braavos
 						owner.dynasty = dynasty:dynn_Vereno
 						owner.dynasty = dynasty:dynn_Jamiroqyr
+						AND = {
+							game_start_date < 8230.1.1
+							owner.dynasty = dynasty:dynn_Tremolo
+						}
 						# Tyrosh
 						owner.house = house:house_Altoris
 						# Myr
 						owner.dynasty = dynasty:dynn_Zevos
+						# Pentos
+						owner.dynasty = dynasty:dynn_Ran_Terrin
+						owner.dynasty = dynasty:dynn_Diluzis
 					}
 				}
 				while = {
@@ -3176,6 +3239,9 @@ agot_barony_ruins = {
 				add_building = small_ruin_01
 				add_building = ruin_desolate_01
 			}
+			title:b_skane = {
+				set_coa = ruins_coa
+			}
 			title:c_skane = {
 				set_coa = ruins_coa
 			}
@@ -3190,7 +3256,10 @@ agot_barony_ruins = {
 				add_building = small_ruin_01
 				add_building = ruin_desolate_01
 			}
-			title:c_skane = {
+			title:b_hardhome = {
+				set_coa = ruins_coa
+			}
+			title:c_hardhome = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3202,7 +3271,7 @@ agot_barony_ruins = {
 				set_holding_type = ruin_holding
 				add_building = small_ruin_01
 			}
-			title:c_skane = {
+			title:b_hardhome_2 = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3214,7 +3283,7 @@ agot_barony_ruins = {
 				set_holding_type = ruin_holding
 				add_building = small_ruin_01
 			}
-			title:c_skane = {
+			title:b_hardhome_3 = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3226,7 +3295,7 @@ agot_barony_ruins = {
 				set_holding_type = ruin_holding
 				add_building = small_ruin_01
 			}
-			title:c_skane = {
+			title:b_hardhome_4 = {
 				set_coa = ruins_coa
 			}
 		}
@@ -3283,6 +3352,23 @@ agot_barony_ruins = {
 			}
 			title:b_castamere = {
 				set_coa = ruins_coa
+			}
+		}
+		# Tarbeck Hall
+		if = {
+			limit = {
+				game_start_date >= 8261.10.29
+			}
+			title:b_tarbeck_hall.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+				add_building = ruin_infamous_01
+			}
+			title:b_tarbeck_hall = {
+				set_coa = ruins_coa
+			}
+			title:c_seven_points.holder = {
+				set_realm_capital = title:b_beckyng
 			}
 		}
 		# Oldstones
@@ -3393,6 +3479,25 @@ agot_barony_ruins = {
 			title:b_vultures_roost = {
 				set_coa = ruins_coa
 			}
+			title:c_denmont.holder = {
+				set_realm_capital = title:b_denmont
+			}
+		}
+		# Castle Hollard
+		if = {
+			limit = {
+				game_start_date >= 8277.10.1
+			}
+			title:b_castle_hollard.title_province = {
+				set_holding_type = ruin_holding
+				add_building = medium_ruin_01
+			}
+			title:b_castle_hollard = {
+				set_coa = ruins_coa
+			}
+			title:c_crownback.holder = {
+				set_realm_capital = title:b_threecrowns
+			}
 		}
 	}
 }
@@ -3419,6 +3524,43 @@ agot_dornish_desert_malus = {
 	}
 }
 
+agot_province_modifiers = {
+	effect = {
+		agot_setup_gold_veins_modifiers = yes
+		agot_setup_silver_veins_modifiers = yes
+		agot_setup_amber_deposit_modifiers = yes
+	}
+}
+
+agot_dynamic_duchy_capitals = {
+	effect = {
+		if = { # Strickland > Norcross
+			limit = {
+				game_start_date < 8196.11.22
+			}
+			title:d_goldenfields = {
+				set_capital_county = title:c_wysedale
+			}
+		}
+		if = { # Toyne > Trant
+			limit = {
+				game_start_date < 8178.6.1
+			}
+			title:d_dark_harrow = {
+				set_capital_county = title:c_blackheart
+			}
+		}
+		if = { # Wendwater > Farring
+			limit = {
+				game_start_date < 8236.5.22
+			}
+			title:d_wendwater_forest = {
+				set_capital_county = title:c_wendwater_fork
+			}
+		}
+	}
+}
+
 agot_silly_mode = {
 	trigger = {
 		has_game_rule = agot_silly_mode
@@ -3432,6 +3574,29 @@ agot_silly_mode = {
 		## Silly Mode conditional change_first_name
 		character:Goodman_1 ?= { change_first_name = Twenty }
 		character:Eilish_35 ?= { change_first_name = Billicent }
+
+		# Elston, the bane of worldbuilding
+		character:Knight_Riverlands_5 ?= {
+			if = {
+				limit = { is_adult = yes }
+				add_trait = gallant
+				agot_safe_buy_gallant_perk_history_effect = yes
+				add_trait = holy_warrior
+				add_trait = tourney_participant
+				remove_trait = physique_good_2
+				add_trait = physique_good_3
+				add_prowess_skill = 10
+				add_trait = lifestyle_blademaster
+				add_trait_xp = {
+					trait = lifestyle_blademaster
+					value = trait_third_level
+				}
+				if = {
+					limit = { character:Tully_hh_7 = { is_alive = yes } }
+					set_relation_nemesis = character:Tully_hh_7 # Delp
+				}
+			}
+		}
 
 		random_list = {
 			199 = { # Regular Silliness
@@ -3466,7 +3631,6 @@ agot_silly_mode = {
 	}
 }
 
-
 agot_pirate_domiciles_setup = {
 	trigger = {
 		agot_dlc_check_for_landless_pirates = yes
@@ -3474,6 +3638,7 @@ agot_pirate_domiciles_setup = {
 	effect = {
 		every_ruler = {
 			limit = {
+				highest_held_title_tier >= tier_county
 				government_has_flag = government_is_pirate
 				NOT = {
 					any_held_title = {
@@ -3733,6 +3898,243 @@ agot_pirate_domiciles_setup = {
 			change_local_variable = {
 				name = t3_pirate_count
 				add = 1
+			}
+		}
+	}
+}
+
+agot_traditional_coronation_setup = {
+	trigger = { has_dlc_feature = coronations }
+
+	effect = {
+		# Winterfell
+		province:77 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Highgarden
+		province:3237 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Starry Sept
+		province:3500 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# The Eyrie
+		province:2251 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Casterly Rock
+		province:2855 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Storm's End
+		province:4439 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Sunspear
+		province:4937 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		# Nagga's Hill
+		province:2795 = {
+			add_province_modifier = coronation_ancient_tradition_modifier
+			set_variable = {
+				name = coronation_tradition_location
+				value = 20
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8037.9.9 } # Aenys I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8042.3.1 } # Maegor I
+			# Dragonstone
+			province:4415 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8048.3.7 } # Jaehaerys I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 2 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8103.10.3 } # Viserys I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 3 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8129.3.3 } # Rhaenyra
+			# Dragonstone
+			province:4415 = {
+				set_variable = { name = coronation_tradition_location value = 2 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8129.3.3 } # Aegon II
+			# Dragonpit
+			province:4152 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8131.1.14 } # Aegon III
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 4 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8157.1.13 } # Daeron I
+			# Starry Sept
+		}
+
+		if = {
+			limit = { game_start_date >= 8161.6.9 } # Baelor I
+			# Red Keep
+			province:4151 = {
+				add_province_modifier = coronation_tradition_modifier
+				set_variable = { name = coronation_tradition_location value = 5 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8171.1.20 } # Viserys II
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 6 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8172.3.28 } # Aegon IV
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 7 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8184.1.1 } # Daeron II
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8209.9.1 } # Aerys I
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 2 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8221.1.1 } # Maekar I
+			# Summerhall
+			province:4797 = {
+				set_variable = { name = coronation_tradition_location value = 1 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8233.6.1 } # Aegon V
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 3 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8259.6.1 } # Jaehaerys II
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 8 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8262.1.1 } # Aerys II
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 4 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8283.9.1 } # Robert I
+			# Great Sept
+			province:4153 = {
+				add_province_modifier = coronation_tradition_modifier
+				set_variable = { name = coronation_tradition_location value = 5 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8298.10.24 } # Joffrey I
+			# Red Keep
+			province:4151 = {
+				set_variable = { name = coronation_tradition_location value = 9 }
+			}
+		}
+
+		if = {
+			limit = { game_start_date >= 8300.1.1 } # Tommen I
+			# Great Sept
+			province:4153 = {
+				set_variable = { name = coronation_tradition_location value = 6 }
 			}
 		}
 	}

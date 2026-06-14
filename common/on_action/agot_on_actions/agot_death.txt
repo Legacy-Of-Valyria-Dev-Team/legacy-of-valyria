@@ -21,6 +21,7 @@ on_death = {
 		agot_mw_death_on_action
 		agot_landless_pirate_domicile_transfer
 		agot_landless_pirate_succession_variable_manager
+		agot_secret_hidden_artifact_on_action
 	}
 }
 
@@ -228,6 +229,79 @@ nw_ranger_death = {
 		scope:ranger_heir = {
 			remove_trait = nightswatch
 			add_trait = nightswatch_temp
+			if = {
+				limit = { has_trait = disinherited }
+				remove_trait = disinherited
+				set_variable = {
+					name = is_disinherited
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = eunuch_1 }
+				remove_trait = eunuch_1
+				set_variable = {
+					name = is_eunuch
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = beardless_eunuch }
+				remove_trait = beardless_eunuch
+				set_variable = {
+					name = is_beardless_eunuch
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = devoted }
+				remove_trait = devoted
+				set_variable = {
+					name = is_devoted
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = order_member }
+				remove_trait = order_member
+				set_variable = {
+					name = is_order_member
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = bastard }
+				remove_trait = bastard
+				set_variable = {
+					name = is_bastard
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = bastard_founder }
+				remove_trait = bastard_founder
+				set_variable = {
+					name = is_bastard_founder
+					value = yes
+					days = 5
+				}
+			}
+			if = {
+				limit = { has_trait = maester }
+				remove_trait = maester
+				set_variable = {
+					name = is_maester
+					value = yes
+					days = 5
+				}
+			}
+			trigger_event = { id = agot_nw_ranger_events.8000 days = 1 }
 		}
 		set_designated_heir_unsafe = scope:ranger_heir
 
@@ -291,6 +365,7 @@ nw_ranger_history_on_lc_death = {
 
 # remove dead ruler from story cycle list and add the new ruler
 # change pre_war_liege variable
+# story owner succession is dealt with in the respective story cycles this, this includes mw_rebel_leader_list
 agot_mw_death_on_action = {
 	trigger = {
 		OR = {
@@ -332,33 +407,51 @@ agot_mw_death_on_action = {
 					OR = {
 						is_target_in_variable_list = { name = mw_loyalist_list target = root }
 						is_target_in_variable_list = { name = mw_neutral_list target = root }
-						is_target_in_variable_list = { name = mw_rebel_leader_list target = root }
 					}
 				}
 			}
-			scope:mw_crown_story ?= {
-				if = {
-					limit = { is_target_in_variable_list = { name = mw_loyalist_list target = root } }
 
-					remove_list_variable = { name = mw_loyalist_list target = root } # remove dead ruler
-
-					if = {
-						limit = { exists = root.primary_heir }
-
-						add_to_variable_list = { name = mw_loyalist_list target = root.primary_heir } # add new ruler
-					}
+			every_heir = {
+				limit = {
+					any_heir_title = { tier > tier_barony }
 				}
 				if = {
-					limit = { is_target_in_variable_list = { name = mw_neutral_list target = root } }
+					limit = {
+						NOR = {
+							agot_mw_is_in_loyalist_list_trigger = { TARGET = scope:this_scope }	# don't add him, if he is already in loyalist list
+							agot_mw_is_in_neutral_list_trigger = { TARGET = scope:this_scope }	# don't add him, if he is already in neutral list
+							agot_mw_is_in_rebel_list_trigger = { TARGET = scope:this_scope }	# don't add him, if he is already in rebel list
+						}
+					}
+					scope:mw_crown_story ?= {
+						if = {
+							limit = { is_target_in_variable_list = { name = mw_loyalist_list target = root } }
 
-					remove_list_variable = { name = mw_neutral_list target = root } # remove dead ruler
+							add_to_variable_list = { name = mw_loyalist_list target = prev} # add new ruler
+						}
+						if = {
+							limit = { is_target_in_variable_list = { name = mw_neutral_list target = root } }
 
-					if = {
-						limit = { exists = root.primary_heir }
-
-						add_to_variable_list = { name = mw_neutral_list target = root.primary_heir } # add new ruler
+							add_to_variable_list = { name = mw_neutral_list target = prev } # add new ruler
+						}
 					}
 				}
+				else_if = { # if primary heir already was in a list, we now mark this, so know whether we also need to update pre war liege below and whether to update de facto liege
+					limit = {
+						OR = {
+							agot_mw_is_in_loyalist_list_trigger = { TARGET = scope:this_scope }
+							agot_mw_is_in_neutral_list_trigger = { TARGET = scope:this_scope }
+							agot_mw_is_in_rebel_list_trigger = { TARGET = scope:this_scope }
+						}
+					}
+
+					set_variable = { name = mw_pwl_update_exempt days = 1 }
+				}
+			}
+			scope:mw_crown_story ?= { # remove dead ruler
+				remove_list_variable = { name = mw_loyalist_list target = root }
+				remove_list_variable = { name = mw_neutral_list target = root }
+				remove_list_variable = { name = mw_rebel_leader_list target = root }
 			}
 		}
 		else_if = {
@@ -384,28 +477,74 @@ agot_mw_death_on_action = {
 
 			every_ruler = { # every ruler that has the variable with root as value
 				limit = {
-					var:pre_war_liege ?= root
+					NOT = { this = root.primary_heir }
+					OR = {
+						var:pre_war_liege ?= root
+						var:agot_pwl_top ?= root
+					}
 				}
-				set_variable = { name = pre_war_liege value = root.primary_heir }
-			}
-		}
-		if = {
-			limit = {
-				exists = var:pre_war_liege
-			}
-
-			every_heir = {
 				if = {
 					limit = {
-						any_heir_title = { tier = root.primary_title.tier }
+						var:pre_war_liege ?= root
+						NOT = { this = root.primary_heir }
+					}
+					set_variable = { name = pre_war_liege value = root.primary_heir }
+				}
+				if = { # set pre war top liege
+					limit = {
+						var:agot_pwl_top ?= root
+						NOT = { this = root.primary_heir }
+					}
+					set_variable = { name = agot_pwl_top value = root.primary_heir }
+				}
+			}
+		}
+		every_heir = {
+			limit = {
+				any_heir_title = { tier = root.highest_held_title_tier }
+			}
+
+			if = { # we have a pre_war_liege set for dead char and may transfer it to heir
+				limit = {
+					NOT = { has_variable = mw_pwl_update_exempt }
+					OR = {
+						exists = root.var:pre_war_liege
+						exists = root.var:agot_pwl_top
+					}
+				}
+
+				if = {
+					limit = {
+						exists = root.var:pre_war_liege
+						NOT = { has_variable = mw_pwl_update_exempt }
 					}
 					set_variable = { name = pre_war_liege value = root.var:pre_war_liege }
+				}
+				if = { # we have a pre_war_liege set for dead char and may transfer it to heir
+					limit = {
+						exists = root.var:agot_pwl_top
+						NOT = { has_variable = mw_pwl_update_exempt }
+					}
+					set_variable = { name = agot_pwl_top value = root.var:agot_pwl_top }
+				}
+			}
+			else_if = { # there is no pre_war_liege set or we had heir being extempt from variable transfer --> we need to make sure his current can still be vassalized by his set pre_war_liege
+				limit = {
+					has_variable = mw_pwl_update_exempt
+				}
+				if = {
+					limit = { # if transferred title rank is greater or equal to pre_war_liege rank, then we need to step up pre_war_liege
+						exists = var:pre_war_liege.highest_held_title_tier
+						root.highest_held_title_tier >= var:pre_war_liege.highest_held_title_tier
+					}
+
+					set_variable = { name = pre_war_liege value = var:pre_war_liege.liege }
+					set_variable = { name = agot_pwl_top value = var:agot_pwl_top.liege }
 				}
 			}
 		}
 	}
 }
-
 
 agot_landless_pirate_domicile_transfer = {
 	trigger = {
@@ -509,6 +648,9 @@ agot_landless_pirate_domicile_transfer = {
 				}
 				agot_create_pirate_domicile_effect = { PIRATE = scope:pirate_dummy_to_transfer_maas }
 				scope:pirate_dummy_to_transfer_maas = {
+					primary_title = {
+						set_variable = hide_in_ledger
+					}
 					if = {
 						limit = {
 							number_of_maa_regiments > 0
@@ -576,6 +718,12 @@ agot_landless_pirate_domicile_transfer = {
 							modifier = maa_recruitment_boon
 							years = 3
 						}
+					}
+				}
+				every_held_title = {
+					save_scope_as = destroy_this_title
+					prev = {
+						destroy_title = scope:destroy_this_title
 					}
 				}
 				death = {
@@ -680,5 +828,27 @@ agot_landless_pirate_succession_variable_manager = {
 				right_icon = scope:target
 			}
 		}
+	}
+}
+
+agot_secret_hidden_artifact_on_action = {
+	trigger = {
+		OR = {
+			AND = {
+				exists = dynasty:dynn_Mopatis
+				exists = dynasty:dynn_Mopatis.dynasty_founder
+				house = dynasty:dynn_Mopatis.dynasty_founder.house
+				exists = global_var:blackfyre_hidden
+			}
+			AND = {
+				house = dynasty:dynn_Uller.dynasty_founder.house
+				exists = global_var:rhaenys_circlet_hidden
+			}
+		}
+		exists = primary_heir
+		primary_heir.house = root.house
+	}
+	effect = {
+		primary_heir = { add_secret = { type = secret_agot_hidden_artifact } }
 	}
 }
