@@ -3359,6 +3359,15 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_free_city_male_k_braavos" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_free_city_female_k_braavos" GENDER = female }
 							}
+							else_if = { #LOV Added - Triarch
+								limit = {
+									$SCOPED_TITLE$ ?= title:k_volantis
+									historical_independent_ruler = yes
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_free_city_male_k_volantis" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_free_city_female_k_volantis" GENDER = female }
+							}
 							else_if = { # First Magister
 								limit = {
 									historical_independent_ruler = yes
@@ -3500,84 +3509,35 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_oligarchic_male" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_oligarchic_female" GENDER = female }
 							}
-							else_if = { # Archon
-								limit = {
-									$SCOPED_TITLE$ ?= title:k_meereen
-									historical_independent_ruler = no
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_k_meereen" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_k_meereen" GENDER = female }
-							}
-							else_if = { # Prince/Princess
-								limit = {
-									$SCOPED_TITLE$ ?= title:k_yunkai
-									historical_independent_ruler = yes
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_k_yunkai" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_k_yunkai" GENDER = female }
-							}
-							else_if = { # Eliate
-								limit = {
-									$SCOPED_TITLE$ ?= title:k_astapor
-									historical_independent_ruler = yes
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_k_astapor" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_k_astapor" GENDER = female }
-							}
-							else_if = { # First Magister
-								limit = {
-									historical_independent_ruler = yes
-									NOT = { $SCOPED_TITLE$ ?= title:k_meereen }
-									NOT = { $SCOPED_TITLE$ ?= title:k_yunkai }
-									NOT = { $SCOPED_TITLE$ ?= title:k_astapor }
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_fallback" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_fallback" GENDER = female }
-							}
-							else_if = {
-								limit = {
-									historical_independent_ruler = no
-									NOT = { $SCOPED_TITLE$ ?= title:k_meereen }
-									NOT = { $SCOPED_TITLE$ ?= title:k_yunkai }
-									NOT = { $SCOPED_TITLE$ ?= title:k_astapor }
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_fallback" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_fallback" GENDER = female }
-							}
 							else_if = { # Fallback
 								limit = { $SCOPED_TITLE$.holder != $SCOPE$ }
 
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_fallback" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_fallback" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_oligarchic_male" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "emperor_oligarchic_female" GENDER = female }
 							}
 						}
 
 						### Kingdom ###
 						else_if = {
 							limit = { $SCOPED_TITLE$ ?= { tier = tier_kingdom } }
-							if = {
-								limit = {
-									agot_localization_government_trigger = { GOV = oligarchic SPOUSE_SCOPE = scope:spouse_scope }
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female" GENDER = female }
-							}
-							else_if = { # Archon
+							#if = {
+							#	limit = {
+							#		agot_localization_government_trigger = { GOV = oligarchic SPOUSE_SCOPE = scope:spouse_scope }
+							#	}
+							#
+							#	set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_fallback" GENDER = male }
+							#	set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_fallback" GENDER = female }
+							#}
+							if = { # GREAT MASTER
 								limit = {
 									$SCOPED_TITLE$ ?= title:k_meereen
-									historical_independent_ruler = no
+									historical_independent_ruler = yes
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_k_meereen" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_k_meereen" GENDER = female }
 							}
-							else_if = { # Prince/Princess
+							else_if = { # WISE MASTER
 								limit = {
 									$SCOPED_TITLE$ ?= title:k_yunkai
 									historical_independent_ruler = yes
@@ -3586,7 +3546,7 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_k_yunkai" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_k_yunkai" GENDER = female }
 							}
-							else_if = { # Eliate
+							else_if = { # GOOD MASTER
 								limit = {
 									$SCOPED_TITLE$ ?= title:k_astapor
 									historical_independent_ruler = yes
@@ -3595,7 +3555,7 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_male_k_astapor" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_oligarchic_female_k_astapor" GENDER = female }
 							}
-							else_if = { # First Magister
+							else_if = { # Master
 								limit = {
 									historical_independent_ruler = yes
 									NOT = { $SCOPED_TITLE$ ?= title:k_meereen }
