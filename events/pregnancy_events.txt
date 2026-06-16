@@ -154,6 +154,8 @@ pregnancy.0001 = {
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -184,6 +186,8 @@ pregnancy.0001 = {
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -213,6 +217,8 @@ pregnancy.0001 = {
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -239,7 +245,10 @@ pregnancy.0001 = {
 				#AGOT Added, guarantee if pre-configured
 				modifier = {
 					add = 100
-					has_character_flag = agot_birth_mother_will_die
+					OR = {
+						has_character_flag = agot_birth_mother_will_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
+					}
 				}
 
 				#AGOT Added
@@ -252,6 +261,7 @@ pregnancy.0001 = {
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -275,6 +285,12 @@ pregnancy.0001 = {
 					has_game_rule = lmf_no_birth_fertility_modifiers
 				}
 
+				#AGOT Added, guarantee if pre-configured
+				modifier = {
+					add = 100
+					has_character_flag = agot_birth_mother_and_child_die
+				}
+
 				#AGOT Added
 				modifier = {
 					factor = 0
@@ -286,6 +302,7 @@ pregnancy.0001 = {
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -321,6 +338,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -363,6 +382,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -421,6 +442,8 @@ pregnancy.0001 = {
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
 						has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 					}
 				}
 
@@ -444,6 +467,8 @@ pregnancy.0001 = {
 						has_character_flag = agot_birth_mother_will_die
 						has_character_flag = birth_child_will_become_sickly
 						has_character_flag = birth_mother_will_become_ill
+						has_character_flag = agot_birth_mother_and_child_die
+						has_character_flag = agot_birth_mother_dies_and_child_sickly
 						has_character_flag = birth_will_be_scaly
 					}
 				}
@@ -615,44 +640,6 @@ pregnancy.1002 = {
 		show_as_tooltip = {
 			scope:mother = {
 				add_trait_force_tooltip = pregnant
-			}
-		}
-	}
-}
-
-scripted_trigger former_consort_was_father = {
-	OR = {	
-		any_former_spouse = {
-			even_if_dead = yes
-			this = scope:father
-			this = scope:real_father
-			trigger_if = {
-				limit = {
-					is_alive = yes
-				}
-				NOT = { any_consort = { this = root } }
-			}
-		}
-		any_former_concubinist = {
-			even_if_dead = yes
-			this = scope:father
-			this = scope:real_father
-			trigger_if = {
-				limit = {
-					is_alive = yes
-				}
-				NOT = { any_consort = { this = root } }
-			}
-		}
-		any_former_concubine = {
-			even_if_dead = yes
-			this = scope:father
-			this = scope:real_father
-			trigger_if = {
-				limit = {
-					is_alive = yes
-				}
-				NOT = { any_consort = { this = root } }
 			}
 		}
 	}
@@ -889,8 +876,6 @@ pregnancy.2001 = {
 		NOR = {
 			# If we are married or have concubines (or are a concubine) this event is not valid, as there is a (assumed) father.
 			any_consort = { }
-			# Same for if a former spouse/concubine got us pregant.
-			former_consort_was_father = yes
 			#AGOT Added; LMF
 			AND = {
 				is_ruler = no
@@ -899,7 +884,7 @@ pregnancy.2001 = {
 					has_character_flag = liege_refused_seclusion
 				}
 				exists = liege
-				trait_is_shunned_or_criminal_in_my_or_lieges_faith_trigger = { TRAIT = fornicator GENDER_CHARACTER = scope:mother }
+				trait_is_shunned_or_criminal_in_my_or_lieges_faith_trigger = { TRAIT = trait:fornicator GENDER_CHARACTER = scope:mother }
 				scope:mother.liege = {
 					is_landed = yes
 					is_close_family_of = scope:mother
@@ -909,6 +894,7 @@ pregnancy.2001 = {
 				}
 			}
 		}
+		pregnancy_is_bastard = yes
 
 		#AGOT Added
 		NOT = {
@@ -1088,7 +1074,7 @@ pregnancy.2001 = {
 				factor = 0
 				accepts_adultery_without_penalty_trigger = yes
 			}
-			
+
 			#AGOT Added
 			modifier = {
 				add = 1000
@@ -1206,14 +1192,8 @@ pregnancy.2002 = {
 		any_consort = {
 			is_male = yes
 		}
-		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }	
-		}
 
-		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {	
-			former_consort_was_father = yes
-		}
+		pregnancy_is_bastard = yes
 
 		#AGOT Added
 		is_pregnant = yes
@@ -1624,17 +1604,13 @@ pregnancy.2050 = {
 
 	trigger = {
 		# If we are married and/or have concubines, but all of them are women as well, it's a bastard!
+		any_consort = { } # count = all returns true if list is empty!
 		any_consort = {
-			NOT = { is_male = yes }
-		}
-		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }	
+			is_female = yes
+			count = all
 		}
 
-		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {	
-			former_consort_was_father = yes
-		}
+		pregnancy_is_bastard = yes
 
 		#AGOT Added
 		NOT = {
@@ -2115,12 +2091,12 @@ pregnancy.3003 = {
 				OR = {
 					AND = {
 						faith = { save_temporary_scope_as = check_faith }
-						trait_is_shunned_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+						trait_is_shunned_in_faith_trigger = { TRAIT = trait:fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
 					}
 					AND = { #Liege's faith doesn't approve
 						exists = liege
 						liege = { faith = { save_temporary_scope_as = check_faith } }
-						trait_is_shunned_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+						trait_is_shunned_in_faith_trigger = { TRAIT = trait:fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
 					}
 				}
 			}
@@ -2130,12 +2106,12 @@ pregnancy.3003 = {
 				OR = {
 					AND = {
 						faith = { save_temporary_scope_as = check_faith }
-						trait_is_criminal_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+						trait_is_criminal_in_faith_trigger = { TRAIT = trait:fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
 					}
 					AND = { #Liege's faith doesn't approve
 						exists = liege
 						liege = { faith = { save_temporary_scope_as = check_faith } }
-						trait_is_criminal_in_faith_trigger = { TRAIT = fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
+						trait_is_criminal_in_faith_trigger = { TRAIT = trait:fornicator FAITH = scope:check_faith GENDER_CHARACTER = root }
 					}
 				}
 			}
@@ -2550,7 +2526,8 @@ pregnancy.6002 = {
 
 	option = {
 		name = pregnancy.6002.a
-		trigger = { is_married = no }
+		#AGOT Disabled
+		#trigger = { is_married = no }
 	}
 
 	after = {
@@ -2593,7 +2570,7 @@ pregnancy.6004 = {
 							CHARACTER = scope:real_father
 						}
 					}
-					trait_is_criminal_in_faith_trigger = { TRAIT = incestuous FAITH = root.faith GENDER_CHARACTER = scope:mother }
+					trait_is_criminal_in_faith_trigger = { TRAIT = trait:incestuous FAITH = root.faith GENDER_CHARACTER = scope:mother }
 				}
 				desc = pregnancy.6004.incest
 			}

@@ -570,6 +570,24 @@ educate_child_interaction = {
 		show_as_tooltip = {
 			scope:guardian  = { set_relation_ward = scope:ward }
 		}
+		accolade_ward_education_notification_effect = yes
+
+		#AGOT Added
+		if = {
+			limit = {
+				exists = scope:guardian_liege.house
+			}
+			scope:ward.house ?= {
+				change_house_relation_effect = {
+					HOUSE = scope:guardian_liege.house
+					VALUE = house_relation_improve_minor_value
+					REASON = offered_ward
+					CHAR = scope:guardian_liege
+					TARGET_CHAR = scope:ward
+					TITLE = scope:dummy_gender
+				}
+			}
+		}
 	}
 
 	auto_accept = yes
@@ -710,6 +728,7 @@ educate_child_interaction = {
 	# 	}
 	# 	flag = send_to_university
 	# 	localization = EDUCATION_UNIVERSITY
+	# 	current_description = EDUCATION_UNIVERSITY_HIGHLIGHTED
 	# }
 	send_option = {
 		is_shown = {
@@ -1422,6 +1441,20 @@ offer_ward_interaction = {
 			DESC = clan_unity_ward_offerage.desc
 			REVERSE_NON_HOUSE_TARGET = yes
 		}
+
+		accolade_ward_education_notification_effect = yes
+
+		#AGOT Added
+		scope:recipient.house ?= {
+			change_house_relation_effect = {
+				HOUSE = scope:ward.house
+				VALUE = agot_house_relation_improve_small_value
+				REASON = offered_ward 
+				CHAR = scope:ward
+				TARGET_CHAR = scope:recipient
+				TITLE = scope:dummy_gender
+			}
+		}
 	}
 
 	on_decline = {
@@ -2077,6 +2110,7 @@ offer_ward_interaction = {
 	# 	starts_enabled = { always = yes	}
 	# 	flag = send_to_university
 	# 	localization = EDUCATION_UNIVERSITY
+	# 	current_description = EDUCATION_UNIVERSITY_HIGHLIGHTED
 	# }
 	send_option = {
 		is_valid = {
@@ -2092,6 +2126,40 @@ offer_ward_interaction = {
 	}
 	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
 
+	is_highlighted = {
+		OR = {
+			scope:recipient = {
+				custom_tooltip = {
+					text = activity_education_no_culture_center #needed for error supression
+					OR = {
+						any_realm_province = {
+							is_higher_studies_location = yes
+						}
+						#AGOT Disabled
+						# any_realm_county = {
+						# 	has_county_modifier = pandidakterion_university_modifier
+						# }
+					}
+				}
+			}
+			scope:actor = {
+				this = scope:secondary_actor
+				custom_tooltip = {
+					text = activity_education_no_culture_center #needed for error supression
+					OR = {
+						any_realm_province = {
+							is_higher_studies_location = yes
+						}
+						#AGOT Disabled
+						# any_realm_county = {
+						# 	has_county_modifier = pandidakterion_university_modifier
+						# }
+					}
+				}
+			}
+		}
+	}
+	highlighted_reason = EDUCATION_UNIVERSITY_HIGHLIGHTED
 	send_options_exclusive = no
 
 	ai_targets = {
@@ -2678,6 +2746,25 @@ offer_guardianship_interaction = {
 			VALUE = miniscule_unity_gain
 			DESC = clan_unity_guardianship.desc
 			REVERSE_NON_HOUSE_TARGET = yes
+		}
+
+		accolade_ward_education_notification_effect = yes
+
+		#AGOT Added
+		if = {
+			limit = {
+				exists = scope:ward.house
+			}
+			scope:guardian.house ?= {
+				change_house_relation_effect = {
+					HOUSE = scope:ward.house
+					VALUE = agot_house_relation_improve_small_value
+					REASON = offered_guardianship_yay 
+					CHAR = scope:ward
+					TARGET_CHAR = scope:recipient
+					TITLE = scope:dummy_gender
+				}
+			}
 		}
 	}
 
@@ -3847,6 +3934,28 @@ remove_guardian_interaction = {
 				months = 3
 			}
 		}
+
+		#AGOT Added
+		if = {
+			limit = {
+				NOT = {
+					scope:actor.house = scope:recipient.house
+				}
+			}
+			custom_tooltip = {
+				text = agot_this_will_damage_relations_warning
+				scope:recipient.house ?= {
+					change_house_relation_effect = {
+						HOUSE = scope:actor.house
+						VALUE = agot_house_relation_damage_small_value
+						REASON = removed_guardianship 
+						CHAR = scope:recipient
+						TARGET_CHAR = scope:actor
+						TITLE = scope:dummy_gender
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -4034,10 +4143,8 @@ make_child_learn_language_interaction = {
 		}
 	}
 
-	is_valid_showing_failures_only = {
-		scope:recipient = {
-			is_imprisoned = no
-			NOT = { has_trait = incapable }
+	is_valid = {
+		scope:actor = {
 			OR = {
 				employs_court_position = court_tutor_court_position
 				employs_court_position = court_guru_court_position
@@ -4045,6 +4152,13 @@ make_child_learn_language_interaction = {
 				employs_court_position = septa_court_position
 				employs_court_position = maester_court_position
 			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			is_imprisoned = no
+			NOT = { has_trait = incapable }
 		}
 		trigger_if = {
 			limit = {

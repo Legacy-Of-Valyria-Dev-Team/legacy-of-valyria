@@ -1,0 +1,679 @@
+﻿character_title_visible = {
+	OR = {
+		exists = primary_title # Ruler
+		any_spouse = { # Spouse
+			even_if_dead = yes
+			exists = primary_title
+		}
+		is_royal_scion = yes # Scion
+		AND = { # Non-royal Scion
+			NOR = {
+				exists = primary_title
+				any_spouse = {
+					even_if_dead = yes
+					exists = primary_title
+				}
+				has_trait = bastard
+				AND = { # Maester
+					OR = {
+						has_trait = maester
+						has_trait = maester_historical
+					}
+					NOT = { exists = primary_title }
+				}
+				AND = { # Silent Sister
+					has_trait = silent_sister
+					NOT = { exists = primary_title }
+				}
+			}
+			any_parent = {
+				even_if_dead = yes
+				OR = {
+					any_parent = {
+						even_if_dead = yes
+						ruler_is_royal = yes
+					}
+					exists = primary_title
+				}
+			}
+			is_female = yes
+			NOT = { exists = scope:bastardy }
+		}
+		AND = { # Knight
+			NOR = {
+				trigger_if = {
+					limit = { exists = primary_title }
+					ruler_is_royal = yes
+				}
+				any_spouse = {
+					even_if_dead = yes
+					ruler_is_royal = yes
+				}
+				is_royal_scion = yes
+			}
+			is_agot_knight_trigger = yes
+		}
+		AND = { # Maester
+			OR = {
+				has_trait = maester
+				has_trait = maester_historical
+			}
+			NOT = { exists = primary_title }
+		}
+		AND = { # Silent Sister
+			has_trait = silent_sister
+			NOT = { exists = primary_title }
+		}
+		AND = { # Septon/Septa
+			has_trait = septon
+			NOT = { primary_title ?= title:k_the_most_devout }
+		}
+		AND = { # Councillor
+			is_councillor = yes
+			is_human = yes
+			liege.primary_title.tier ?= tier_hegemony
+		}
+	}
+	NOR = {
+		primary_title ?= title:k_the_most_devout
+		has_trait = line_of_char
+		this = character:Warg_King_1
+		this = character:NightsQueen_1
+	}
+}
+
+character_is_regent = {
+	is_independent_ruler = no
+	NOR = {
+		primary_title ?= title:k_the_most_devout
+		has_trait = line_of_char
+		this = character:Warg_King_1
+		this = character:NightsQueen_1
+		AND = { # Maester
+			OR = {
+				has_trait = maester
+				has_trait = maester_historical
+			}
+			NOT = { exists = primary_title }
+		}
+		AND = { # Silent Sister
+			has_trait = silent_sister
+			NOT = { exists = primary_title }
+		}
+		AND = { # Septon/Septa
+			has_trait = septon
+			NOT = { primary_title ?= title:k_the_most_devout }
+		}
+		primary_title ?= title:d_kingsguard
+	}
+	liege ?= {
+		OR = {
+			has_government = lp_feudal_government
+			has_government = feudal_government
+		}
+	}
+	is_diarch_of_target = liege
+	OR = {
+		exists = primary_title
+		any_spouse = {
+			even_if_dead = yes
+			exists = primary_title
+		}
+		is_royal_scion = yes
+		AND = { # Councillor
+			is_councillor = yes
+			is_human = yes
+			liege.primary_title.tier ?= tier_hegemony
+			NOR = {
+				AND = { # Knight
+					NOR = {
+						trigger_if = {
+							limit = { exists = primary_title }
+							ruler_is_royal = yes
+						}
+						any_spouse = {
+							even_if_dead = yes
+							ruler_is_royal = yes
+						}
+						is_royal_scion = yes
+					}
+					is_agot_knight_trigger = yes
+				}
+				AND = { # Maester
+					OR = {
+						has_trait = maester
+						has_trait = maester_historical
+					}
+					NOT = { exists = primary_title }
+				}
+				AND = { # Silent Sister
+					has_trait = silent_sister
+					NOT = { exists = primary_title }
+				}
+				AND = { # Septon/Septa
+					has_trait = septon
+					NOT = { primary_title ?= title:k_the_most_devout }
+				}
+			}
+		}
+	}
+}
+
+character_is_dowager = {
+	NOT = { ruler_is_royal = yes }
+	character_title_visible = yes
+	character_is_regent = no
+	is_female = yes
+	is_alive = yes
+	trigger_if = {
+		limit = {
+			any_spouse = {
+				even_if_dead = yes
+				exists = this
+				is_alive = no
+				ruler_is_royal = yes
+				NOT = {
+					any_child = {
+						is_alive = yes
+						primary_title ?= prev.primary_title
+						agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
+					}
+				}
+			}
+			NOT = {
+				any_spouse = {
+					even_if_dead = yes
+					exists = this
+					is_alive = yes
+					ruler_is_royal = yes
+				}
+			}
+		}
+		trigger_if = {
+			limit = { is_royal_scion = yes }
+			trigger_if = {
+				limit = {
+					primary_spouse ?= {
+						exists = primary_title
+						is_alive = no
+					}
+				}
+				primary_spouse ?= {
+					ruler_is_royal = yes
+					OR = {
+						agot_is_historical_government_trigger = { GOV = lp_feudal }
+						agot_is_historical_government_trigger = { GOV = feudal }
+					}
+				}
+			}
+			trigger_else = {
+				any_spouse = {
+					even_if_dead = yes
+					ruler_is_royal = yes
+					OR = {
+						agot_is_historical_government_trigger = { GOV = lp_feudal }
+						agot_is_historical_government_trigger = { GOV = feudal }
+					}
+				}
+			}
+		}
+		trigger_else_if = {
+			limit = {
+				trigger_if = {
+					limit = {
+						primary_spouse ?= {
+							exists = primary_title
+							is_alive = no
+						}
+					}
+					primary_spouse ?= {
+						ruler_is_royal = yes
+						OR = {
+							agot_is_historical_government_trigger = { GOV = lp_feudal }
+							agot_is_historical_government_trigger = { GOV = feudal }
+						}
+					}
+				}
+				trigger_else = {
+					any_spouse = {
+						even_if_dead = yes
+						ruler_is_royal = yes
+						OR = {
+							agot_is_historical_government_trigger = { GOV = lp_feudal }
+							agot_is_historical_government_trigger = { GOV = feudal }
+						}
+					}
+				}
+			}
+			always = yes
+		}
+		trigger_else = { always = no }
+	}
+	trigger_else = { always = no }
+}
+
+is_titled_character = {
+	OR = {
+		exists = scope:ruler_status
+		exists = scope:spouse_status
+		exists = scope:scion_status
+		exists = scope:knighthood
+		exists = scope:maester
+		exists = scope:silent_sister
+		exists = scope:septon
+		exists = scope:councillor
+	}
+	is_title_hidden_character = no
+	is_human = yes
+}
+
+is_title_hidden_character = {
+	OR = {
+		exists = scope:high_septon
+		exists = scope:name_is_title
+		has_trait = line_of_char
+	}
+}
+
+is_titled_ruler_or_spouse = {
+	OR = {
+		scope:ruler_status ?= flag:royal
+		scope:spouse_status ?= flag:royal
+		AND = {
+			OR = {
+				scope:ruler_status ?= flag:active
+				scope:spouse_status ?= flag:active
+			}
+			trigger_if = {
+				limit = {
+					NOR = {
+						agot_localization_government_trigger = { GOV = nights_watch SPOUSE_SCOPE = scope:spouse_scope }
+						agot_localization_government_trigger = { GOV = first_ranger SPOUSE_SCOPE = scope:spouse_scope }
+						agot_localization_government_trigger = { GOV = theocracy SPOUSE_SCOPE = scope:spouse_scope }
+						agot_localization_government_trigger = { GOV = the_citadel SPOUSE_SCOPE = scope:spouse_scope }
+					}
+					scope:scion_status ?= flag:royal
+				}
+				trigger_if = {
+					limit = { exists = scope:scion_1_title }
+					primary_title ?= scope:scion_1_title
+				}
+				trigger_else_if = {
+					limit = { exists = scope:scion_2_title }
+					primary_title ?= scope:scion_2_title
+				}
+				trigger_else_if = {
+					limit = { exists = scope:scion_3_title }
+					primary_title ?= scope:scion_3_title
+				}
+				trigger_else = { always = no }
+			}
+		}
+	}
+}
+
+agot_localization_government_trigger = {
+	trigger_if = {
+		limit = { exists = $SPOUSE_SCOPE$ }
+		trigger_if = {
+			limit = {
+				NOR = {
+					ruler_is_royal = yes
+					$SPOUSE_SCOPE$.primary_title ?= {
+						tier < prev.primary_title.tier
+					}
+				}
+			}
+			$SPOUSE_SCOPE$ ?= {
+				agot_ruler_is_government_trigger = { GOV = $GOV$ }
+			}
+		}
+		trigger_else = {
+			agot_ruler_is_government_trigger = { GOV = $GOV$ }
+		}
+	}
+	trigger_else = {
+		agot_ruler_is_government_trigger = { GOV = $GOV$ }
+	}
+}
+
+agot_ruler_is_government_trigger = {
+	trigger_if = {
+		limit = { is_alive = yes }
+		OR = {
+			has_government = $GOV$_government
+			trigger_if = {
+				limit = { has_variable = temp_government_type }
+				var:temp_government_type ?= flag:$GOV$
+			}
+		}
+	}
+	trigger_else = {
+		trigger_if = {
+			limit = { agot_is_in_historical_government_list = yes }
+			agot_is_historical_government_trigger = { GOV = $GOV$ }
+		}
+		trigger_else = { has_government = $GOV$_government }
+	}
+}
+
+agot_is_historical_government_trigger = {
+	save_temporary_scope_as = temp_scope
+	is_target_in_global_variable_list = { name = $GOV$_government_list target = scope:temp_scope }
+}
+
+agot_is_in_historical_government_list = {
+	save_temporary_scope_as = temp_scope
+	OR = {
+		is_target_in_global_variable_list = { name = lp_feudal_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = feudal_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = administrative_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = republic_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = silent_sisterhood_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = kingsguard_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = nights_watch_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = first_ranger_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = the_citadel_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = theocracy_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = pirate_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = pirate_no_dlc_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = tribal_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = clan_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = landless_adventurer_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = command_government_list target = scope:temp_scope }
+		is_target_in_global_variable_list = { name = ruins_government_list target = scope:temp_scope }
+		# LoV Added
+		is_target_in_global_variable_list = { name = oligarchic_government_list target = scope:temp_scope }
+	}
+}
+
+agot_government_has_spousal_titles = {
+	NOR = {
+		agot_ruler_is_government_trigger = { GOV = kingsguard }
+		agot_ruler_is_government_trigger = { GOV = nights_watch }
+		agot_ruler_is_government_trigger = { GOV = first_ranger }
+		agot_ruler_is_government_trigger = { GOV = the_citadel }
+		agot_ruler_is_government_trigger = { GOV = command }
+		agot_ruler_is_government_trigger = { GOV = ruins }
+	}
+}
+
+ruler_is_royal = {
+	exists = primary_title
+	trigger_if = { # if char is dead check inactive trait
+		limit = { is_alive = no }
+		OR = {
+			has_inactive_trait = agot_was_king
+			has_inactive_trait = agot_was_prince
+		}
+	}
+	trigger_else = {
+		OR = {
+			trigger_if = {
+				limit = { primary_title.tier ?= tier_hegemony }
+				agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
+			}
+			has_character_flag = agot_claimant_king
+			AND = {
+				agot_flavour_is_prince_rhoynish_trigger = { CHAR = this }
+				agot_flavour_is_lord_in_westeros_trigger = { CHAR = this }
+				agot_flavour_palatinate_is_kingdom_trigger = { CHAR = this }
+			}
+			AND = {
+				agot_flavour_is_prince_dragonstone_trigger = { CHAR = this }
+				primary_title ?= title:k_dragonstone
+			}
+			agot_flavour_palatinate_is_kingdom_trigger = { CHAR = this }
+			AND = {
+				primary_title.tier >= tier_empire
+				agot_flavour_is_prince_rhoynish_trigger = { CHAR = this }
+			}
+			primary_title ?= title:e_blackfyre_rebellion
+			AND = {
+				historical_independent_ruler = yes
+				primary_title.tier >= tier_kingdom
+				OR = {
+					agot_ruler_is_government_trigger = { GOV = lp_feudal }
+					agot_ruler_is_government_trigger = { GOV = feudal }
+					agot_ruler_is_government_trigger = { GOV = pirate }
+					agot_ruler_is_government_trigger = { GOV = pirate_no_dlc }
+				}
+			}
+		}
+	}
+}
+
+spouse_is_royal = {
+	exists = scope:spouse_scope
+	scope:spouse_scope ?= { ruler_is_royal = yes }
+	trigger_if = {
+		limit = {
+			scope:spouse_scope ?= { primary_title = title:k_dragonstone }
+			agot_flavour_is_prince_dragonstone_trigger = { CHAR = this }
+		}
+		house ?= scope:spouse_scope.house
+	}
+}
+
+parent_is_royal = {
+	exists = $PARENT$
+	$PARENT$ ?= { ruler_is_royal = yes }
+	NOT = { $PARENT$ = { primary_title = title:k_dragonstone } }
+	NOR = {
+		has_trait = bastard
+		has_trait = bastard_founder
+		agot_bastard_surname_trigger = yes
+	}
+}
+
+grandparent_is_royal = {
+	any_close_family_member = {
+		even_if_dead = yes
+		exists = this
+		is_grandparent_of = $SCOPE$
+		ruler_is_royal = yes
+		house = $SCOPE$.house
+		NOT = { primary_title = title:k_dragonstone }
+	}
+	$SCOPE$ ?= {
+		NOR = {
+			has_trait = bastard
+			has_trait = bastard_founder
+			agot_bastard_surname_trigger = yes
+		}
+		NOT = {
+			any_parent = {
+				even_if_dead = yes
+				has_trait = line_of_char
+			}
+		}
+	}
+}
+
+sibling_is_royal = {
+	$SCOPE$ = {
+		any_sibling = {
+			even_if_dead = yes
+			exists = this
+			ruler_is_royal = yes
+			NOT = { primary_title = title:k_dragonstone }
+			any_ancestor = {
+				even_if_dead = yes
+				exists = this
+				ruler_is_royal = yes
+				house ?= $SIBLING$.house
+				primary_title ?= $SIBLING$.primary_title
+			}
+		}
+		NOR = {
+			has_trait = bastard
+			has_trait = bastard_founder
+			agot_bastard_surname_trigger = yes
+		}
+	}
+}
+
+parent_sibling_is_royal = {
+	$SCOPE$ = {
+		any_parent = {
+			even_if_dead = yes
+			exists = this
+			any_sibling = {
+				even_if_dead = yes
+				exists = this
+				NOT = { primary_title = title:k_dragonstone }
+				ruler_is_royal = yes
+				any_ancestor = {
+					even_if_dead = yes
+					exists = this
+					ruler_is_royal = yes
+					house ?= $SIBLING$.house
+					primary_title ?= $SIBLING$.primary_title
+				}
+			}
+		}
+		NOR = {
+			has_trait = bastard
+			has_trait = bastard_founder
+			agot_bastard_surname_trigger = yes
+		}
+	}
+}
+
+great_grandparent_is_royal = {
+	any_ancestor = {
+		even_if_dead = yes
+		exists = this
+		is_great_grandparent_of = $SCOPE$
+		ruler_is_royal = yes
+		NOT = { is_parent_of = $SCOPE$ }
+		NOT = { primary_title = title:k_dragonstone }
+		any_child = {
+			even_if_dead = yes
+			exists = this
+			is_grandparent_of = $SCOPE$
+			ruler_is_royal = yes
+			house ?= $SCOPE$.house
+			primary_title ?= title:k_dragonstone
+		}
+		house ?= $SCOPE$.house
+	}
+	$SCOPE$ ?= {
+		NOR = {
+			has_trait = bastard
+			has_trait = bastard_founder
+			agot_bastard_surname_trigger = yes
+		}
+		NOT = {
+			any_parent = {
+				even_if_dead = yes
+				has_trait = line_of_char
+			}
+		}
+	}
+}
+
+historical_independent_ruler = {
+	save_temporary_scope_as = temp_ruler_scope
+	OR = {
+		agot_is_independent_ruler = yes
+		has_character_flag = agot_claimant_king
+		is_target_in_global_variable_list = { name = historical_independent_ruler_list target = scope:temp_ruler_scope }
+	}
+}
+
+is_royal_scion_by_birth = {
+	$SCOPE$ = {
+		OR = {
+			### PARENT CHECK ###
+			parent_is_royal = { PARENT = $SCOPE$.father }
+			parent_is_royal = { PARENT = $SCOPE$.mother }
+
+			### GRANDPARENT CHECK ###
+			any_close_family_member = {
+				even_if_dead = yes
+				exists = this
+				is_grandparent_of = $SCOPE$
+				trigger_if = {
+					limit = { primary_title ?= title:k_dragonstone }
+					always = no
+				}
+				trigger_else = {
+					ruler_is_royal = yes
+				}
+				house ?= $SCOPE$.house
+			}
+		}
+	}
+}
+
+is_bestowed_royal_scion = {
+	### BESTOWAL ###
+	character:Ruin_Empress ?= {
+		any_owned_story = {
+			type = scion_title_data
+			has_variable_list = scoped_scions_list
+			is_target_in_variable_list = { name = scoped_scions_list target = $SCOPE$ }
+		}
+	}
+}
+
+is_royal_scion = {
+	save_temporary_scope_as = temp_scion_scope
+	scope:temp_scion_scope ?= {
+		NOR = {
+			has_trait = bastard
+			has_trait = bastard_founder
+			agot_bastard_surname_trigger = yes
+		}
+		OR = {
+			is_royal_scion_by_birth = { SCOPE = scope:temp_scion_scope }
+			is_bestowed_royal_scion = { SCOPE = scope:temp_scion_scope }
+		}
+	}
+}
+
+is_elligible_for_scion_title = {
+	trigger_if = {
+		limit = { is_alive = no }
+		days_since_death < days_since_conquest
+	}
+	NOR = {
+		this = character:Targaryen_69
+		this = character:Targaryen_70
+		this = character:Targaryen_70_B
+	}
+}
+
+has_postnominal_nickname = { # Saved for later
+	always = no
+}
+
+can_have_surname_trigger = {
+	AND = {
+		exists = scope:fullname
+		scope:fullname ?= yes
+		trigger_if = {
+			limit = { scope:bastardy ?= yes }
+			NOR = {
+				exists = scope:maester
+				exists = scope:silent_sister
+				exists = scope:septon
+			}
+		}
+		trigger_else_if = { # For Baelor
+			limit = { primary_title.tier ?= tier_hegemony }
+			always = yes
+		}
+		trigger_else = {
+			NOR = {
+				exists = scope:lowborn
+				exists = scope:maester
+				exists = scope:landed_maester
+				exists = scope:silent_sister
+				exists = scope:landed_silent_sister
+				exists = scope:septon
+			}
+		}
+	}
+}
