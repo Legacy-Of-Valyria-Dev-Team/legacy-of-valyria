@@ -1,0 +1,233 @@
+﻿namespace = cob_decisions
+
+## Events
+## Call for the Dragonlords 0001-0002
+
+cob_decisions.0001 = { #Summon the Landless
+	type = character_event
+	title = cob_decisions.0001.t
+	desc = cob_decisions.0001.desc
+
+	override_background = {
+		reference = throne_room
+	}
+	theme = realm
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	lower_right_portrait = scope:dragonlord_of_valyria
+
+	immediate = {
+		scope:actor = {
+			save_scope_as = dragonlord_of_valyria
+		}
+		root = {
+			save_scope_as = dragonlord
+		}
+	}
+
+	option = { #Sure thing
+		name = cob_decisions.0001.a
+		if = { #Gather the Dragonlords
+			limit = {
+				scope:dragonlord = {
+					NOT = { is_courtier_of = scope:dragonlord_of_valyria }
+				}
+			}
+			scope:dragonlord_of_valyria = {
+				add_courtier = scope:dragonlord
+				trigger_event = {
+					id = cob_decisions.0002
+					days = 1
+				}
+			}
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = -75
+				scope:dragonlord = {
+					has_trait = ambitious
+				}
+			}
+			modifier = {
+				add = 50
+				scope:dragonlord_of_valyria = {
+					has_trait = dragonrider
+				}
+			}
+			modifier = {
+				add = 10
+				scope:dragonlord_of_valyria = {
+					has_title = title:c_valyria
+				}
+			}
+			modifier = {
+				add = 20
+				scope:dragonlord_of_valyria = {
+					has_title = title:d_valyria
+				}
+			}
+			modifier = {
+				add = 30
+				scope:dragonlord_of_valyria = {
+					has_title = title:k_valyria
+				}
+			}
+			modifier = {
+				add = 50
+				scope:dragonlord_of_valyria = {
+					has_title = title:e_valyria
+				}
+			}
+			modifier = {
+				add = 100
+				scope:dragonlord_of_valyria = {
+					has_title = title:h_valyrian_freehold
+				}
+			}
+			modifier = {
+				add = 40
+				scope:dragonlord = {
+					has_relation_friend = scope:dragonlord_of_valyria
+				}
+				desc = WE_ARE_FRIENDS
+			}
+			modifier = {
+				add = 40
+				scope:dragonlord = {
+					has_trait = craven
+				}
+			}
+			modifier = {
+				add = 30
+				scope:dragonlord = {
+					has_relation_friend = scope:dragonlord_of_valyria
+				}
+			}
+			modifier = {
+				add = 60
+				scope:dragonlord = {
+					has_relation_best_friend = scope:dragonlord_of_valyria
+				}
+			}
+			opinion_modifier = {
+				who = scope:dragonlord
+				opinion_target = scope:dragonlord_of_valyria
+				multiplier = 0.5
+			}
+		}
+	}
+
+	option = { #Naw fam
+		name = cob_decisions.0001.b
+
+		scope:dragonlord_of_valyria = {
+			trigger_event = {
+				id = cob_decisions.0003
+				days = 20
+			}
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 1000
+				scope:dragonlord_of_valyria = {
+					NOT = {
+						has_trait = dragonrider
+					}
+				}
+			}
+			modifier = {
+				add = 10
+				scope:dragonlord_of_valyria = {
+					NOT = {
+						has_title = title:d_valyria
+					}
+				}
+			}
+			modifier = {
+				add = 20
+				scope:dragonlord_of_valyria = {
+					NOT = {
+						has_title = title:k_valyria
+					}
+				}
+			}
+			modifier = {
+				add = 30
+				scope:dragonlord_of_valyria = {
+					NOT = {
+						has_title = title:e_valyria
+					}
+				}
+			}
+			modifier = {
+				add = 40
+				scope:dragonlord_of_valyria = {
+					NOT = {
+						has_title = title:h_valyrian_freehold
+					}
+				}
+			}
+			opinion_modifier = {
+				who = scope:dragonlord
+				opinion_target = scope:dragonlord_of_valyria
+				multiplier = -1
+			}
+			modifier = {
+				add = 60
+				scope:dragonlord = {
+					has_relation_rival = scope:dragonlord_of_valyria
+				}
+			}
+		}	
+	}
+}
+
+cob_decisions.0002 = { #Reply Positive
+	type = character_event
+	title = cob_decisions.0002.t
+	desc = cob_decisions.0002.desc
+
+	override_background = {
+		reference = throne_room
+	}
+	theme = realm
+	left_portrait = {
+		character = root
+		animation = personality_zealous
+	}
+	lower_right_portrait = scope:dragonlord
+
+	immediate = {
+	}
+
+	option = {
+		name = cob_decisions.0002.a
+	}
+}
+
+cob_decisions.0003 = { #Reply Negative
+	type = character_event
+	title = cob_decisions.0003.t
+	desc = cob_decisions.0003.desc
+
+	override_background = {
+		reference = throne_room
+	}
+	theme = realm
+	left_portrait = {
+		character = root
+		animation = personality_worry
+	}
+	lower_right_portrait = scope:dragonlord
+
+	immediate = {
+	}
+
+	option = {
+		name = cob_decisions.0003.a
+	}
+}

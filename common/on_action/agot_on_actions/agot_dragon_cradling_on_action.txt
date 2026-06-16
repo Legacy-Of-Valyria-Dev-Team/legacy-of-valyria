@@ -57,12 +57,32 @@ on_dragon_cooldown_pass = {
 										geographical_region = world_westeros_the_wall
 									}
 								}
+								artifact_owner.liege_or_court_owner.domicile.domicile_location ?= {
+									OR = {
+										geographical_region = world_westeros_beyond_the_wall
+										geographical_region = world_westeros_the_wall
+									}
+								}
 								AND = {
 									exists = artifact_owner.liege_or_court_owner
-									artifact_owner.liege_or_court_owner.capital_county.title_province ?= {
-										OR = {
-											geographical_region = world_westeros_beyond_the_wall
-											geographical_region = world_westeros_the_wall
+									OR = {
+										AND = {
+											exists = artifact_owner.liege_or_court_owner.capital_county.title_province
+											artifact_owner.liege_or_court_owner.capital_county.title_province ?= {
+												OR = {
+													geographical_region = world_westeros_beyond_the_wall
+													geographical_region = world_westeros_the_wall
+												}
+											}
+										}
+										AND = {
+											exists = artifact_owner.liege_or_court_owner.domicile
+											artifact_owner.liege_or_court_owner.domicile.domicile_location ?= {
+												OR = {
+													geographical_region = world_westeros_beyond_the_wall
+													geographical_region = world_westeros_the_wall
+												}
+											}
 										}
 									}
 								}

@@ -1,0 +1,197 @@
+﻿namespace = lv_find_the_dragonblood_decision
+
+#Show me the Blood
+lv_find_the_dragonblood_decision.0001 = { # find the dragonblood houses
+    type = character_event
+    title = lv_find_the_dragonblood_decision.0001.t
+    desc = lv_find_the_dragonblood_decision.0001.desc
+    theme = dragon
+
+    left_portrait = {
+        character = scope:advisor
+        animation = throne_room_writer
+    }
+
+    widget = {
+        is_shown = {
+            is_ai = no
+        }
+        gui = "lv_find_dragonblood"
+        container = "custom_widgets_container"
+    }
+
+    immediate = { #Doing it layered like this orders the characters nicely
+        if = {
+            limit = {
+                employs_court_position = maester_court_position
+            }
+            random_court_position_holder ={
+                type = maester_court_position
+                save_scope_as = advisor
+            }
+        }
+        else_if = {
+            limit = {
+                any_councillor = {
+                    exists = yes
+                }
+            }
+            random_councillor = {
+                save_scope_as = advisor
+            }
+        }
+        else = {
+            root = {
+                save_scope_as = advisor
+            }
+        }
+        every_living_character = {
+                limit = {
+                    AND = {
+                        is_house_head = yes
+                        dynasty = { has_dynasty_modifier = valyrian_heritage_dynasty_modifier }
+                    }
+                }
+                root = {
+                    add_to_variable_list = {
+                        name = dragonblood_dynasty
+                        target = prev
+                    }
+                }
+        }
+    }
+
+    option = {
+        name = lv_find_the_dragonblood_decision.0001.a
+        clear_variable_list = dragonblood_dynasty
+    }
+}
+
+lv_find_the_dragonblood_decision.0002 = { # Find the dragonrider houses
+    type = character_event
+    title = lv_find_the_dragonblood_decision.0002.t
+    desc = lv_find_the_dragonblood_decision.0002.desc
+    theme = dragon
+
+    left_portrait = {
+        character = scope:advisor
+        animation = throne_room_writer
+    }
+
+    widget = {
+        is_shown = {
+            is_ai = no
+        }
+        gui = "lv_find_dragonblood"
+        container = "custom_widgets_container"
+    }
+
+    immediate = { #Doing it layered like this orders the characters nicely
+        if = {
+            limit = {
+                employs_court_position = maester_court_position
+            }
+            random_court_position_holder ={
+                type = maester_court_position
+                save_scope_as = advisor
+            }
+        }
+        else_if = {
+            limit = {
+                any_councillor = {
+                    exists = yes
+                }
+            }
+            random_councillor = {
+                save_scope_as = advisor
+            }
+        }
+        else = {
+            root = {
+                save_scope_as = advisor
+            }
+        }
+        every_living_character = {
+                limit = {
+                    AND = {
+                        is_house_head = yes
+                        house = { has_house_modifier = dragonrider_house_modifier }
+                    }
+                }
+                root = {
+                    add_to_variable_list = {
+                        name = dragonblood_dynasty
+                        target = prev
+                    }
+                }
+        }
+    }
+
+    option = {
+        name = lv_find_the_dragonblood_decision.0002.a
+        clear_variable_list = dragonblood_dynasty
+    }
+}
+
+lv_find_the_dragonblood_decision.0003 = { # List Dragonriders
+    type = character_event
+    title = lv_find_the_dragonblood_decision.0003.t
+    desc = lv_find_the_dragonblood_decision.0003.desc
+    theme = dragon
+
+    left_portrait = {
+        character = scope:advisor
+        animation = throne_room_writer
+    }
+
+    widget = {
+        is_shown = {
+            is_ai = no
+        }
+        gui = "lv_find_dragonblood"
+        container = "custom_widgets_container"
+    }
+
+    immediate = { #Doing it layered like this orders the characters nicely
+        if = {
+            limit = {
+                employs_court_position = maester_court_position
+            }
+            random_court_position_holder ={
+                type = maester_court_position
+                save_scope_as = advisor
+            }
+        }
+        else_if = {
+            limit = {
+                any_councillor = {
+                    exists = yes
+                }
+            }
+            random_councillor = {
+                save_scope_as = advisor
+            }
+        }
+        else = {
+            root = {
+                save_scope_as = advisor
+            }
+        }
+        every_living_character = {
+                limit = {
+                    is_current_dragonrider = yes
+                }
+                root = {
+                    add_to_variable_list = {
+                        name = dragonrider_character
+                        target = prev
+                    }
+                }
+        }
+    }
+
+    option = {
+        name = lv_find_the_dragonblood_decision.0003.a
+        clear_variable_list = dragonrider_character
+    }
+}

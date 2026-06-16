@@ -9,6 +9,7 @@
 		agot_faegon_invasion
 		agot_banking
 		agot_dragonrider_forced_duel_list_yearly
+		agot_grant_kingdom_titles
 	}
 }
 
@@ -240,6 +241,7 @@ agot_yearly_playable_pulse = {
 	on_actions = {
 		on_wall_election
 		on_yearly_btw_maintenance
+		pirate_ai_story_maintenance
 	}
 	effect = {
 		if = {
@@ -612,65 +614,69 @@ agot_yearly_dragon_cull = {
 			49 = {}
 			1 = {
 				if = { # Owned dragons
-					limit = {
-						has_character_flag = owned_dragon
-					}
-					random_list = { # Ways to kill owned dragons
-						1 = { # Old age
-							trigger = {
-								age > 200
-								#LEGACY OF VALYRIA ADDED
-								NOR = {
-									has_trait = immortal
-									liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
-								}
-							}
-							death = { death_reason = death_old_age }
+					limit = { has_character_flag = owned_dragon }
+					if = {
+						limit = {
+							age > 120
+							has_trait = dragon_depressed
 						}
-						1 = { # Flew away to Valyria
-							trigger = {
-								age > 80
-								NOT = { has_character_flag = in_dragonpit }
-								NOT = { exists = var:current_rider }
-								#LEGACY OF VALYRIA ADDED
-								NOR = {
-									has_trait = immortal
-									liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
-								}
+						death = { death_reason = death_depressed }
+					}
+					else_if = {
+						limit = {
+							age > 200
+							#LEGACY OF VALYRIA ADDED
+							NOR = {
+								has_trait = immortal
+								liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
 							}
-							random_list = {
-								75 = { death = { death_reason = death_flew_away_to_valyria } }
-								25 = { death = { death_reason = death_flew_away_to_sothoryos } }
+						}
+						death = { death_reason = death_old_age }
+					}
+					else_if = {
+						limit = {
+							age > 80
+							NOT = { has_character_flag = in_dragonpit }
+							NOT = { exists = var:current_rider }
+							#LEGACY OF VALYRIA ADDED
+							NOR = {
+								has_trait = immortal
+								liege_or_court_owner.capital_province ?= { geographical_region = world_valyria }
 							}
+						}
+						random_list = {
+							75 = { death = { death_reason = death_flew_away_to_valyria } }
+							25 = { death = { death_reason = death_flew_away_to_sothoryos } }
 						}
 					}
 				}
 				else = { # Wild dragons
-					random_list = { # Ways to kill wild dragons
-						1 = { # Old age
-							trigger = {
-								age > 200
-								#LEGACY OF VALYRIA ADDED
-								NAND = { # Firewyrms don't die as long as they're in Valyria
-									has_trait = firewyrm
-									location ?= { geographical_region = world_valyria }
-								}
-							}
-							death = { death_reason = death_old_age }
+					if = {
+						limit = {
+							age > 120
+							has_trait = dragon_depressed
 						}
-						1 = { # Flew away
-							trigger = {
-								age > 80
-								#LEGACY OF VALYRIA ADDED
-								NAND = { # Firewyrms don't die as long as they're in Valyria
-									has_trait = firewyrm
-									location ?= { geographical_region = world_valyria }
-								}
+						death = { death_reason = death_depressed }
+					}
+					else_if = {
+						limit = {
+							age > 200
+							#LEGACY OF VALYRIA ADDED
+							NAND = { # Firewyrms don't die as long as they're in Valyria
+								has_trait = firewyrm
+								location ?= { geographical_region = world_valyria }
 							}
-							random_list = {
-								75 = { death = { death_reason = death_flew_away_to_valyria } }
-								25 = { death = { death_reason = death_flew_away_to_sothoryos } }
-							}
+						}
+						death = { death_reason = death_old_age }
+					}
+					else_if = {
+						limit = {
+							age > 80
+							NOT = { has_trait = firewyrm } # Firewyrms don't fly lol
+						}
+						random_list = {
+							75 = { death = { death_reason = death_flew_away_to_valyria } }
+							25 = { death = { death_reason = death_flew_away_to_sothoryos } }
 						}
 					}
 				}
@@ -681,13 +687,13 @@ agot_yearly_dragon_cull = {
 
 agot_faegon_invasion = {
 	trigger = {
-		exists = title:e_the_iron_throne.holder
+		exists = title:h_the_iron_throne.holder
 		has_game_rule = agot_faegon_invasion_enabled
 		NOR = {
-			has_game_rule = agot_shatter_duchies
-			has_game_rule = agot_shatter_duchies
-			has_game_rule = agot_shatter_petty_kingdoms
-			has_game_rule = agot_shatter_kingdoms
+			has_game_rule = agot_shatter_to_counties
+			has_game_rule = agot_shatter_to_counties
+			has_game_rule = agot_shatter_to_petty_kingdoms
+			has_game_rule = agot_shatter_to_duchies
 			exists = global_var:faegon_invasion
 		}
 	}
@@ -721,7 +727,7 @@ agot_jon_snow_learns = {
 			chance = 10 # MTTH 10 years
 			every_ruler = {
 				limit = {
-					is_character_stark_7 = yes
+					has_character_flag = is_Stark_7
 					exists = real_father
 					NOT = { father = real_father }
 				}
@@ -778,7 +784,6 @@ agot_citadel_find_lost_maesters = {
 }
 
 #5 Year Pulse Events which exist to create more instabiliy in enormous realms
-
 agot_instability = {
 	random_events = {
 		chance_of_no_event = {
@@ -814,16 +819,13 @@ agot_form_special_titles = {
 	}
 }
 
-
 #Used for War of Succession
 agot_king_is_dying = {
 	effect = {
 		every_ruler = {
 			limit = {
-				highest_held_title_tier = tier_empire
-				is_landed = yes
+				agot_eligible_succession_war_king = yes
 				health < death_chance_starts_health
-				NOT = { government_has_flag = government_is_administrative }
 			}
 			add_character_flag = king_is_dying
 			if = {
@@ -915,6 +917,22 @@ agot_legitimate_house_maintenance = {
 	}
 }
 
+pirate_ai_story_maintenance = {
+	trigger = {
+		is_ai = yes
+		is_landed = no
+		government_has_flag = government_is_pirate
+		NOT = {
+			any_owned_story = {
+				story_type = agot_story_landless_pirate_ai
+			}
+		}
+	}
+	effect = {
+		create_story = agot_story_landless_pirate_ai
+	}
+}
+
 agot_dragonrider_forced_duel_list_yearly = {
 	trigger = {
 		exists = title:b_ruins.holder
@@ -926,6 +944,171 @@ agot_dragonrider_forced_duel_list_yearly = {
 				id = agot_dragon_combat.1012
 				months = 6
 			}
+		}
+	}
+}
+
+agot_grant_kingdom_titles = {
+	trigger = {
+		OR = {
+			NOT = { exists = title:e_dorne.holder }
+			NOT = { exists = title:e_the_stormlands.holder }
+			NOT = { exists = title:e_the_reach.holder }
+			NOT = { exists = title:e_the_westerlands.holder }
+			NOT = { exists = title:e_the_riverlands.holder }
+			NOT = { exists = title:e_the_vale.holder }
+			NOT = { exists = title:e_the_iron_islands.holder }
+			NOT = { exists = title:e_the_north.holder }
+		}
+		title:h_the_iron_throne.holder ?= {
+			OR = {
+				has_government = feudal_government
+				has_government = lp_feudal_government
+			}
+			is_ai = yes
+			is_at_war = no
+		}
+	}
+	effect = {
+		title:h_the_iron_throne.holder = { save_scope_as = king }
+		if = {
+			limit = { title:e_dorne = { agot_can_form_lord_paramountcy = yes } }
+			title:e_dorne = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_stormlands = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_stormlands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_reach = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_reach = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_westerlands = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_westerlands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_riverlands = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_riverlands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_vale = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_vale = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_iron_islands = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_iron_islands = { add_to_list = lord_paramouncies }
+		}
+		if = {
+			limit = { title:e_the_north = { agot_can_form_lord_paramountcy = yes } }
+			title:e_the_north = { add_to_list = lord_paramouncies }
+		}
+		every_in_list = {
+			list = lord_paramouncies
+			save_scope_as = kingdom_title_to_grant
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			scope:kingdom_title_to_grant = {
+				change_title_holder = {
+					holder = scope:king
+					change = scope:change
+				}
+			}
+			resolve_title_and_vassal_change = scope:change
+			if = {
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:king = scope:kingdom_title_to_grant.var:legitimate_house.house_head }
+					scope:kingdom_title_to_grant.var:legitimate_house.house_head = {
+						is_vassal_or_below_of = scope:king
+						is_landed = yes
+					}
+				}
+				scope:kingdom_title_to_grant.var:legitimate_house.house_head = { save_scope_as = new_holder }
+			}
+			else_if = {
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:kingdom_title_to_grant.var:legitimate_house.house_head = { is_vassal_or_below_of = scope:king } }
+					scope:kingdom_title_to_grant.title_capital_county.holder = {
+						liege = scope:king
+					}
+				}
+				scope:kingdom_title_to_grant.title_capital_county.holder = { save_scope_as = new_holder }
+			}
+			else_if = {
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:kingdom_title_to_grant.var:legitimate_house.house_head = { is_vassal_or_below_of = scope:king } }
+					scope:kingdom_title_to_grant.title_capital_county.holder = {
+						top_liege = scope:king
+						NOT = { liege = scope:king }
+					}
+				}
+				scope:kingdom_title_to_grant.title_capital_county.holder.liege = { save_scope_as = new_holder }
+			}
+			else_if = { # Not needed on current branch, but leaving for Hegemony Branch
+				limit = {
+					exists = scope:kingdom_title_to_grant.var:legitimate_house.house_head
+					NOT = { scope:kingdom_title_to_grant.var:legitimate_house.house_head = { is_vassal_or_below_of = scope:king } }
+					scope:kingdom_title_to_grant.title_capital_county.holder = {
+						top_liege = scope:king
+						NOR = {
+							liege = scope:king
+							liege.liege = scope:king
+						}
+					}
+				}
+				scope:kingdom_title_to_grant.title_capital_county.holder.liege = { save_scope_as = new_holder }
+			}
+			if = {
+				limit = { exists = scope:new_holder }
+				create_title_and_vassal_change = {
+					type = granted
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				scope:kingdom_title_to_grant = {
+					change_title_holder = {
+						holder = scope:new_holder
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+
+				scope:kingdom_title_to_grant = {
+					every_direct_de_jure_vassal_title = {
+						limit = {
+							holder ?= {
+								is_vassal_of = scope:king
+								NOT = { this = scope:new_holder }
+							}
+						}
+						holder = { save_scope_as = vassal }
+						create_title_and_vassal_change = {
+							type = swear_fealty
+							save_scope_as = change
+						}
+						scope:vassal = {
+							change_liege = {
+								liege = scope:new_holder
+								change = scope:change
+							}
+						}
+						resolve_title_and_vassal_change = scope:change
+					}
+				}
+			}
+			scope:new_holder = {
+				trigger_event = agot_proclamation_events.1000
+			}
+		}
+		every_in_list = {
+			list = lord_paramouncies
+			remove_from_list = lord_paramouncies
 		}
 	}
 }

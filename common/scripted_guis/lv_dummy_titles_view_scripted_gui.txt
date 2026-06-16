@@ -1,0 +1,206 @@
+﻿# Dummy Titles Window
+lv_hidden_character_titles_view_ruin_open = {
+	scope = character
+	is_shown = { has_variable = lv_hidden_character_titles_view_ruin_open }
+}
+
+lv_hidden_character_titles_view_wilderness_open = {
+	scope = character
+	is_shown = { has_variable = lv_hidden_character_titles_view_wilderness_open }
+}
+
+lv_hidden_character_titles_view_toggle = {
+	scope = character
+	effect = {
+		if = {
+			limit = { scope:dummy = { has_trait = ruin } }
+			if = {
+				limit = { has_variable = lv_hidden_character_titles_view_ruin_open }
+				remove_variable = lv_hidden_character_titles_view_ruin_open
+				every_in_list = {
+					variable = lv_hidden_character_titles_view_ruin_regions
+					clear_variable_list = lv_hidden_character_titles_view_ruin_counties
+
+					save_scope_as = region_title
+					if = { # If in multiplayer, rebuild list if anyone else still has it open
+						limit = { any_player = { NOT = { has_variable = lv_hidden_character_titles_view_ruin_open } } }
+						every_de_jure_county = {
+							limit = { holder ?= scope:dummy }
+							scope:region_title = {
+								add_to_variable_list = {
+									name = lv_hidden_character_titles_view_ruin_counties
+									target = prev
+								}
+							}
+						}
+					}
+				}
+				clear_variable_list = lv_hidden_character_titles_view_ruin_regions
+			}
+			else = {
+				set_variable = lv_hidden_character_titles_view_ruin_open
+				scope:dummy ?= {
+					every_held_title = {
+						limit = {
+							tier = tier_county
+							NOT = { this = title:c_ruins }
+						}
+						if = {
+							limit = { exists = empire }
+							empire = {
+								root = {
+									add_to_variable_list = {
+										name = lv_hidden_character_titles_view_ruin_regions
+										target = prev
+									}
+								}
+							}
+						}
+						else_if = {
+							limit = { exists = kingdom }
+							kingdom = {
+								root = {
+									add_to_variable_list = {
+										name = lv_hidden_character_titles_view_ruin_regions
+										target = prev
+									}
+								}
+							}
+						}
+						else = { # Surely it at least has a de jure duchy liege, no?
+							duchy ?= {
+								root = {
+									add_to_variable_list = {
+										name = lv_hidden_character_titles_view_ruin_regions
+										target = prev
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		else = {
+			if = {
+				limit = { has_variable = lv_hidden_character_titles_view_wilderness_open }
+				remove_variable = lv_hidden_character_titles_view_wilderness_open
+				every_in_list = {
+					variable = lv_hidden_character_titles_view_wilderness_regions
+					clear_variable_list = lv_hidden_character_titles_view_wilderness_counties
+
+					save_scope_as = region_title
+					if = { # If in multiplayer, rebuild list if anyone else still has it open
+						limit = { any_player = { has_variable = lv_hidden_character_titles_view_wilderness_open } }
+						every_de_jure_county = {
+							limit = { holder ?= scope:dummy }
+							scope:region_title = {
+								add_to_variable_list = {
+									name = lv_hidden_character_titles_view_wilderness_counties
+									target = prev
+								}
+							}
+						}
+					}
+				}
+				clear_variable_list = lv_hidden_character_titles_view_wilderness_regions
+			}
+			else = {
+				set_variable = lv_hidden_character_titles_view_wilderness_open
+				scope:dummy ?= {
+					every_held_title = {
+						limit = {
+							tier = tier_county
+							NOT = { this = title:c_wilderness }
+						}
+						if = {
+							limit = { exists = empire }
+							empire = {
+								root = {
+									add_to_variable_list = {
+										name = lv_hidden_character_titles_view_wilderness_regions
+										target = prev
+									}
+								}
+							}
+						}
+						else_if = {
+							limit = { exists = kingdom }
+							kingdom = {
+								root = {
+									add_to_variable_list = {
+										name = lv_hidden_character_titles_view_wilderness_regions
+										target = prev
+									}
+								}
+							}
+						}
+						else = { # Surely it at least has a de jure duchy liege, no?
+							duchy ?= {
+								root = {
+									add_to_variable_list = {
+										name = lv_hidden_character_titles_view_wilderness_regions
+										target = prev
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+lv_hidden_character_titles_view_counties_toggle = {
+	scope = title
+	effect = {
+		if = {
+			limit = { scope:dummy = { has_trait = ruin } }
+			clear_variable_list = lv_hidden_character_titles_view_ruin_counties
+			every_de_jure_county = {
+				limit = { holder ?= scope:dummy }
+				root = {
+					add_to_variable_list = {
+						name = lv_hidden_character_titles_view_ruin_counties
+						target = prev
+					}
+				}
+			}
+		}
+		else = {
+			clear_variable_list = lv_hidden_character_titles_view_wilderness_counties
+			every_de_jure_county = {
+				limit = { holder ?= scope:dummy }
+				root = {
+					add_to_variable_list = {
+						name = lv_hidden_character_titles_view_wilderness_counties
+						target = prev
+					}
+				}
+			}
+		}
+	}
+}
+
+lv_hidden_character_titles_view_county_has_special_building = {
+	scope = title
+	is_shown = { title_province ?= { has_special_building = yes } }
+}
+
+lv_hidden_character_titles_view_county_has_duchy_building = {
+	scope = title
+	is_shown = {
+		title_province ?= {
+			OR = {
+				has_building_or_higher = last_dragon_tower_01
+				has_building_or_higher = valyria_volcano_01
+				has_building_or_higher = valyria_volcano_02
+				has_building_or_higher = valyria_volcano_03
+				has_building_or_higher = valyria_volcano_04
+				has_building_or_higher = valyria_volcano_05
+				has_building_or_higher = zanpur_volcano_01
+			}
+		}
+	}
+}

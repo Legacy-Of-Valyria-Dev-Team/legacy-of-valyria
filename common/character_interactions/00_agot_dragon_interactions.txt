@@ -773,3 +773,37 @@ slay_dragon_interaction = {
 		}
 	}
 }
+
+rename_dragon_interaction = {
+	icon = icon_scheme_dragon
+	desc = rename_dragon_interaction_desc
+
+	category = interaction_category_diplomacy
+	interface_priority = 100
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+
+	is_shown = {
+		scope:actor = {
+			is_human = yes
+			is_ai = no
+		}
+		scope:recipient = {
+			has_trait = dragon
+		}
+	}
+	is_valid_showing_failures_only = {
+		scope:actor = {
+			allow_naming_of_dragon_trigger = { DRAGON = scope:recipient }
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			scope:recipient = {
+				save_scope_as = child
+			}
+			trigger_event = agot_dragon_maintenance.0200
+		}
+	}
+}
