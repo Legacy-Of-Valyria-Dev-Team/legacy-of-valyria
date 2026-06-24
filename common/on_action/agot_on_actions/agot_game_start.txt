@@ -13,6 +13,7 @@ on_game_start = {
 		agot_qohorik_weaponsmith_pulse
 		agot_pirate_domiciles_setup
 		agot_traditional_coronation_setup
+		agot_sailing_game_start_ships
 	}
 }
 
@@ -206,7 +207,14 @@ agot_on_game_start = {
 		dynasty:dynn_Codd = { add_dynasty_modifier = codd_dynasty_modifier }
 
 		#Dynasty Divided
-		house:house_Blackfyre ?= { add_house_modifier = divided_dynasty_house_modifier }
+		if = {
+			limit = {
+				house:house_Blackfyre ?= {
+					exists = house_head
+				}
+			}
+			house:house_Blackfyre ?= { add_house_modifier = divided_dynasty_house_modifier }
+		}
 
 		#Bastard House Restoration
 		house:house_Brightflame ?= { set_variable = { name = bastard_house_of value = dynasty:dynn_Targaryen.dynasty_founder.house} }
@@ -696,6 +704,36 @@ agot_on_game_start = {
 					agot_got_council_position_clergy_effect = yes
 				}
 			}
+
+			if = {
+				limit = {
+					primary_title = { is_mercenary_company = yes }
+					has_unusual_agot_culture_trigger = yes
+				}
+				random_list = {
+					1 = {
+						set_culture = culture:tyroshi
+					}
+					1 = {
+						set_culture = culture:rhoynar_original
+					}
+					1 = {
+						set_culture = culture:essosi_valyrian
+					}
+					1 = {
+						set_culture = culture:stormlander_main
+					}
+					1 = {
+						set_culture = culture:pentoshi
+					}
+				}
+				every_courtier = {
+					limit = {
+						has_unusual_agot_culture_trigger = yes
+					}
+					set_culture = liege.culture
+				}
+			}
 		}
 
 		every_barony = {
@@ -820,7 +858,10 @@ agot_on_game_start = {
 				}
 			}
 			random_ruler = {
-				limit = { culture = culture:lakefolk }
+				limit = {
+					culture = culture:lakefolk
+					is_landed = yes
+				}
 				save_scope_as = lakefolk_confederacy
 				create_confederation = {
 					name = d_the_lakefolk_confederacy
@@ -4135,6 +4176,30 @@ agot_traditional_coronation_setup = {
 			# Great Sept
 			province:4153 = {
 				set_variable = { name = coronation_tradition_location value = 6 }
+			}
+		}
+	}
+}
+
+agot_sailing_game_start_ships = {
+	effect = {
+		dynasty:dynn_Velaryon.dynasty_founder.house ?= { add_house_modifier = owns_big_ship }
+		dynasty:dynn_Redwyne.dynasty_founder.house ?= { add_house_modifier = owns_big_ship }
+		if = {
+			limit = { game_start_date >= 8283.10.1 }
+			dynasty:dynn_Seaworth.dynasty_founder.house ?= { add_house_modifier = owns_small_ship }
+		}
+		every_ruler = {
+			limit = {
+				culture = { has_cultural_parameter = ironborn_raiding_sailing }
+				NOT = { government_has_flag = government_is_pirate_trigger_check }
+			}
+			if = {
+				limit = { primary_title.tier = tier_county }
+				house ?= { add_house_modifier = owns_small_ship }
+			}
+			else = {
+				house ?= { add_house_modifier = owns_big_ship }
 			}
 		}
 	}
