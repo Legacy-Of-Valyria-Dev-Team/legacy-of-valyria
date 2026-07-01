@@ -875,7 +875,15 @@ ep3_become_landed_transfer_effect = {
 				save_scope_value_as = { name = old_government value = flag:admin }
 			}
 			government_is_feudal = {
-				save_scope_value_as = { name = old_government value = flag:feudal }
+				#AGOT Modified
+				# save_scope_value_as = { name = old_government value = flag:feudal }
+				if = {
+					limit = {
+						NOT = { government_has_flag = government_is_lp_feudal }
+					}
+					save_scope_value_as = { name = old_government value = flag:feudal }
+				}
+				else = { save_scope_value_as = { name = old_government value = flag:lp_feudal } }
 			}
 			government_is_clan = {
 				save_scope_value_as = { name = old_government value = flag:clan }
@@ -1002,6 +1010,12 @@ ep3_become_landed_transfer_effect = {
 	if = {
 		limit = {
 			NOT = { scope:ascended_throne_value = flag:purchased }
+
+			#AGOT Added
+			trigger_if = {
+				limit = { scope:ascended_throne_value = flag:negotiated }
+				NOT = { scope:new_primary_title.tier > tier_duchy }
+			}
 		}
 		scope:new_primary_title ?= {
 			every_de_jure_county = {
@@ -1055,6 +1069,8 @@ ep3_become_landed_transfer_effect = {
 			take_baronies = no
 		}
 	}
+	#AGOT Added, Vanilla bug
+	$TITLE_RECEIVER$ = {
 	if = {
 		limit = { has_character_flag = special_laamp_char }
 		resolve_title_and_vassal_change = scope:title_change
@@ -1064,6 +1080,8 @@ ep3_become_landed_transfer_effect = {
 			add_claim_on_loss = yes
 			save_scope_as = title_change
 		}
+	}
+	#AGOT Added, Vanilla bug
 	}
 	if = {
 		limit = {
@@ -1097,6 +1115,8 @@ ep3_become_landed_transfer_effect = {
 	if = {
 		limit = { exists = scope:old_government }
 		# We don't expect to actually trigger most of the below, as most are not valid targets to begin with, but all are included for completeness and mod support
+		#AGOT Added, Vanilla bug
+		$TITLE_RECEIVER$ = {
 		switch = {
 			trigger = scope:old_government
 			flag:feudal = {
@@ -1204,6 +1224,8 @@ ep3_become_landed_transfer_effect = {
 			flag:pirate = {
 				change_government = pirate_government
 			}
+		}
+		#AGOT Added, Vanilla bug
 		}
 	}
 	# Otherwise we proceed as normal
@@ -1451,9 +1473,13 @@ ep3_become_landed_transfer_effect = {
 	}
 	destroy_laamp_effect = { ADVENTURER = $TITLE_RECEIVER$ }
 	# Setup NF if valid
+	#AGOT Added, Vanilla bug
+	$TITLE_RECEIVER$ = {
 	if = {
 		limit = { government_allows = noble_families }
 		give_new_noble_family_title_effect = yes
+	}
+	#AGOT Added, Vanilla bug
 	}
 }
 
