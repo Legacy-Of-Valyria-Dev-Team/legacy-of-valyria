@@ -178,12 +178,20 @@ agot_on_game_start = {
 		dynasty:dynn_Targaryen.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		house:house_Blackfyre ?= { add_house_modifier = dragonrider_house_modifier }
 		house:house_Brightflame ?= { add_house_modifier = dragonrider_house_modifier }
+		house:house_Bittersteel ?= { add_house_modifier = dragonrider_house_modifier }
+
 		dynasty:dynn_Belaerys.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Urnebar.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+
 		dynasty:dynn_Mataeryon.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+		house:house_Atuhoris ?= { add_house_modifier = dragonrider_house_modifier }
+
 		dynasty:dynn_Varezys.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Sonaryen.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+
 		dynasty:dynn_Laryen.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+		house:house_Balgar ?= { add_house_modifier = dragonrider_house_modifier }
+
 		dynasty:dynn_Volarys.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Quinarion.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Ozastys.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
@@ -191,7 +199,9 @@ agot_on_game_start = {
 		dynasty:dynn_Arakys.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Undaryen.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
 		dynasty:dynn_Phassalmaar.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+
 		dynasty:dynn_Symbaxes.dynasty_founder.house = { add_house_modifier = dragonrider_house_modifier }
+		house:house_Rotilys ?= { add_house_modifier = dragonrider_house_modifier }
 
 		# Thrall Houses Modifier
 		dynasty:dynn_Codd = { add_dynasty_modifier = thrall_house_dynasty_modifier }
@@ -1867,6 +1877,12 @@ agot_nf_estate_locations = {
 				limit = { owner.dynasty = dynasty:dynn_Zavalozaar }
 				move_domicile = title:b_rhinarios.title_province
 			}
+
+			owner ?= { # Courtiers getting stuck in different location
+				every_courtier = {
+					return_home = yes
+				}
+			}
 		}
 	}
 }
@@ -1884,6 +1900,13 @@ agot_laamp_camp_locations = {
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Suggs }
 				move_domicile = title:b_hookmarket.title_province
+			}
+
+			owner ?= { # Leaders & Courtiers getting stuck in different location
+				return_home = yes
+				every_courtier = {
+					return_home = yes
+				}
 			}
 		}
 	}
@@ -4185,6 +4208,7 @@ agot_sailing_game_start_ships = {
 	effect = {
 		dynasty:dynn_Velaryon.dynasty_founder.house ?= { add_house_modifier = owns_big_ship }
 		dynasty:dynn_Redwyne.dynasty_founder.house ?= { add_house_modifier = owns_big_ship }
+		dynasty:dynn_Bar_Emmon.dynasty_founder.house ?= { add_house_modifier = owns_big_ship }
 		if = {
 			limit = { game_start_date >= 8283.10.1 }
 			dynasty:dynn_Seaworth.dynasty_founder.house ?= { add_house_modifier = owns_small_ship }
