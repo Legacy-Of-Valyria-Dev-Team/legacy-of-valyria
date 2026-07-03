@@ -41,42 +41,254 @@ lv_restore_valyrian_freehold_decision = {
             completely_controls = title:e_valyria
             completely_controls = title:e_lands_of_long_summer
         }
-        custom_tooltip = {
+        custom_description = {
             text = lv_restore_valyrian_freehold_former_colonies_requirement_tooltip
             any_empire = {
-                OR = {
-                    this = title:e_old_valyria
-                    this = title:e_ghiscar
-                    this = title:e_volantis
-                    this = title:e_rhoyne
-                    this = title:e_narrow_sea
-                    this = title:e_daoryrdembos
-                }
-                save_temporary_scope_as = former_colony
-                root = {
-                    OR = {
-                        completely_controls = scope:former_colony
-                        trigger_if = {
-                            limit = { scope:former_colony = title:e_ghiscar }
-                            completely_controls = title:k_meereen
-                            completely_controls = title:k_yunkai
-                            completely_controls = title:k_astapor
-                            completely_controls = title:d_new_ghis # To bypass need for Old Ghis
+                is_titular = no
+                trigger_if = {
+                    limit = {
+                        OR = {
+                            this = title:e_old_valyria
+                            this = title:e_ghiscar
+                            this = title:e_volantis
+                            this = title:e_rhoyne
+                            this = title:e_narrow_sea
+                            this = title:e_daoryrdembos
                         }
-                        trigger_else_if = {
-                            limit = { scope:former_colony = title:e_volantis }
-                            completely_controls = title:d_volantis # To bypass need for Rhoynar ruins (probably add more checks since Volantis is massive)
+                    }
+                    save_temporary_scope_as = former_colony
+                    root = {
+                        OR = {
+                            completely_controls = scope:former_colony
+                            trigger_if = {
+                                limit = { scope:former_colony = title:e_rhoyne }
+                                completely_controls = title:d_ny_sar
+                                completely_controls = title:d_the_sorrows
+                                trigger_if = {
+                                    limit = {
+                                        title:k_rhoyne = {
+                                            any_de_jure_county = {
+                                                title_province = {
+                                                    NAND = {
+                                                        has_holding_type = ruin_holding
+                                                        has_holding_type = wilderness_holding
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    title:k_rhoyne = {
+                                        any_de_jure_county = {
+                                            trigger_if = {
+                                                limit = { holder = { is_human = yes } }
+                                                holder = { target_is_same_character_or_above = root }
+                                            }
+                                            trigger_else = { always = yes }
+                                            count = all
+                                        }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                            }
+                            trigger_else_if = {
+                                limit = { scope:former_colony = title:e_ghiscar }
+                                completely_controls = title:k_meereen
+                                completely_controls = title:k_yunkai
+                                completely_controls = title:k_astapor
+                                completely_controls = title:d_new_ghis
+                                trigger_if = {
+                                    limit = {
+                                        title:c_old_ghis.title_province = {
+                                            NAND = {
+                                                has_holding_type = ruin_holding
+                                                has_holding_type = wilderness_holding
+                                            }
+                                        }
+                                    }
+                                    title:c_old_ghis = {
+                                        trigger_if = {
+                                            limit = { holder = { is_human = yes } }
+                                            holder = { target_is_same_character_or_above = root }
+                                        }
+                                        trigger_else = { always = yes }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                            }
+                            trigger_else_if = {
+                                limit = { scope:former_colony = title:e_old_valyria }
+                                completely_controls = title:k_mantarys
+                                trigger_if = {
+                                    limit = {
+                                        title:d_bhorash = {
+                                            any_de_jure_county = {
+                                                title_province = {
+                                                    NAND = {
+                                                        has_holding_type = ruin_holding
+                                                        has_holding_type = wilderness_holding
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    title:d_bhorash = {
+                                        any_de_jure_county = {
+                                            trigger_if = {
+                                                limit = { holder = { is_human = yes } }
+                                                holder = { target_is_same_character_or_above = root }
+                                            }
+                                            trigger_else = { always = yes }
+                                            count = all
+                                        }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                                completely_controls = title:d_tolos
+                                trigger_if = {
+                                    limit = {
+                                        title:d_velos = {
+                                            any_de_jure_county = {
+                                                title_province = {
+                                                    NAND = {
+                                                        has_holding_type = ruin_holding
+                                                        has_holding_type = wilderness_holding
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    title:d_velos = {
+                                        any_de_jure_county = {
+                                            trigger_if = {
+                                                limit = { holder = { is_human = yes } }
+                                                holder = { target_is_same_character_or_above = root }
+                                            }
+                                            trigger_else = { always = yes }
+                                            count = all
+                                        }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                                completely_controls = title:d_elyria
+                                trigger_if = {
+                                    limit = {
+                                        title:d_draconys = {
+                                            any_de_jure_county = {
+                                                title_province = {
+                                                    NAND = {
+                                                        has_holding_type = ruin_holding
+                                                        has_holding_type = wilderness_holding
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    title:d_draconys = {
+                                        any_de_jure_county = {
+                                            trigger_if = {
+                                                limit = { holder = { is_human = yes } }
+                                                holder = { target_is_same_character_or_above = root }
+                                            }
+                                            trigger_else = { always = yes }
+                                            count = all
+                                        }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                                trigger_if = {
+                                    limit = {
+                                        title:d_anogaria = {
+                                            any_de_jure_county = {
+                                                title_province = {
+                                                    NAND = {
+                                                        has_holding_type = ruin_holding
+                                                        has_holding_type = wilderness_holding
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    title:d_anogaria = {
+                                        any_de_jure_county = {
+                                            trigger_if = {
+                                                limit = { holder = { is_human = yes } }
+                                                holder = { target_is_same_character_or_above = root }
+                                            }
+                                            trigger_else = { always = yes }
+                                            count = all
+                                        }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                            }
+                            trigger_else_if = {
+                                limit = { scope:former_colony = title:e_volantis }
+                                completely_controls = title:d_volantis # Probably add more checks since Volantis is massive
+                                trigger_if = {
+                                    limit = {
+                                        title:c_sarhoy.title_province = {
+                                            NAND = {
+                                                has_holding_type = ruin_holding
+                                                has_holding_type = wilderness_holding
+                                            }
+                                        }
+                                    }
+                                    title:c_sarhoy = {
+                                        trigger_if = {
+                                            limit = { holder = { is_human = yes } }
+                                            holder = { target_is_same_character_or_above = root }
+                                        }
+                                        trigger_else = { always = yes }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                                trigger_if = {
+                                    limit = {
+                                        title:d_sar_mell = {
+                                            any_de_jure_county = {
+                                                title_province = {
+                                                    NAND = {
+                                                        has_holding_type = ruin_holding
+                                                        has_holding_type = wilderness_holding
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    title:d_sar_mell = {
+                                        any_de_jure_county = {
+                                            trigger_if = {
+                                                limit = { holder = { is_human = yes } }
+                                                holder = { target_is_same_character_or_above = root }
+                                            }
+                                            trigger_else = { always = yes }
+                                            count = all
+                                        }
+                                    }
+                                }
+                                trigger_else = { always = yes }
+                            }
+                            trigger_else_if = {
+                                limit = { scope:former_colony = title:e_narrow_sea }
+                                #completely_controls = title:k_tyrosh
+                                #completely_controls = title:k_lys
+                                #completely_controls = title:k_myr
+                                always = yes
+                            }
+                            trigger_else_if = {
+                                limit = { scope:former_colony = title:e_daoryrdembos }
+                                completely_controls = title:k_pentos
+                                trigger_if = {
+                                    limit = { exists = title:k_andalos.holder }
+                                    completely_controls = title:k_andalos
+                                }
+                                trigger_else = { always = yes }
+                            }
+                            trigger_else = { always = no }
                         }
-                        trigger_else_if = {
-                            limit = { scope:former_colony = title:e_narrow_sea }
-                            completely_controls = title:k_tyrosh
-                            completely_controls = title:k_lys
-                            completely_controls = title:k_myr
-                        }
-                        trigger_else = { always = no }
                     }
                 }
-                is_titular = no
+                trigger_else = { always = no }
                 count >= 3
             }
         }
