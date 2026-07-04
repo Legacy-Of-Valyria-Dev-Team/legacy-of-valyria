@@ -16,7 +16,7 @@
 temple_01 = {
 	construction_time = slow_construction_time
 
-	#Meshes (Indented for readability)
+	assets = {
 		#Generic Base:
 		#Note Generic Base is only used for cultures that lack culturally unique temples for at least one faith - if they do then they must have an entry for graphical_faiths for all other religions.
 		asset = {
@@ -501,13 +501,14 @@ temple_01 = {
 		#	graphical_faiths = { memories_god_gfx }
 		#}
 
-	### VALYRIA ###
-	asset = {
-		type = pdxmesh
-		name = "empty_mesh"
-		illustration = @illustration_generic_grass
-		soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
-		graphical_regions = { graphical_valyria_1 }
+		### VALYRIA ###
+		asset = {
+			type = pdxmesh
+			name = "empty_mesh"
+			illustration = @illustration_generic_grass
+			soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
+			graphical_regions = { graphical_valyria_1 }
+		}
 	}
 
 	can_construct_potential = {
@@ -825,7 +826,7 @@ temple_01 = {
 temple_02 = {
 	construction_time = slow_construction_time
 
-	#Meshes (Indented for readability)
+	assets = {
 		### GENERIC ###
 		#Generic Base:
 		asset = {
@@ -1310,13 +1311,14 @@ temple_02 = {
 		#	graphical_faiths = { memories_god_gfx }
 		#}
 
-	### VALYRIA ###
-	asset = {
-		type = pdxmesh
-		name = "empty_mesh"
-		illustration = @illustration_generic_grass
-		soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
-		graphical_regions = { graphical_valyria_1 }
+		### VALYRIA ###
+		asset = {
+			type = pdxmesh
+			name = "empty_mesh"
+			illustration = @illustration_generic_grass
+			soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
+			graphical_regions = { graphical_valyria_1 }
+		}
 	}
 
 	can_construct_potential = {
@@ -1479,7 +1481,7 @@ temple_02 = {
 temple_03 = {
 	construction_time = slow_construction_time
 
-	#Meshes (Indented for readability)
+	assets = {
 		### GENERIC ###
 		#Generic Base:
 		asset = {
@@ -1964,13 +1966,14 @@ temple_03 = {
 		#	graphical_faiths = { memories_god_gfx }
 		#}
 
-	### VALYRIA ###
-	asset = {
-		type = pdxmesh
-		name = "empty_mesh"
-		illustration = @illustration_generic_grass
-		soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
-		graphical_regions = { graphical_valyria_1 }
+		### VALYRIA ###
+		asset = {
+			type = pdxmesh
+			name = "empty_mesh"
+			illustration = @illustration_generic_grass
+			soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
+			graphical_regions = { graphical_valyria_1 }
+		}
 	}
 
 	can_construct_potential = {
@@ -2124,7 +2127,7 @@ temple_03 = {
 temple_04 = {
 	construction_time = slow_construction_time
 
-	#Meshes (Indented for readability)
+	assets = {
 		### GENERIC ###
 		#Generic Base:
 		asset = {
@@ -2609,13 +2612,14 @@ temple_04 = {
 		#	graphical_faiths = { memories_god_gfx }
 		#}
 
-	### VALYRIA ###
-	asset = {
-		type = pdxmesh
-		name = "empty_mesh"
-		illustration = @illustration_generic_grass
-		soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
-		graphical_regions = { graphical_valyria_1 }
+		### VALYRIA ###
+		asset = {
+			type = pdxmesh
+			name = "empty_mesh"
+			illustration = @illustration_generic_grass
+			soundeffect = { soundeffect = "event:/SFX/Ambience/3DMapEmitters/Holdings/Castle/western_castle" soundparameter = { "Tier" = 3 } }
+			graphical_regions = { graphical_valyria_1 }
+		}
 	}
 
 	can_construct_potential = {
@@ -2871,14 +2875,14 @@ scriptorium_02 = {
 
 	can_construct_potential = {
 		has_building_or_higher = temple_01
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 		has_dlc_feature = legends
 	}
 
 	can_construct_showing_failures_only = {
 		building_requirement_tribal = no
+		culture = {
+			has_innovation = innovation_city_planning
+		}
 	}
 
 	cost_gold = normal_building_tier_2_cost
@@ -3311,16 +3315,20 @@ monastic_schools_01 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		OR = {
-			has_building_or_higher = temple_01
-			scope:holder.faith = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
-			#AGOT Added
-			has_building_or_higher = monastery_01
+		trigger_if = {
+			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		#building_requirement_tribal = no
+		building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 01 }
 	}
 
 	cost_gold = normal_building_tier_1_cost
@@ -3395,22 +3403,29 @@ monastic_schools_02 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		#AGOT Modified
-		# has_building_or_higher = temple_01
-		OR = {
-			has_building_or_higher = temple_01
-			has_building_or_higher = monastery_01
-		}
-		culture = {
+		trigger_if = {
+			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
 			OR = {
-				has_innovation = innovation_city_planning
-				has_cultural_parameter = next_level_monasteries
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
 			}
 		}
+		building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 01 }
 	}
 
 	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
+		scope:holder.culture = {
+			trigger_if = {
+				limit = { NOT = { has_cultural_parameter = next_level_monasteries } }
+				has_innovation = innovation_city_planning
+			}
+		}
 	}
 
 	cost_gold = normal_building_tier_2_cost
@@ -3474,6 +3489,19 @@ monastic_schools_03 = {
 	can_construct = {
 		trigger_if = {
 			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
+		}
+		trigger_if = {
+			limit = {
 				NOT = {
 					culture = {
 						has_cultural_parameter = next_level_monasteries
@@ -3483,31 +3511,15 @@ monastic_schools_03 = {
 			culture = {
 				has_innovation = innovation_manorialism
 			}
-			#AGOT Modified
-			# has_building_or_higher = temple_02
-			OR = {
-				has_building_or_higher = temple_02
-				has_building_or_higher = monastery_02
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 02 }
 		}
 		trigger_else = {
 			culture = {
 				has_innovation = innovation_city_planning
-			}
-			culture = {
 				has_cultural_parameter = next_level_monasteries
 			}
-			#AGOT Modified
-			# has_building_or_higher = temple_01
-			OR = {
-				has_building_or_higher = temple_01
-				has_building_or_higher = monastery_01
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 01 }
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
 	}
 
 	cost_gold = normal_building_tier_3_cost
@@ -3571,6 +3583,19 @@ monastic_schools_04 = {
 	can_construct = {
 		trigger_if = {
 			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
+		}
+		trigger_if = {
+			limit = {
 				NOT = {
 					culture = {
 						has_cultural_parameter = next_level_monasteries
@@ -3580,33 +3605,15 @@ monastic_schools_04 = {
 			culture = {
 				has_innovation = innovation_manorialism
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_02
-			OR = {
-				has_building_or_higher = temple_02
-				has_building_or_higher = monastery_02
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 02 }
 		}
 		trigger_else = {
 			culture = {
 				has_innovation = innovation_city_planning
-			}
-			culture = {
 				has_cultural_parameter = next_level_monasteries
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_01
-			OR = {
-				has_building_or_higher = temple_01
-				has_building_or_higher = monastery_01
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 01 }
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
 	}
 
 	cost_gold = normal_building_tier_4_cost
@@ -3670,6 +3677,19 @@ monastic_schools_05 = {
 	can_construct = {
 		trigger_if = {
 			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
+		}
+		trigger_if = {
+			limit = {
 				NOT = {
 					culture = {
 						has_cultural_parameter = next_level_monasteries
@@ -3679,33 +3699,15 @@ monastic_schools_05 = {
 			culture = {
 				has_innovation = innovation_windmills
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_03
-			OR = {
-				has_building_or_higher = temple_03
-				has_building_or_higher = monastery_03
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 03 }
 		}
 		trigger_else = {
 			culture = {
 				has_innovation = innovation_city_planning
-			}
-			culture = {
 				has_cultural_parameter = next_level_monasteries
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_02
-			OR = {
-				has_building_or_higher = temple_02
-				has_building_or_higher = monastery_02
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 02 }
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
 	}
 
 	cost_gold = normal_building_tier_5_cost
@@ -3769,6 +3771,19 @@ monastic_schools_06 = {
 	can_construct = {
 		trigger_if = {
 			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
+		}
+		trigger_if = {
+			limit = {
 				NOT = {
 					culture = {
 						has_cultural_parameter = next_level_monasteries
@@ -3778,33 +3793,15 @@ monastic_schools_06 = {
 			culture = {
 				has_innovation = innovation_windmills
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_03
-			OR = {
-				has_building_or_higher = temple_03
-				has_building_or_higher = monastery_03
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 03 }
 		}
 		trigger_else = {
 			culture = {
-				has_innovation = innovation_manorialism
-			}
-			culture = {
+				has_innovation = innovation_city_planning
 				has_cultural_parameter = next_level_monasteries
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_02
-			OR = {
-				has_building_or_higher = temple_02
-				has_building_or_higher = monastery_02
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 02 }
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
 	}
 
 	cost_gold = normal_building_tier_6_cost
@@ -3868,6 +3865,19 @@ monastic_schools_07 = {
 	can_construct = {
 		trigger_if = {
 			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
+		}
+		trigger_if = {
+			limit = {
 				NOT = {
 					culture = {
 						has_cultural_parameter = next_level_monasteries
@@ -3877,33 +3887,15 @@ monastic_schools_07 = {
 			culture = {
 				has_innovation = innovation_cranes
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_04
-			OR = {
-				has_building_or_higher = temple_04
-				has_building_or_higher = monastery_04
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 04 }
 		}
 		trigger_else = {
 			culture = {
 				has_innovation = innovation_windmills
-			}
-			culture = {
 				has_cultural_parameter = next_level_monasteries
 			}
-			
-			#AGOT Modified
-			# has_building_or_higher = temple_03
-			OR = {
-				has_building_or_higher = temple_03
-				has_building_or_higher = monastery_03
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 03 }
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
 	}
 
 	cost_gold = normal_building_tier_7_cost
@@ -3967,6 +3959,19 @@ monastic_schools_08 = {
 	can_construct = {
 		trigger_if = {
 			limit = {
+				scope:holder.faith = {
+					NOT = { has_doctrine_parameter = monastic_schools_allowed_in_every_holding_type }
+				}
+			}
+			#AGOT Modified
+			# has_holding_type = church_holding
+			OR = {
+				has_holding_type = church_holding
+				has_holding_type = monastery_holding
+			}
+		}
+		trigger_if = {
+			limit = {
 				NOT = {
 					culture = {
 						has_cultural_parameter = next_level_monasteries
@@ -3976,31 +3981,15 @@ monastic_schools_08 = {
 			culture = {
 				has_innovation = innovation_cranes
 			}
-			#AGOT Modified
-			# has_building_or_higher = temple_04
-			OR = {
-				has_building_or_higher = temple_04
-				has_building_or_higher = monastery_04
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 04 }
 		}
 		trigger_else = {
 			culture = {
 				has_innovation = innovation_windmills
-			}
-			culture = {
 				has_cultural_parameter = next_level_monasteries
 			}
-			#AGOT Modified
-			# has_building_or_higher = temple_03
-			OR = {
-				has_building_or_higher = temple_03
-				has_building_or_higher = monastery_03
-			}
+			building_requirement_castle_city_church_temple_citadel_tribe = { LEVEL = 03 }
 		}
-	}
-
-	can_construct_showing_failures_only = {
-		building_requirement_tribal = no
 	}
 
 	cost_gold = normal_building_tier_8_cost
@@ -4186,12 +4175,12 @@ megalith_03 = {
 		scope:holder.faith = {
 			has_doctrine_parameter = can_build_megaliths
 		}
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4238,12 +4227,12 @@ megalith_04 = {
 		scope:holder.faith = {
 			has_doctrine_parameter = can_build_megaliths
 		}
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4291,12 +4280,12 @@ megalith_05 = {
 		scope:holder.faith = {
 			has_doctrine_parameter = can_build_megaliths
 		}
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4345,12 +4334,12 @@ megalith_06 = {
 		scope:holder.faith = {
 			has_doctrine_parameter = can_build_megaliths
 		}
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4399,12 +4388,12 @@ megalith_07 = {
 		scope:holder.faith = {
 			has_doctrine_parameter = can_build_megaliths
 		}
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4453,12 +4442,12 @@ megalith_08 = {
 		scope:holder.faith = {
 			has_doctrine_parameter = can_build_megaliths
 		}
-		culture = {
-			has_innovation = innovation_city_planning
-		}
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4502,10 +4491,9 @@ megalith_08 = {
 breweries_01 = {
 	construction_time = standard_construction_time
 
-	#AGOT Disabled
-	# can_construct_potential = {
-	# 	building_breweries_requirement = { NUMBER = 01 }
-	# }
+	can_construct_potential = {
+		building_breweries_requirement = { NUMBER = 01 }
+	}
 
 	can_construct_showing_failures_only = {
 		building_requirement_tribal = no
@@ -4554,12 +4542,13 @@ breweries_02 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_city_planning }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 01 }
+		building_breweries_requirement = { NUMBER = 01 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4604,12 +4593,13 @@ breweries_03 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_manorialism }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 02 }
+		building_breweries_requirement = { NUMBER = 02 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_city_planning
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4644,12 +4634,13 @@ breweries_04 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_manorialism }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 02 }
+		building_breweries_requirement = { NUMBER = 02 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_manorialism
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4684,12 +4675,13 @@ breweries_05 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_windmills }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 03 }
+		building_breweries_requirement = { NUMBER = 03 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_windmills
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4724,12 +4716,13 @@ breweries_06 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_windmills }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 03 }
+		building_breweries_requirement = { NUMBER = 03 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_windmills
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4764,12 +4757,13 @@ breweries_07 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_cranes }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 04 }
+		building_breweries_requirement = { NUMBER = 04 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_cranes
+		}
 		building_requirement_tribal = no
 	}
 
@@ -4804,12 +4798,13 @@ breweries_08 = {
 	construction_time = standard_construction_time
 
 	can_construct_potential = {
-		culture = { has_innovation = innovation_cranes }
-		#AGOT Disabled
-		# building_breweries_requirement = { NUMBER = 04 }
+		building_breweries_requirement = { NUMBER = 04 }
 	}
 
 	can_construct_showing_failures_only = {
+		scope:holder.culture = {
+			has_innovation = innovation_cranes
+		}
 		building_requirement_tribal = no
 	}
 

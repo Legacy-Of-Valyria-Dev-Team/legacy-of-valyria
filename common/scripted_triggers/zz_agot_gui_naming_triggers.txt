@@ -313,34 +313,40 @@ is_titled_ruler_or_spouse = {
 }
 
 agot_localization_government_trigger = {
+	trigger_if = {
+		limit = { exists = $SPOUSE_SCOPE$ }
 		trigger_if = {
-			limit = { exists = $SPOUSE_SCOPE$ }
-			trigger_if = {
-				limit = {
+			limit = {
 				NOR = {
 					ruler_is_royal = yes
 					$SPOUSE_SCOPE$.primary_title ?= {
 						tier < prev.primary_title.tier
 					}
-					}
-				}
-				$SPOUSE_SCOPE$ ?= {
-					agot_ruler_is_government_trigger = { GOV = $GOV$ }
 				}
 			}
-			trigger_else = {
+			$SPOUSE_SCOPE$ ?= {
 				agot_ruler_is_government_trigger = { GOV = $GOV$ }
 			}
 		}
 		trigger_else = {
 			agot_ruler_is_government_trigger = { GOV = $GOV$ }
+		}
+	}
+	trigger_else = {
+		agot_ruler_is_government_trigger = { GOV = $GOV$ }
 	}
 }
 
 agot_ruler_is_government_trigger = {
 	trigger_if = {
 		limit = { is_alive = yes }
-		has_government = $GOV$_government
+		OR = {
+			has_government = $GOV$_government
+			trigger_if = {
+				limit = { has_variable = temp_government_type }
+				var:temp_government_type ?= flag:$GOV$
+			}
+		}
 	}
 	trigger_else = {
 		trigger_if = {
@@ -381,6 +387,17 @@ agot_is_in_historical_government_list = {
 	}
 }
 
+agot_government_has_spousal_titles = {
+	NOR = {
+		agot_ruler_is_government_trigger = { GOV = kingsguard }
+		agot_ruler_is_government_trigger = { GOV = nights_watch }
+		agot_ruler_is_government_trigger = { GOV = first_ranger }
+		agot_ruler_is_government_trigger = { GOV = the_citadel }
+		agot_ruler_is_government_trigger = { GOV = command }
+		agot_ruler_is_government_trigger = { GOV = ruins }
+	}
+}
+
 ruler_is_royal = {
 	exists = primary_title
 	trigger_if = { # if char is dead check inactive trait
@@ -404,6 +421,7 @@ ruler_is_royal = {
 			}
 			AND = {
 				agot_flavour_is_prince_dragonstone_trigger = { CHAR = this }
+				exists = title:h_the_iron_throne
 				primary_title ?= title:k_dragonstone
 			}
 			agot_flavour_palatinate_is_kingdom_trigger = { CHAR = this }
@@ -420,6 +438,13 @@ ruler_is_royal = {
 					agot_ruler_is_government_trigger = { GOV = feudal }
 					agot_ruler_is_government_trigger = { GOV = pirate }
 					agot_ruler_is_government_trigger = { GOV = pirate_no_dlc }
+				}
+				trigger_if = {
+					limit = {
+						agot_flavour_is_prince_dragonstone_trigger = { CHAR = this }
+						primary_title ?= title:k_dragonstone
+					}
+					exists = title:h_the_iron_throne
 				}
 			}
 		}
