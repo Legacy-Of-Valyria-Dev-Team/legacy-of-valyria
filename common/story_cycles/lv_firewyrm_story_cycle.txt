@@ -57,7 +57,7 @@ lv_firewyrm_story_cycle = {
 				county ?= {
 					holder = {
 						if = { # Send notification to county owner
-							limit = { agot_is_dummy_character = no }
+							limit = { is_human = yes }
 							trigger_event = lv_firewyrm_event.0100
 						}
 					}
@@ -66,11 +66,29 @@ lv_firewyrm_story_cycle = {
 		}
 	}
 
+	# Firewyrm Go-Home-inator
+	effect_group = {
+		days = 1
+		triggered_effect = { # If not in Valyria anymore or if region restored, bring home
+			trigger = {
+				story_owner = {
+					location = {
+						NOR = {
+							geographical_region = world_valyria
+							lv_valyria_province_subregion_ruined = yes
+						}
+					}
+				}
+			}
+			effect = { story_owner = { set_location = var:lair } }
+		}
+	}
+
 	# Daily
 	effect_group = {
 		days = 1
 		triggered_effect = {
-			trigger = { story_owner = { location.county ?= { holder = { agot_is_dummy_character = no } } } }
+			trigger = { story_owner = { location.county ?= { holder = { is_human = yes } } } }
 			effect = {
 				# Rampage
 				if = {
@@ -102,14 +120,14 @@ lv_firewyrm_story_cycle = {
 				}
 			}
 		}
-		fallback = { end_story = yes }
+		# fallback = { end_story = yes }
 	}
 
 	# Monthly
 	effect_group = {
 		days = 30
 		triggered_effect = {
-			trigger = { story_owner = { location.county ?= { holder = { agot_is_dummy_character = no } } } }
+			trigger = { story_owner = { location.county ?= { holder = { is_human = yes } } } }
 			effect = {
 				# Update mood
 				scope:story = {
@@ -132,6 +150,6 @@ lv_firewyrm_story_cycle = {
 				}
 			}
 		}
-		fallback = { end_story = yes }
+		# fallback = { end_story = yes }
 	}
 }
