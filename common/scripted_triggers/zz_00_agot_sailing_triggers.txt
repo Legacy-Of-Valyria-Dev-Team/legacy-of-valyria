@@ -1,0 +1,755 @@
+﻿# OVERRIDES FOR 00_agot_sailing_triggers.txt
+agot_barony_can_host_voyage = {
+	save_temporary_scope_as = location
+	scope:host = {
+		any_held_county = {
+			any_county_province = {
+				this = scope:location
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					agot_is_important_coast_north_city = yes
+					agot_is_important_coast_iron_island_city = yes
+					agot_is_important_coast_westerlands_city = yes
+					agot_is_important_coast_riverlands_city = yes
+					agot_is_important_coast_vale_city = yes
+					agot_is_important_coast_crownlands_city = yes
+					agot_is_important_coast_stormlands_city = yes
+					agot_is_important_coast_reach_city = yes
+					agot_is_important_coast_dorne_city = yes
+					agot_is_important_coast_lys_city = yes
+					agot_is_important_coast_tyrosh_city = yes
+					agot_is_important_coast_myr_city = yes
+					agot_is_important_coast_pentos_city = yes
+					agot_is_important_coast_braavos_city = yes
+					#LOV Added
+					lv_is_important_coast_volantis_city = yes
+					lv_is_important_coast_tolos_city = yes
+					lv_is_important_coast_elyria_city = yes
+					lv_is_important_coast_valyria_city = yes
+					lv_is_important_coast_lyria_city = yes
+					lv_is_important_coast_lokiria_city = yes
+					lv_is_important_coast_oros_city = yes
+					lv_is_important_coast_meereen_city = yes
+					lv_is_important_coast_yunkai_city = yes
+					lv_is_important_coast_astapor_city = yes
+					lv_is_important_coast_new_ghis_city = yes
+					lv_is_important_coast_asshai_city = yes
+				}
+			}
+		}
+	}
+}
+
+agot_sailing_location_is_valid = {
+	has_holding = yes
+	trigger_if = {
+		limit = { is_coastal = no }
+		OR = {
+			has_building_or_higher = common_tradeport_01
+			has_sailing_special_building = yes
+			has_building_or_higher = agot_great_fleet_01
+		}
+	}
+	trigger_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_north }
+			}
+		}
+		OR = {
+			agot_is_important_coast_north_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_iron_islands }
+			}
+		}
+		trigger_if = {
+			limit = {
+				scope:host.culture = { has_cultural_parameter = ironborn_sailing_requirements }
+			}
+			is_valid_held_province_for_sailing = yes
+		}
+		trigger_else = {
+			OR = {
+				agot_is_important_coast_iron_island_city = yes
+				agot_barony_can_host_voyage = yes
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_westerlands }
+			}
+		}
+		OR = {
+			agot_is_important_coast_westerlands_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_riverlands }
+			}
+		}
+		OR = {
+			agot_is_important_coast_riverlands_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_vale }
+			}
+		}
+		OR = {
+			agot_is_important_coast_vale_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_crownlands }
+			}
+		}
+		OR = {
+			agot_is_important_coast_crownlands_city = yes
+			agot_barony_can_host_voyage = yes
+			trigger_if = {
+				limit = {
+					scope:host = { has_title = title:h_the_iron_throne }
+				}
+				OR = {
+					county ?= { holder.top_liege = scope:host }
+					agot_is_important_coast_riverlands_city = yes
+					agot_is_important_coast_iron_island_city = yes
+					agot_is_important_coast_westerlands_city = yes
+					agot_is_important_coast_vale_city = yes
+					agot_is_important_coast_stormlands_city = yes
+					agot_is_important_coast_reach_city = yes
+					agot_is_important_coast_dorne_city = yes
+				}
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_stormlands }
+			}
+		}
+		OR = {
+			agot_is_important_coast_stormlands_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_the_reach }
+			}
+		}
+		OR = {
+			agot_is_important_coast_reach_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_westeros_dorne }
+			}
+		}
+		OR = {
+			agot_is_important_coast_dorne_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_lys }
+			}
+		}
+		OR = {
+			agot_is_important_coast_lys_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_tyrosh }
+			}
+		}
+		OR = {
+			agot_is_important_coast_tyrosh_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_myr }
+			}
+		}
+		OR = {
+			agot_is_important_coast_myr_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_disputed_lands }
+			}
+		}
+		agot_barony_can_host_voyage = yes
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_stepstones }
+			}
+		}
+		trigger_if = {
+			limit = {
+				scope:host = { government_has_flag = government_is_pirate_trigger_check }
+			}
+			is_valid_held_province_for_sailing = yes
+		}
+		trigger_else = {
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_pentos }
+			}
+		}
+		OR = {
+			agot_is_important_coast_pentos_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_braavos }
+			}
+		}
+		OR = {
+			agot_is_important_coast_braavos_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_volantis }
+			}
+		}
+		OR = {
+			lv_is_important_coast_volantis_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_tolos }
+			}
+		}
+		OR = {
+			lv_is_important_coast_tolos_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_elyria }
+			}
+		}
+		OR = {
+			lv_is_important_coast_elyria_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_valyria_main }
+			}
+		}
+		OR = {
+			lv_is_important_coast_valyria_city = yes
+			agot_barony_can_host_voyage = yes
+			trigger_if = {
+				limit = {
+					scope:host = { has_title = title:h_valyrian_freehold }
+				}
+				OR = {
+					county ?= { holder.top_liege = scope:host }
+					lv_is_important_coast_lyria_city = yes
+					lv_is_important_coast_lokiria_city = yes
+					lv_is_important_coast_oros_city = yes
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_lys.holder } }
+						agot_is_important_coast_lys_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_tyrosh.holder } }
+						agot_is_important_coast_tyrosh_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_myr.holder } }
+						agot_is_important_coast_myr_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_pentos.holder } }
+						agot_is_important_coast_myr_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_braavos.holder } }
+						agot_is_important_coast_braavos_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_volantis.holder } }
+						lv_is_important_coast_volantis_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_tolos.holder } }
+						lv_is_important_coast_tolos_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_elyria.holder } }
+						lv_is_important_coast_elyria_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_meereen.holder } }
+						lv_is_important_coast_meereen_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_yunkai.holder } }
+						lv_is_important_coast_yunkai_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_astapor.holder } }
+						lv_is_important_coast_astapor_city = yes
+					}
+					trigger_else = { always = no }
+					trigger_if = {
+						limit = { scope:host = { is_liege_or_above_of = title:c_new_ghis.holder } }
+						lv_is_important_coast_new_ghis_city = yes
+					}
+					trigger_else = { always = no }
+				}
+			}
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_valyria_lyria }
+			}
+		}
+		OR = {
+			lv_is_important_coast_lyria_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_valyria_lokiria }
+			}
+		}
+		OR = {
+			lv_is_important_coast_lokiria_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_valyria_lands_of_the_long_summer }
+			}
+		}
+		OR = {
+			lv_is_important_coast_oros_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_meereen }
+			}
+		}
+		OR = {
+			lv_is_important_coast_meereen_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_yunkai }
+			}
+		}
+		OR = {
+			lv_is_important_coast_yunkai_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_astapor }
+			}
+		}
+		OR = {
+			lv_is_important_coast_astapor_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_essos_new_ghis }
+			}
+		}
+		OR = {
+			lv_is_important_coast_new_ghis_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else_if = { #LOV Added
+		limit = {
+			scope:host = {
+				primary_title.title_province = { geographical_region = world_asshai }
+			}
+		}
+		OR = {
+			lv_is_important_coast_asshai_city = yes
+			agot_barony_can_host_voyage = yes
+		}
+	}
+	trigger_else = { # Fallback
+		OR = {
+			this = title:c_kings_landing.title_province
+			agot_barony_can_host_voyage = yes
+		}
+	}
+}
+
+agot_sailing_location_is_valid_landless = {
+	trigger_if = {
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_westeros_seven_kingdoms }
+			}
+		}
+		OR = {
+			agot_is_important_coast_riverlands_city = yes
+			agot_is_important_coast_iron_island_city = yes
+			agot_is_important_coast_westerlands_city = yes
+			agot_is_important_coast_vale_city = yes
+			agot_is_important_coast_crownlands_city = yes
+			agot_is_important_coast_stormlands_city = yes
+			agot_is_important_coast_reach_city = yes
+			agot_is_important_coast_dorne_city = yes
+			agot_is_important_coast_north_city = yes
+			AND = {
+				geographical_region = world_westeros_seven_kingdoms
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					has_building_or_higher = agot_great_fleet_01
+				}
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_essos_free_cities }
+			}
+		}
+		OR = {
+			agot_is_important_coast_lys_city = yes
+			agot_is_important_coast_tyrosh_city = yes
+			agot_is_important_coast_myr_city = yes
+			agot_is_important_coast_pentos_city = yes
+			agot_is_important_coast_braavos_city = yes
+			lv_is_important_coast_volantis_city = yes #LOV Added
+			AND = {
+				geographical_region = world_essos_free_cities
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					has_building_or_higher = agot_great_fleet_01
+				}
+			}
+		}
+	}
+	trigger_else_if = { #LOV ADDED
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_essos_painted_mountains }
+			}
+		}
+		OR = {
+			lv_is_important_coast_tolos_city = yes
+			lv_is_important_coast_elyria_city = yes
+			AND = {
+				geographical_region = world_essos_painted_mountains
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					has_building_or_higher = agot_great_fleet_01
+				}
+			}
+		}
+	}
+	trigger_else_if = { #LOV ADDED
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_valyria }
+			}
+		}
+		OR = {
+			lv_is_important_coast_valyria_city = yes
+			lv_is_important_coast_lyria_city = yes
+			lv_is_important_coast_lokiria_city = yes
+			lv_is_important_coast_oros_city = yes
+			AND = {
+				geographical_region = world_valyria
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					has_building_or_higher = agot_great_fleet_01
+				}
+			}
+		}
+	}
+	trigger_else_if = { #LOV ADDED
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_essos_slavers_bay }
+			}
+		}
+		OR = {
+			lv_is_important_coast_meereen_city = yes
+			lv_is_important_coast_yunkai_city = yes
+			lv_is_important_coast_astapor_city = yes
+			lv_is_important_coast_new_ghis_city = yes
+			AND = {
+				geographical_region = world_essos_slavers_bay
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					has_building_or_higher = agot_great_fleet_01
+				}
+			}
+		}
+	}
+	trigger_else_if = { #LOV ADDED
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_asshai }
+			}
+		}
+		OR = {
+			lv_is_important_coast_asshai_city = yes
+			AND = {
+				geographical_region = world_asshai
+				OR = {
+					has_building_or_higher = common_tradeport_01
+					has_sailing_special_building = yes
+					has_building_or_higher = agot_great_fleet_01
+				}
+			}
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_westeros_beyond_the_wall }
+			}
+		}
+		geographical_region = world_westeros_beyond_the_wall
+		OR = {
+			has_building_or_higher = common_tradeport_01
+			has_sailing_special_building = yes
+			has_building_or_higher = agot_great_fleet_01
+		}
+	}
+	trigger_else_if = {
+		limit = {
+			scope:host = {
+				domicile.domicile_location = { geographical_region = world_stepstones }
+			}
+		}
+		this = scope:host.domicile.domicile_location
+	}
+	trigger_else = { # Fallback
+		this = title:c_kings_landing.title_province
+	}
+}
+
+agot_sailing_type_valyria_requirements = {
+	custom_tooltip = {
+		text = SAILING_VALYRIA_HEALTHY
+		is_healthy = yes
+	}
+	custom_tooltip = {
+		text = SAILING_VALYRIA_EXPERIENCED
+		has_trait_xp = {
+			trait = lifestyle_mariner
+			value >= 50
+		}
+	}
+	custom_tooltip = {
+		text = ATTEMPTED_VALYRIA
+		NOT = { has_variable = attempted_valyria }
+	}
+	NOT = { has_trait = craven }
+	custom_tooltip = {
+		text = NEED_A_SHIP_FOR_VALYRIA
+		has_access_to_a_ship = yes
+	}
+	custom_tooltip = {
+		text = LV_SAILING_TYPE_VALYRIA_OCCUPIED
+		title:c_valyria.title_province = {
+			lv_valyria_province_subregion_ruined = yes # Valyria should be ruined
+			OR = {
+				has_holding_type = ruin_holding # Valyria should be ruined
+				has_holding_type = wilderness_holding # Valyria should be wildernessed
+			}
+			province_owner = {
+				is_human = no # The design is very human
+			}
+		}
+	}
+}
+
+#LOV Added
+lv_is_important_coast_volantis_city = {
+	OR = {
+		this = title:b_volantis.title_province
+		this = title:b_fishermongers_square.title_province
+		this = title:b_western_waterfront.title_province
+		this = title:b_eastern_waterfront.title_province
+		this = title:b_temple_of_the_lord_of_light.title_province
+	}
+}
+
+lv_is_important_coast_tolos_city = {
+	OR = {
+		this = title:b_tolos.title_province
+	}
+}
+
+lv_is_important_coast_elyria_city = {
+	OR = {
+		this = title:b_elyria1.title_province
+		this = title:b_elyria2.title_province
+	}
+}
+
+lv_is_important_coast_valyria_city = {
+	OR = {
+		AND = {
+			this = title:b_valyria_8.title_province
+			title:b_valyria_8.title_province = { NOT = { has_holding_type = ruin_holding } }
+		}
+	}
+}
+
+lv_is_important_coast_lyria_city = {
+	OR = {
+		AND = {
+			this = title:b_kastaryia_4.title_province
+			title:b_kastaryia_4.title_province = { NOT = { has_holding_type = ruin_holding } }
+		}
+	}
+}
+
+lv_is_important_coast_lokiria_city = {
+	OR = {
+		AND = {
+			this = title:b_ilvonys_1.title_province
+			title:b_ilvonys_1.title_province = { NOT = { has_holding_type = ruin_holding } }
+		}
+	}
+}
+
+lv_is_important_coast_oros_city = {
+	OR = {
+		this = title:b_oros_1.title_province
+	}
+}
+
+lv_is_important_coast_meereen_city = {
+	OR = {
+		this = title:b_meereen_harbor.title_province
+		this = title:b_meereen.title_province
+	}
+}
+
+lv_is_important_coast_yunkai_city = {
+	OR = {
+		this = title:b_yunkai.title_province
+		this = title:b_yunkai_harbor.title_province
+		this = title:b_yellow_pyramid.title_province
+	}
+}
+
+lv_is_important_coast_astapor_city = {
+	OR = {
+		this = title:b_astapor.title_province
+	}
+}
+
+lv_is_important_coast_new_ghis_city = {
+	OR = {
+		this = title:b_new_ghis.title_province
+		this = title:b_harpys_port.title_province
+		AND = {
+			this = title:b_old_ghis.title_province
+			title:b_old_ghis.title_province = {
+				NOR = {
+					has_holding_type = ruin_holding
+					has_holding_type = church_holding
+				}
+			}
+		}
+	}
+}
+
+lv_is_important_coast_asshai_city = {
+	OR = {
+		this = title:b_asshai_1.title_province
+	}
+}

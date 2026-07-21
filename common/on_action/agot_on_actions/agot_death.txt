@@ -364,16 +364,16 @@ nw_ranger_history_on_lc_death = {
 }
 
 # remove dead ruler from story cycle list and add the new ruler
-# change pre_war_liege variable
+# change pre-war-liege variables
 # story owner succession is dealt with in the respective story cycles this, this includes mw_rebel_leader_list
 agot_mw_death_on_action = {
 	trigger = {
 		OR = {
-			has_variable = pre_war_liege
+			has_variable = agot_pwl_direct
 			any_liege_or_above = {
 				OR = {
 					agot_mw_crown_trigger = yes
-					has_variable = pre_war_liege
+					has_variable = agot_pwl_direct
 					agot_mw_rebel_leader_trigger = yes
 				}
 			}
@@ -467,11 +467,11 @@ agot_mw_death_on_action = {
 			}
 		}
 
-		# Update pre_war_liege if necessary
+		# Update agot_pwl_direct and agot_pwl_top if necessary
 		if = {
 			limit = {
 				any_ruler = {
-					var:pre_war_liege ?= root
+					var:agot_pwl_direct ?= root
 				}
 			}
 
@@ -479,16 +479,16 @@ agot_mw_death_on_action = {
 				limit = {
 					NOT = { this = root.primary_heir }
 					OR = {
-						var:pre_war_liege ?= root
+						var:agot_pwl_direct ?= root
 						var:agot_pwl_top ?= root
 					}
 				}
 				if = {
 					limit = {
-						var:pre_war_liege ?= root
+						var:agot_pwl_direct ?= root
 						NOT = { this = root.primary_heir }
 					}
-					set_variable = { name = pre_war_liege value = root.primary_heir }
+					set_variable = { name = agot_pwl_direct value = root.primary_heir }
 				}
 				if = { # set pre war top liege
 					limit = {
@@ -504,23 +504,23 @@ agot_mw_death_on_action = {
 				any_heir_title = { tier = root.highest_held_title_tier }
 			}
 
-			if = { # we have a pre_war_liege set for dead char and may transfer it to heir
+			if = { # we have a agot_pwl_direct set for dead char and may transfer it to heir
 				limit = {
 					NOT = { has_variable = mw_pwl_update_exempt }
 					OR = {
-						exists = root.var:pre_war_liege
+						exists = root.var:agot_pwl_direct
 						exists = root.var:agot_pwl_top
 					}
 				}
 
 				if = {
 					limit = {
-						exists = root.var:pre_war_liege
+						exists = root.var:agot_pwl_direct
 						NOT = { has_variable = mw_pwl_update_exempt }
 					}
-					set_variable = { name = pre_war_liege value = root.var:pre_war_liege }
+					set_variable = { name = agot_pwl_direct value = root.var:agot_pwl_direct }
 				}
-				if = { # we have a pre_war_liege set for dead char and may transfer it to heir
+				if = { # we have a agot_pwl_direct set for dead char and may transfer it to heir
 					limit = {
 						exists = root.var:agot_pwl_top
 						NOT = { has_variable = mw_pwl_update_exempt }
@@ -528,17 +528,17 @@ agot_mw_death_on_action = {
 					set_variable = { name = agot_pwl_top value = root.var:agot_pwl_top }
 				}
 			}
-			else_if = { # there is no pre_war_liege set or we had heir being extempt from variable transfer --> we need to make sure his current can still be vassalized by his set pre_war_liege
+			else_if = { # there is no agot_pwl_direct set or we had heir being extempt from variable transfer --> we need to make sure his current can still be vassalized by his set agot_pwl_direct
 				limit = {
 					has_variable = mw_pwl_update_exempt
 				}
 				if = {
-					limit = { # if transferred title rank is greater or equal to pre_war_liege rank, then we need to step up pre_war_liege
-						exists = var:pre_war_liege.highest_held_title_tier
-						root.highest_held_title_tier >= var:pre_war_liege.highest_held_title_tier
+					limit = { # if transferred title rank is greater or equal to agot_pwl_direct rank, then we need to step up agot_pwl_direct
+						exists = var:agot_pwl_direct.highest_held_title_tier
+						root.highest_held_title_tier >= var:agot_pwl_direct.highest_held_title_tier
 					}
 
-					set_variable = { name = pre_war_liege value = var:pre_war_liege.liege }
+					set_variable = { name = agot_pwl_direct value = var:agot_pwl_direct.liege }
 					set_variable = { name = agot_pwl_top value = var:agot_pwl_top.liege }
 				}
 			}
