@@ -22,6 +22,7 @@ unexplored_caves_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 unexplored_caves_02 = {
 	cost_gold = 100
 	construction_time = 720
@@ -43,6 +44,7 @@ unexplored_caves_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 unexplored_caves_03 = {
 	cost_gold = 200
 	construction_time = 720
@@ -103,6 +105,7 @@ swamp_01_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 swamp_01_02 = {
 	cost_gold = 100
 	construction_time = 720
@@ -121,6 +124,7 @@ swamp_01_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 swamp_01_03 = {
 	cost_gold = 100
 	construction_time = 720
@@ -190,6 +194,7 @@ swamp_02_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 swamp_02_02 = {
 	cost_gold = 100
 	construction_time = 1440
@@ -208,6 +213,7 @@ swamp_02_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 swamp_02_03 = {
 	cost_gold = 100
 	construction_time = 1440
@@ -277,6 +283,7 @@ lv_floods_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 lv_floods_02 = {
 	cost_gold = 100
 	construction_time = 1440
@@ -295,6 +302,7 @@ lv_floods_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 lv_floods_03 = {
 	cost_gold = 100
 	construction_time = 1440
@@ -369,8 +377,9 @@ noxious_gases_01_01 = {
 	}
 
 	flag = obstacle
-	effect_desc = lv_wilderness_blocker_effect_plague
+	effect_desc = lv_wilderness_blocker_effect_plague_low
 }
+
 noxious_gases_01_02 = {
 	cost_gold = 100
 	construction_time = 720
@@ -390,8 +399,9 @@ noxious_gases_01_02 = {
 	}
 
 	flag = obstacle
-	effect_desc = lv_wilderness_blocker_effect_plague
+	effect_desc = lv_wilderness_blocker_effect_plague_low
 }
+
 noxious_gases_01_03 = {
 	cost_gold = 100
 	construction_time = 720
@@ -433,6 +443,12 @@ noxious_gases_01_03 = {
 				2 = { # The blocker is cleared but during an inspection you become ill
 					# Yep
 				}
+				2 = { # The blocker is cleared but a plague outbreak occurs
+					set_variable = {
+						name = blocker_outcome
+						value = flag:plague_outbreak
+					}
+				}
 				6 = { # Challenge event - Stewardship
 					set_variable = {
 						name = blocker_outcome
@@ -445,13 +461,17 @@ noxious_gases_01_03 = {
 					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
 					trigger_event = lv_blocker_clearance.0031
 				}
+				else_if = { # Plague Outbreak
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:plague_outbreak } }
+					trigger_event = lv_blocker_clearance.0036
+				}
 				else = { trigger_event = lv_blocker_clearance.0001 }
 			}
 		}
 	}
 
 	flag = obstacle
-	effect_desc = lv_wilderness_blocker_effect_plague
+	effect_desc = lv_wilderness_blocker_effect_plague_low
 }
 
 #Noxious Gases_02_
@@ -474,6 +494,7 @@ noxious_gases_02_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect_plague
 }
+
 noxious_gases_02_02 = {
 	cost_gold = 100
 	construction_time = 1440
@@ -493,6 +514,7 @@ noxious_gases_02_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect_plague
 }
+
 noxious_gases_02_03 = {
 	cost_gold = 100
 	construction_time = 1440
@@ -534,6 +556,12 @@ noxious_gases_02_03 = {
 				2 = { # The blocker is cleared but during an inspection you become ill
 					# Yep
 				}
+				2 = { # The blocker is cleared but a plague outbreak occurs
+					set_variable = {
+						name = blocker_outcome
+						value = flag:plague_outbreak
+					}
+				}
 				6 = { # Challenge event - Stewardship
 					set_variable = {
 						name = blocker_outcome
@@ -545,6 +573,10 @@ noxious_gases_02_03 = {
 				if = { # Challenge event
 					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:challenge } }
 					trigger_event = lv_blocker_clearance.0031
+				}
+				else_if = { # Plague Outbreak
+					limit = { scope:blocker_province = { var:blocker_outcome ?= flag:plague_outbreak } }
+					trigger_event = lv_blocker_clearance.0036
 				}
 				else = { trigger_event = lv_blocker_clearance.0001 }
 			}
@@ -578,6 +610,7 @@ stonemen_encampment_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect_plague
 }
+
 stonemen_encampment_02 = {
 	cost_gold = 240
 	construction_time = 1080
@@ -600,6 +633,7 @@ stonemen_encampment_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect_plague
 }
+
 stonemen_encampment_03 = {
 	cost_gold = 120
 	construction_time = 540
@@ -685,6 +719,7 @@ bandit_camps_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect_raid
 }
+
 bandit_camps_02 = {
 	cost_gold = 240
 	construction_time = 1080
@@ -707,6 +742,7 @@ bandit_camps_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect_raid
 }
+
 bandit_camps_03 = {
 	cost_gold = 120
 	construction_time = 540
@@ -781,6 +817,7 @@ small_ruined_holding_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 small_ruined_holding_02 = {
 	cost_gold = expensive_building_tier_6_cost
 	construction_time = standard_construction_time
@@ -800,19 +837,19 @@ small_ruined_holding_02 = {
 		hidden_effect = {
 			county.holder = {
 				random_list = {
-					1 = { # find a dragon egg
-						trigger_event = special_blockers.0005
+					1 = {
+						# Find a dragon egg
+						trigger_event = lv_special_blockers.0005
 					}
-					4 = {	# cave explored, deposit of a random gem/metal
+					4 = {
+						# Cave explored, deposit of a random gem/metal
 						send_interface_toast = {
 							title = find_gold_cache
 							left_icon = this
 							add_gold = 200
 						}
 					}
-					10 = {
-
-					}
+					10 = {}
 				}
 			}
 		}
@@ -821,6 +858,7 @@ small_ruined_holding_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 small_ruined_holding_03 = {
 	cost_gold = expensive_building_tier_6_cost
 	construction_time = standard_construction_time
@@ -879,6 +917,7 @@ medium_ruined_holding_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 medium_ruined_holding_02 = {
 	cost_gold = expensive_building_tier_6_cost
 	construction_time = very_slow_construction_time
@@ -898,19 +937,19 @@ medium_ruined_holding_02 = {
 		hidden_effect = {
 			county.holder = {
 				random_list = {
-					1 = { # find a dragon egg
-						trigger_event = special_blockers.0005
-					}	
-					4 = {	# cave explored, deposit of a random gem/metal
+					1 = {
+						# Find a dragon egg
+						trigger_event = lv_special_blockers.0005
+					}
+					4 = {
+						# Cave explored, deposit of a random gem/metal
 						send_interface_toast = {
 							title = find_gold_cache
 							left_icon = this
 							add_gold = 200
 						}
 					}
-					10 = {
-
-					}
+					10 = {}
 				}
 			}
 		}
@@ -919,6 +958,7 @@ medium_ruined_holding_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 medium_ruined_holding_03 = {
 	cost_gold = expensive_building_tier_6_cost
 	construction_time = very_slow_construction_time
@@ -975,6 +1015,7 @@ large_ruined_holding_01 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 large_ruined_holding_02 = {
 	cost_gold = expensive_building_tier_6_cost
 	construction_time = 2555
@@ -994,19 +1035,19 @@ large_ruined_holding_02 = {
 		hidden_effect = {
 			county.holder = {
 				random_list = {
-					1 = { # find a dragon egg
-						trigger_event = special_blockers.0005
-					}	
-					4 = {	# cave explored, deposit of a random gem/metal
+					1 = {
+						# Find a dragon egg
+						trigger_event = lv_special_blockers.0005
+					}
+					4 = {
+						# Cave explored, deposit of a random gem/metal
 						send_interface_toast = {
 							title = find_gold_cache
 							left_icon = this
 							add_gold = 200
 						}
 					}
-					10 = {
-
-					}
+					10 = {}
 				}
 			}
 		}
@@ -1015,6 +1056,7 @@ large_ruined_holding_02 = {
 	flag = obstacle
 	effect_desc = lv_wilderness_blocker_effect
 }
+
 large_ruined_holding_03 = {
 	cost_gold = expensive_building_tier_6_cost
 	construction_time = 2555
