@@ -1,4 +1,63 @@
 ﻿# Scripted Triggers and Effects
+scripted_effect lv_post_outcome_cleanup_effect = {
+	if = {
+		limit = { has_building = unexplored_caves_03 }
+		remove_building = unexplored_caves_03
+	}
+	if = {
+		limit = { has_building = swamp_01_03 }
+		remove_building = swamp_01_03
+	}
+	if = {
+		limit = { has_building = swamp_02_03 }
+		remove_building = swamp_02_03
+	}
+	if = {
+		limit = { has_building = lv_floods_03 }
+		remove_building = lv_floods_03
+	}
+	if = {
+		limit = { has_building = noxious_gases_01_03 }
+		remove_building = noxious_gases_01_03
+	}
+	if = {
+		limit = { has_building = noxious_gases_02_03 }
+		remove_building = noxious_gases_02_03
+	}
+	if = {
+		limit = { has_building = stonemen_encampment_03 }
+		remove_building = stonemen_encampment_03
+	}
+	if = {
+		limit = { has_building = bandit_camps_03 }
+		remove_building = bandit_camps_03
+	}
+	if = {
+		limit = { has_building = small_ruined_holding_03 }
+		remove_building = small_ruined_holding_03
+	}
+	if = {
+		limit = { has_building = medium_ruined_holding_03 }
+		remove_building = medium_ruined_holding_03
+	}
+	if = {
+		limit = { has_building = large_ruined_holding_03 }
+		remove_building = large_ruined_holding_03
+	}
+	hidden_effect = {
+		lv_blocker_cleared_effect = yes
+		remove_variable = blocker_outcome
+	}
+}
+
+scripted_trigger lv_has_positive_blocker_outcome = {
+	has_variable = blocker_outcome
+	NOR = {
+		var:blocker_outcome = flag:plague_outbreak
+		var:blocker_outcome = flag:challenge
+	}
+}
+
 scripted_trigger lv_has_blocker_swamp = {
 	OR = {
 		has_building_or_higher = swamp_01_03
@@ -35,6 +94,7 @@ namespace = lv_blocker_clearance
 # lv_blocker_clearance.0033 - Noxious Gases: Critical Failure (Hard Reset)
 # lv_blocker_clearance.0034 - Noxious Gases: Success
 # lv_blocker_clearance.0035 - Noxious Gases: Critical Success (Guaranteed Reward)
+# lv_blocker_clearance.0036 - Noxious Gases: Plague Outbreak!
 
 # lv_blocker_clearance.0041 - Stonemen Encampment: Challenge event
 # lv_blocker_clearance.0042 - Stonemen Encampment: Failure
@@ -57,7 +117,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = { 
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = unexplored_caves_03
 						}
 					}
@@ -66,7 +126,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							lv_has_blocker_swamp = yes
 						}
 					}
@@ -75,7 +135,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = lv_floods_03
 						}
 					}
@@ -84,7 +144,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							lv_has_blocker_noxious_gases = yes
 						}
 					}
@@ -93,7 +153,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = stonemen_encampment_03
 						}
 					}
@@ -102,7 +162,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = bandit_camps_03
 						}
 					}
@@ -111,7 +171,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = small_ruined_holding_03
 						}
 					}
@@ -120,7 +180,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = medium_ruined_holding_03
 						}
 					}
@@ -129,7 +189,7 @@ lv_blocker_clearance.0001 = {
 				triggered_desc = {
 					trigger = {
 						scope:blocker_province = {
-							has_variable = blocker_outcome
+							lv_has_positive_blocker_outcome = yes
 							has_building_or_higher = large_ruined_holding_03
 						}
 					}
@@ -475,7 +535,7 @@ lv_blocker_clearance.0001 = {
 		character = root
 		scripted_animation = {
 			triggered_animation = {
-				trigger = { scope:blocker_province = { has_variable = blocker_outcome } }
+				trigger = { scope:blocker_province = { lv_has_positive_blocker_outcome = yes } }
 				animation = { happiness }
 			}
 			animation = idle
@@ -541,58 +601,7 @@ lv_blocker_clearance.0001 = {
 
 	option = { name = lv_blocker_clearance.0001.a }
 
-	after = {
-		scope:blocker_province = {
-			if = {
-				limit = { has_building = unexplored_caves_03 }
-				remove_building = unexplored_caves_03
-			}
-			if = {
-				limit = { has_building = swamp_01_03 }
-				remove_building = swamp_01_03
-			}
-			if = {
-				limit = { has_building = swamp_02_03 }
-				remove_building = swamp_02_03
-			}
-			if = {
-				limit = { has_building = lv_floods_03 }
-				remove_building = lv_floods_03
-			}
-			if = {
-				limit = { has_building = noxious_gases_01_03 }
-				remove_building = noxious_gases_01_03
-			}
-			if = {
-				limit = { has_building = noxious_gases_02_03 }
-				remove_building = noxious_gases_02_03
-			}
-			if = {
-				limit = { has_building = stonemen_encampment_03 }
-				remove_building = stonemen_encampment_03
-			}
-			if = {
-				limit = { has_building = bandit_camps_03 }
-				remove_building = bandit_camps_03
-			}
-			if = {
-				limit = { has_building = small_ruined_holding_03 }
-				remove_building = small_ruined_holding_03
-			}
-			if = {
-				limit = { has_building = medium_ruined_holding_03 }
-				remove_building = medium_ruined_holding_03
-			}
-			if = {
-				limit = { has_building = large_ruined_holding_03 }
-				remove_building = large_ruined_holding_03
-			}
-			hidden_effect = {
-				lv_blocker_cleared_effect = yes
-				remove_variable = blocker_outcome
-			}
-		}
-	}
+	after = { scope:blocker_province = { lv_post_outcome_cleanup_effect = yes } }
 }
 
 # Swamp: Challenge
@@ -1384,6 +1393,92 @@ lv_blocker_clearance.0035 = {
 			}
 		}
 		trigger_event = lv_blocker_clearance.0001
+	}
+}
+
+# Noxious Gases: Plague Outbreak!
+lv_blocker_clearance.0036 = {
+	type = character_event
+	title = lv_blocker_clearance.0036.t
+	desc = lv_blocker_clearance.0036.desc
+	theme = realm
+
+	right_portrait = {
+		character = root
+		animation = worry
+	}
+
+	override_background = battlefield
+
+	option = { name = lv_blocker_clearance.0036.a }
+
+	after = {
+		# Spawn outbreak
+		scope:blocker_province = {
+			random_list = {
+				1 = { # Measles
+					if = {
+						limit = { has_building_or_higher = noxious_gases_02_01 }
+						create_epidemic_outbreak = {
+							type = measles
+							intensity = major
+						}
+					}
+					else = {
+						create_epidemic_outbreak = {
+							type = measles
+							intensity = minor
+						}
+					}
+				}
+				1 = { # Consumption
+					if = {
+						limit = { has_building_or_higher = noxious_gases_02_01 }
+						create_epidemic_outbreak = {
+							type = consumption
+							intensity = major
+						}
+					}
+					else = {
+						create_epidemic_outbreak = {
+							type = consumption
+							intensity = minor
+						}
+					}
+				}
+				1 = { # Smallpox
+					if = {
+						limit = { has_building_or_higher = noxious_gases_02_01 }
+						create_epidemic_outbreak = {
+							type = smallpox
+							intensity = major
+						}
+					}
+					else = {
+						create_epidemic_outbreak = {
+							type = smallpox
+							intensity = minor
+						}
+					}
+				}
+				1 = { # Dysentery
+					if = {
+						limit = { has_building_or_higher = noxious_gases_02_01 }
+						create_epidemic_outbreak = {
+							type = dysentery
+							intensity = major
+						}
+					}
+					else = {
+						create_epidemic_outbreak = {
+							type = dysentery
+							intensity = minor
+						}
+					}
+				}
+			}
+		}
+		scope:blocker_province = { lv_post_outcome_cleanup_effect = yes }
 	}
 }
 
