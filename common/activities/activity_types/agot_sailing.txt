@@ -1,24 +1,6 @@
 ﻿activity_agot_sailing = {
 	is_shown = {
-		OR = {
-			AND = {
-				is_landed = yes
-				any_held_county = {
-					any_county_province = {
-						OR = {
-							has_building_or_higher = common_tradeport_01
-							has_sailing_special_building = yes
-							has_building_or_higher = agot_great_fleet_01
-						}
-					}
-				}
-			}
-			is_landless_adventurer = yes
-			highest_held_title_tier >= tier_kingdom
-			government_has_flag = government_is_pirate_trigger_check
-		}
-		NOT = { government_has_flag = government_is_nw }
-		NOT = { government_has_flag = government_is_uninteractable }
+		agot_can_sail = yes
 	}
 
 	can_start_showing_failures_only = {
@@ -48,12 +30,17 @@
 					}
 				}
 			}
-			domicile.domicile_location = {
-				custom_tooltip = {
-					text = province_can_host_sailing
-					OR = {
-						has_building_or_higher = common_tradeport_01
-						has_sailing_special_building = yes
+			trigger_if = {
+				limit = {
+					NOT = { government_has_flag = government_is_pirate }
+				}
+				domicile.domicile_location = {
+					custom_tooltip = {
+						text = province_can_host_sailing
+						OR = {
+							has_building_or_higher = common_tradeport_01
+							has_sailing_special_building = yes
+						}
 					}
 				}
 			}
