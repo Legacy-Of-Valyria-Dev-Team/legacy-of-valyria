@@ -22,6 +22,190 @@ pregnancy.0001 = {
 				days = 2
 			}
 		}
+		#AGOT Added - Ibb Incompatibility Handling
+		else_if = {
+			limit = {
+				has_incompatible_blood_trigger = { MOTHER = root FATHER = scope:real_father }
+				NOR = {
+					#preconfigured
+					has_character_flag = birth_will_go_smoothly
+					has_character_flag = agot_birth_child_will_be_stillborn
+					has_character_flag = agot_birth_mother_will_die
+					has_character_flag = birth_child_will_become_sickly
+					has_character_flag = birth_mother_will_become_ill
+					has_character_flag = agot_birth_one_twin_lives_one_twin_stillborn
+					has_character_flag = agot_birth_mother_and_child_die
+					has_character_flag = agot_birth_mother_dies_and_child_sickly
+					has_character_flag = birth_will_be_scaly
+				}
+			}
+			#PREGNANCY COMPLICATION CALCULATIONS & FLAG-SETTING
+			random_list = {
+				350 = { #Non viable pregnancy
+					modifier = {
+						add = -15
+						has_game_rule = lmf_no_birth_fertility_modifiers
+					}
+
+					trigger_event = {
+						id = pregnancy.2101
+						days = { 80 120 }
+					}
+				}
+				350 = { #Miscarriage
+					modifier = {
+						add = -12
+						has_game_rule = lmf_no_birth_fertility_modifiers
+					}
+
+					add_character_flag = {
+						flag = incompatible_biology
+						days = 270
+					}
+
+					trigger_event = {
+						id = birth.3001
+						days = { 180 200 }
+					}
+				}
+				50 = { #Miscarriage + Mom dies
+					modifier = { #to keep players from dying excessively
+						add = -40
+						is_ai = no
+					}
+
+					modifier = {
+						add = -20
+						has_game_rule = lmf_no_birth_fertility_modifiers
+					}
+
+					trigger_event = {
+						id = birth.3021
+						days = { 180 200 }
+					}
+				}
+				200 = { #Sterile baby + Mom lives
+					add_character_flag = {
+						flag = birth_will_be_sterile
+						days = 270
+					}
+				}
+				50 = { #All goes smoothly
+					#Less likely if health is bad
+					modifier = {
+						health <= fine_health
+						has_game_rule = lmf_no_birth_fertility_modifiers
+						add = -10
+					}
+					modifier = {
+						health <= poor_health
+						has_game_rule = lmf_no_birth_fertility_modifiers
+						add = -15
+					}
+					modifier = {
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						health >= excellent_health
+						add = 10
+					}
+					modifier = {
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						health >= good_health
+						add = 5
+					}
+					modifier = {
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						health <= fine_health
+						add = -15
+					}
+					modifier = {
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						health <= poor_health
+						add = -20
+					}
+
+					#More kids means less risk of complications!
+					modifier = {
+						add = 5
+						any_child = {
+							even_if_dead = yes
+							count >= 2
+						}
+					}
+					modifier = {
+						add = 5
+						any_child = {
+							even_if_dead = yes
+							count >= 4
+						}
+					}
+
+					#More likely if you have sacred childbirth
+					modifier = {
+						factor = 2 # Religious doctrine focusing on providing a sanitary birthing chamber and supplies should have a substantial impact on birth complications.
+						faith = {
+							has_doctrine_parameter = safer_childbirths_active
+						}
+					}
+					#More likely if the Dynasty has the Kin legacy
+					modifier = {
+						factor = 1.5 # So too should constant care of pregnant/birthing mothers.
+						has_dynasty = yes
+						dynasty = {
+							has_dynasty_perk = kin_legacy_3
+						}
+					}
+					#First pregnancy is the riskiest
+					modifier = {
+						add = -20
+						NOR = {
+							has_game_rule = lmf_no_birth_fertility_modifiers
+							any_child = {
+								even_if_dead = yes
+							}
+						}
+					}
+					#Less likely the older the mother is
+					modifier = {
+						add = -5
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						age >= 30
+					}
+					modifier = {
+						add = -5
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						age >= 35
+					}
+					modifier = {
+						add = -10
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						age >= 40
+					}
+					#Less likely when underweight
+					modifier = {
+						add = -10
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						current_weight < -50
+					}
+					modifier = {
+						add = 10
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						current_weight > 50
+					}
+					#More likely if fecund
+					modifier = {
+						add = 25
+						NOT = { has_game_rule = lmf_no_birth_fertility_modifiers }
+						has_trait = fecund
+					}
+
+					add_character_flag = {
+						flag = birth_will_go_smoothly 
+						days = 270
+					}
+				}
+			}
+		}
+		#AGOT Added End
 		# Failing that, proceed
 		else = {
 		#PREGNANCY COMPLICATION CALCULATIONS & FLAG-SETTING

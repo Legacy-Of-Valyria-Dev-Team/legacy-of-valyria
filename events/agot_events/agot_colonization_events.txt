@@ -197,6 +197,12 @@ agot_colonization_events.0006 = {
 					}
 					add = 4
 				}
+				if = {
+					limit = {
+						title_province = { geographical_region = difficult_colonization_region }
+					}
+					add = -100
+				}
 			}
 			save_scope_as = wilderness
 		}
@@ -210,7 +216,25 @@ agot_colonization_events.0006 = {
 				limit = {
 					exists = scope:wilderness
 				}
-				ai_colonization_effect = { WILDERNESS = scope:wilderness ROOT_SCOPE = root }
+				random = {
+					chance = 100
+					modifier = {
+						add = -95
+						scope:wilderness.title_province = { geographical_region = difficult_colonization_region }
+					}
+					modifier = {
+						add = -5
+						scope:wilderness.title_province = { geographical_region = difficult_colonization_region }
+						NOT = {
+							root = {
+								ai_boldness > 15
+								ai_greed > 0
+							}
+						}
+					}
+
+					ai_colonization_effect = { WILDERNESS = scope:wilderness ROOT_SCOPE = root }
+				}
 			}
 		}
 		else_if = {
@@ -1493,6 +1517,11 @@ agot_colonization_events.1005 = { # The Vanished
 
 	option = { # Organize the villagers
 		name = agot_colonization_events.1005.a
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
 		skill = martial
 		duel = {
 			skill = martial
@@ -1536,6 +1565,13 @@ agot_colonization_events.1005 = { # The Vanished
 
 	option = { # Rally the villagers
 		name = agot_colonization_events.1005.b
+
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
+
 		skill = intrigue
 		duel = {
 			skill = intrigue
@@ -4257,6 +4293,11 @@ agot_colonization_events.1204 = { # Wildling Tribes
 
 	option = { # Crush them!
 		name = agot_colonization_events.1204.a
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
 		skill = martial
 		duel = {
 			skill = martial
@@ -5643,6 +5684,11 @@ agot_colonization_events.1401 = { # Ditch and Drain
 
 	option = { # Maybe this colony was doomed from the start...
 		name = agot_colonization_events.1401.c
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
 		hidden_effect = {
 			scope:obstacle_province = { remove_building = flooded_lands_cleared }
 		}
@@ -5757,6 +5803,11 @@ agot_colonization_events.1402 = { # Marsh Fever
 
 	option = { # If they’d worked harder to drain the marshes this wouldn’t be a problem!
 		name = agot_colonization_events.1402.c
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
 		scope:obstacle_province.county = {
 			add_county_modifier = {
 				modifier = colony_disease_recovery_county_modifier
@@ -5921,6 +5972,11 @@ agot_colonization_events.1501 = {
 
 	option = {
 		name = agot_colonization_events.1501.c
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
 		make_settlement_county_wilderness = {
 			COUNTY = scope:obstacle_province.county
 		}
@@ -6077,6 +6133,11 @@ agot_colonization_events.1502 = {
 
 	option = {
 		name = agot_colonization_events.1502.c
+
+		trigger = {
+			scope:obstacle_province.barony = { is_capital_barony = yes }
+		}
+
 		make_settlement_county_wilderness = {
 			COUNTY = scope:obstacle_province.county
 		}
