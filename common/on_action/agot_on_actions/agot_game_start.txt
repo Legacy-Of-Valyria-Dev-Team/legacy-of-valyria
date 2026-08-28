@@ -24,6 +24,8 @@ agot_on_game_start = {
 			name = AGOT_is_loaded
 			value = yes
 		}
+
+		agot_set_version_effect = yes
 		agot_set_culture_descriptions_effect = yes
 
 		# Free Cities Setup
@@ -73,6 +75,24 @@ agot_on_game_start = {
 		### Culture related setup
 		# Save divergent valyrian cultures for overriding promoting culture loc, do the same for iron bois
 		agot_culture_variable_setup_effect = yes
+
+		# Cultural setup
+		if = {
+			limit = {
+				game_start_date >= 8131.1.14
+			}
+			culture:high_valyrian = {
+				set_name_list = name_list_high_valyrian_targ_dominance
+			}
+		}
+		else_if = {
+			limit = {
+				game_start_date >= 8010.1.1
+			}
+			culture:high_valyrian = {
+				set_name_list = name_list_high_valyrian_targ_influence
+			}
+		}
 
 		#Setup Sept of Baelor Completion
 		if = { # 8170.12.11 Titan Marches
@@ -805,6 +825,10 @@ agot_on_game_start = {
 		### Enhanced Siren on Steroids System
 		every_ruler = {
 			limit = { has_character_flag = supersiren_flag }
+			every_held_title = {
+				limit = { tier > tier_county }
+				prev = { destroy_title = prev }
+			}
 			every_held_county = {
 				save_scope_as = siren_distribution_title
 				random_direct_de_jure_vassal_title = {
@@ -858,6 +882,11 @@ agot_on_game_start = {
 					exists = title:k_the_ice_lakes.holder
 					exists = title:d_shivering_shore.holder
 				}
+				OR = { # Rhoynish Confederation can only spawn if the Shattering doesn't happen, or if it has happened but hasn't shattered beyond Kingdoms and Empires
+					has_game_rule = agot_not_shattered
+					has_game_rule = agot_shatter_to_kingdoms
+					has_game_rule = agot_shatter_to_empires
+				}
 			}
 			random_ruler = {
 				limit = {
@@ -899,6 +928,11 @@ agot_on_game_start = {
 			limit = {
 				game_start_date >= 8138.10.1
 				game_start_date < 8170.3.12
+				OR = { # Rhoynish Confederation can only spawn if the Shattering doesn't happen, or if it has happened but hasn't shattered beyond Kingdoms and Empires
+					has_game_rule = agot_not_shattered
+					has_game_rule = agot_shatter_to_kingdoms
+					has_game_rule = agot_shatter_to_empires
+				}
 			}
 			title:c_silkhead.holder ?= {
 				create_confederation = {
@@ -930,6 +964,40 @@ agot_on_game_start = {
 							}
 							add_realm_law = slavery_disallowed_law
 						}
+					}
+				}
+			}
+		}
+
+		### Rhoynish Confederation setup
+		if = {
+			limit = {
+				game_start_date >= 8167.1.30
+				game_start_date < 8186.12.12
+				OR = { # Rhoynish Confederation can only spawn if the Shattering doesn't happen, or if it has happened but hasn't shattered beyond Kingdoms and Empires
+					has_game_rule = agot_not_shattered
+					has_game_rule = agot_shatter_to_kingdoms
+					has_game_rule = agot_shatter_to_empires
+				}
+			}
+			title:c_pihu_sar.holder ?= {
+				create_confederation = {
+					name = d_rhoynish_confederation
+				}
+				scope:new_confederation = {
+					set_coa = d_rhoynish_confederation
+					every_ruler = {
+						limit = {
+							highest_held_title_tier = tier_county
+							OR = {
+								primary_title = title:c_soytialne
+								primary_title = title:c_lomoyrea
+								primary_title = title:c_perforated_mangrove
+								primary_title = title:c_freedmens_respite
+							}
+						}
+						save_scope_as = rhoynish_confederation_member
+						scope:new_confederation = { add_confederation_member = scope:rhoynish_confederation_member }
 					}
 				}
 			}
@@ -992,7 +1060,10 @@ agot_on_game_start = {
 			if = {
 				limit = {
 					age > 13
-					NOT = { has_character_flag = canon_status_canon }
+					NOR = {
+						has_character_flag = canon_status_canon
+						has_character_flag = do_not_dye
+					}
 				}
 				trigger_event = agot_events_generic.0007
 			}
@@ -1375,7 +1446,7 @@ agot_on_game_start = {
 		every_empire = {
 			limit = {
 				exists = holder
-				holder ?= { has_realm_law = free_city_election_succession_law }
+				holder ?= { agot_has_free_city_succession_law_type_general_check = yes }
 			}
 			save_scope_as = term_limit_country
 			holder = {
@@ -1402,7 +1473,7 @@ agot_on_game_start = {
 		every_kingdom = {
 			limit = {
 				exists = holder
-				holder ?= { has_realm_law = free_city_election_succession_law }
+				holder ?= { agot_has_free_city_succession_law_type_general_check = yes }
 			}
 			save_scope_as = term_limit_country
 			holder = {
@@ -1552,6 +1623,12 @@ agot_on_game_start = {
 					}
 				}
 			}
+		}
+
+		### Lorathi Three Princes Setup ###
+
+		title:k_lorath.holder ?= {
+			agot_lorath_three_princes_setup_effect = yes
 		}
 
 		### Scenario setup (landless->landed scenarios)
@@ -1868,6 +1945,157 @@ agot_nf_estate_locations = {
 			else_if = {
 				limit = { owner.dynasty = dynasty:dynn_Zavalozaar }
 				move_domicile = title:b_rhinarios.title_province
+			}
+			# Lorath
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Dh_ghan }
+				move_domicile = title:b_kslobaktn.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Lh_ghai }
+				move_domicile = title:b_hooded_doths.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Ererhan }
+				move_domicile = title:b_aele_labyrinth.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_O_rel }
+				move_domicile = title:b_daghnkn.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Pahryl }
+				move_domicile = title:b_port_ampnavath.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_D_han }
+				move_domicile = title:b_kulakqr.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Nahen }
+				move_domicile = title:b_lienqs.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Mh_hal }
+				move_domicile = title:b_nasps.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_V_ghal }
+				move_domicile = title:b_the_oilworks.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_D_nar }
+				move_domicile = title:b_bnth_grange.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Dalthor }
+				move_domicile = title:b_qthyrds.title_province
+			}
+			else_if = {
+				limit = {
+					owner.dynasty = dynasty:dynn_R_ghan
+					game_start_date <= 8284.2.6
+				}
+				move_domicile = title:b_scrodhaven.title_province
+			}
+			else_if = {
+				limit = {
+					owner.dynasty = dynasty:dynn_R_ghan
+					game_start_date > 8284.2.6
+				}
+				move_domicile = title:b_valuh.title_province
+			}
+			else_if = {
+				limit = {
+					owner.dynasty = dynasty:dynn_Hr_ghai
+					game_start_date <= 8284.2.6
+				}
+				move_domicile = title:b_softclay.title_province
+			}
+			else_if = {
+				limit = {
+					owner.dynasty = dynasty:dynn_Hr_ghai
+					game_start_date > 8284.2.6
+				}
+				move_domicile = title:b_hewn_snare.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Hargalen }
+				move_domicile = title:b_lomiets.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Legharos }
+				move_domicile = title:b_gaffstand.title_province
+			}
+			# Norvos
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Yezkeonio }
+				move_domicile = title:b_kastri.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Fa_Zane }
+				move_domicile = title:b_ishakryus_monastery.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Dazh_Reo }
+				move_domicile = title:b_sorewood.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Vatteo }
+				move_domicile = title:b_groundwater.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Golathis }
+				move_domicile = title:b_shakoshor.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Bliklya }
+				move_domicile = title:b_ryenesh.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Ruhybia }
+				move_domicile = title:b_fervor.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Gaalyeo }
+				move_domicile = title:b_drenthon.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Shouvekio }
+				move_domicile = title:b_qeorriy.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Lyorrye }
+				move_domicile = title:b_aakothah.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Tialo }
+				move_domicile = title:b_shaghereo.title_province
+			}
+			# Qohor
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Ostorlat }
+				move_domicile = title:b_eppoo.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Vos_Ghors }
+				move_domicile = title:b_jodhegires.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Lasqant }
+				move_domicile = title:b_banihokton.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Vamaoshan }
+				move_domicile = title:b_pajedmaz.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Jomhibors }
+				move_domicile = title:b_sam.title_province
+			}
+			else_if = {
+				limit = { owner.dynasty = dynasty:dynn_Hov }
+				move_domicile = title:b_blackened_foundry.title_province
 			}
 
 			owner ?= { # Courtiers getting stuck in different location
@@ -2191,57 +2419,83 @@ agot_on_game_start_after_lobby = {
 		### Shattered Realms related setup; needs to be below this line
 		agot_init_shattered_realms = yes
 
-		### Free City Diarchies
+		### Free City Setup
 		every_ruler = {
 			limit = {
-				has_realm_law = free_city_election_succession_law
+				agot_has_free_city_succession_law_type_general_check = yes
 			}
-			random_powerful_vassal = {
-				limit = { is_adult = yes }
+			if = {
+				limit = {
+					agot_has_free_city_succession_law_type_independence_check = yes
+				}
 				if = {
 					limit = {
-						prev.primary_title = title:k_lys
+						primary_title = title:k_norvos
+						has_realm_law = norvos_regency_succession_law
+						exists = title:d_norvos_high_priesthood.holder
 					}
-					prev = {
-						designate_diarch = prev
-						try_start_diarchy = second_magister
-						set_diarchy_swing = 40
-						if = {
-							limit = { diarch = character:Rogare_9 } # Moredo Rogare
-							set_diarchy_swing = 100
-						}
-					}
-				}
-				else_if = {
-					limit = {
-						OR = {
-							prev.primary_title = title:k_tyrosh
-							prev.primary_title = title:k_pentos
-						}
-					}
-					prev = {
-						designate_diarch = prev
-						try_start_diarchy = high_councilor
-						set_diarchy_swing = 40
-					}
-				}
-				else_if = {
-					limit = {
-						prev.primary_title = title:k_myr
-					}
-					prev = {
-						designate_diarch = prev
-						try_start_diarchy = tyniate
-						set_diarchy_swing = 40
-					}
+					designate_diarch = title:d_norvos_high_priesthood.holder
+					try_start_diarchy = norvos_high_priestship
+					set_diarchy_swing = 100
 				}
 				else = {
-					prev = {
-						designate_diarch = prev
-						try_start_diarchy = gonfaloniere
-						set_diarchy_swing = 40
+					random_powerful_vassal = {
+						limit = { is_adult = yes }
+						if = {
+							limit = {
+								prev.primary_title = title:k_lys
+							}
+							prev = {
+								designate_diarch = prev
+								try_start_diarchy = second_magister
+								set_diarchy_swing = 40
+								if = {
+									limit = { diarch = character:Rogare_9 } # Moredo Rogare
+									set_diarchy_swing = 100
+								}
+							}
+						}
+						else_if = {
+							limit = {
+								OR = {
+									prev.primary_title = title:k_tyrosh
+									prev.primary_title = title:k_pentos
+								}
+							}
+							prev = {
+								designate_diarch = prev
+								try_start_diarchy = high_councilor
+								set_diarchy_swing = 40
+							}
+						}
+						else_if = {
+							limit = {
+								prev.primary_title = title:k_myr
+							}
+							prev = {
+								designate_diarch = prev
+								try_start_diarchy = tyniate
+								set_diarchy_swing = 40
+							}
+						}
+						else = {
+							prev = {
+								designate_diarch = prev
+								try_start_diarchy = gonfaloniere
+								set_diarchy_swing = 40
+							}
+						}
 					}
 				}
+			}
+			else_if = {
+				limit = {
+					has_realm_law = norvos_regency_succession_law
+					NOT = {
+						has_realm_law = term_length_life_vassal
+					}
+				}
+				add_realm_law_skip_effects = term_length_life_vassal
 			}
 		}
 
@@ -2888,6 +3142,31 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Fregar
 						owner.dynasty = dynasty:dynn_Dothare
 						owner.dynasty = dynasty:dynn_Gresayn
+						# Tyrosh
+						owner.dynasty = dynasty:dynn_Adarys
+						owner.dynasty = dynasty:dynn_Ryndoon
+						owner.dynasty = dynasty:dynn_Moratyr
+						# Lys
+						owner.dynasty = dynasty:dynn_Sellos
+						owner.dynasty = dynasty:dynn_Ormollen
+						# Myr
+						owner.dynasty = dynasty:dynn_Rhegan
+						owner.dynasty = dynasty:dynn_Mallar
+						# Pentos
+						owner.dynasty = dynasty:dynn_Estatis
+						owner.dynasty = dynasty:dynn_Bopatis
+						owner.dynasty = dynasty:dynn_Mopatis
+						owner.dynasty = dynasty:dynn_Haratis
+						# Lorath
+						owner.dynasty = dynasty:dynn_Dh_ghan
+						owner.dynasty = dynasty:dynn_Lh_ghai
+						# Norvos
+						owner.dynasty = dynasty:dynn_Yezkeonio
+						owner.dynasty = dynasty:dynn_Fa_Zane
+						# Qohor
+						owner.dynasty = dynasty:dynn_Vos_Ghors
+						owner.dynasty = dynasty:dynn_Ostorlat
+
 						# Volantis
 						owner.dynasty = dynasty:dynn_Staegone
 						owner.dynasty = dynasty:dynn_Tagaros
@@ -3005,6 +3284,18 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Quaranis
 						owner.dynasty = dynasty:dynn_Sentanis
 						owner.dynasty = dynasty:dynn_Enrosaena
+						# Lorath
+						owner.dynasty = dynasty:dynn_V_ghal
+						owner.dynasty = dynasty:dynn_Mh_hal
+						owner.dynasty = dynasty:dynn_D_han
+						# Norvos
+						owner.dynasty = dynasty:dynn_Dazh_Reo
+						owner.dynasty = dynasty:dynn_Vatteo
+						owner.dynasty = dynasty:dynn_Golathis
+						# Qohor
+						owner.dynasty = dynasty:dynn_Ik_Makzaz
+						owner.dynasty = dynasty:dynn_Jomhibors
+						owner.dynasty = dynasty:dynn_Ekna
 
 						# Meereen
 						owner.dynasty = dynasty:dynn_Reznak
@@ -3122,6 +3413,24 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Lyksanon
 						owner.dynasty = dynasty:dynn_Alkalon
 						owner.dynasty = dynasty:dynn_Talraen
+						# Lorath
+						owner.dynasty = dynasty:dynn_Ererhan
+						owner.dynasty = dynasty:dynn_D_nar
+						owner.dynasty = dynasty:dynn_O_rel
+						owner.dynasty = dynasty:dynn_Hr_ghai
+						owner.dynasty = dynasty:dynn_Pahryl
+						# Norvos
+						owner.dynasty = dynasty:dynn_Gaalyeo
+						owner.dynasty = dynasty:dynn_Bliklya
+						owner.dynasty = dynasty:dynn_Lyorrye
+						owner.dynasty = dynasty:dynn_Valle
+						# Qohor
+						owner.dynasty = dynasty:dynn_Dimmos
+						owner.dynasty = dynasty:dynn_Tattan
+						owner.dynasty = dynasty:dynn_Hatorys
+						owner.dynasty = dynasty:dynn_Vamaoshan
+						owner.dynasty = dynasty:dynn_Alghan
+
 						# Yunkai
 						owner.dynasty = dynasty:dynn_Qaggaz
 						owner.dynasty = dynasty:dynn_Myraq
@@ -3222,6 +3531,22 @@ agot_administrative_setup = {
 						owner.dynasty = dynasty:dynn_Turranion
 						owner.dynasty = dynasty:dynn_Sentikis
 						owner.dynasty = dynasty:dynn_Erygon
+						# Lorath
+						owner.dynasty = dynasty:dynn_Nahen
+						owner.dynasty = dynasty:dynn_Hargalen
+						owner.dynasty = dynasty:dynn_Dalthor
+						owner.dynasty = dynasty:dynn_Legharos
+						owner.dynasty = dynasty:dynn_R_ghan
+						# Norvos
+						owner.dynasty = dynasty:dynn_Ruhybia
+						owner.dynasty = dynasty:dynn_Shouvekio
+						owner.dynasty = dynasty:dynn_Tialo
+						# Qohor
+						owner.dynasty = dynasty:dynn_Ouvuo
+						owner.dynasty = dynasty:dynn_Lasqant
+						owner.dynasty = dynasty:dynn_Hov
+						owner.dynasty = dynasty:dynn_Varsvunn
+
 						# Yunkai
 						owner.dynasty = dynasty:dynn_Eraz
 						owner.dynasty = dynasty:dynn_Rhaezn
@@ -3256,6 +3581,8 @@ agot_administrative_setup = {
 						# Pentos
 						owner.dynasty = dynasty:dynn_Ran_Terrin
 						owner.dynasty = dynasty:dynn_Diluzis
+						# Qohor
+						owner.dynasty = dynasty:dynn_Vongass
 					}
 				}
 				while = {
@@ -3581,8 +3908,121 @@ agot_barony_ruins = {
 			title:b_castle_hollard = {
 				set_coa = ruins_coa
 			}
-			title:c_crownback.holder = {
-				set_realm_capital = title:b_threecrowns
+			# Ar Noy
+		if = {
+			limit = {
+				game_start_date >= 7297.9.4
+			}
+			title:b_ar_noy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+			title:c_ar_noy = {
+				set_coa = ruins_coa
+			}
+			title:b_ar_noy = {
+				set_coa = ruins_coa
+			}
+		}
+		# Chroyane
+		if = {
+			limit = {
+				game_start_date >= 7297.9.4
+			}
+			# title:b_chroyane.title_province = { # Done in history file so model shows up as ruin on load
+			# 	set_holding_type = ruin_holding
+			# 	add_building = large_ruin_01
+			# 	add_building = ruin_stone_men_01
+			# }
+			title:c_chroyane = {
+				set_coa = ruins_coa
+			}
+			title:b_chroyane = {
+				set_coa = ruins_coa
+			}
+			title:b_shroudfall.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_shroudfall = {
+				set_coa = ruins_coa
+			}
+			title:b_the_visage.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_the_visage = {
+				set_coa = ruins_coa
+			}
+			title:b_tul_poy.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_tul_poy = {
+				set_coa = ruins_coa
+			}
+			title:b_denllal.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_denllal = {
+				set_coa = ruins_coa
+			}
+			title:b_romsas.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_romsas = {
+				set_coa = ruins_coa
+			}
+			title:b_asolheam.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_asolheam = {
+				set_coa = ruins_coa
+			}
+			title:b_the_sorrows.title_province = {
+				set_holding_type = ruin_holding
+				add_building = ruin_stone_men_01
+			}
+			title:b_the_sorrows = {
+				set_coa = ruins_coa
+			}
+		}
+		# Ghoyan Drohe
+		if = {
+			limit = {
+				game_start_date >= 7297.9.4
+			}
+			title:b_ghoyan_drohe.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+			title:c_ghoyan_drohe = {
+				set_coa = ruins_coa
+			}
+			title:b_ghoyan_drohe = {
+				set_coa = ruins_coa
+			}
+		}
+		# Ny Sar
+		if = {
+			limit = {
+				game_start_date >= 7297.9.4
+			}
+			title:b_ny_sar.title_province = {
+				set_holding_type = ruin_holding
+				add_building = large_ruin_01
+				add_building = ruin_renowned_01
+			}
+			title:c_ny_sar = {
+				set_coa = ruins_coa
+			}
+			title:b_ny_sar = {
+				set_coa = ruins_coa
 			}
 		}
 	}
@@ -3627,6 +4067,9 @@ agot_dynamic_duchy_capitals = {
 			title:d_goldenfields = {
 				set_capital_county = title:c_wysedale
 			}
+			#Fixes Duchy building slot
+			title:c_norcross = { set_de_jure_liege_title = title:d_ruins }
+			title:c_norcross = { set_de_jure_liege_title = title:d_goldenfields }
 		}
 		if = { # Toyne > Trant
 			limit = {
@@ -3635,6 +4078,8 @@ agot_dynamic_duchy_capitals = {
 			title:d_dark_harrow = {
 				set_capital_county = title:c_blackheart
 			}
+			title:c_gallowsgrey = { set_de_jure_liege_title = title:d_ruins }
+			title:c_gallowsgrey = { set_de_jure_liege_title = title:d_dark_harrow }
 		}
 		if = { # Wendwater > Farring
 			limit = {
@@ -3643,6 +4088,8 @@ agot_dynamic_duchy_capitals = {
 			title:d_wendwater_forest = {
 				set_capital_county = title:c_wendwater_fork
 			}
+			title:c_farring_cross = { set_de_jure_liege_title = title:d_ruins }
+			title:c_farring_cross = { set_de_jure_liege_title = title:d_wendwater_forest }
 		}
 	}
 }
@@ -3660,6 +4107,8 @@ agot_silly_mode = {
 		## Silly Mode conditional change_first_name
 		character:Goodman_1 ?= { change_first_name = Twenty }
 		character:Eilish_35 ?= { change_first_name = Billicent }
+		character:Lannister_114 ?= { change_first_name = They_Will_Fall_Before_Me }
+		character:Lannister_116 ?= { change_first_name = They_Fell_Before_Us }
 
 		# Elston, the bane of worldbuilding
 		character:Knight_Riverlands_5 ?= {

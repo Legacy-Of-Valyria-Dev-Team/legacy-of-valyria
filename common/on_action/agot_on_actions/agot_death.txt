@@ -6,6 +6,7 @@ on_death = {
 	events = {
 		agot_small_council.0002 # Cleans up Small Councillor
 		agot_kingsguard.1000 # KG Maintenance
+		agot_three_princes.9000 # Three Princes Maintenance
 		agot_widowed_events.999 #Check to see if widowed story cycle should begin
 		agot_valyrian_steel.0003
 		agot_valyrian_steel.9000
@@ -22,6 +23,8 @@ on_death = {
 		agot_landless_pirate_domicile_transfer
 		agot_landless_pirate_succession_variable_manager
 		agot_secret_hidden_artifact_on_action
+		agot_bells_of_war_qohor_election_manager
+		agot_bells_of_war_aegon_iv_tourney_manager
 	}
 }
 
@@ -850,5 +853,43 @@ agot_secret_hidden_artifact_on_action = {
 	}
 	effect = {
 		primary_heir = { add_secret = { type = secret_agot_hidden_artifact } }
+	}
+}
+
+
+agot_bells_of_war_qohor_election_manager = {
+	trigger = {
+		game_start_date = 8182.11.11
+		has_variable = BOW_qohor_election_death_manager
+	}
+
+	effect = {
+		title:c_ruins.holder = {
+			trigger_event = {
+				id = agot_bells_of_war.0030
+				days = 1
+			}
+		}
+	}
+}
+
+agot_bells_of_war_aegon_iv_tourney_manager = {
+	trigger = {
+		game_start_date = 8182.11.11
+		has_variable = BOW_aegon_iv_tourney_death_manager
+	}
+
+	effect = {
+		every_in_global_list = {
+			variable = BOW_psuedo_activity_death_manager
+			limit = {
+				has_character_flag = agot_in_bm_psuedo_activity
+			}
+			remove_character_flag = agot_in_bm_psuedo_activity
+			return_to_court = yes
+			return_home = yes
+		}
+		remove_character_modifier = agot_BOW_tourney_for_squires
+		clear_global_variable_list = BOW_psuedo_activity_death_manager
 	}
 }
