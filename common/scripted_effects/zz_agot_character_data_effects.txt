@@ -633,6 +633,14 @@ assign_posthistory_title_data_effect = {
 					}
 				}
 				else_if = {
+					limit = { primary_title.holder ?= { agot_ruler_is_government_trigger = { GOV = norvos } } }
+					save_temporary_scope_as = temp_ruler_scope
+					assign_government_data_effect = {
+						GOV = norvos
+						SCOPE = scope:temp_ruler_scope
+					}
+				}
+				else_if = {
 					limit = { primary_title ?= title:k_the_stepstones }
 					save_temporary_scope_as = temp_ruler_scope
 					if = {
@@ -984,6 +992,57 @@ assign_posthistory_title_data_effect = {
 			}
 		}
 	}
+	title:k_qohor ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:k_qohor
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = administrative
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:k_chroyane ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:k_chroyane
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = feudal
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:k_ny_sar ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:k_ny_sar
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = feudal
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
 	title:k_tyrosh ?= {
 		every_past_holder = {
 			limit = {
@@ -1046,6 +1105,87 @@ assign_posthistory_title_data_effect = {
 			add_to_global_variable_list = {
 				name = historical_independent_ruler_list
 				target = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:k_norvos ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:k_norvos
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = norvos
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:k_lorath ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:k_lorath
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:d_harvest_principality ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:d_harvest_principality
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = lorathi_principality
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:d_fisher_principality ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:d_fisher_principality
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = lorathi_principality
+				SCOPE = scope:temp_ruler_scope
+			}
+		}
+	}
+	title:d_principality_of_the_streets ?= {
+		every_past_holder = {
+			limit = {
+				is_alive = no
+				primary_title ?= title:d_principality_of_the_streets
+			}
+			save_temporary_scope_as = temp_ruler_scope
+			add_to_global_variable_list = {
+				name = historical_independent_ruler_list
+				target = scope:temp_ruler_scope
+			}
+			assign_government_data_effect = {
+				GOV = lorathi_principality
+				SCOPE = scope:temp_ruler_scope
 			}
 		}
 	}
@@ -1444,6 +1584,14 @@ assign_government_data_effect = {
 		remove_list_global_variable = { name = administrative_government_list target = $SCOPE$ }
 	}
 	if = {
+		limit = { NOT = { flag:$GOV$ = flag:norvos } }
+		remove_list_global_variable = { name = norvos_government_list target = $SCOPE$ }
+	}
+	if = {
+		limit = { NOT = { flag:$GOV$ = flag:lorathi_principality } }
+		remove_list_global_variable = { name = lorathi_principality_government_list target = $SCOPE$ }
+	}
+	if = {
 		limit = { NOT = { flag:$GOV$ = flag:republic } }
 		remove_list_global_variable = { name = republic_government_list target = $SCOPE$ }
 	}
@@ -1521,6 +1669,8 @@ prune_government_data_effect = {
 	remove_list_global_variable = { name = lp_feudal_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = feudal_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = administrative_government_list target = $SCOPE$ }
+	remove_list_global_variable = { name = norvos_government_list target = $SCOPE$ }
+	remove_list_global_variable = { name = lorathi_principality_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = republic_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = silent_sisterhood_government_list target = $SCOPE$ }
 	remove_list_global_variable = { name = kingsguard_government_list target = $SCOPE$ }
@@ -1546,6 +1696,8 @@ agot_on_change_government_data_effect = {
 			lp_feudal_government = { assign_government_data_effect = { GOV = lp_feudal SCOPE = $SCOPE$ } }
 			feudal_government = { assign_government_data_effect = { GOV = feudal SCOPE = $SCOPE$ } }
 			administrative_government = { assign_government_data_effect = { GOV = administrative SCOPE = $SCOPE$ } }
+			norvos_government = { assign_government_data_effect = { GOV = norvos SCOPE = $SCOPE$ } }
+			lorathi_principality_government = { assign_government_data_effect = { GOV = lorathi_principality SCOPE = $SCOPE$ } }
 			republic_government = { assign_government_data_effect = { GOV = republic SCOPE = $SCOPE$ } }
 			silent_sisterhood_government = { assign_government_data_effect = { GOV = silent_sisterhood SCOPE = $SCOPE$ } }
 			kingsguard_government = { assign_government_data_effect = { GOV = kingsguard SCOPE = $SCOPE$ } }
@@ -2513,7 +2665,7 @@ apply_character_title_data = {
 							}
 
 							set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-							set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+							set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 						}
 						else_if = {
 							limit = { always = yes }
@@ -2548,17 +2700,22 @@ apply_character_title_data = {
 							}
 							else_if = { # King/Queen
 								limit = {
-									OR = {
-										agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
-										any_spouse = {
-											even_if_dead = yes
-											agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
-										}
-									}
+									agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen" GENDER = female }
+							}
+							else_if = { # King/Queen
+								limit = {
+									any_spouse = {
+										even_if_dead = yes
+										agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_spouse" GENDER = female }
 							}
 							else_if = { # Prince/Princess Dornish/Rhoynish
 								limit = {
@@ -2572,7 +2729,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = {
 								limit = { always = yes }
@@ -2594,7 +2751,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = { # Palatinate King/Queen
 								limit = {
@@ -2677,7 +2834,7 @@ apply_character_title_data = {
 								limit = { agot_flavour_is_prince_rhoynish_trigger = { CHAR = this } }
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = { # Palatinate Rhoynish Prince/Princess Spouse
 								limit = {
@@ -2724,7 +2881,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = {
 								limit = { $SCOPED_TITLE$ ?= title:e_beyond_the_wall }
@@ -2757,7 +2914,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_dragonstone_heir" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_dragonstone_heir" GENDER = female }
 							}
 							else_if = { # Palatinate Rhoynish Prince/Princess
 								limit = {
@@ -2767,7 +2924,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = { # Palatinate King/Queen
 								limit = {
@@ -2790,7 +2947,7 @@ apply_character_title_data = {
 								limit = { agot_flavour_is_prince_rhoynish_trigger = { CHAR = this } }
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = { # Palatinate Rhoynish Prince/Princess Spouse
 								limit = {
@@ -2838,7 +2995,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = { # Red King/Red Queen
 								limit = { $SCOPED_TITLE$ ?= title:k_red_lands }
@@ -3019,27 +3176,24 @@ apply_character_title_data = {
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "QUEEN_MOTHER" GENDER = female }
 							}
-							else_if = { # 'Good Queen'
-								limit = {
-									$SCOPED_TITLE$ ?= title:h_the_iron_throne
-									has_inactive_trait = good_queen
-								}
-
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "good_queen" GENDER = female }
-							}
 							else_if = { # King/Queen
 								limit = {
-									OR = {
-										agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
-										any_spouse = {
-											even_if_dead = yes
-											agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
-										}
-									}
+									agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen" GENDER = female }
+							}
+							else_if = { # King/Queen
+								limit = {
+									any_spouse = {
+										even_if_dead = yes
+										agot_flavour_hegemony_is_kingdom_trigger = { CHAR = this }
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_spouse" GENDER = female }
 							}
 							else_if = { # Prince/Princess Dornish/Rhoynish
 								limit = {
@@ -3053,7 +3207,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = {
 								limit = { always = yes }
@@ -3078,7 +3232,7 @@ apply_character_title_data = {
 								}
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
-								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
 							}
 							else_if = { # Historical Lord/Lady
 								limit = {
@@ -3317,6 +3471,24 @@ apply_character_title_data = {
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_yronwood" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_yronwood" GENDER = female }
 							}
+							else_if = { # Prince/Princess Dornish/Rhoynish
+								limit = {
+									OR = {
+										AND = {
+											agot_flavour_is_prince_rhoynish_trigger = { CHAR = this }
+											historical_independent_ruler = yes
+										}
+										any_spouse = {
+											even_if_dead = yes
+											agot_flavour_is_prince_rhoynish_trigger = { CHAR = this }
+											historical_independent_ruler = yes
+										}
+									}
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "king_rhoynish" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "queen_rhoynish" GENDER = female }
+							}
 							else_if = { # Lord/Lady
 								limit = {
 									NOR = {
@@ -3445,6 +3617,7 @@ apply_character_title_data = {
 							OR = {
 								agot_localization_government_trigger = { GOV = administrative SPOUSE_SCOPE = scope:spouse_scope }
 								agot_localization_government_trigger = { GOV = republic SPOUSE_SCOPE = scope:spouse_scope }
+								agot_localization_government_trigger = { GOV = norvos SPOUSE_SCOPE = scope:spouse_scope }
 							}
 						}
 
@@ -3892,6 +4065,24 @@ apply_character_title_data = {
 						}
 					}
 
+					### LORATHI PRINCIPALITY ###
+					else_if = {
+						limit = {
+							agot_localization_government_trigger = { GOV = lorathi_principality SPOUSE_SCOPE = scope:spouse_scope }
+						}
+
+						### DUCHY ###
+						if = {
+							limit = { $SCOPED_TITLE$ ?= { tier = tier_duchy } }
+							if = {
+								limit = { always = yes }
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lorathi_principality_holder" GENDER = male }
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "lorathi_principality_holder" GENDER = female }
+							}
+						}
+					}
+
 					### SILENT SISTERHOOD ###
 					else_if = {
 						limit = {
@@ -4201,6 +4392,14 @@ apply_character_title_data = {
 
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_m_county" GENDER = male }
 								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "councillor_court_chaplain_agot_fallback_f_county" GENDER = female }
+							}
+							else_if = {
+								limit = {
+									$SCOPED_TITLE$ ?= title:d_norvos_high_priesthood
+									$SCOPE$ ?= { is_female = no }
+								}
+
+								set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "norvos_high_priestship_diarch_title" GENDER = male }
 							}
 							else_if = {
 								limit = { always = yes }
@@ -4955,6 +5154,8 @@ apply_character_title_data = {
 
 					if = { # Prince/Princess
 						limit = {
+							exists = primary_title
+							NOT = { primary_title ?= { is_landless_type_title = yes } }
 							trigger_if = {
 								limit = { exists = primary_title }
 								NOT = { primary_title ?= $SCOPED_TITLE$ }
@@ -4975,8 +5176,38 @@ apply_character_title_data = {
 							}
 						}
 
-						set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince" GENDER = male }
-						set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess" GENDER = female }
+						set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince_scions_landed" GENDER = male }
+						set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess_scions_landed" GENDER = female }
+					}
+
+					else_if = { # Prince/Princess
+						limit = {
+							OR = {
+								NOT = { exists = primary_title }
+								primary_title ?= { is_landless_type_title = yes } 
+							}	
+							trigger_if = {
+								limit = { exists = primary_title }
+								NOT = { primary_title ?= $SCOPED_TITLE$ }
+							}
+							OR = {
+								trigger_if = {
+									limit = { exists = scope:scion_1_title }
+									scope:scion_1_title ?= $SCOPED_TITLE$
+								}
+								trigger_if = {
+									limit = { exists = scope:scion_2_title }
+									scope:scion_2_title ?= $SCOPED_TITLE$
+								}
+								trigger_if = {
+									limit = { exists = scope:scion_3_title }
+									scope:scion_3_title ?= $SCOPED_TITLE$
+								}
+							}
+						}
+
+						set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "prince_scions" GENDER = male }
+						set_title_localization_effect = { SCOPE = $SCOPE$ KEY = "princess_scions" GENDER = female }
 					}
 
 					### FALLBACK WARNING ###

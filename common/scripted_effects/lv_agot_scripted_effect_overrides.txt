@@ -330,6 +330,12 @@ agot_set_free_city_coas = {
 		}
 		title:e_daoryrdembos = { set_coa = e_daoryrdembos }
 	}
+	if = {
+		limit = {
+			has_title = title:e_rhoyne
+		}
+		title:e_rhoyne = { set_coa = e_rhoyne }
+	}
 	# LV Start
 	# There's probably a more elegant way to do all of this but eh it works
 	if = {
@@ -420,6 +426,48 @@ agot_set_free_city_coas = {
 			has_title = title:k_braavos
 		}
 		title:k_braavos = { set_coa = k_braavos }
+	}
+	if = {
+		limit = {
+			has_title = title:k_lorath
+		}
+		title:k_lorath = { set_coa = k_lorath }
+	}
+	if = {
+		limit = {
+			has_title = title:k_norvos
+		}
+		title:k_norvos = { set_coa = k_norvos }
+	}
+	if = {
+		limit = {
+			has_title = title:k_qohor
+		}
+		title:k_qohor = { set_coa = k_qohor }
+	}
+	if = {
+		limit = {
+			has_title = title:k_ar_noy
+		}
+		title:k_ar_noy = { set_coa = k_ar_noy }
+	}
+	if = {
+		limit = {
+			has_title = title:k_ny_sar
+		}
+		title:k_ny_sar = { set_coa = k_ny_sar }
+	}
+	if = {
+		limit = {
+			has_title = title:k_chroyane
+		}
+		title:k_chroyane = { set_coa = k_chroyane }
+	}
+	if = {
+		limit = {
+			has_title = title:k_ghoyan_drohe
+		}
+		title:k_ghoyan_drohe = { set_coa = k_ghoyan_drohe }
 	}
 }
 
@@ -752,6 +800,12 @@ change_to_administrative_effect = {
 					scope:governor_liege = { government_has_flag = government_is_steppe_admin }
 					NOT = { government_has_flag = government_is_steppe_admin }
 				}
+				#AGOT Added
+				AND = {
+					government_allows = administrative
+					scope:governor_liege = { government_has_flag = government_is_norvos }
+					NOT = { government_has_flag = government_is_norvos }
+				}
 			}
 		}
 		# Only case where Estate type is shared between Admin and non-Admin
@@ -891,6 +945,37 @@ change_to_administrative_effect = {
 				NEW_GOVERNMENT_TYPE = meritocratic_government
 			}
 			change_government = meritocratic_government
+		}
+		#AGOT Added, Norvos
+		else_if = {
+			limit = {
+				trigger_if = {
+					limit = {
+						scope:governor_liege ?= this
+					}
+					top_liege ?= { government_has_flag = government_is_norvos }
+				}
+				trigger_else = {
+					scope:governor_liege = { government_has_flag = government_is_norvos }
+				}
+			}
+			capital_province = {
+				if = {
+					limit = {
+						OR = {
+							has_holding_type = tribal_holding
+							has_holding_type = herder_holding
+							has_holding_type = nomad_holding
+						}
+					}
+					set_holding_type = castle_holding
+				}
+			}
+			tgp_domicile_conversion_when_changing_government_type = {
+				NEW_DOMICILE_TYPE = estate
+				NEW_GOVERNMENT_TYPE = norvos_government
+			}
+			change_government = norvos_government
 		}
 		else_if = { # Oligarchic - (LEGACY OF VALYRIA)
 			limit = { scope:governor_liege = { government_has_flag = government_is_oligarchic } }
