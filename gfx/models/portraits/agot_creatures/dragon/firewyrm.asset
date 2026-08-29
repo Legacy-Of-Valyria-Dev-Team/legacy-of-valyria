@@ -1,3 +1,24 @@
+skeletal_animation_set = {
+    name = "firewyrm_animations"
+    reference_skeleton = "firewyrm_mesh"
+
+	animation = { 			id = "dragon_idle_flair_lookingleft" 		type = "dragon_idle_flair_lookingleft.anim" } # 300 frames
+	animation = { 			id = "dragon_idle_1" 						type = "dragon_idle_1.anim" } # 120 frames
+	animation = { 			id = "dragon_flying_1" 						type = "dragon_glide.anim" } # 300 frames
+	animation = { 			id = "dragon_flying_2" 						type = "dragon_glide_wing_flap.anim" } # 75 frames
+	animation = { 			id = "dragon_flying_1_fire" 				type = "dragon_glide_fire.anim" } # 300 frames
+	animation = { 			id = "dragon_flying_2_fire" 				type = "dragon_glide_wing_flap_fire.anim" } # 75 frames
+	animation = { 			id = "dragon_roar_1" 						type = "dragon_roar.anim" } # 300 frames
+	#animation = { 			id = "dragon_roar_1" 						type = "dragon_idle_flair_lookingleft.anim" } # 300 frames
+	animation = { 			id = "dragon_hover_1" 						type = "dragon_hover_1.anim" } # 60 frames
+	animation = { 			id = "dragon_baby_idle_1" 					type = "dragon_baby_idle_1.anim" }
+	animation = { 			id = "dragon_baby_idle_2" 					type = "dragon_baby_idle_2.anim" }
+	animation = { 			id = "dragon_baby_idle_burp" 				type = "dragon_baby_idle_burp.anim" }
+	animation = { 			id = "dragon_roar_1_fire" 					type = "dragon_roar_fire.anim" }
+	animation = { 			id = "dragon_hover_1_fire" 					type = "dragon_hover_1_fire.anim" }
+
+}
+
 pdxmesh = {
 	name = "firewyrm_mesh"
 	file = "firewyrm.mesh"
@@ -5,7 +26,7 @@ pdxmesh = {
 
 	import = {
 		type = skeletal_animation_set
-		name = "dragon_animations"
+		name = "firewyrm_animations"
 	}
 
 	additive_animation = { 	id = "dragon_infant_proportions"			type = "dragon_infant.anim" }
@@ -24,7 +45,9 @@ pdxmesh = {
 		texture = { file = "dragon_body_mask.dds" index = 3 }
 		shader = "portrait_dragon_decals"
 		shader_file = "gfx/FX/jomini/portrait.shader"
-		additional_shader_defines = { "DRAGON_BODYPART_MARKER float3(1.0f,0.0f,0.0f)" }
+		additional_shader_defines = {
+            "DRAGON_BODYPART_MARKER float3(1.0f,0.0f,0.0f)"
+            }
 	}
 
 	meshsettings = {
@@ -36,7 +59,9 @@ pdxmesh = {
 		texture = { file = "dragon_wing_mask.dds" index = 3 }
 		shader = "portrait_dragon_wing_decals"
 		shader_file = "gfx/FX/jomini/portrait.shader"
-		additional_shader_defines = { "DRAGON_BODYPART_MARKER float3(0.0f,0.0f,1.0f)" }
+		additional_shader_defines = {
+            "DRAGON_BODYPART_MARKER float3(0.0f,0.0f,1.0f)"
+            }
 	}
 
 	meshsettings = {
@@ -48,7 +73,10 @@ pdxmesh = {
 		texture = { file = "dragon_eye_mask.dds" index = 3 }
 		shader = "portrait_dragon_decals"
 		shader_file = "gfx/FX/jomini/portrait.shader"
-		additional_shader_defines = { "DRAGON_BODYPART_MARKER float3(0.0f,1.0f,1.0f)" }
+		additional_shader_defines = {
+            "DRAGON_BODYPART_MARKER float3(0.0f,1.0f,1.0f)"
+			"EMISSIVE_PROPERTIES_RED"
+            }
 	}
 
 	meshsettings = {
@@ -60,7 +88,9 @@ pdxmesh = {
 		texture = { file = "dragon_horns_mask.dds" index = 3 }
 		shader = "portrait_dragon_decals"
 		shader_file = "gfx/FX/jomini/portrait.shader"
-		additional_shader_defines = { "DRAGON_BODYPART_MARKER float3(1.0f,1.0f,0.0f)" }
+		additional_shader_defines = {
+            "DRAGON_BODYPART_MARKER float3(1.0f,1.0f,0.0f)"
+            }
 	}
 }
 
@@ -85,13 +115,27 @@ entity = {
 
 	get_state_from_parent = yes
 
-	state = {	name = "dragon_static"						animation = "dragon_idle_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_idle_entry"					animation = "dragon_idle_flair_lookingleft" 	looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_idle"						animation = "dragon_idle_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_flying"						animation = "dragon_flying_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_flying_2"					animation = "dragon_flying_2" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_roar"						animation = "dragon_roar_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_hover"						animation = "dragon_hover_1" 					looping = no animation_speed = 1.0 }
+	state = {	name = "dragon_static"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_idle_loop"					animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_idle_entry"					animation = "dragon_baby_idle_2" 	looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_idle"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_flying"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_flying_2"					animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_flying_fire"					animation = "dragon_baby_idle_burp"	 			looping = no animation_speed = 1.0 animation_blend_time = 0.3 
+		start_event = { node = "fire_attachment" entity = "dragonfire_entity" attachment_id = "dragonfire" keep_entity = no } }
+	state = {	name = "dragon_flying_2_fire"				animation = "dragon_baby_idle_burp"	 			looping = no animation_speed = 1.0 animation_blend_time = 0.3
+		start_event = { node = "fire_attachment" entity = "dragonfire_entity" attachment_id = "dragonfire" keep_entity = no } }
+	state = {	name = "dragon_roar"						animation = "dragon_baby_idle_burp" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_hover"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_roar_fire"					animation = "dragon_baby_idle_burp" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { node = "fire_attachment" entity = "dragonfire_entity" attachment_id = "dragonfire" keep_entity = no } }
+	state = {	name = "dragon_hover_fire"					animation = "dragon_baby_idle_burp" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { node = "fire_attachment" entity = "dragonfire_entity" attachment_id = "dragonfire" keep_entity = no } }
+
+	state = {	name = "dragon_baby_idle"					animation = "dragon_baby_idle_1" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_baby_idle_2"					animation = "dragon_baby_idle_2" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	state = {	name = "dragon_baby_idle_burp"				animation = "dragon_baby_idle_burp" 			looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { node = "fire_attachment" entity = "dragonfire_entity" attachment_id = "dragonfire" keep_entity = no } }
+	state = {	name = "dragon_baby_fire"					animation = "dragon_baby_idle_burp" 			looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { node = "fire_attachment" entity = "dragonfire_entity" attachment_id = "dragonfire" keep_entity = no } }
+	state = {	name = "dragon_baby_fire_idle"				animation = "dragon_baby_idle_1" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 start_event = { remove_attachment = "dragonfire" entity_fade_speed = 2.0 } }
+	############################################################################
 }
 
 pdxmesh = {
@@ -101,7 +145,7 @@ pdxmesh = {
 
 	import = {
 		type = skeletal_animation_set
-		name = "dragon_animations"
+		name = "firewyrm_animations"
 	}
 
 	additive_animation = { 	id = "dragon_infant_proportions"			type = "dragon_infant.anim" }
@@ -158,18 +202,29 @@ entity = {
 	 
 	attribute = { name = "dragon_infant_proportions" 			additive_animation = "dragon_infant_proportions" default = 0.5 }
 	attribute = { name = "dragon_large_proportions" 			additive_animation = "dragon_large_proportions" default = 0.5 }
-	
+
 	attribute = { name = "dragon_neck_length" 			additive_animation = "dragon_neck_length" default = 0.0 }
 	attribute = { name = "dragon_tail_length" 			additive_animation = "dragon_tail_length" default = 0.0 }
 	attribute = { name = "dragon_body_shape" 			additive_animation = "dragon_body_shape" default = 0.0 }
 
 	get_state_from_parent = yes
 
-	state = {	name = "dragon_static"						animation = "dragon_idle_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_idle_entry"					animation = "dragon_idle_flair_lookingleft" 	looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_idle"						animation = "dragon_idle_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_flying"						animation = "dragon_flying_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_flying_2"					animation = "dragon_flying_2" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_roar"						animation = "dragon_roar_1" 					looping = no animation_speed = 1.0 }
-	state = {	name = "dragon_hover"						animation = "dragon_hover_1" 					looping = no animation_speed = 1.0 }
+	state = {	name = "dragon_static"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_idle_loop"					animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_idle_entry"					animation = "dragon_baby_idle_2" 	looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_idle"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_flying"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_flying_2"					animation = "dragon_baby_idle_2" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_flying_fire"					animation = "dragon_baby_idle_burp" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_flying_2_fire"				animation = "dragon_baby_idle_burp" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_roar"						animation = "dragon_baby_idle_burp" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_hover"						animation = "dragon_baby_idle_1" 					looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_roar_fire"					animation = "dragon_baby_idle_burp" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_hover_fire"					animation = "dragon_baby_idle_burp" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+
+	state = {	name = "dragon_baby_idle"					animation = "dragon_baby_idle_1" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_baby_idle_2"					animation = "dragon_baby_idle_2" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_baby_idle_burp"				animation = "dragon_baby_idle_burp" 			looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_baby_fire"					animation = "dragon_baby_idle_burp" 			looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
+	state = {	name = "dragon_baby_fire_idle"				animation = "dragon_baby_idle_1" 				looping = no animation_speed = 1.0 animation_blend_time = 0.3 }
 }
