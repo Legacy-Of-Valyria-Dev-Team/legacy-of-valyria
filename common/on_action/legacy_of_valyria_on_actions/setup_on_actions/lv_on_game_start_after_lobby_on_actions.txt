@@ -5,7 +5,10 @@ on_game_start_after_lobby = {
 		lv_historical_dragons_setup
 		lv_ruins_setup
 		lv_ruins_setup_coa
+		lv_administrative_setup
 		lv_post_start_fixes
+
+		lv_sothoryos_scenario_setup
 	}
 }
 
@@ -327,6 +330,293 @@ lv_ruins_setup_coa = {
 	}
 }
 
+lv_administrative_setup = {
+	effect = {
+		every_domicile = {
+			limit = { is_domicile_type = estate }
+			### 6
+			if = {
+				limit = {
+					OR = {
+						# Volantis
+						owner.dynasty = dynasty:dynn_Maegyr
+						owner.dynasty = dynasty:dynn_Vhassar
+						owner.dynasty = dynasty:dynn_Paenymion
+						owner.dynasty = dynasty:dynn_Qhaedar
+						owner.dynasty = dynasty:dynn_Vaelaros
+					}
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_city_planning } } }
+					add_domicile_building = estate_main_02
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_manorialism } } }
+					add_domicile_building = estate_main_03
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_development_03 } } }
+					add_domicile_building = estate_main_04
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_cranes } } }
+					add_domicile_building = estate_main_05
+				}
+				while = {
+					count = 6
+					if = {
+						limit = {
+							trigger_if = {
+								limit = { has_domicile_building = estate_main_05 }
+								num_domicile_buildings < 6 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_04 }
+								num_domicile_buildings < 5 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_03 }
+								num_domicile_buildings < 4 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_02 }
+								num_domicile_buildings < 3 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_01 }
+								num_domicile_buildings < 2 # Add the base number of slots
+							}
+							trigger_else = { always = no }
+						}
+						add_random_internal_estate_building = yes
+					}
+					add_random_external_estate_building = yes
+				}
+			}
+			### 5
+			if = {
+				limit = {
+					OR = {
+						# Volantis
+						owner.dynasty = dynasty:dynn_Staegone
+						owner.dynasty = dynasty:dynn_Tagaros
+						owner.dynasty = dynasty:dynn_Nogarys
+						owner.dynasty = dynasty:dynn_Votar
+
+						# Meereen
+						owner.dynasty = dynasty:dynn_Loraq
+						owner.dynasty = dynasty:dynn_Galare
+
+						# Gogossos
+						owner.dynasty = dynasty:dynn_Uruzarys
+					}
+				}
+				# Game screams if the previous level isn't built yet
+				if = {
+					limit = {
+						NOT = { has_domicile_building = estate_main_02 }
+						owner = { culture ?= { has_innovation = innovation_city_planning } }
+					}
+					add_domicile_building = estate_main_02
+				}
+				if = {
+					limit = {
+						NOT = { has_domicile_building = estate_main_03 }
+						owner = { culture ?= { has_innovation = innovation_manorialism } }
+					}
+					add_domicile_building = estate_main_03
+				}
+				if = {
+					limit = {
+						NOT = { has_domicile_building = estate_main_04 }
+						owner = { culture ?= { has_innovation = innovation_development_03 } }
+					}
+					add_domicile_building = estate_main_04
+				}
+				while = {
+					count = 5
+					if = {
+						limit = {
+							trigger_if = {
+								limit = { has_domicile_building = estate_main_05 }
+								num_domicile_buildings < 6 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_04 }
+								num_domicile_buildings < 5 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_03 }
+								num_domicile_buildings < 4 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_02 }
+								num_domicile_buildings < 3 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_01 }
+								num_domicile_buildings < 2 # Add the base number of slots
+							}
+							trigger_else = { always = no }
+						}
+						add_random_internal_estate_building = yes
+					}
+					add_random_external_estate_building = yes
+				}
+			}
+			### 4
+			if = {
+				limit = {
+					OR = {
+						# Meereen
+						owner.dynasty = dynasty:dynn_Reznak
+						owner.dynasty = dynasty:dynn_Pahl
+						owner.dynasty = dynasty:dynn_Rhazdar
+						owner.dynasty = dynasty:dynn_Yherizan
+						owner.dynasty = dynasty:dynn_Kandaq
+						owner.dynasty = dynasty:dynn_Ghazeen
+						owner.dynasty = dynasty:dynn_Quazzar
+						owner.dynasty = dynasty:dynn_Hazkar
+						owner.dynasty = dynasty:dynn_Merreq
+						owner.dynasty = dynasty:dynn_Naqqan
+						owner.dynasty = dynasty:dynn_Dhazak
+
+						# Yunkai
+						owner.dynasty = dynasty:dynn_Yunzak
+						owner.dynasty = dynasty:dynn_Zherzyn
+
+						# Astapor
+						owner.dynasty = dynasty:dynn_Nakloz
+						owner.dynasty = dynasty:dynn_Grazdhan
+
+						# Gogossos
+						owner.dynasty = dynasty:dynn_Paenohrin
+					}
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_city_planning } } }
+					add_domicile_building = estate_main_02
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_manorialism } } }
+					add_domicile_building = estate_main_03
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_development_03 } } }
+					add_domicile_building = estate_main_04
+				}
+				while = {
+					count = 4
+					if = {
+						limit = {
+							trigger_if = {
+								limit = { has_domicile_building = estate_main_05 }
+								num_domicile_buildings < 6 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_04 }
+								num_domicile_buildings < 5 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_03 }
+								num_domicile_buildings < 4 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_02 }
+								num_domicile_buildings < 3 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_01 }
+								num_domicile_buildings < 2 # Add the base number of slots
+							}
+							trigger_else = { always = no }
+						}
+						add_random_internal_estate_building = yes
+					}
+					add_random_external_estate_building = yes
+				}
+			}
+			### 3
+			if = {
+				limit = {
+					OR = {
+						# Yunkai
+						owner.dynasty = dynasty:dynn_Qaggaz
+						owner.dynasty = dynasty:dynn_Myraq
+						owner.dynasty = dynasty:dynn_Ahlaq
+
+						# Astapor
+						owner.dynasty = dynasty:dynn_Ullhor
+						owner.dynasty = dynasty:dynn_Grazlar
+
+						# Gogossos
+						owner.dynasty = dynasty:dynn_Xhore
+						owner.dynasty = dynasty:dynn_Ennyrion
+					}
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_city_planning } } }
+					add_domicile_building = estate_main_02
+				}
+				if = {
+					limit = { owner ?= { culture ?= { has_innovation = innovation_manorialism } } }
+					add_domicile_building = estate_main_03
+				}
+				while = {
+					count = 3
+					if = {
+						limit = {
+							trigger_if = {
+								limit = { has_domicile_building = estate_main_05 }
+								num_domicile_buildings < 6 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_04 }
+								num_domicile_buildings < 5 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_03 }
+								num_domicile_buildings < 4 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_02 }
+								num_domicile_buildings < 3 # Add the base number of slots
+							}
+							trigger_else_if = {
+								limit = { has_domicile_building = estate_main_01 }
+								num_domicile_buildings < 2 # Add the base number of slots
+							}
+							trigger_else = { always = no }
+						}
+						add_random_internal_estate_building = yes
+					}
+					add_random_external_estate_building = yes
+				}
+			}
+			### 2
+			if = {
+				limit = {
+					OR = {
+						# Yunkai
+						owner.dynasty = dynasty:dynn_Eraz
+						owner.dynasty = dynasty:dynn_Rhaezn
+						owner.dynasty = dynasty:dynn_Faez
+
+						# Astapor
+						owner.dynasty = dynasty:dynn_Mazlaq
+					}
+				}
+				add_domicile_building = estate_main_02
+				while = {
+					count = 2
+					add_random_internal_estate_building = yes
+					add_random_external_estate_building = yes
+				}
+			}
+		}
+	}
+}
+
 lv_post_start_fixes = {
 	effect = {
 		# Remove dummy characters from confederations
@@ -340,4 +630,16 @@ lv_post_start_fixes = {
 			}
 		}
 	}
+}
+
+lv_sothoryos_scenario_setup = {
+	trigger = {
+		NOR = {
+			has_game_rule = agot_shatter_to_duchies
+			has_game_rule = agot_shatter_to_petty_kingdoms
+			has_game_rule = agot_shatter_to_kingdoms
+			has_game_rule = agot_shatter_to_empires
+		}
+	}
+	effect = { lv_sothoryos_start_scenario = yes }
 }
