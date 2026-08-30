@@ -555,55 +555,55 @@ PixelShader =
 			Properties = lerp( Properties, ValyriaRestored2Properties, ConditionValue );
 		}
 		
-		void ApplyValyriaRehabilitatedDiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float3 WorldSpacePos, float ConditionValue )
-		{
-			if ( ConditionValue <= SKIP_VALUE )
-			{
-				return;
-			}
-
-			float2 MapCoords = WorldSpacePosXz * WorldSpaceToTerrain0To1;
-			float2 DetailUV = CalcDetailUV( WorldSpacePosXz );
-
-			float4 ValyriaRehabilitatedDiffuse = Diffuse;
-			float3 ValyriaRehabilitatedNormal = Normal;
-			float4 ValyriaRehabilitatedProperties = Properties;
-
-			float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
-			SlopeMultiplier = RemapClamped( SlopeMultiplier, ValyriaRehabilitatedSlopeMin, 1.0f, 0.0f, 1.0f );
-			ConditionValue *= SlopeMultiplier;
-			ConditionValue *= CoastMultiplier;
-
-			if ( ConditionValue <= SKIP_VALUE )
-			{
-				return;
-			}
-
-			float GrassPositionValue = lerp( SummerGrassMaskPositionFrom, SummerGrassMaskPositionTo, ConditionValue );
-			float GrassContrastValue = lerp( SummerGrassMaskContrastFrom, SummerGrassMaskContrastTo, ConditionValue );
-
-			// Grass patches
-			float4 GrassTexDiffuse = PdxTex2D( DetailTextures, float3( DetailUV, SummerGrassTexureIndex ) );
-			GrassTexDiffuse.a = 1.0f - GrassTexDiffuse.r;
-			float4 GrassTexNormalRRxG = PdxTex2D( NormalTextures, float3( DetailUV, SummerGrassTexureIndex ) );
-			float3 GrassTexNormal = UnpackRRxGNormal( GrassTexNormalRRxG ).xyz;
-			float4 GrassTexProperties = PdxTex2D( MaterialTextures, float3( DetailUV, SummerGrassTexureIndex ) );
-
-			float2 GrassMaskUV = float2( MapCoords.x * 2.0f, MapCoords.y ) * SummerGrassMaskUVTiling;
-			float GrassNoiseMask = PdxTex2D( ProvinceEffectsNoise, GrassMaskUV ).r;
-
-			float GrassMask = LevelsScan( GrassNoiseMask, GrassPositionValue, GrassContrastValue ) * SummerGrassTextureBlendWeight * SummerBlendWeight;
-			float2 GrassBlendFactors = CalcHeightBlendFactors( float2( Diffuse.a, GrassTexDiffuse.a ), float2( 1.0f - GrassMask, GrassMask ), DetailBlendRange );
-
-			// Apply grass color
-			GrassTexDiffuse.rgb = Overlay( GrassTexDiffuse.rgb, SummerGrassOverlayColor );
-			ValyriaRehabilitatedDiffuse.rgb = lerp( ValyriaRehabilitatedDiffuse.rgb, GrassTexDiffuse.rgb, GrassBlendFactors.y );
-			ValyriaRehabilitatedNormal = lerp( ValyriaRehabilitatedNormal, GrassTexNormal, GrassBlendFactors.y );
-			ValyriaRehabilitatedProperties = lerp( ValyriaRehabilitatedProperties, GrassTexProperties, GrassBlendFactors.y );
-			Diffuse.rgb = lerp( Diffuse.rgb, ValyriaRehabilitatedDiffuse.rgb, ConditionValue );
-			Normal = lerp( Normal, ValyriaRehabilitatedNormal, ConditionValue );
-			Properties = lerp( Properties, ValyriaRehabilitatedProperties, ConditionValue );
-		}
+		//void ApplyValyriaRehabilitatedDiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float3 WorldSpacePos, float ConditionValue )
+		//{
+		//	if ( ConditionValue <= SKIP_VALUE )
+		//	{
+		//		return;
+		//	}
+//
+		//	float2 MapCoords = WorldSpacePosXz * WorldSpaceToTerrain0To1;
+		//	float2 DetailUV = CalcDetailUV( WorldSpacePosXz );
+//
+		//	float4 ValyriaRehabilitatedDiffuse = Diffuse;
+		//	float3 ValyriaRehabilitatedNormal = Normal;
+		//	float4 ValyriaRehabilitatedProperties = Properties;
+//
+		//	float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
+		//	SlopeMultiplier = RemapClamped( SlopeMultiplier, ValyriaRehabilitatedSlopeMin, 1.0f, 0.0f, 1.0f );
+		//	ConditionValue *= SlopeMultiplier;
+		//	ConditionValue *= CoastMultiplier;
+//
+		//	if ( ConditionValue <= SKIP_VALUE )
+		//	{
+		//		return;
+		//	}
+//
+		//	float GrassPositionValue = lerp( SummerGrassMaskPositionFrom, SummerGrassMaskPositionTo, ConditionValue );
+		//	float GrassContrastValue = lerp( SummerGrassMaskContrastFrom, SummerGrassMaskContrastTo, ConditionValue );
+//
+		//	// Grass patches
+		//	float4 GrassTexDiffuse = PdxTex2D( DetailTextures, float3( DetailUV, SummerGrassTexureIndex ) );
+		//	GrassTexDiffuse.a = 1.0f - GrassTexDiffuse.r;
+		//	float4 GrassTexNormalRRxG = PdxTex2D( NormalTextures, float3( DetailUV, SummerGrassTexureIndex ) );
+		//	float3 GrassTexNormal = UnpackRRxGNormal( GrassTexNormalRRxG ).xyz;
+		//	float4 GrassTexProperties = PdxTex2D( MaterialTextures, float3( DetailUV, SummerGrassTexureIndex ) );
+//
+		//	float2 GrassMaskUV = float2( MapCoords.x * 2.0f, MapCoords.y ) * SummerGrassMaskUVTiling;
+		//	float GrassNoiseMask = PdxTex2D( ProvinceEffectsNoise, GrassMaskUV ).r;
+//
+		//	float GrassMask = LevelsScan( GrassNoiseMask, GrassPositionValue, GrassContrastValue ) * SummerGrassTextureBlendWeight * SummerBlendWeight;
+		//	float2 GrassBlendFactors = CalcHeightBlendFactors( float2( Diffuse.a, GrassTexDiffuse.a ), float2( 1.0f - GrassMask, GrassMask ), DetailBlendRange );
+//
+		//	// Apply grass color
+		//	GrassTexDiffuse.rgb = Overlay( GrassTexDiffuse.rgb, SummerGrassOverlayColor );
+		//	ValyriaRehabilitatedDiffuse.rgb = lerp( ValyriaRehabilitatedDiffuse.rgb, GrassTexDiffuse.rgb, GrassBlendFactors.y );
+		//	ValyriaRehabilitatedNormal = lerp( ValyriaRehabilitatedNormal, GrassTexNormal, GrassBlendFactors.y );
+		//	ValyriaRehabilitatedProperties = lerp( ValyriaRehabilitatedProperties, GrassTexProperties, GrassBlendFactors.y );
+		//	Diffuse.rgb = lerp( Diffuse.rgb, ValyriaRehabilitatedDiffuse.rgb, ConditionValue );
+		//	Normal = lerp( Normal, ValyriaRehabilitatedNormal, ConditionValue );
+		//	Properties = lerp( Properties, ValyriaRehabilitatedProperties, ConditionValue );
+		//}
 
 		void ApplyProvinceEffectsTerrain( in EffectIntensities ConditionData, inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float3 WorldSpacePos, inout float WaterNormalLerp )
 		{
@@ -623,8 +623,8 @@ PixelShader =
 
 			// Legacy of Valyria
 			ApplyValyriaRestored1DiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._ValyriaRestored1 );
-			ApplyValyriaRestored2DiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._ValyriaRestored2 );
-			ApplyValyriaRehabilitatedDiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._ValyriaRehabilitated );
+			ApplyValyriaRestored2DiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos, ConditionData._ValyriaRestored2 );
+			//ApplyValyriaRehabilitatedDiffuseTerrain( Diffuse, Normal, Properties, WorldSpacePos.xz, ConditionData._ValyriaRehabilitated );
 
 			DebugCondition( Diffuse.rgb, ConditionData );
 		}
@@ -740,26 +740,26 @@ PixelShader =
 			Diffuse.a = lerp( Diffuse.a, smoothstep( 0.0f, 2.0f, Diffuse.a ), ConditionValue );
 		}
 
-		void ApplyValyriaRehabilitatedDiffuseTree( inout float4 Diffuse, float2 WorldSpacePosXz, float ConditionValue )
-		{
-			if ( ConditionValue <= SKIP_VALUE )
-			{
-				return;
-			}
-
-			float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
-			SlopeMultiplier = RemapClamped( SlopeMultiplier, SummerSlopeMin, 1.0f, 0.0f, 1.0f );
-
-			ConditionValue = ConditionValue * SlopeMultiplier * SummerBlendWeight;
-
-			if ( ConditionValue <= SKIP_VALUE )
-			{
-				return;
-			}
-
-			float3 ValyriaRehabilitatedDiffuse = Overlay( Diffuse.rgb, SummerOverlayTree );
-			Diffuse.rgb = lerp( Diffuse.rgb, ValyriaRehabilitatedDiffuse, ConditionValue );
-		}
+		//void ApplyValyriaRehabilitatedDiffuseTree( inout float4 Diffuse, float2 WorldSpacePosXz, float ConditionValue )
+		//{
+		//	if ( ConditionValue <= SKIP_VALUE )
+		//	{
+		//		return;
+		//	}
+//
+		//	float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
+		//	SlopeMultiplier = RemapClamped( SlopeMultiplier, SummerSlopeMin, 1.0f, 0.0f, 1.0f );
+//
+		//	ConditionValue = ConditionValue * SlopeMultiplier * SummerBlendWeight;
+//
+		//	if ( ConditionValue <= SKIP_VALUE )
+		//	{
+		//		return;
+		//	}
+//
+		//	float3 ValyriaRehabilitatedDiffuse = Overlay( Diffuse.rgb, SummerOverlayTree );
+		//	Diffuse.rgb = lerp( Diffuse.rgb, ValyriaRehabilitatedDiffuse, ConditionValue );
+		//}
 
 		void ApplyProvinceEffectsTree( in EffectIntensities ConditionData, inout float4 Diffuse, float2 MapCoords, float2 WorldSpacePosXz )
 		{
@@ -774,7 +774,7 @@ PixelShader =
 			// ApplyValyriaRuinedDiffuseTree( Diffuse, ConditionData._ValyriaRuined );
 			ApplyValyriaRestored1DiffuseTree( Diffuse, WorldSpacePosXz, ConditionData._ValyriaRestored1 );
 			ApplyValyriaRestored2DiffuseTree( Diffuse, WorldSpacePosXz, ConditionData._ValyriaRestored2 );
-			ApplyValyriaRehabilitatedDiffuseTree( Diffuse, WorldSpacePosXz, ConditionData._ValyriaRehabilitated );
+			//ApplyValyriaRehabilitatedDiffuseTree( Diffuse, WorldSpacePosXz, ConditionData._ValyriaRehabilitated );
 
 			DebugCondition( Diffuse.rgb, ConditionData );
 		}
