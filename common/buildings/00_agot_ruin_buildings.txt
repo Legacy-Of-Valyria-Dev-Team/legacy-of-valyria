@@ -5,6 +5,16 @@
 ruin_01 = {
 	construction_time = 1800
 
+	# Chroyane
+	asset = {
+		type = pdxmesh
+		names = {
+			"building_special_chroyane_ruined_6_mesh"
+		}
+		illustration = @holding_illustration_ruin
+		provinces = { 8999 }
+	}
+
 	asset = {
 		type = pdxmesh
 		name = "agot_building_western_ruin_mesh"
@@ -42,12 +52,18 @@ ruin_01 = {
 		graphical_regions = { graphical_siberia }
 	}
 
-	### LEGACY OF VALYRIA ###
+	#LOV Added, Valyria
+	asset = {
+		type = pdxmesh
+		name = "empty_mesh"
+		illustration = @holding_illustration_valyria_ruin
+		graphical_regions = { graphical_valyria_special }
+	}
 	asset = {
 		type = pdxmesh
 		name = "agot_building_western_ruin_mesh"
 		illustration = @holding_illustration_valyria_ruin
-		graphical_regions = { graphical_valyria_1 graphical_valyria graphical_lokiria graphical_lyria graphical_summer_lands graphical_telyria graphical_martivia graphical_smoking_shores }
+		graphical_regions = { graphical_valyria graphical_lokiria graphical_lyria graphical_summer_lands graphical_martivia graphical_smoking_shores }
 	}
 
 	can_construct_potential = {
@@ -141,7 +157,7 @@ small_ruin_04 = {
 
 	can_construct_potential = {
 		has_building = small_ruin_03
-		custom_tooltip = { #LEGACY OF VALYRIA ADDED
+		custom_tooltip = { #LOV Added
 			text = blockers_remain_in_settlement
 			NOT = { has_building_with_flag = obstacle }
 		}
@@ -248,7 +264,7 @@ medium_ruin_04 = {
 
 	can_construct_potential = {
 		has_building = medium_ruin_03
-		custom_tooltip = { #LEGACY OF VALYRIA ADDED
+		custom_tooltip = { #LOV Added
 			text = blockers_remain_in_settlement
 			NOT = { has_building_with_flag = obstacle }
 		}
@@ -358,7 +374,7 @@ large_ruin_04 = {
 
 	can_construct_potential = {
 		has_building = large_ruin_03
-		custom_tooltip = { #LEGACY OF VALYRIA ADDED
+		custom_tooltip = { #LOV Added
 			text = blockers_remain_in_settlement
 			NOT = { has_building_with_flag = obstacle }
 		}
@@ -394,6 +410,15 @@ large_ruin_04 = {
 	type_icon = "icon_building_ruin.dds"
 }
 
+# Special Ruin
+special_ruin_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	type_icon = "icon_building_ruin.dds"
+}
+
 ### Ruin Afflictions
 
 # Salted Earth
@@ -411,7 +436,7 @@ ruin_salted_earth_01 = {
 		garrison_size = -0.5
 	}
 
-	type_icon = "icon_building_cereal_fields.dds"
+	type_icon = "icon_building_skull.dds"
 }
 
 # Desolate
@@ -431,7 +456,7 @@ ruin_desolate_01 = {
 		build_speed = 0.20
 	}
 
-	type_icon = "icon_building_pastures.dds"
+	type_icon = "icon_building_dense_growth.dds"
 	next_building = ruin_desolate_02
 }
 ruin_desolate_02 = {
@@ -457,7 +482,7 @@ ruin_desolate_02 = {
 		build_speed = 0.05
 	}
 
-	type_icon = "icon_building_pastures.dds"
+	type_icon = "icon_building_dense_growth.dds"
 }
 
 # Flooded
@@ -529,7 +554,7 @@ ruin_infamous_01 = {
 		garrison_size = -0.25
 	}
 
-	type_icon = "icon_building_siege_works.dds"
+	type_icon = "icon_building_graveyard.dds"
 }
 
 # Wildfire Outbreak
@@ -575,4 +600,48 @@ ruin_wildfire_02 = {
 	}
 
 	type_icon = "icon_megalith.dds"
+}
+
+# Stone Men
+ruin_stone_men_01 = {
+	can_construct_potential = {
+		always = no
+	}
+
+	province_modifier = {
+		hostile_raid_time = -0.25
+		supply_limit_mult = -0.25
+		tax_mult = -0.5
+		travel_danger = 50
+		epidemic_resistance = -50
+	}
+	garrison_reinforcement_factor = -0.25
+
+	type_icon = "oath_faithful_building.dds"
+	next_building = ruin_stone_men_02
+}
+ruin_stone_men_02 = {
+	construction_time = 300
+	can_construct_potential = {
+		has_building = ruin_stone_men_01
+		custom_tooltip = {
+			text = "RUIN_MUST_BEGIN_CONSTRUCTION"
+			NOT = {
+				scope:holder = {
+					has_trait = ruin
+				}
+			}
+		}
+	}
+
+	cost_gold = 400
+
+	province_modifier = {
+		levy_size = -0.05
+		garrison_size = -0.10
+		epidemic_resistance = -5
+	}
+	garrison_reinforcement_factor = -0.05
+
+	type_icon = "oath_faithful_building.dds"
 }

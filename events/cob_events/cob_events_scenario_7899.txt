@@ -2697,6 +2697,36 @@ cob_7899_scenerio.0529 = { #Aurion returns home
         character:Varezys_1 = {
             save_scope_as = aurion
         }
+        # Smith for the crowns
+        if = {
+            limit = { employs_court_position = court_smith_court_position }
+            random_court_position_holder = {
+                type = court_smith_court_position
+                save_scope_as = smith
+            }
+        }
+        else = {
+            create_character = {
+                template = inspired_template # no explicit use of root unlike local_artisan_template
+                location = capital_province
+                culture = capital_province.culture
+                faith = capital_province.faith
+                gender_female_chance = {
+                    if = {
+                        limit = { faith = { has_doctrine = doctrine_gender_male_dominated } }
+                        add = 20
+                    }
+                    else_if = {
+                        limit = { faith = { has_doctrine = doctrine_gender_female_dominated } }
+                        add = 80
+                    }
+                    else = {
+                        add = 50
+                    }
+                }
+                save_scope_as = smith
+            }
+        }
     }
 
     option = {
@@ -2718,14 +2748,13 @@ cob_7899_scenerio.0529 = { #Aurion returns home
         add_gold = massive_gold_max_value
         add_prestige = massive_prestige_gain
         #agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
-        agot_create_artifact_valyrian_crown1_effect = { OWNER = this }
+        agot_create_artifact_valyrian_crown1_effect = { OWNER = this CREATOR = scope:smith }
         create_artifact_dragon_egg_blackdarkred_effect = { OWNER = this }
         stress_impact = {
             base = major_stress_loss
         }
         destroy_all_event_troops = yes
         custom_tooltip = cob_7899_scenerio.0529.tt
-
     }
     option = {
         name = cob_7899_scenerio.0529.b
@@ -2751,7 +2780,7 @@ cob_7899_scenerio.0529 = { #Aurion returns home
         add_gold = major_gold_max_value
         add_prestige = massive_prestige_gain
         #agot_create_artifact_valyrian_steel_armor_effect = { OWNER = this }
-        agot_create_artifact_valyrian_crown2_effect = { OWNER = this }
+        agot_create_artifact_valyrian_crown2_effect = { OWNER = this CREATOR = scope:smith }
         create_artifact_dragon_egg_blackdarkred_effect = { OWNER = this }
         stress_impact = {
             base = major_stress_loss
