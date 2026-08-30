@@ -3,6 +3,7 @@
 lv_begin_expedition = {
 	category = interaction_category_uncategorized
 	hidden = yes
+	special_interaction = feudalize_holding
 
 	desc = lv_begin_expedition_desc
 
@@ -26,7 +27,7 @@ lv_begin_expedition = {
 
 	is_valid = {
 		scope:actor = {
-			gold >= lv_settlement_cost
+			gold >= lv_expedition_cost
 			NOT = { var:lv_settlement_state ?= flag:planning }
 		}
 	}
@@ -56,113 +57,15 @@ lv_begin_expedition = {
 			custom_tooltip = {
 				text = lv_begin_expedition_effect_tooltip
 				if = {
-					limit = { # You ain't slick
-						var:lv_restore_ruins_tooltip ?= scope:ruin
-						gold >= lv_settlement_cost
-					}
+					limit = { gold >= scope:target.lv_expedition_cost }
 					save_scope_value_as = {
 						name = lv_settlement_cost
-						value = lv_settlement_cost
+						value = scope:target.lv_expedition_cost
 					}
 					trigger_event = lv_settlement_event.0001
 				}
 			}
 		}
-	}
-
-	ai_will_do = { base = 150 }
-}
-
-lv_abandon_settlement = {
-	category = interaction_category_uncategorized
-	hidden = yes
-
-	desc = lv_abandon_settlement_desc
-
-	target_type = title
-	target_filter = actor_domain_titles
-
-	auto_accept = yes
-
-	is_shown = { scope:actor = { this = scope:recipient } }
-
-	can_be_picked_title = {
-		scope:target = {
-			holder = scope:actor
-			trigger_if = {
-				limit = { tier <= tier_county }
-				title_province = { has_holding_type = settlement_holding }
-			}
-			trigger_else = {
-				custom_description = {
-					text = "feudalize_tribal_holding_interaction_title_not_county_or_below"
-					always = no
-				}
-			}
-		}
-	}
-
-	on_accept = {
-		scope:actor = {
-			lv_abandon_settlement_effect = { COUNTY = scope:target }
-			if = {
-				limit = { is_ruler = no }
-				create_landless_adventurer_title_effect = {
-					REASON = flag:voluntary
-					FLAVOR_CHAR = scope:recipient
-				}
-			}
-		}
-	}
-
-	ai_will_do = { base = 150 }
-}
-
-lv_upgrade_settlement = {
-	category = interaction_category_uncategorized
-	hidden = yes
-
-	desc = lv_upgrade_settlement_desc
-
-	target_type = title
-	target_filter = actor_domain_titles
-
-	auto_accept = yes
-
-	is_shown = { scope:actor = { this = scope:recipient } }
-
-	can_be_picked_title = {
-		scope:target = {
-			holder = scope:actor
-			trigger_if = {
-				limit = { tier <= tier_county }
-				title_province = { has_holding_type = settlement_holding }
-			}
-			trigger_else = {
-				custom_description = {
-					text = "feudalize_tribal_holding_interaction_title_not_county_or_below"
-					always = no
-				}
-			}
-		}
-	}
-	has_valid_target = {
-		scope:target = {
-			development_level >= 3
-			title_province = {
-				NOT = {
-					custom_description = {
-						text = lv_has_settlement_blockers
-						has_building_with_flag = obstacle
-					}
-				}
-			}
-		}
-	}
-
-	on_accept = {
-		scope:target = { title_province = { save_scope_as = completed_ruin } }
-		scope:actor = { trigger_event = agot_ruins.1000 }
 	}
 
 	ai_will_do = { base = 150 }

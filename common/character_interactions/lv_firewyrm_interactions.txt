@@ -1,0 +1,38 @@
+﻿# Legacy of Valyria Firewyrm Character Interactions
+
+lv_placate_firewyrm = {
+	icon = icon_scheme_dragon
+	desc = lv_placate_firewyrm_desc
+
+	category = interaction_category_diplomacy
+	interface_priority = 90
+	ignores_pending_interaction_block = yes
+	auto_accept = yes
+
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+			any_realm_province = { scope:recipient.location = this }
+		}
+		scope:recipient = {
+			lv_is_firewyrm = yes
+			any_owned_story = {
+				story_type = lv_firewyrm_story_cycle
+				var:lv_firewyrm_mood ?= flag:agitated
+			}
+		}
+	}
+
+	on_accept = {
+		scope:recipient = {
+			save_scope_as = firewyrm
+			location = { save_scope_as = firewyrm_location }
+		}
+		scope:actor = {
+			save_scope_as = human
+			trigger_event = lv_firewyrm_event.1011
+		}
+	}
+
+	ai_will_do = { base = 150 }
+}

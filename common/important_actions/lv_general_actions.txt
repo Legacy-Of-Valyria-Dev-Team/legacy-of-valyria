@@ -1,0 +1,46 @@
+﻿lv_action_dummy_awakened = {
+	type = alert
+	icon = action_mandala_red
+	is_dangerous = yes
+
+	check_create_action = {
+		if = {
+			limit = {
+				title:c_ruins.holder ?= {
+					OR = {
+						NOT = { has_trait = ruin }
+						highest_held_title_tier > tier_duchy # By default the Ruin Empress holds d_ruins
+						is_independent_ruler = no
+						any_vassal = { count >= 1 }
+					}
+					save_temporary_scope_as = dummy_ruin
+				}
+			}
+			try_create_important_action = {
+				important_action_type = lv_action_dummy_awakened
+				actor = root
+				recipient = scope:dummy_ruin
+			}
+		}
+		if = {
+			limit = {
+				title:c_wilderness.holder ?= {
+					OR = {
+						NOT = { has_trait = wilderness }
+						highest_held_title_tier > tier_county # By default the Wilderness Empress holds c_wilderness
+						is_independent_ruler = no
+						any_vassal = { count >= 1 }
+					}
+					save_temporary_scope_as = dummy_wilderness
+				}
+			}
+			try_create_important_action = {
+				important_action_type = lv_action_dummy_awakened
+				actor = root
+				recipient = scope:dummy_wilderness
+			}
+		}
+	}
+
+	effect = { decision:lv_debug_lobotomize_dummy_decision = { open_view_data = decision_detail } }
+}
