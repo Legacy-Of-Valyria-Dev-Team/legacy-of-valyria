@@ -465,12 +465,18 @@ PixelShader =
 			Properties = lerp( Properties, ValyriaRestored1Properties, ConditionValue );
 		}
 
-		void ApplyValyriaRestored2DiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float2 WorldSpacePosXz, float ConditionValue )
+		void ApplyValyriaRestored2DiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float3 WorldSpacePos, float ConditionValue )
 		{
 			if ( ConditionValue <= SKIP_VALUE )
 			{
 				return;
 			}
+
+			// AGOT water level.
+			const float WaterLevel = 6.2f;
+			const float CoastHeightFalloff = 3.5f;
+			float2 WorldSpacePosXz = WorldSpacePos.xz;
+
 			float2 MapCoords = WorldSpacePosXz * WorldSpaceToTerrain0To1;
 			float2 DetailUV = CalcDetailUV( WorldSpacePosXz );
 
@@ -478,9 +484,15 @@ PixelShader =
 			float3 ValyriaRestored2Normal = Normal;
 			float4 ValyriaRestored2Properties = Properties;
 
+			float CoastMultiplier = smoothstep( WaterLevel, WaterLevel + CoastHeightFalloff, WorldSpacePos.y );
+			ConditionValue *= CoastMultiplier;
+
 			float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
-			SlopeMultiplier = RemapClamped( SlopeMultiplier, ValyriaRestored2SlopeMin, 1.0f, 0.0f, 1.0f );
+			SlopeMultiplier = RemapClamped( SlopeMultiplier, ValyriaRehabilitatedSlopeMin, 1.0f, 0.0f, 1.0f );
+			SlopeMultiplier = pow( SlopeMultiplier, 2.0f );
+
 			ConditionValue *= SlopeMultiplier;
+			ConditionValue *= CoastMultiplier;
 
 			if ( ConditionValue <= SKIP_VALUE )
 			{
@@ -543,7 +555,7 @@ PixelShader =
 			Properties = lerp( Properties, ValyriaRestored2Properties, ConditionValue );
 		}
 		
-		void ApplyValyriaRehabilitatedDiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float2 WorldSpacePosXz, float ConditionValue )
+		void ApplyValyriaRehabilitatedDiffuseTerrain( inout float4 Diffuse, inout float3 Normal, inout float4 Properties, float3 WorldSpacePos, float ConditionValue )
 		{
 			if ( ConditionValue <= SKIP_VALUE )
 			{
@@ -560,6 +572,7 @@ PixelShader =
 			float SlopeMultiplier = dot( CalculateNormal( WorldSpacePosXz ), UP_VECTOR );
 			SlopeMultiplier = RemapClamped( SlopeMultiplier, ValyriaRehabilitatedSlopeMin, 1.0f, 0.0f, 1.0f );
 			ConditionValue *= SlopeMultiplier;
+			ConditionValue *= CoastMultiplier;
 
 			if ( ConditionValue <= SKIP_VALUE )
 			{
