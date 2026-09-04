@@ -11,6 +11,7 @@
 		agot_dragonrider_forced_duel_list_yearly
 		agot_grant_kingdom_titles
 		agot_sailing_sunken_ship_yearly_chance
+		agot_dragon_punishment
 	}
 }
 
@@ -257,6 +258,40 @@ agot_yearly_playable_pulse = {
 				}
 			}
 			create_story = story_dragonkind_elixir
+		}
+		if = {
+			limit = {
+				trigger_if = {
+					limit = { character:Targaryen_88 ?= root }
+					health <= 2
+				}
+				trigger_else = { health <= 1 }
+				highest_held_title_tier >= tier_empire
+				agot_is_independent_ruler = yes
+				any_child = {
+					agot_is_valid_bastard_for_deathbed_legitimization = { PARENT = root }
+				}
+				OR = {
+					AND = {
+						character:Targaryen_88 ?= root
+						game_start_date >= 8170.12.11
+					}
+					any_child = {
+						agot_is_valid_bastard_for_deathbed_legitimization = { PARENT = root }
+						count >= 2
+					}
+				}
+			}
+			random = {
+				chance = 5
+				modifier = {
+					add = 95
+					root = character:Targaryen_88
+					game_start_date >= 8170.12.11
+				}
+
+				trigger_event = agot_events_bastard.1100
+			}
 		}
 	}
 }
@@ -1118,6 +1153,126 @@ agot_sailing_sunken_ship_yearly_chance = {
 		random = {
 			chance = 10
 			trigger_event = agot_sailing.9500 # Random Sunken Ship Event
+		}
+	}
+}
+
+agot_dragon_punishment = {
+	trigger = {
+		global_var:agot_artifact_keeper.agot_dragon_eggs_count_value > 0
+		NOT = { has_game_rule = agot_essos_disabled }
+		NOT = { exists = global_var:agot_dragon_punishment }
+		NOT = { exists = global_var:first_dragon_parent_one }
+	}
+	effect = {
+		set_global_variable = {
+			name = agot_dragon_punishment
+			years = 5
+		}
+		random = {
+			chance = 0
+			modifier = {
+				add = 1
+				global_var:agot_artifact_keeper.agot_dragon_eggs_count_value = 1
+			}
+			modifier = {
+				add = 3
+				global_var:agot_artifact_keeper.agot_dragon_eggs_count_value = 2
+			}
+			modifier = {
+				add = 5
+				global_var:agot_artifact_keeper.agot_dragon_eggs_count_value >= 3
+			}
+			modifier = {
+				factor = 0.2
+				agot_dragon_population_extinct = yes
+			}
+			global_var:agot_artifact_keeper = {
+				random_character_artifact = {
+					limit = { has_variable = dragon_egg }
+					save_scope_as = egg
+				}
+				random_character_artifact = {
+					limit = {
+						has_variable = dragon_egg
+						NOT = { this = scope:egg }
+					}
+					save_scope_as = egg2
+				}
+				random_character_artifact = {
+					limit = {
+						has_variable = dragon_egg
+						NOT = { this = scope:egg }
+						trigger_if = {
+							limit = { exists = scope:egg2 }
+							NOT = { this = scope:egg2 }
+						}
+					}
+					save_scope_as = egg3
+				}
+			}
+			if = {
+				limit = { exists = scope:egg }
+				if = {
+					limit = { scope:egg = { has_variable = dragon_parent } }
+					set_global_variable = {
+						name = first_dragon_parent_one
+						value = scope:egg.var:dragon_parent
+					}
+				}
+				if = {
+					limit = { scope:egg = { has_variable = dragon_parent_other } }
+					set_global_variable = {
+						name = first_dragon_parent_two
+						value = scope:egg.var:dragon_parent_other
+					}
+				}
+				destroy_artifact = scope:egg
+			}
+			if = {
+				limit = { exists = scope:egg2 }
+				set_global_variable = two_dragons
+				if = {
+					limit = { scope:egg2 = { has_variable = dragon_parent } }
+					set_global_variable = {
+						name = second_dragon_parent_one
+						value = scope:egg2.var:dragon_parent
+					}
+				}
+				if = {
+					limit = { scope:egg2 = { has_variable = dragon_parent_other } }
+					set_global_variable = {
+						name = second_dragon_parent_two
+						value = scope:egg2.var:dragon_parent_other
+					}
+				}
+				destroy_artifact = scope:egg2
+			}
+			if = {
+				limit = { exists = scope:egg3 }
+				set_global_variable = three_dragons
+				if = {
+					limit = { scope:egg3 = { has_variable = dragon_parent } }
+					set_global_variable = {
+						name = third_dragon_parent_one
+						value = scope:egg3.var:dragon_parent
+					}
+				}
+				if = {
+					limit = { scope:egg3 = { has_variable = dragon_parent_other } }
+					set_global_variable = {
+						name = third_dragon_parent_two
+						value = scope:egg3.var:dragon_parent_other
+					}
+				}
+				destroy_artifact = scope:egg3
+			}
+			title:c_ruins.holder = {
+				trigger_event = {
+					id = agot_dragon.2000
+					years = 1
+				}
+			}
 		}
 	}
 }
