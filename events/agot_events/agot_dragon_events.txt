@@ -3094,6 +3094,10 @@ agot_dragon.0040 = {
 			base = 100
 		}
 	}
+
+	after = {
+		scope:dragon = { agot_clear_dragon_animation_flags = yes } # drop the hatchling fire-breath flag set in immediate
+	}
 }
 
 # # Dragon breathes fire for the first time, color is revealed
@@ -3788,7 +3792,7 @@ scripted_trigger valid_dragonseed_trigger = {
 			has_variable = cradled_egg
 		}
 	}
-	NOT = { has_trait = dragonwidowed }
+	NOT = { has_trait_with_flag = can_not_bond_dragon }
 }
 
 #Dragonseed start
@@ -5679,6 +5683,331 @@ agot_dragon.1010 = {
 		}
 		ai_chance = {
 			base = 60
+		}
+	}
+}
+
+scripted_effect agot_spawn_destined_dragon = {
+	create_character = {
+		location = scope:dragon_seed_conqueror.capital_province
+		random_traits = no
+		template = agot_young_dragon_destined_template
+
+		after_creation = {
+			save_scope_as = dragon
+			if = {
+				limit = { exists = global_var:$PARENT$_one }
+				if = {
+					limit = { global_var:$PARENT$_one ?= { is_male = yes } }
+					set_father = global_var:$PARENT$_one
+				}
+				else = { set_mother = global_var:$PARENT$_one }
+			}
+			if = {
+				limit = {
+					exists = global_var:$PARENT$_two
+					global_var:$PARENT$_two != global_var:$PARENT$_one
+				}
+				if = {
+					limit = { global_var:$PARENT$_two ?= { is_male = yes } }
+					set_father = global_var:$PARENT$_two
+				}
+				else = { set_mother = global_var:$PARENT$_two }
+			}
+			set_employer = scope:dragon_seed_conqueror
+			agot_tame_dragon = {
+				TAMER = $TAMER$
+				DRAGON = scope:dragon
+			}
+		}
+	}
+}
+
+scripted_effect create_dragonrider_and_dragon = {
+	create_character = {
+		location = scope:dragon_seed_conqueror.capital_province
+		gender_female_chance = 50
+		random_traits_list = {
+			count = 1
+			education_martial_1 = {}
+			education_martial_2 = {}
+			education_martial_3 = {}
+			education_martial_4 = {}
+		}
+		random_traits_list = {
+			count = 1
+			education_martial_prowess_3 = {}
+			education_martial_prowess_4 = {}
+		}
+		random_traits_list = {
+			count = 1
+			lifestyle_blademaster = {}
+			lifestyle_hunter = {}
+		}
+		random_traits_list = {
+			count = { 1 2 }
+			brave = {}
+			vengeful = {}
+			wrathful = {}
+			ambitious = {}
+			diligent = {}
+			greedy = {}
+			arrogant = {}
+			gluttonous = {}
+			sadistic = {}
+			irritable = {}
+			cannibal = {}
+		}
+		random_traits_list = { #Something strong
+			strong = {}
+			athletic = {}
+			physique_good_1 = {}
+			physique_good_2 = {}
+			physique_good_3 = {}
+			giant = {}
+		}
+
+		prowess = { min_template_decent_skill max_template_high_skill }
+
+		culture = scope:dragon_seed_conqueror.culture
+		faith = scope:dragon_seed_conqueror.faith
+		save_scope_as = seed
+		age = { 16 20 }
+		after_creation = {
+			scope:seed ?= {
+				set_employer = scope:dragon_seed_conqueror
+				if = {
+					limit = { scope:dragon_seed_conqueror = { is_male = yes } }
+					set_father = scope:dragon_seed_conqueror
+				}
+				else = { set_mother = scope:dragon_seed_conqueror }
+				set_house = scope:dragon_seed_conqueror.house
+			}
+		}
+	}
+	agot_spawn_destined_dragon = {
+		PARENT = $PARENT$
+		TAMER = scope:seed
+	}
+}
+
+agot_dragon.2000 = {
+	hidden = yes
+
+	trigger = {
+		any_county_in_region = {
+			region = world_punishment
+			title_province = { NOT = { has_holding_type = ruin_holding } }
+		}
+	}
+
+	on_trigger_fail = {
+		trigger_event = {
+			id = agot_dragon.2000
+			years = 1
+		}
+	}
+
+	immediate = {
+		remove_global_variable = agot_dragon_punishment
+		if = {
+			limit = { agot_dragon_population_extinct = yes }
+			set_global_variable = ded_dragon
+		}
+		random_county = {
+			limit = {
+				title_province ?= {
+					geographical_region = world_punishment
+					has_holding_type = wilderness_holding
+				}
+			}
+			alternative_limit = {
+				title_province ?= {
+					geographical_region = world_punishment
+					NOT = { has_holding_type = ruin_holding }
+				}
+				holder = { is_ai = yes }
+			}
+			save_scope_as = county
+		}
+		create_character = {
+			location = scope:county.title_province
+			template = agot_essosi_warrior
+			save_scope_as = dragon_seed_conqueror
+			gender_female_chance = 50
+			age = 37
+			martial = 20
+			after_creation = {
+				scope:dragon_seed_conqueror ?= { create_story = story_conqueror }
+				if = {
+					limit = { scope:county.holder = { is_human = no } }
+					scope:dragon_seed_conqueror ?= { add_gold = 75 }
+				}
+				scope:county = {
+					title_province = { set_holding_type = castle_holding }
+					change_development_level = 2
+				}
+				create_title_and_vassal_change = {
+					type = conquest
+					save_scope_as = change
+					add_claim_on_loss = no
+				}
+				scope:county = {
+					change_title_holder = {
+						holder = scope:dragon_seed_conqueror
+						change = scope:change
+					}
+				}
+				resolve_title_and_vassal_change = scope:change
+			}
+		}
+		agot_spawn_destined_dragon = {
+			PARENT = first_dragon_parent
+			TAMER = scope:dragon_seed_conqueror
+		}
+		if = {
+			limit = { exists = global_var:two_dragons }
+			create_dragonrider_and_dragon = { PARENT = second_dragon_parent }
+			remove_global_variable = two_dragons
+		}
+		if = {
+			limit = { exists = global_var:three_dragons }
+			create_dragonrider_and_dragon = { PARENT = third_dragon_parent }
+			remove_global_variable = three_dragons
+		}
+		scope:dragon_seed_conqueror ?= {
+			add_gold = { 2000 3000 }
+			add_prestige = { 1500 2000 }
+			every_held_county = {
+				set_county_culture = scope:dragon_seed_conqueror.culture
+				set_county_faith = scope:dragon_seed_conqueror.faith
+				change_county_control = 100
+				save_scope_as = old_title
+			}
+			add_legitimacy_effect = { LEGITIMACY = 250 }
+			spawn_army = {
+				name = rogue_rider_army
+				men_at_arms = {
+					type = pikemen_unit # 2000
+					stacks = 20
+				}
+				men_at_arms = {
+					type = armored_footmen # 2000
+					stacks = 20
+				}
+				men_at_arms = {
+					type = light_horsemen # 1000
+					stacks = 10
+				}
+				location = scope:dragon_seed_conqueror.location
+				origin = scope:dragon_seed_conqueror.location
+				inheritable = yes
+			}
+			create_dynamic_title = {
+				tier = kingdom
+				name = NEW_CREATED_TITLE_NAME
+			}
+			create_title_and_vassal_change = {
+				type = created
+				save_scope_as = change
+				add_claim_on_loss = no
+			}
+			scope:new_title = {
+				change_title_holder = {
+					holder = scope:dragon_seed_conqueror
+					change = scope:change
+				}
+				set_coa = scope:old_title
+				set_color_from_title = scope:old_title
+				set_capital_county = scope:old_title.title_capital_county
+			}
+			resolve_title_and_vassal_change = scope:change
+			capital_province = {
+				agot_add_building_if_possible = { BUILDING = curtain_walls_01 }
+				agot_add_building_if_possible = { BUILDING = ramparts_01 }
+				agot_add_building_if_possible = { BUILDING = hill_forts_01 }
+
+				agot_add_building_if_possible = { BUILDING = hunting_grounds_01 }
+				agot_add_building_if_possible = { BUILDING = barracks_01 }
+
+				agot_add_building_if_possible = { BUILDING = generic_dragon_pit_01 }
+			}
+			every_courtier = {
+				limit = { has_trait = dragon }
+				save_scope_as = dragon
+				agot_send_to_dragonpit_effect = {
+					DRAGON = scope:dragon
+					DRAGONPIT_HOLDER = scope:dragon_seed_conqueror
+					DRAGONPIT_COUNTY = scope:dragon_seed_conqueror.capital_county
+				}
+			}
+		}
+		every_player = {
+			trigger_event = agot_dragon.2001
+		}
+	}
+}
+
+agot_dragon.2001 = {
+	type = character_event
+	title = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					OR = {
+						capital_county ?= { title_province = { NOT = { geographical_region = world_westeros } } }
+						domicile.domicile_location ?= { NOT = { geographical_region = world_westeros } }
+					}
+				}
+				desc = agot_dragon.2001.t_essos
+			}
+			desc = agot_dragon.2001.t
+		}
+	}
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					OR = {
+						capital_county ?= { title_province = { NOT = { geographical_region = world_westeros } } }
+						domicile.domicile_location ?= { NOT = { geographical_region = world_westeros } }
+					}
+				}
+				desc = agot_dragon.2001.desc_essos
+			}
+			triggered_desc = {
+				desc = agot_dragon.2001.desc_westeros
+			}
+		}
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:dragon_seed_conqueror = { any_child = { count = 0 } } }
+				desc = agot_dragon.2001.desc_nokids
+			}
+			desc = agot_dragon.2001.desc_kids
+		}
+	}
+
+	theme = dragon
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+	right_portrait = {
+		character = scope:dragon_seed_conqueror
+		animation = personality_bold
+	}
+	lower_center_portrait = {
+		character = scope:dragon
+		animation = dragon_main
+	}
+
+	option = {
+		name = agot_dragon.2001.a
+		if = {
+			limit = { exists = global_var:ded_dragon }
+			remove_global_variable = ded_dragon
 		}
 	}
 }
